@@ -2,10 +2,10 @@ import pandas as pd
 import json
 import datetime
 
-# Alamat permanen direktori master file di OneDrive Anda
-excel_path = r"C:\Users\hp\OneDrive\Documents\PT. SSJ\HRIS SYSTEM\SSJ - Prime Database TAD.xlsx"
+# Alamat permanen karena file Excel sudah berada di dalam folder project Dropbox yang sama
+excel_path = "SSJ - Prime Database TAD.xlsx"
 
-print("Membaca file master Excel dari OneDrive (Header Baris ke-6)...")
+print("Membaca file master Excel dari folder project (Header Baris ke-6)...")
 xls = pd.ExcelFile(excel_path)
 sheet_name = xls.sheet_names[0]
 
@@ -13,7 +13,7 @@ sheet_name = xls.sheet_names[0]
 df_final = pd.read_excel(excel_path, sheet_name=sheet_name, header=5)
 df_final = df_final[pd.to_numeric(df_final['No'], errors='coerce').notnull()]
 
-# Penyeragaman otomatis kolom 'Nama Karyawan'
+# Penyeragaman otomatis kolom 'Nama Karyawan' agar terbaca sempurna di web
 if 'Nama Karyawan' in df_final.columns and 'TAD' not in df_final.columns:
     df_final['TAD'] = df_final['Nama Karyawan']
 
@@ -25,8 +25,8 @@ for col in df_final.columns:
 
 records = df_final.where(pd.notnull(df_final), None).to_dict(orient='records')
 
-# Menulis ulang file employee_data.json secara permanen
+# Menulis ulang file employee_data.json secara permanen dan mutlak
 with open('employee_data.json', 'w', encoding='utf-8') as f:
     json.dump(records, f, ensure_ascii=False, indent=4)
 
-print("SUKSES PERMANEN! employee_data.json berhasil diperbarui dengan data terbaru OneDrive.")
+print("SUKSES PERMANEN! employee_data.json berhasil diperbarui.")
