@@ -54,7 +54,7 @@
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
                     <p class="text-sm font-medium text-slate-500">Aksi Data Laporan</p>
                     <button onclick="exportToCSV()" class="mt-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 py-2 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-md">
-                        📥 Download / Export Excel (CSV)
+                        📥 Download / Export Excel (Full 72 Kolom)
                     </button>
                 </div>
             </div>
@@ -104,9 +104,7 @@
             </div>
 
             <!-- KONTEN 5 KATEGORI -->
-            <div class="space-y-6" id="modalContent">
-                <!-- Diisi otomatis via Javascript -->
-            </div>
+            <div class="space-y-6" id="modalContent"></div>
 
             <div class="flex justify-end pt-4 border-t">
                 <button onclick="closeModal()" class="bg-slate-800 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-900 transition">Tutup</button>
@@ -131,7 +129,7 @@
 
         function populateFilter(data) {
             const select = document.getElementById('filterDivision');
-            const divisions = [...new Set(data.map(emp => emp.Division || emp.Fungsi).filter(Boolean))];
+            const divisions = [...new Set(data.map(emp => emp.Division || emp.Fungsi || emp.Devisi).filter(Boolean))];
             divisions.forEach(div => {
                 const opt = document.createElement('option');
                 opt.value = div;
@@ -153,15 +151,19 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition";
                 
+                const nama = emp.TAD || emp.Nama_Lengkap || emp.nama || '-';
+                const jabatan = emp['Job Title'] || emp.Jabatan || '-';
+                const divisi = emp.Division || emp.Fungsi || emp.Devisi || '-';
+                const lokasi = emp.Location || emp.Lokasi || '-';
                 const sisaKontrak = emp['Contract Remaining'] !== undefined ? `${emp['Contract Remaining']} Hari` : '-';
-                const badgeColor = emp['Contract Remaining'] < 30 ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700';
+                const badgeColor = (emp['Contract Remaining'] !== undefined && emp['Contract Remaining'] < 30) ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700';
 
                 tr.innerHTML = `
                     <td class="p-4 font-medium">${emp.No || (index + 1)}</td>
-                    <td class="p-4 font-semibold text-slate-900">${emp.TAD || '-'}</td>
-                    <td class="p-4">${emp['Job Title'] || '-'}</td>
-                    <td class="p-4"><span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs font-medium">${emp.Division || emp.Fungsi || '-'}</span></td>
-                    <td class="p-4">${emp.Location || '-'}</td>
+                    <td class="p-4 font-semibold text-slate-900">${nama}</td>
+                    <td class="p-4">${jabatan}</td>
+                    <td class="p-4"><span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs font-medium">${divisi}</span></td>
+                    <td class="p-4">${lokasi}</td>
                     <td class="p-4"><span class="${badgeColor} px-2.5 py-1 rounded-lg text-xs font-semibold">${sisaKontrak}</span></td>
                     <td class="p-4 text-center">
                         <button onclick='showDetail(${JSON.stringify(emp).replace(/'/g, "&#39;")})' class="bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white px-3.5 py-1.5 rounded-xl text-xs font-medium transition shadow-sm">Detail Profil</button>
@@ -177,9 +179,9 @@
             const selectedDiv = document.getElementById('filterDivision').value;
 
             const filtered = employeesData.filter(emp => {
-                const name = (emp.TAD || '').toLowerCase();
-                const job = (emp['Job Title'] || '').toLowerCase();
-                const div = emp.Division || emp.Fungsi || '';
+                const name = (emp.TAD || emp.Nama_Lengkap || emp.nama || '').toLowerCase();
+                const job = (emp['Job Title'] || emp.Jabatan || '').toLowerCase();
+                const div = emp.Division || emp.Fungsi || emp.Devisi || '';
                 
                 const matchKeyword = name.includes(keyword) || job.includes(keyword);
                 const matchDiv = !selectedDiv || div === selectedDiv;
@@ -190,11 +192,11 @@
         }
 
         function showDetail(emp) {
-            document.getElementById('modalName').innerText = emp.TAD || 'Profil Karyawan';
+            const nama = emp.TAD || emp.Nama_Lengkap || emp.nama || 'Profil Karyawan';
+            document.getElementById('modalName').innerText = nama;
             const container = document.getElementById('modalContent');
             container.innerHTML = '';
 
-            // 5 KATEGORI PEMETAAN PRO
             const categories = [
                 {
                     title: "👤 1. Identitas & Personal Karyawan",
@@ -224,7 +226,7 @@
                         { label: "Location", val: emp.Location },
                         { label: "Lokasi Kerja", val: emp['Lokasi Kerja'] },
                         { label: "Area Kerja", val: emp['Area Kerja'] },
-                        { label: "Divisi", val: emp.Division },
+                        { label: "Divisi", val: emp.Division || emp.Fungsi },
                         { label: "Department", val: emp.Department },
                         { label: "Job Title", val: emp['Job Title'] },
                         { label: "Job Group", val: emp['Job Group'] },
@@ -310,7 +312,7 @@
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "Master_Karyawan_Donggi_Matindok_Lengkap.csv");
+            link.setAttribute("download", "Master_Karyawan_Donggi_Matindok_Lengkap_72_Kolom.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
