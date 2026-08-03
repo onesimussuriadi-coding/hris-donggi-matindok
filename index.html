@@ -1,116 +1,4 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HRIS Portal - Field Donggi Matindok</title>
-    <!-- Tailwind CSS untuk Desain Modern -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-    </style>
-</head>
-<body class="bg-slate-100 text-slate-800 flex h-screen overflow-hidden">
-
-    <!-- SIDEBAR -->
-    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between hidden md:flex">
-        <div>
-            <div class="p-6 border-b border-slate-800">
-                <h1 class="text-xl font-bold text-white tracking-wide">HRIS Portal</h1>
-                <p class="text-xs text-slate-400 mt-1">Field Donggi Matindok</p>
-            </div>
-            <nav class="p-4 space-y-1">
-                <a href="#" class="flex items-center gap-3 px-4 py-3 bg-blue-600 text-white rounded-xl font-medium shadow-lg shadow-blue-600/30">Dashboard Utama</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 rounded-xl transition">Master Karyawan</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 rounded-xl transition">Time Sheet & Absen</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 rounded-xl transition">Engine Payroll</a>
-            </nav>
-        </div>
-        <div class="p-4 border-t border-slate-800">
-            <p class="text-xs font-semibold text-white">Onesimus Suriadi</p>
-            <p class="text-[10px] text-slate-400">President Director</p>
-        </div>
-    </aside>
-
-    <!-- MAIN CONTENT -->
-    <main class="flex-1 flex flex-col h-screen overflow-y-auto">
-        
-        <!-- HEADER -->
-        <header class="bg-white border-b border-slate-200 px-8 py-4 flex justify-between items-center shadow-sm">
-            <h2 class="text-xl font-bold text-slate-800">Master Data Karyawan TAD</h2>
-            <div class="flex items-center gap-4">
-                <span class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-3 py-1 rounded-full">Periode Aktif (2026)</span>
-            </div>
-        </header>
-
-        <!-- CONTENT BODY -->
-        <div class="p-8 max-w-7xl mx-auto w-full space-y-6">
-
-            <!-- STATS CARDS -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <p class="text-sm font-medium text-slate-500">Total Karyawan (TAD)</p>
-                    <h3 class="text-3xl font-bold text-slate-900 mt-2" id="total-karyawan">52 Orang</h3>
-                </div>
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <p class="text-sm font-medium text-slate-500">Total Zona Operasional</p>
-                    <h3 class="text-3xl font-bold text-slate-900 mt-2">Zona 13 - Field</h3>
-                </div>
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                    <p class="text-sm font-medium text-slate-500">Aksi Data Laporan</p>
-                    <button onclick="exportToCSV()" class="mt-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 py-2 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-md">
-                        📥 Download / Export Excel (CSV)
-                    </button>
-                </div>
-            </div>
-
-            <!-- TABEL KARYAWAN -->
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800 text-lg">Daftar Karyawan Terbaru</h3>
-                    <input type="text" id="searchBox" placeholder="Cari nama atau jabatan..." onkeyup="filterTable()" class="px-4 py-2 border border-slate-200 rounded-xl text-sm w-72 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse" id="employeeTable">
-                        <thead>
-                            <tr class="bg-slate-50 text-slate-500 uppercase text-xs tracking-wider border-b border-slate-200">
-                                <th class="p-4">No</th>
-                                <th class="p-4">Nama Pekerja</th>
-                                <th class="p-4">Jabatan</th>
-                                <th class="p-4">Divisi</th>
-                                <th class="p-4">Lokasi</th>
-                                <th class="p-4">Bank / Info</th>
-                                <th class="p-4 text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100 text-sm text-slate-700" id="tableBody">
-                            <!-- Data dimuat lewat Javascript -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-    </main>
-
-    <!-- MODAL DETAIL KARYAWAN -->
-    <div id="detailModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b pb-4">
-                <h3 class="text-lg font-bold text-slate-900" id="modalName">Detail Karyawan</h3>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 font-bold text-xl">&times;</button>
-            </div>
-            <div id="modalContent" class="grid grid-cols-2 gap-4 text-sm">
-                <!-- Diisi via Javascript -->
-            </div>
-            <div class="flex justify-end pt-4 border-t">
-                <button onclick="closeModal()" class="bg-slate-800 text-white px-5 py-2 rounded-xl text-sm font-medium hover:bg-slate-900 transition">Tutup</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
+<script>
         let employeesData = [];
 
         // Ambil data dari employee_data.json
@@ -122,7 +10,7 @@
             })
             .catch(err => {
                 console.error("Gagal memuat data:", err);
-                document.getElementById('tableBody').innerHTML = `<tr><td colspan="7" class="p-6 text-center text-red-500">Gagal memuat file employee_data.json. Pastikan file JSON sudah benar.</td></tr>`;
+                document.getElementById('tableBody').innerHTML = `<tr><td colspan="7" class="p-6 text-center text-red-500">Gagal memuat file employee_data.json.</td></tr>`;
             });
 
         function renderTable(data) {
@@ -133,12 +21,12 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition";
                 tr.innerHTML = `
-                    <td class="p-4 font-medium">${index + 1}</td>
-                    <td class="p-4 font-semibold text-slate-900">${emp.nama || emp['Nama Pekerja TKJP'] || '-'}</td>
-                    <td class="p-4">${emp.jabatan || emp['Job Title'] || '-'}</td>
-                    <td class="p-4"><span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs font-medium">${emp.divisi || emp['Division'] || '-'}</span></td>
-                    <td class="p-4">${emp.lokasi || emp['Location'] || '-'}</td>
-                    <td class="p-4">${emp.bank || emp['Bank'] || 'BNI'}</td>
+                    <td class="p-4 font-medium">${emp.No || (index + 1)}</td>
+                    <td class="p-4 font-semibold text-slate-900">${emp.TAD || emp.nama || '-'}</td>
+                    <td class="p-4">${emp['Job Title'] || emp.jabatan || '-'}</td>
+                    <td class="p-4"><span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs font-medium">${emp.Division || emp.divisi || '-'}</span></td>
+                    <td class="p-4">${emp.Location || emp.lokasi || '-'}</td>
+                    <td class="p-4">${emp['Nama Kontraktor'] || 'PT. Banggai Sentral Sulawesi'}</td>
                     <td class="p-4 text-center">
                         <button onclick='showDetail(${JSON.stringify(emp)})' class="bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white px-3 py-1.5 rounded-xl text-xs font-medium transition">Detail</button>
                     </td>
@@ -151,20 +39,20 @@
         function filterTable() {
             const keyword = document.getElementById('searchBox').value.toLowerCase();
             const filtered = employeesData.filter(emp => {
-                const name = (emp.nama || emp['Nama Pekerja TKJP'] || '').toLowerCase();
-                const job = (emp.jabatan || emp['Job Title'] || '').toLowerCase();
+                const name = (emp.TAD || emp.nama || '').toLowerCase();
+                const job = (emp['Job Title'] || emp.jabatan || '').toLowerCase();
                 return name.includes(keyword) || job.includes(keyword);
             });
             renderTable(filtered);
         }
 
         function showDetail(emp) {
-            document.getElementById('modalName').innerText = emp.nama || emp['Nama Pekerja TKJP'] || 'Detail Karyawan';
+            document.getElementById('modalName').innerText = emp.TAD || emp.nama || 'Detail Karyawan';
             const content = document.getElementById('modalContent');
             content.innerHTML = '';
 
             for (const [key, value] of Object.entries(emp)) {
-                if (value) {
+                if (value !== null && value !== "") {
                     const div = document.createElement('div');
                     div.className = "p-3 bg-slate-50 rounded-xl border border-slate-100";
                     div.innerHTML = `<span class="block text-xs font-semibold text-slate-400 uppercase">${key}</span><span class="text-slate-800 font-medium">${value}</span>`;
@@ -180,7 +68,7 @@
             document.getElementById('detailModal').classList.add('hidden');
         }
 
-        // Fitur Export ke CSV / Excel
+        // Fitur Export ke CSV / Excel Lengkap 67 Kolom
         function exportToCSV() {
             if (employeesData.length === 0) {
                 alert("Tidak ada data untuk diexport!");
@@ -192,18 +80,16 @@
             csvContent += keys.join(",") + "\r\n";
 
             employeesData.forEach(emp => {
-                let row = keys.map(key => `"${emp[key] !== undefined ? emp[key] : ''}"`);
+                let row = keys.map(key => `"${emp[key] !== undefined && emp[key] !== null ? emp[key] : ''}"`);
                 csvContent += row.join(",") + "\r\n";
             });
 
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "Master_Karyawan_Donggi_Matindok.csv");
+            link.setAttribute("download", "Master_Karyawan_Donggi_Matindok_Lengkap.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
     </script>
-</body>
-</html>
