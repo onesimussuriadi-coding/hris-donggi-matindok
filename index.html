@@ -226,9 +226,9 @@
                         { label: "Location", val: emp.Location },
                         { label: "Lokasi Kerja", val: emp['Lokasi Kerja'] },
                         { label: "Area Kerja", val: emp['Area Kerja'] },
-                        { label: "Divisi", val: emp.Division || emp.Fungsi },
+                        { label: "Divisi", val: emp.Division || emp.Fungsi || emp.Devisi },
                         { label: "Department", val: emp.Department },
-                        { label: "Job Title", val: emp['Job Title'] },
+                        { label: "Job Title", val: emp['Job Title'] || emp.Jabatan },
                         { label: "Job Group", val: emp['Job Group'] },
                         { label: "Grade", val: emp.Grade }
                     ]
