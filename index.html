@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRIS Portal - Field Donggi Matindok</title>
+    <!-- Tailwind CSS untuk Desain Modern -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Menu -->
+        <aside class="w-64 bg-slate-900 text-white flex flex-col">
+            <div class="p-5 text-xl font-bold tracking-wider border-b border-slate-800">
+                HRIS Portal <span class="text-xs block text-blue-400 font-normal">Field Donggi Matindok</span>
+            </div>
+            <nav class="flex-1 p-4 space-y-2">
+                <a href="#" class="block px-4 py-2.5 rounded bg-blue-600 text-white font-medium">Dashboard Utama</a>
+                <a href="#" class="block px-4 py-2.5 rounded hover:bg-slate-800 text-slate-300">Master Karyawan</a>
+                <a href="#" class="block px-4 py-2.5 rounded hover:bg-slate-800 text-slate-300">Time Sheet & Absen</a>
+                <a href="#" class="block px-4 py-2.5 rounded hover:bg-slate-800 text-slate-300">Engine Payroll</a>
+                <a href="#" class="block px-4 py-2.5 rounded hover:bg-slate-800 text-slate-300">Simulasi THR & Rapel</a>
+            </nav>
+            <div class="p-4 border-t border-slate-800 text-xs text-slate-400">
+                <p class="font-bold text-slate-200">Onesimus Suriadi</p>
+                <p>President Director</p>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col overflow-y-auto">
+            <!-- Top Header -->
+            <header class="bg-white shadow-sm p-4 flex justify-between items-center">
+                <h1 class="text-xl font-semibold text-gray-800">Dashboard Ringkasan Operasional</h1>
+                <div class="flex items-center space-x-4">
+                    <div class="text-sm bg-green-100 text-green-800 px-3 py-1 rounded-full font-medium">Periode Aktif (2026)</div>
+                    <div class="text-sm text-gray-600 font-medium bg-gray-100 px-3 py-1 rounded">Donggi Matindok Project</div>
+                </div>
+            </header>
+
+            <!-- Dashboard Body -->
+            <div class="p-6 space-y-6">
+                <!-- Stat Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <p class="text-sm text-gray-500 font-medium">Total Karyawan (TAD)</p>
+                        <h3 id="total-karyawan-text" class="text-3xl font-bold text-gray-800 mt-2">52 Orang</h3>
+                        <p class="text-xs text-green-600 mt-1">✔ Sinkron dari Excel (Update Kolom)</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <p class="text-sm text-gray-500 font-medium">Estimasi Payroll (Bulan Ini)</p>
+                        <h3 class="text-3xl font-bold text-gray-800 mt-2">Rp 185.4 Juta</h3>
+                        <p class="text-xs text-gray-400 mt-1">Termasuk Tunjangan & Lembur</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <p class="text-sm text-gray-500 font-medium">Total Jam Lembur</p>
+                        <h3 class="text-3xl font-bold text-gray-800 mt-2">340 Jam</h3>
+                        <p class="text-xs text-gray-400 mt-1">Berdasarkan Overtime Sheet</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <p class="text-sm text-gray-500 font-medium">Status Siklus Gaji</p>
+                        <h3 class="text-lg font-bold text-blue-600 mt-2">Review & Draft</h3>
+                        <p class="text-xs text-amber-600 mt-1">⚠️ Menunggu Lock Periode</p>
+                    </div>
+                </div>
+
+                <!-- Aksi Cepat & Sampel Data -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Aksi Cepat -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+                        <h3 class="text-lg font-bold text-gray-800">Aksi Cepat (Quick Actions)</h3>
+                        <p class="text-xs text-gray-500">Jalankan proses otomatisasi modul penggajian.</p>
+                        <div class="space-y-3 pt-2">
+                            <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg shadow transition flex items-center justify-center space-x-2">
+                                <span>📱 Hitung Engine Gaji Otomatis</span>
+                            </button>
+                            <button class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2.5 px-4 rounded-lg transition text-left px-4">
+                                📥 Unduh Format Bank Bulk Payment
+                            </button>
+                            <button class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2.5 px-4 rounded-lg transition text-left px-4">
+                                🎁 Proses Simulasi THR (THRK)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tabel Data Karyawan -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:col-span-2">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 id="tabel-title" class="text-lg font-bold text-gray-800">Sampel Data Karyawan (5 Teratas)</h3>
+                            <button onclick="toggleTampilkanSemua()" id="btn-toggle-semua" class="text-sm text-blue-600 font-medium hover:underline focus:outline-none">Lihat Semua Data (52) →</button>
+                        </div>
+                        <div class="overflow-y-auto max-h-[400px] border border-gray-100 rounded-lg">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-gray-50 sticky top-0 z-10">
+                                    <tr class="border-b text-xs text-gray-500 uppercase">
+                                        <th class="p-3">Nama Karyawan</th>
+                                        <th class="p-3">Jabatan</th>
+                                        <th class="p-3">Divisi</th>
+                                        <th class="p-3">Bank</th>
+                                        <th class="p-3 text-right">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabel-karyawan-body" class="text-sm text-gray-700">
+                                    <!-- Data dimuat dinamis -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Script JavaScript -->
+    <script>
+        let globalDataKaryawan = [];
+        let tampilSemua = false;
+
+        async function muatDataDashboard() {
+            try {
+                let response = await fetch('employee_data.json');
+                globalDataKaryawan = await response.json();
+                
+                let totalEl = document.getElementById('total-karyawan-text');
+                if(totalEl) totalEl.innerText = globalDataKaryawan.length + " Orang";
+                
+                renderTabel();
+            } catch (err) {
+                console.error("Gagal memuat data JSON ke dashboard:", err);
+            }
+        }
+
+        function renderTabel() {
+            let tbody = document.getElementById('tabel-karyawan-body');
+            let titleEl = document.getElementById('tabel-title');
+            let btnEl = document.getElementById('btn-toggle-semua');
+            
+            if(!tbody) return;
+            tbody.innerHTML = '';
+
+            let dataTampil = tampilSemua ? globalDataKaryawan : globalDataKaryawan.slice(0, 5);
+
+            if(tampilSemua) {
+                titleEl.innerText = "Seluruh Database Karyawan (" + globalDataKaryawan.length + " Orang)";
+                btnEl.innerText = "← Tampilkan Sampel Saja";
+            } else {
+                titleEl.innerText = "Sampel Data Karyawan (5 Teratas)";
+                btnEl.innerText = "Lihat Semua Data (52) →";
+            }
+
+            dataTampil.forEach(emp => {
+                let baris = `
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="p-3 font-medium text-gray-900">${emp.Nama_Lengkap}</td>
+                        <td class="p-3 text-gray-600">${emp.Jabatan}</td>
+                        <td class="p-3"><span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded font-medium">${emp.Devisi}</span></td>
+                        <td class="p-3 text-gray-600">${emp.Nama_Bank}</td>
+                        <td class="p-3 text-right">
+                            <button onclick="alert('DETAIL KARYAWAN:\\n---------------------------------\\nNama: ${emp.Nama_Lengkap}\\nJabatan: ${emp.Jabatan}\\nDivisi: ${emp.Devisi}\\nSistem Kerja: ${emp.Sistem_Kerja}\\nGrade: ${emp.Grade}\\nNIK / NPWP: ${emp.NPWP_NIK}\\nStatus: ${emp.Status_Pegawai} (${emp.Status_PTKP})\\nBank: ${emp.Nama_Bank}\\nNo. Rekening: ${emp.Nomor_Rekening}')" class="text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1 rounded-md text-xs font-semibold transition">Detail</button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += baris;
+            });
+        }
+
+        function toggleTampilkanSemua() {
+            tampilSemua = !tampilSemua;
+            renderTabel();
+        }
+
+        muatDataDashboard();
+    </script>
+</body>
+</html>
