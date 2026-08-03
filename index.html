@@ -1,34 +1,170 @@
-<script>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRIS Portal - Field Donggi Matindok</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-slate-100 text-slate-800 flex h-screen overflow-hidden">
+
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between hidden md:flex shadow-xl">
+        <div>
+            <div class="p-6 border-b border-slate-800">
+                <h1 class="text-xl font-bold text-white tracking-wide">HRIS Portal</h1>
+                <p class="text-xs text-slate-400 mt-1">Field Donggi Matindok</p>
+            </div>
+            <nav class="p-4 space-y-1">
+                <a href="#" class="flex items-center gap-3 px-4 py-3 bg-blue-600 text-white rounded-xl font-medium shadow-lg shadow-blue-600/30">Dashboard Utama</a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 rounded-xl transition">Master Karyawan</a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 rounded-xl transition">Time Sheet & Absen</a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-800 rounded-xl transition">Engine Payroll</a>
+            </nav>
+        </div>
+        <div class="p-4 border-t border-slate-800">
+            <p class="text-xs font-semibold text-white">Onesimus Suriadi</p>
+            <p class="text-[10px] text-slate-400">President Director</p>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col h-screen overflow-y-auto">
+        <header class="bg-white border-b border-slate-200 px-8 py-4 flex justify-between items-center shadow-sm">
+            <h2 class="text-xl font-bold text-slate-800">Master Data Karyawan TAD</h2>
+            <div class="flex items-center gap-3">
+                <span class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-3 py-1 rounded-full">Zona 13 - Field</span>
+            </div>
+        </header>
+
+        <div class="p-8 max-w-7xl mx-auto w-full space-y-6">
+            
+            <!-- STATS CARDS -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-sm font-medium text-slate-500">Total Karyawan (TAD)</p>
+                    <h3 class="text-3xl font-bold text-slate-900 mt-2" id="total-karyawan">52 Orang</h3>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-sm font-medium text-slate-500">Kontraktor Utama</p>
+                    <h3 class="text-xl font-bold text-slate-900 mt-2">PT Sentral Sari Jaya</h3>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <p class="text-sm font-medium text-slate-500">Aksi Data Laporan</p>
+                    <button onclick="exportToCSV()" class="mt-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 py-2 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-md">
+                        📥 Download / Export Excel (CSV)
+                    </button>
+                </div>
+            </div>
+
+            <!-- FILTER & TABEL KARYAWAN -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-6 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <h3 class="font-bold text-slate-800 text-lg">Daftar Karyawan TAD</h3>
+                    <div class="flex items-center gap-3 w-full md:w-auto">
+                        <select id="filterDivision" onchange="filterTable()" class="px-4 py-2 border border-slate-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Semua Divisi / Fungsi</option>
+                        </select>
+                        <input type="text" id="searchBox" placeholder="Cari nama atau jabatan..." onkeyup="filterTable()" class="px-4 py-2 border border-slate-200 rounded-xl text-sm w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-500 uppercase text-xs tracking-wider border-b border-slate-200">
+                                <th class="p-4">No</th>
+                                <th class="p-4">Nama Pekerja</th>
+                                <th class="p-4">Jabatan</th>
+                                <th class="p-4">Divisi / Fungsi</th>
+                                <th class="p-4">Lokasi</th>
+                                <th class="p-4">Sisa Kontrak</th>
+                                <th class="p-4 text-center">Aksi Profil</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-sm text-slate-700" id="tableBody">
+                            <tr><td colspan="7" class="p-6 text-center text-slate-400">Memuat data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL DETAIL 5 KATEGORI PRO -->
+    <div id="detailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-3xl max-w-4xl w-full p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900" id="modalName">Profil Karyawan</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Detail Lengkap Data Master Karyawan</p>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 font-bold text-2xl">&times;</button>
+            </div>
+
+            <!-- KONTEN 5 KATEGORI -->
+            <div class="space-y-6" id="modalContent">
+                <!-- Diisi otomatis via Javascript -->
+            </div>
+
+            <div class="flex justify-end pt-4 border-t">
+                <button onclick="closeModal()" class="bg-slate-800 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-900 transition">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
         let employeesData = [];
 
-        // Ambil data dari employee_data.json
         fetch('employee_data.json')
             .then(res => res.json())
             .then(data => {
                 employeesData = data;
-                renderTable(employeesData);
+                populateFilter(data);
+                renderTable(data);
             })
             .catch(err => {
                 console.error("Gagal memuat data:", err);
                 document.getElementById('tableBody').innerHTML = `<tr><td colspan="7" class="p-6 text-center text-red-500">Gagal memuat file employee_data.json.</td></tr>`;
             });
 
+        function populateFilter(data) {
+            const select = document.getElementById('filterDivision');
+            const divisions = [...new Set(data.map(emp => emp.Division || emp.Fungsi).filter(Boolean))];
+            divisions.forEach(div => {
+                const opt = document.createElement('option');
+                opt.value = div;
+                opt.innerText = div;
+                select.appendChild(opt);
+            });
+        }
+
         function renderTable(data) {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
             
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">Tidak ada data ditemukan.</td></tr>`;
+                return;
+            }
+
             data.forEach((emp, index) => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition";
+                
+                const sisaKontrak = emp['Contract Remaining'] !== undefined ? `${emp['Contract Remaining']} Hari` : '-';
+                const badgeColor = emp['Contract Remaining'] < 30 ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700';
+
                 tr.innerHTML = `
                     <td class="p-4 font-medium">${emp.No || (index + 1)}</td>
-                    <td class="p-4 font-semibold text-slate-900">${emp.TAD || emp.nama || '-'}</td>
-                    <td class="p-4">${emp['Job Title'] || emp.jabatan || '-'}</td>
-                    <td class="p-4"><span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs font-medium">${emp.Division || emp.divisi || '-'}</span></td>
-                    <td class="p-4">${emp.Location || emp.lokasi || '-'}</td>
-                    <td class="p-4">${emp['Nama Kontraktor'] || 'PT. Banggai Sentral Sulawesi'}</td>
+                    <td class="p-4 font-semibold text-slate-900">${emp.TAD || '-'}</td>
+                    <td class="p-4">${emp['Job Title'] || '-'}</td>
+                    <td class="p-4"><span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs font-medium">${emp.Division || emp.Fungsi || '-'}</span></td>
+                    <td class="p-4">${emp.Location || '-'}</td>
+                    <td class="p-4"><span class="${badgeColor} px-2.5 py-1 rounded-lg text-xs font-semibold">${sisaKontrak}</span></td>
                     <td class="p-4 text-center">
-                        <button onclick='showDetail(${JSON.stringify(emp)})' class="bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white px-3 py-1.5 rounded-xl text-xs font-medium transition">Detail</button>
+                        <button onclick='showDetail(${JSON.stringify(emp).replace(/'/g, "&#39;")})' class="bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white px-3.5 py-1.5 rounded-xl text-xs font-medium transition shadow-sm">Detail Profil</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -38,27 +174,115 @@
 
         function filterTable() {
             const keyword = document.getElementById('searchBox').value.toLowerCase();
+            const selectedDiv = document.getElementById('filterDivision').value;
+
             const filtered = employeesData.filter(emp => {
-                const name = (emp.TAD || emp.nama || '').toLowerCase();
-                const job = (emp['Job Title'] || emp.jabatan || '').toLowerCase();
-                return name.includes(keyword) || job.includes(keyword);
+                const name = (emp.TAD || '').toLowerCase();
+                const job = (emp['Job Title'] || '').toLowerCase();
+                const div = emp.Division || emp.Fungsi || '';
+                
+                const matchKeyword = name.includes(keyword) || job.includes(keyword);
+                const matchDiv = !selectedDiv || div === selectedDiv;
+
+                return matchKeyword && matchDiv;
             });
             renderTable(filtered);
         }
 
         function showDetail(emp) {
-            document.getElementById('modalName').innerText = emp.TAD || emp.nama || 'Detail Karyawan';
-            const content = document.getElementById('modalContent');
-            content.innerHTML = '';
+            document.getElementById('modalName').innerText = emp.TAD || 'Profil Karyawan';
+            const container = document.getElementById('modalContent');
+            container.innerHTML = '';
 
-            for (const [key, value] of Object.entries(emp)) {
-                if (value !== null && value !== "") {
-                    const div = document.createElement('div');
-                    div.className = "p-3 bg-slate-50 rounded-xl border border-slate-100";
-                    div.innerHTML = `<span class="block text-xs font-semibold text-slate-400 uppercase">${key}</span><span class="text-slate-800 font-medium">${value}</span>`;
-                    content.appendChild(div);
+            // 5 KATEGORI PEMETAAN PRO
+            const categories = [
+                {
+                    title: "👤 1. Identitas & Personal Karyawan",
+                    fields: [
+                        { label: "No. Pekerja (New)", val: emp['No Pekerja\n(New format)'] },
+                        { label: "No. Pekerja (Contractor)", val: emp['No. Pekerja\n(Contractor)'] },
+                        { label: "Jenis Kelamin", val: emp.Gender },
+                        { label: "Agama", val: emp.Agama },
+                        { label: "Status Pernikahan", val: emp['Status Pernikahan'] },
+                        { label: "Jumlah Tanggungan", val: emp.Status },
+                        { label: "Tempat, Tanggal Lahir", val: `${emp['Kota Tempat Lahir'] || '-'}, ${emp['Tanggal Lahir'] || '-'}` },
+                        { label: "Usia", val: emp['Age (Details)'] },
+                        { label: "No. KTP", val: emp['KTP No.'] },
+                        { label: "No. NPWP", val: emp['NPWP No.'] },
+                        { label: "No. Kartu Keluarga", val: emp['No Kartu Keluarga'] },
+                        { label: "Nomor Telepon", val: emp.Mobile },
+                        { label: "Email Pribadi", val: emp.Email },
+                        { label: "Email Pertamina", val: emp['Email (Pertamina)'] },
+                        { label: "Alamat Lengkap", val: `${emp.Address || ''}, Kec. ${emp.Kecamatan || ''}, Kota ${emp.Kota || ''}, Prov. ${emp.Provinsi || ''}` }
+                    ]
+                },
+                {
+                    title: "🏢 2. Penempatan & Organisasi",
+                    fields: [
+                        { label: "Entitas", val: emp.Entitas },
+                        { label: "Zona", val: emp.Zona },
+                        { label: "Location", val: emp.Location },
+                        { label: "Lokasi Kerja", val: emp['Lokasi Kerja'] },
+                        { label: "Area Kerja", val: emp['Area Kerja'] },
+                        { label: "Divisi", val: emp.Division },
+                        { label: "Department", val: emp.Department },
+                        { label: "Job Title", val: emp['Job Title'] },
+                        { label: "Job Group", val: emp['Job Group'] },
+                        { label: "Grade", val: emp.Grade }
+                    ]
+                },
+                {
+                    title: "⏱️ 3. Informasi Kontrak Kerja",
+                    fields: [
+                        { label: "Nama Kontraktor", val: emp.Contractor },
+                        { label: "Awal Kontrak Kerja", val: emp['Contract\n(Started)'] },
+                        { label: "Akhir Kontrak Kerja", val: emp['Contract\n(Ended)'] },
+                        { label: "Sisa Kontrak (Hari)", val: emp['Contract Remaining'] },
+                        { label: "Pengalaman Kerja Pertama", val: emp['Pengalaman Kerja Pertama'] },
+                        { label: "Bergabung Pertama di Pertamina", val: emp['Bergabung Pertama kali di Pertamina'] }
+                    ]
+                },
+                {
+                    title: "💰 4. Komponen Penggajian & Finansial",
+                    fields: [
+                        { label: "Upah Dasar / BS (Gross)", val: emp['  Upah Dasar / BS (gross)  '] ? `Rp ${Number(emp['  Upah Dasar / BS (gross)  ']).toLocaleString('id-ID')}` : '-' },
+                        { label: "Tunjangan Tetap", val: emp[' Tunjangan Tetap\n( misal: daerah) '] },
+                        { label: "Cost Center", val: emp['Cost Center'] }
+                    ]
+                },
+                {
+                    title: "🏥 5. Darurat, Kesehatan & Atasan",
+                    fields: [
+                        { label: "Nama Atasan", val: emp['Nama Atasan '] },
+                        { label: "Kontak Darurat (Nama)", val: emp['Nama Kontak Emergency'] },
+                        { label: "Hubungan Keluarga", val: emp.Relationship },
+                        { label: "Nomor Kontak Darurat", val: emp['Nomor Kontak Emergency'] },
+                        { label: "BPJS Tenaga Kerja", val: emp['BPJS Tenaga Kerja'] },
+                        { label: "BPJS Kesehatan", val: emp['BPJS Kesehatan'] },
+                        { label: "BPJS Pensiun", val: emp['BPJS Pensiun'] },
+                        { label: "MCU Terakhir", val: emp['MCU Updated'] },
+                        { label: "Status Vaksin", val: `Vaksin 1: ${emp['Vaksin 1'] || '-'} | Vaksin 2: ${emp['Vaksin 2'] || '-'}` }
+                    ]
                 }
-            }
+            ];
+
+            categories.forEach(cat => {
+                const section = document.createElement('div');
+                section.className = "bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3";
+                
+                let html = `<h4 class="font-bold text-slate-800 text-sm border-b pb-2">${cat.title}</h4><div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">`;
+                
+                cat.fields.forEach(f => {
+                    if (f.val !== null && f.val !== "" && f.val !== undefined && f.val !== "-") {
+                        html += `<div class="bg-white p-2.5 rounded-xl border border-slate-100 shadow-sm"><span class="block font-semibold text-slate-400 uppercase text-[10px]">${f.label}</span><span class="text-slate-800 font-medium">${f.val}</span></div>`;
+                    }
+                });
+
+                html += `</div>`;
+                section.innerHTML = html;
+                container.appendChild(section);
+            });
+
             document.getElementById('detailModal').classList.remove('hidden');
             document.getElementById('detailModal').classList.add('flex');
         }
@@ -68,7 +292,6 @@
             document.getElementById('detailModal').classList.add('hidden');
         }
 
-        // Fitur Export ke CSV / Excel Lengkap 67 Kolom
         function exportToCSV() {
             if (employeesData.length === 0) {
                 alert("Tidak ada data untuk diexport!");
@@ -93,3 +316,5 @@
             document.body.removeChild(link);
         }
     </script>
+</body>
+</html>
