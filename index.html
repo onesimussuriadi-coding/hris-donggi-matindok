@@ -113,7 +113,7 @@
         let employeesData = [];
 
         const jsonFile = window.location.hostname.includes('github.io') ? './employee_data.json' : 'employee_data.json';
-fetch(jsonFile)
+fetch('/hris-donggi-matindok/employee_data.json')
             .then(res => res.json())
             .then(data => {
                 employeesData = data;
