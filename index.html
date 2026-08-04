@@ -115,20 +115,24 @@
         // Penanganan path yang aman untuk GitHub Pages maupun Localhost
         const jsonFile = window.location.hostname.includes('github.io') ? './employee_data.json' : 'employee_data.json';
 
-        fetch(jsonFile)
-            .then(res => {
-                if (!res.ok) throw new Error("File JSON tidak ditemukan atau gagal dimuat.");
-                return res.json();
-            })
+        fetch('./employee_data.json')
+    .then(response => response.json())
+    .then(data => {
+        employeesData = data;
+        populateFilter(data);
+        renderTable(data);
+    })
+    .catch(error => {
+        console.error("Gagal memuat:", error);
+        // Coba alternatif path jika path utama gagal
+        fetch('employee_data.json')
+            .then(res => res.json())
             .then(data => {
                 employeesData = data;
                 populateFilter(data);
                 renderTable(data);
-            })
-            .catch(err => {
-                console.error("Gagal memuat data:", err);
-                document.getElementById('tableBody').innerHTML = `<tr><td colspan="7" class="p-6 text-center text-red-500">Gagal memuat file employee_data.json. Pastikan file ada di repository.</td></tr>`;
             });
+    });
 
         function populateFilter(data) {
             const select = document.getElementById('filterDivision');
