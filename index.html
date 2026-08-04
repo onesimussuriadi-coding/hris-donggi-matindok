@@ -42,7 +42,7 @@
         </div>
         <!-- Footer Sidebar -->
         <div class="p-4 border-t border-slate-800 bg-slate-950/50">
-            <p class="text-xs font-semibold text-white" id="sidebarUserName">Onesimus Suriadi</p>
+            <p class="text-xs font-semibold text-white">Onesimus Suriadi</p>
             <p class="text-[11px] text-slate-400 mt-0.5">President Director</p>
         </div>
     </aside>
@@ -59,7 +59,7 @@
                 <h2 class="text-lg font-bold text-gray-800 tracking-tight">Master Data Karyawan TAD</h2>
             </div>
             <div class="flex items-center gap-3">
-                <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-200 shadow-2xs">
+                <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-200">
                     Zona 13 - Field
                 </span>
             </div>
@@ -104,12 +104,12 @@
                     <h3 class="font-bold text-gray-800 text-base">Daftar Karyawan TAD</h3>
                     <div class="flex items-center gap-3 w-full md:w-auto">
                         <!-- Dropdown Filter Divisi -->
-                        <select id="divisionFilter" onchange="filterTable()" class="w-full md:w-56 bg-white border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5 shadow-2xs">
+                        <select id="divisionFilter" onchange="filterTable()" class="w-full md:w-56 bg-white border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5">
                             <option value="">Semua Divisi / Fungsi</option>
                         </select>
                         <!-- Kotak Pencarian -->
                         <div class="relative w-full md:w-64">
-                            <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Cari nama atau jabatan..." class="bg-white border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pl-9 shadow-2xs">
+                            <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Cari nama atau jabatan..." class="bg-white border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pl-9">
                             <i class="fa-solid fa-search absolute left-3 top-3.5 text-gray-400 text-xs"></i>
                         </div>
                     </div>
@@ -130,9 +130,7 @@
                             </tr>
                         </thead>
                         <tbody id="tableBody" class="divide-y divide-gray-100 text-sm text-gray-700">
-                            <tr>
-                                <td colspan="7" class="p-8 text-center text-gray-400 italic font-medium">Memuat data...</td>
-                            </tr>
+                            <!-- Data dimuat langsung via script -->
                         </tbody>
                     </table>
                 </div>
@@ -143,7 +141,7 @@
 
     <!-- MODAL DETAIL PROFIL KARYAWAN -->
     <div id="profileModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden border border-gray-100 transform transition-all">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden border border-gray-100">
             <div class="bg-slate-900 px-6 py-4 flex justify-between items-center text-white">
                 <h3 class="font-bold text-base" id="modalTitle">Detail Profil Karyawan</h3>
                 <button onclick="closeModal()" class="text-slate-400 hover:text-white text-lg focus:outline-none">
@@ -151,52 +149,82 @@
                 </button>
             </div>
             <div class="p-6 max-h-[75vh] overflow-y-auto space-y-4" id="modalContent">
-                <!-- Konten dinamis profil diisi JavaScript -->
+                <!-- Konten profil -->
             </div>
             <div class="bg-gray-50 px-6 py-3 border-t border-gray-100 flex justify-end">
-                <button onclick="closeModal()" class="bg-slate-800 hover:bg-slate-900 text-white px-5 py-2 rounded-xl text-sm font-medium transition-all shadow-xs">Tutup</button>
+                <button onclick="closeModal()" class="bg-slate-800 hover:bg-slate-900 text-white px-5 py-2 rounded-xl text-sm font-medium transition-all">Tutup</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT JAVASCRIPT UTAMA -->
+    <!-- SCRIPT DATA DAN LOGIKA -->
     <script>
-        let employeesData = [];
+        // Database 52 Karyawan Tertanam Langsung (Tanpa File Eksternal)
+        const employeesData = [
+            { "No": 1, "Nama Karyawan": "Sujianto Batias", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9442 1574", "Email": "sujiantobatiasmtd@gmail.com", "Address": "Desa Noge Dusun II, RT 002 / RW 002" },
+            { "No": 2, "Nama Karyawan": "Ansar Mansur", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0856 5626 0104", "Email": "ansarmansur5@gmail.com", "Address": "Desa Bonebalantak" },
+            { "No": 3, "Nama Karyawan": "Harir A. Lako", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9414 4463", "Email": "widiap373@gmail.com", "Address": "Desa Nonong" },
+            { "No": 4, "Nama Karyawan": "Ali Friansyah", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0822 9608 9791", "Email": "alifriyansyah10@gmail.com", "Address": "Jalan Dr. Moh. Hatta" },
+            { "No": 5, "Nama Karyawan": "Fredrik D Tinadji", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0822 6132 7893", "Email": "nyonkayu@gmail.com", "Address": "Desa Kayowa" },
+            { "No": 6, "Nama Karyawan": "Wayan Edi Jaya", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0823 4748 5042", "Email": "wayanedijaya81@gmail.com", "Address": "Desa Sukamaju I" },
+            { "No": 7, "Nama Karyawan": "Akmal (A)", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0852 4066 7996", "Email": "akmalambotang@gmail.com", "Address": "Desa Kayowa" },
+            { "No": 8, "Nama Karyawan": "Alfikwan I Marida", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9718 2701", "Email": "alfikwan.marida@gmail.com", "Address": "Desa Tolando" },
+            { "No": 9, "Nama Karyawan": "Deni Andrianto", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1", "Mobile": "0822 9605 4400", "Email": "deniandrianto68@gmail.com", "Address": "Dusun II Noge, Kelurahan Nonong" },
+            { "No": 10, "Nama Karyawan": "Awal Dwi Sekti", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0822 5950 5262", "Email": "awaldwisekti13@gmail.com", "Address": "Asrama Kodim 1308" },
+            { "No": 11, "Nama Karyawan": "Muh Arsyal Ramdani", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0822 9627 4553", "Email": "ramdaniarsyal11@gmail.com", "Address": "Desa Bakung" },
+            { "No": 12, "Nama Karyawan": "Muh Palmi", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1", "Mobile": "0822 9385 3550", "Email": "muhpalmi@gmail.com", "Address": "Dusun II Noge" },
+            { "No": 13, "Nama Karyawan": "Halim", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0853 4079 7391", "Email": "hsehalim27@gmail.com", "Address": "Desa Nonong Dusun I" },
+            { "No": 14, "Nama Karyawan": "Mustamar Dg Magangka", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0853 4200 8134", "Email": "mustamar713@gmail.com", "Address": "Desa Noge" },
+            { "No": 15, "Nama Karyawan": "Akmal (B)", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9534 4685", "Email": "akhmalkukizunawa94@gmail.com", "Address": "Dusun II Noge" },
+            { "No": 16, "Nama Karyawan": "Rizal Tamoreka", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0858 2371 8389", "Email": "ronitamoreka@gmail.com", "Address": "Desa Singkoyo" },
+            { "No": 17, "Nama Karyawan": "Arianto Yahya", "Job Title": "Pemuka Operator Alat Berat", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0851 4634 2761", "Email": "-", "Address": "Desa Tolando" },
+            { "No": 18, "Nama Karyawan": "Marjan Karim", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0822 5989 6633", "Email": "marjankarim205@gmail.com", "Address": "Desa Nonong" },
+            { "No": 19, "Nama Karyawan": "Kasman", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMA/Sederajat", "Mobile": "0858 2511 8920", "Email": "kasmanmaho@gmail.com", "Address": "Kuanto, Desa Nonong" },
+            { "No": 20, "Nama Karyawan": "Lukman Tasakka", "Job Title": "Pemuka Operator Alat Berat", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SD/Sederajat", "Mobile": "0858 2511 8937", "Email": "-", "Address": "Dusun III Kuantok" },
+            { "No": 21, "Nama Karyawan": "I Nengah Darsana", "Job Title": "Pemuka Operator Alat Berat", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMP/Sederajat", "Mobile": "0813 4115 4439", "Email": "i.ketut.margi@gmail.com", "Address": "Desa Kamiwangi" },
+            { "No": 22, "Nama Karyawan": "I Gusti Ngurah Baliarta", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMP/Sederajat", "Mobile": "0858 2304 7847", "Email": "-", "Address": "Desa Kamiwangi" },
+            { "No": 23, "Nama Karyawan": "Irvan Parenden", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0857 5704 9499", "Email": "-", "Address": "Desa Karang Anyar" },
+            { "No": 24, "Nama Karyawan": "Sunita Ayu Purnamaningsi", "Job Title": "Petugas Admin II", "Divisi / Fungsi": "LR", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0812 4738 9199", "Email": "ayusunita@gmail.com", "Address": "Jalan ST. Hasanudin" },
+            { "No": 25, "Nama Karyawan": "Dewi Setiawati", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "RAM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0821 9234 4486", "Email": "setiawatidewisetiawati@gmail.com", "Address": "Desa Bakung" },
+            { "No": 26, "Nama Karyawan": "Marini Astary", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "HC", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0812 4567 9563", "Email": "astaryastary@gmail.com", "Address": "Desa Nonong" },
+            { "No": 27, "Nama Karyawan": "Ali Mukhtar Mohammad Amin", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9414 4463", "Email": "alimuhtar0277@gmail.com", "Address": "Desa Dongin" },
+            { "No": 28, "Nama Karyawan": "Agus Rudiyanto", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMP/Sederajat", "Mobile": "0822 9202 2215", "Email": "agusrudiyantopo@gmail.com", "Address": "Desa Pandan Wangi" },
+            { "No": 29, "Nama Karyawan": "I Gede Ariana", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0815 2765 4759", "Email": "agede6645@gmail.com", "Address": "Desa Kamiwangi" },
+            { "No": 30, "Nama Karyawan": "I Putu Adnyana Wijaya", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0858 2354 0655", "Email": "adnyanap514@gmail.com", "Address": "Desa Karya Makmur" },
+            { "No": 31, "Nama Karyawan": "Mursalun Lasuru", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMP/Sederajat", "Mobile": "0821 9056 3917", "Email": "lasurumursalun@gmail.com", "Address": "Desa Dongin" },
+            { "No": 32, "Nama Karyawan": "Subandi", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0812 4528 0333", "Email": "masbandi.hse@gmail.com", "Address": "Desa Rusa Kencana" },
+            { "No": 33, "Nama Karyawan": "Budi Santoso", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0813 7788 7781", "Email": "budhisantoso881984@gmail.com", "Address": "Desa Sentral Sari" },
+            { "No": 34, "Nama Karyawan": "I Komang Santika", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0858 2320 0747", "Email": "komangsantika1992@gmail.com", "Address": "Desa Sindang Sari" },
+            { "No": 35, "Nama Karyawan": "Indra Natalianto Patasik", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0823 3185 9490", "Email": "indrapatasik@gmail.com", "Address": "Desa Tirta Sari" },
+            { "No": 36, "Nama Karyawan": "Kd Wiyad Nyana", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9197 8854", "Email": "kadekwiadnyana061@gmail.com", "Address": "Desa Sindang Sari" },
+            { "No": 37, "Nama Karyawan": "I Nengah Rudi Artika", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0815 2461 7554", "Email": "nengahrudiartika@gmail.com", "Address": "Desa Sindang Sari" },
+            { "No": 38, "Nama Karyawan": "Sukardi Jalisingi", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMP/Sederajat", "Mobile": "0853 9509 1111", "Email": "Adiismon2@gmail.com", "Address": "Jalan Samratulangi" },
+            { "No": 39, "Nama Karyawan": "Yotam", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0813 5513 4043", "Email": "yotamocey76@gmail.com", "Address": "Desa Bukti Markati" },
+            { "No": 40, "Nama Karyawan": "Thamar Thalib Mbau", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0821 9689 0897", "Email": "thamar.tm90@gmail.com", "Address": "Desa Tirta Kencana" },
+            { "No": 41, "Nama Karyawan": "Arie Kurniawan", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0812 4182 4848", "Email": "ariekurniawan4683@gmail.com", "Address": "Desa Tirta Jaya" },
+            { "No": 42, "Nama Karyawan": "Eko Wiyono", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0853 9746 7886", "Email": "yonodonggi57@gmail.com", "Address": "Desa Bone Bae" },
+            { "No": 43, "Nama Karyawan": "Fajriadi", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0852 4259 7695", "Email": "fajriabenk08@gmail.com", "Address": "Desa Mansahang" },
+            { "No": 44, "Nama Karyawan": "Jumalik H. Latungka", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0858 2358 1803", "Email": "jumalikhlatungka@gmail.com", "Address": "Desa Kayowa" },
+            { "No": 45, "Nama Karyawan": "Randianto", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0852 5583 2000", "Email": "randyogie92@gmail.com", "Address": "Desa Bakung" },
+            { "No": 46, "Nama Karyawan": "Saiful M. Zakar", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0812 9531 4840", "Email": "saifulzakar@gmail.com", "Address": "Desa Bakung" },
+            { "No": 47, "Nama Karyawan": "I Nyoman Suwitra", "Job Title": "Petugas Gudang BBM", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0815 2741 3671", "Email": "putualit0507@gmail.com", "Address": "Karya Makmur" },
+            { "No": 48, "Nama Karyawan": "I Putu Muryanto", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "Operation Planning", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0852 9948 4010", "Email": "iputumuryanto@gmail.com", "Address": "Desa Kami Wangi" },
+            { "No": 49, "Nama Karyawan": "Siti Aisyah Dg Masese", "Job Title": "Sekretaris Field Manager", "Divisi / Fungsi": "Field Manager", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0852 9990 3050", "Email": "aisyahdgmasese@gmail.com", "Address": "Desa Slamet Harjo" },
+            { "No": 50, "Nama Karyawan": "Dewi Khoirunnisa", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "Finance", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0852 2277 7759", "Email": "dkho.nisa@gmail.com", "Address": "Desa Tirta Kencana" },
+            { "No": 51, "Nama Karyawan": "Eka Nurjannah", "Job Title": "Petugas Admin III CSR", "Divisi / Fungsi": "Plan & Eval", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0813 5606 3646", "Email": "ekaelf85@gmail.com", "Address": "Desa Mulyo Harjo" },
+            { "No": 52, "Nama Karyawan": "Findy Handayani", "Job Title": "Petugas Admin II", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0815 2380 7004", "Email": "findyhandayani08@gmail.com", "Address": "Desa Bakung" }
+        ];
 
-        // Penanganan path dinamis yang aman untuk GitHub Pages maupun Localhost
-        const repoPath = window.location.hostname.includes('github.io') ? '/hris-donggi-matindok/employee_data.json' : 'employee_data.json';
-        const alternativePath = './employee_data.json';
-
-        fetch(repoPath)
-            .then(response => {
-                if (!response.ok) throw new Error('Network response was not ok');
-                return response.json();
-            })
-            .then(data => {
-                employeesData = data;
-                populateFilter(data);
-                renderTable(data);
-            })
-            .catch(error => {
-                console.log("Mencoba jalur alternatif...", error);
-                fetch(alternativePath)
-                    .then(res => res.json())
-                    .then(data => {
-                        employeesData = data;
-                        populateFilter(data);
-                        renderTable(data);
-                    })
-                    .catch(err => {
-                        console.error("Gagal total memuat data:", err);
-                        document.getElementById('tableBody').innerHTML = `<tr><td colspan="7" class="p-8 text-center text-red-500 font-semibold">Gagal memuat file employee_data.json. Pastikan file sudah diunggah ke repository.</td></tr>`;
-                    });
-            });
+        // Inisialisasi Halaman
+        document.addEventListener("DOMContentLoaded", () => {
+            populateFilter(employeesData);
+            renderTable(employeesData);
+        });
 
         function populateFilter(data) {
             const divisionSet = new Set();
             data.forEach(emp => {
-                const div = emp["Divisi / Fungsi"] || emp["Fungsi"] || emp["Division"] || "";
-                if (div) divisionSet.add(div);
+                if (emp["Divisi / Fungsi"]) divisionSet.add(emp["Divisi / Fungsi"]);
             });
             const select = document.getElementById('divisionFilter');
             divisionSet.forEach(div => {
@@ -222,21 +250,15 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-gray-50/80 transition-colors border-b border-gray-50";
                 
-                const nama = emp["Nama Karyawan"] || "-";
-                const jabatan = emp["Job Title"] || "-";
-                const divisi = emp["Divisi / Fungsi"] || emp["Fungsi"] || "-";
-                const lokasi = emp["Location"] || emp["Lokasi Kerja"] || "-";
-                const sisaKontrak = emp["Contract Remaining"] !== undefined ? emp["Contract Remaining"] + " Hari" : "-";
-
                 tr.innerHTML = `
                     <td class="py-3 px-4 text-center text-gray-500 font-medium">${index + 1}</td>
-                    <td class="py-3 px-4 font-semibold text-gray-900">${nama}</td>
-                    <td class="py-3 px-4 text-gray-600">${jabatan}</td>
-                    <td class="py-3 px-4 text-gray-600">${divisi}</td>
-                    <td class="py-3 px-4 text-gray-600">${lokasi}</td>
-                    <td class="py-3 px-4 text-center"><span class="bg-blue-50 text-blue-700 font-medium text-xs px-2.5 py-1 rounded-lg">${sisaKontrak}</span></td>
+                    <td class="py-3 px-4 font-semibold text-gray-900">${emp["Nama Karyawan"]}</td>
+                    <td class="py-3 px-4 text-gray-600">${emp["Job Title"]}</td>
+                    <td class="py-3 px-4 text-gray-600">${emp["Divisi / Fungsi"]}</td>
+                    <td class="py-3 px-4 text-gray-600">${emp["Location"]}</td>
+                    <td class="py-3 px-4 text-center"><span class="bg-blue-50 text-blue-700 font-medium text-xs px-2.5 py-1 rounded-lg">${emp["Contract Remaining"]} Hari</span></td>
                     <td class="py-3 px-4 text-center">
-                        <button onclick="showDetail(${emp['No']})" class="bg-slate-100 hover:bg-slate-900 hover:text-white text-slate-700 font-medium px-3 py-1.5 rounded-lg transition-all text-xs shadow-2xs">
+                        <button onclick="showDetail(${emp['No']})" class="bg-slate-100 hover:bg-slate-900 hover:text-white text-slate-700 font-medium px-3 py-1.5 rounded-lg transition-all text-xs">
                             <i class="fa-solid fa-eye mr-1"></i> Detail
                         </button>
                     </td>
@@ -250,9 +272,9 @@
             const selectedDiv = document.getElementById('divisionFilter').value;
 
             const filtered = employeesData.filter(emp => {
-                const nama = (emp["Nama Karyawan"] || "").toLowerCase();
-                const jabatan = (emp["Job Title"] || "").toLowerCase();
-                const divisi = emp["Divisi / Fungsi"] || emp["Fungsi"] || "";
+                const nama = emp["Nama Karyawan"].toLowerCase();
+                const jabatan = emp["Job Title"].toLowerCase();
+                const divisi = emp["Divisi / Fungsi"];
 
                 const matchSearch = nama.includes(searchText) || jabatan.includes(searchText);
                 const matchDiv = selectedDiv === "" || divisi === selectedDiv;
@@ -267,13 +289,12 @@
             const emp = employeesData.find(e => e["No"] === empNo);
             if (!emp) return;
 
-            document.getElementById('modalTitle').textContent = `Profil: ${emp["Nama Karyawan"] || "Karyawan"}`;
+            document.getElementById('modalTitle').textContent = `Profil: ${emp["Nama Karyawan"]}`;
             const content = document.getElementById('modalContent');
-            content.innerHTML = '';
-
+            
             let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">';
             for (const [key, value] of Object.entries(emp)) {
-                if (key !== "No" && value !== "" && value !== null) {
+                if (value) {
                     html += `
                         <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
                             <span class="block text-xs font-semibold text-gray-400 uppercase">${key}</span>
