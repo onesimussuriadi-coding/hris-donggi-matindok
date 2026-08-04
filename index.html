@@ -24,20 +24,20 @@
                 <h1 class="text-xl font-bold text-white tracking-wide">HRIS Portal</h1>
                 <p class="text-xs text-slate-400 mt-1">Field Donggi Matindok</p>
             </div>
-            <!-- Navigasi Menu -->
+            <!-- Navigasi Menu (Interaktif) -->
             <nav class="mt-6 px-4 space-y-2">
-                <a href="#" class="flex items-center gap-3 px-4 py-3 bg-blue-600 text-white rounded-xl font-medium shadow-md transition-all">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 bg-blue-600 text-white rounded-xl font-medium shadow-md transition-all">
                     <i class="fa-solid fa-chart-pie w-5"></i> Dashboard Utama
-                </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition-all">
+                </button>
+                <button onclick="switchTab('karyawan')" id="nav-karyawan" class="w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition-all">
                     <i class="fa-solid fa-users w-5"></i> Master Karyawan
-                </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition-all">
+                </button>
+                <button onclick="switchTab('timesheet')" id="nav-timesheet" class="w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition-all">
                     <i class="fa-solid fa-calendar-days w-5"></i> Time Sheet & Absen
-                </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition-all">
+                </button>
+                <button onclick="switchTab('payroll')" id="nav-payroll" class="w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition-all">
                     <i class="fa-solid fa-file-invoice-dollar w-5"></i> Engine Payroll
-                </a>
+                </button>
             </nav>
         </div>
         <!-- Footer Sidebar -->
@@ -56,7 +56,7 @@
                 <button class="md:hidden text-gray-600 hover:text-gray-900 focus:outline-none">
                     <i class="fa-solid fa-bars text-xl"></i>
                 </button>
-                <h2 class="text-lg font-bold text-gray-800 tracking-tight">Master Data Karyawan TAD</h2>
+                <h2 class="text-lg font-bold text-gray-800 tracking-tight" id="headerTitle">Dashboard Utama</h2>
             </div>
             <div class="flex items-center gap-3">
                 <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-200">
@@ -68,72 +68,129 @@
         <!-- KONTEN BERGULIR -->
         <main class="flex-1 overflow-y-auto p-6 space-y-6">
             
-            <!-- KARTU RINGKASAN STATISTIK -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Total Karyawan -->
-                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-xs flex flex-col justify-between">
+            <!-- HALAMAN 1: DASHBOARD UTAMA -->
+            <div id="tab-dashboard" class="space-y-6">
+                <!-- Kartu Sambutan / Informasi Umum -->
+                <div class="bg-gradient-to-r from-slate-900 to-blue-950 text-white p-8 rounded-3xl shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <div>
-                        <p class="text-sm font-medium text-gray-500">Total Karyawan (TAD)</p>
-                        <h3 class="text-3xl font-extrabold text-gray-900 mt-2" id="totalEmployeeCount">52 Orang</h3>
+                        <span class="bg-blue-500/30 text-blue-300 text-xs font-semibold px-3 py-1 rounded-full border border-blue-400/30">Selamat Datang, Bapak Onesimus Suriadi</span>
+                        <h2 class="text-2xl md:text-3xl font-extrabold mt-3">HRIS Portal - Field Donggi Matindok</h2>
+                        <p class="text-slate-300 text-sm mt-2 max-w-2xl">Sistem Informasi Manajemen Sumber Daya Manusia dan Pengelolaan Tenaga Alih Daya (TAD) Kontraktor Utama PT Sentral Sari Jaya.</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/10 text-center min-w-[180px]">
+                        <p class="text-xs text-slate-300 font-medium">Total Karyawan Aktif</p>
+                        <h3 class="text-3xl font-extrabold text-white mt-1" id="dashTotalEmp">52</h3>
+                        <p class="text-[11px] text-emerald-400 mt-1"><i class="fa-solid fa-circle-check"></i> Zona 13 Terhubung</p>
                     </div>
                 </div>
-                <!-- Kontraktor Utama -->
-                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-xs flex flex-col justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Kontraktor Utama</p>
-                        <h3 class="text-xl font-bold text-gray-900 mt-2">PT Sentral Sari Jaya</h3>
+
+                <!-- Informasi Tambahan / Widget Dashboard -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-xs">
+                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-lg font-bold mb-4">
+                            <i class="fa-solid fa-building-shield"></i>
+                        </div>
+                        <h4 class="font-bold text-gray-900 text-base">Kontraktor Utama</h4>
+                        <p class="text-sm text-gray-500 mt-1">PT Sentral Sari Jaya (SSJ) - Pengelolaan Tenaga Kerja Lapangan & Onshore.</p>
                     </div>
-                </div>
-                <!-- Tombol Ekspor -->
-                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-xs flex flex-col justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-500">Aksi Data Laporan</p>
+                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-xs">
+                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-lg font-bold mb-4">
+                            <i class="fa-solid fa-file-excel"></i>
+                        </div>
+                        <h4 class="font-bold text-gray-900 text-base">Database Terintegrasi</h4>
+                        <p class="text-sm text-gray-500 mt-1">Akses unduh laporan lengkap dengan 73 kolom parameter utama tersedia.</p>
+                        <a href="SSJ - Prime Database TAD.xlsx" download class="inline-block mt-3 text-sm font-semibold text-emerald-600 hover:text-emerald-700">Download Excel &rarr;</a>
                     </div>
-                    <div class="mt-4">
-                        <a href="SSJ - Prime Database TAD.xlsx" download class="inline-flex items-center justify-center w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 px-4 rounded-xl shadow-sm transition-all text-sm gap-2">
-                            <i class="fa-solid fa-file-excel"></i> Download / Export Excel (Full 73 Kolom)
-                        </a>
+                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-xs">
+                        <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-lg font-bold mb-4">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <h4 class="font-bold text-gray-900 text-base">Kepatuhan & HSSE</h4>
+                        <p class="text-sm text-gray-500 mt-1">Pemantauan masa kontrak, MCU, serta program keselamatan kerja secara berkala.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- TABEL DAFTAR KARYAWAN -->
-            <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
-                <!-- Baris Filter & Pencarian -->
-                <div class="p-5 border-b border-gray-100 flex flex-col md:flex-row gap-4 justify-between items-center bg-gray-50/50">
-                    <h3 class="font-bold text-gray-800 text-base">Daftar Karyawan TAD</h3>
-                    <div class="flex items-center gap-3 w-full md:w-auto">
-                        <!-- Dropdown Filter Divisi -->
-                        <select id="divisionFilter" onchange="filterTable()" class="w-full md:w-56 bg-white border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5">
-                            <option value="">Semua Divisi / Fungsi</option>
-                        </select>
-                        <!-- Kotak Pencarian -->
-                        <div class="relative w-full md:w-64">
-                            <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Cari nama atau jabatan..." class="bg-white border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pl-9">
-                            <i class="fa-solid fa-search absolute left-3 top-3.5 text-gray-400 text-xs"></i>
+            <!-- HALAMAN 2: MASTER KARYAWAN (Tabel Data) -->
+            <div id="tab-karyawan" class="space-y-6 hidden">
+                <!-- KARTU RINGKASAN DI HALAMAN KARYAWAN -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-xs flex flex-col justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Total Karyawan (TAD)</p>
+                            <h3 class="text-3xl font-extrabold text-gray-900 mt-2" id="totalEmployeeCount">52 Orang</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-xs flex flex-col justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Kontraktor Utama</p>
+                            <h3 class="text-xl font-bold text-gray-900 mt-2">PT Sentral Sari Jaya</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-xs flex flex-col justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Aksi Data Laporan</p>
+                        </div>
+                        <div class="mt-4">
+                            <a href="SSJ - Prime Database TAD.xlsx" download class="inline-flex items-center justify-center w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 px-4 rounded-xl shadow-sm transition-all text-sm gap-2">
+                                <i class="fa-solid fa-file-excel"></i> Download / Export Excel (Full 73 Kolom)
+                            </a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Tabel Data -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-gray-50 text-gray-500 uppercase text-[11px] font-semibold tracking-wider border-b border-gray-100">
-                                <th class="py-3 px-4 text-center w-12">No</th>
-                                <th class="py-3 px-4">Nama Pekerja</th>
-                                <th class="py-3 px-4">Jabatan</th>
-                                <th class="py-3 px-4">Divisi / Fungsi</th>
-                                <th class="py-3 px-4">Lokasi</th>
-                                <th class="py-3 px-4 text-center">Sisa Kontrak</th>
-                                <th class="py-3 px-4 text-center">Aksi Profil</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody" class="divide-y divide-gray-100 text-sm text-gray-700">
-                            <!-- Data dimuat langsung via script -->
-                        </tbody>
-                    </table>
+                <!-- TABEL DAFTAR KARYAWAN -->
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
+                    <div class="p-5 border-b border-gray-100 flex flex-col md:flex-row gap-4 justify-between items-center bg-gray-50/50">
+                        <h3 class="font-bold text-gray-800 text-base">Daftar Karyawan TAD</h3>
+                        <div class="flex items-center gap-3 w-full md:w-auto">
+                            <select id="divisionFilter" onchange="filterTable()" class="w-full md:w-56 bg-white border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                                <option value="">Semua Divisi / Fungsi</option>
+                            </select>
+                            <div class="relative w-full md:w-64">
+                                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Cari nama atau jabatan..." class="bg-white border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pl-9">
+                                <i class="fa-solid fa-search absolute left-3 top-3.5 text-gray-400 text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 text-gray-500 uppercase text-[11px] font-semibold tracking-wider border-b border-gray-100">
+                                    <th class="py-3 px-4 text-center w-12">No</th>
+                                    <th class="py-3 px-4">Nama Pekerja</th>
+                                    <th class="py-3 px-4">Jabatan</th>
+                                    <th class="py-3 px-4">Divisi / Fungsi</th>
+                                    <th class="py-3 px-4">Lokasi</th>
+                                    <th class="py-3 px-4 text-center">Sisa Kontrak</th>
+                                    <th class="py-3 px-4 text-center">Aksi Profil</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody" class="divide-y divide-gray-100 text-sm text-gray-700">
+                                <!-- Data dimuat via script -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+            </div>
+
+            <!-- HALAMAN 3: TIME SHEET & ABSEN (Placeholder) -->
+            <div id="tab-timesheet" class="hidden bg-white p-12 rounded-2xl border border-gray-100 text-center space-y-3">
+                <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mx-auto">
+                    <i class="fa-solid fa-calendar-days"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800">Modul Time Sheet & Absen</h3>
+                <p class="text-gray-500 text-sm max-w-md mx-auto">Modul pencatatan kehadiran dan lembur tenaga kerja alih daya sedang dalam tahap penyiapan.</p>
+            </div>
+
+            <!-- HALAMAN 4: ENGINE PAYROLL (Placeholder) -->
+            <div id="tab-payroll" class="hidden bg-white p-12 rounded-2xl border border-gray-100 text-center space-y-3">
+                <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mx-auto">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800">Modul Engine Payroll</h3>
+                <p class="text-gray-500 text-sm max-w-md mx-auto">Modul perhitungan upah, tunjangan, dan komponen gaji otomatis sedang dalam tahap penyiapan.</p>
             </div>
 
         </main>
@@ -148,18 +205,15 @@
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <div class="p-6 max-h-[75vh] overflow-y-auto space-y-4" id="modalContent">
-                <!-- Konten profil -->
-            </div>
+            <div class="p-6 max-h-[75vh] overflow-y-auto space-y-4" id="modalContent"></div>
             <div class="bg-gray-50 px-6 py-3 border-t border-gray-100 flex justify-end">
                 <button onclick="closeModal()" class="bg-slate-800 hover:bg-slate-900 text-white px-5 py-2 rounded-xl text-sm font-medium transition-all">Tutup</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT DATA DAN LOGIKA -->
+    <!-- SCRIPT LOGIKA APLIKASI -->
     <script>
-        // Database 52 Karyawan Tertanam Langsung (Tanpa File Eksternal)
         const employeesData = [
             { "No": 1, "Nama Karyawan": "Sujianto Batias", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9442 1574", "Email": "sujiantobatiasmtd@gmail.com", "Address": "Desa Noge Dusun II, RT 002 / RW 002" },
             { "No": 2, "Nama Karyawan": "Ansar Mansur", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0856 5626 0104", "Email": "ansarmansur5@gmail.com", "Address": "Desa Bonebalantak" },
@@ -215,11 +269,34 @@
             { "No": 52, "Nama Karyawan": "Findy Handayani", "Job Title": "Petugas Admin II", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0815 2380 7004", "Email": "findyhandayani08@gmail.com", "Address": "Desa Bakung" }
         ];
 
-        // Inisialisasi Halaman
         document.addEventListener("DOMContentLoaded", () => {
             populateFilter(employeesData);
             renderTable(employeesData);
         });
+
+        // Fungsi Navigasi antar Tab
+        function switchTab(tabId) {
+            // Sembunyikan semua konten tab
+            ['dashboard', 'karyawan', 'timesheet', 'payroll'].forEach(id => {
+                document.getElementById('tab-' + id).classList.add('hidden');
+                const btn = document.getElementById('nav-' + id);
+                btn.className = "w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition-all";
+            });
+
+            // Tampilkan tab yang dipilih
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('nav-' + tabId);
+            activeBtn.className = "w-full flex items-center gap-3 px-4 py-3 bg-blue-600 text-white rounded-xl font-medium shadow-md transition-all";
+
+            // Ubah Judul Header Atas
+            const titles = {
+                'dashboard': 'Dashboard Utama',
+                'karyawan': 'Master Data Karyawan TAD',
+                'timesheet': 'Time Sheet & Absen',
+                'payroll': 'Engine Payroll'
+            };
+            document.getElementById('headerTitle').textContent = titles[tabId];
+        }
 
         function populateFilter(data) {
             const divisionSet = new Set();
@@ -240,6 +317,7 @@
             tbody.innerHTML = '';
             
             document.getElementById('totalEmployeeCount').textContent = data.length + ' Orang';
+            document.getElementById('dashTotalEmp').textContent = data.length;
 
             if (data.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-gray-400 italic">Tidak ada data karyawan yang ditemukan.</td></tr>`;
