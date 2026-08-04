@@ -2,7 +2,7 @@ import pandas as pd
 import json
 import datetime
 
-excel_path = "SSJ - Prime Database TAD.xlsx"
+excel_path = "SSJ - Prime Database TAD.xlsx" 
 
 print("Membaca file master Excel...")
 xls = pd.ExcelFile(excel_path)
