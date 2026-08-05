@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Engine Payroll - Donggi Matindok Field</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1300px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h1 { color: #004085; text-align: center; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 14px; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background: #f8f9fa; border-left: 5px solid #004085; padding: 20px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .card h3 { margin: 0 0 10px 0; font-size: 14px; color: #555; }
+        .card .value { font-size: 18px; font-weight: bold; color: #004085; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #004085; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .btn-link { background: #28a745; color: white; padding: 4px 8px; text-decoration: none; border-radius: 4px; font-size: 11px; }
+        .btn-link:hover { background: #218838; }
+        .security-badge { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 10px; border-radius: 4px; margin-bottom: 20px; font-size: 13px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Engine Payroll & Dashboard Upah Bulanan</h1>
+    <div class="subtitle">PT Pertamina EP Regional 4 Zona 13 - Donggi Matindok Field (Kontraktor Utama: PT Sentral Sari Jaya)</div>
+    
+    <div class="security-badge">
+        🔒 <strong>Keamanan Sistem Aktif:</strong> Enkripsi Password & Role-Based Access Control (Admin / Manajer / User).
+    </div>
+
+    <div class="metrics-grid">
+        <div class="card">
+            <h3>Total Tenaga Kerja</h3>
+            <div class="value">52 Orang</div>
+        </div>
+        <div class="card">
+            <h3>Total Upah Tetap</h3>
+            <div class="value">Rp 171,993,333.80</div>
+        </div>
+        <div class="card">
+            <h3>Total Gaji Bruto</h3>
+            <div class="value">Rp 448,483,663.00</div>
+        </div>
+        <div class="card">
+            <h3>Total Gaji Netto</h3>
+            <div class="value">Rp 434,474,629.13</div>
+        </div>
+    </div>
+
+    <h3>Daftar Rincian Karyawan & Akses Slip Gaji Individual</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama Karyawan</th>
+                <th>Jabatan</th>
+                <th>Divisi</th>
+                <th>Gaji Bruto</th>
+                <th>Potongan</th>
+                <th>Gaji Netto</th>
+                <th>Aksi / Slip Gaji</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            <tr>
+                <td>1</td>
+                <td>Sujianto M. Batias</td>
+                <td>Driver Ambulance</td>
+                <td>HSSE</td>
+                <td>Rp 8,599,130.00</td>
+                <td>Rp 217,649.50</td>
+                <td>Rp 8,381,480.50</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Sujianto M. Batias (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Ansar Mansur</td>
+                <td>Pemuka FS</td>
+                <td>HSSE</td>
+                <td>Rp 9,863,387.00</td>
+                <td>Rp 287,562.75</td>
+                <td>Rp 9,575,824.25</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Ansar Mansur (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Harir A. Lako</td>
+                <td>Petugas FS</td>
+                <td>HSSE</td>
+                <td>Rp 10,127,330.00</td>
+                <td>Rp 286,726.54</td>
+                <td>Rp 9,840,603.46</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Harir A. Lako (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Ali Friansyah</td>
+                <td>Petugas FS</td>
+                <td>HSSE</td>
+                <td>Rp 7,979,510.00</td>
+                <td>Rp 211,453.30</td>
+                <td>Rp 7,768,056.70</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Ali Friansyah (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Fredrik D. Tinadji</td>
+                <td>Petugas FS</td>
+                <td>HSSE</td>
+                <td>Rp 8,933,393.00</td>
+                <td>Rp 245,536.50</td>
+                <td>Rp 8,687,856.50</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Fredrik D. Tinadji (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>Wayan Edi Jaya</td>
+                <td>Pemuka FS</td>
+                <td>HSSE</td>
+                <td>Rp 11,423,951.00</td>
+                <td>Rp 488,217.70</td>
+                <td>Rp 10,935,733.30</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Wayan Edi Jaya (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>Akmal (A)</td>
+                <td>Driver Ambulance</td>
+                <td>HSSE</td>
+                <td>Rp 8,819,160.00</td>
+                <td>Rp 219,849.80</td>
+                <td>Rp 8,599,310.20</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Akmal (A) (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>Alfikwan I. Marida</td>
+                <td>Pemuka FS</td>
+                <td>HSSE</td>
+                <td>Rp 10,239,730.00</td>
+                <td>Rp 293,207.90</td>
+                <td>Rp 9,946,522.10</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Alfikwan I. Marida (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>Deni Andrianto</td>
+                <td>Petugas FS</td>
+                <td>HSSE</td>
+                <td>Rp 9,220,545.00</td>
+                <td>Rp 247,105.77</td>
+                <td>Rp 8,973,439.23</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Deni Andrianto (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>Awal Dwi Sekti</td>
+                <td>Pemuka FS</td>
+                <td>HSSE</td>
+                <td>Rp 11,379,144.00</td>
+                <td>Rp 486,873.49</td>
+                <td>Rp 10,892,270.51</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Awal Dwi Sekti (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>Muh Arsyal Ramdani</td>
+                <td>Driver Ambulance</td>
+                <td>HSSE</td>
+                <td>Rp 7,480,876.00</td>
+                <td>Rp 206,466.96</td>
+                <td>Rp 7,274,409.04</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Muh Arsyal Ramdani (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>12</td>
+                <td>Muh Palmi</td>
+                <td>Petugas FS</td>
+                <td>HSSE</td>
+                <td>Rp 8,251,595.00</td>
+                <td>Rp 278,118.29</td>
+                <td>Rp 7,973,476.71</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Muh Palmi (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>13</td>
+                <td>Halim</td>
+                <td>Petugas FS</td>
+                <td>HSSE</td>
+                <td>Rp 8,238,943.00</td>
+                <td>Rp 215,311.01</td>
+                <td>Rp 8,023,631.99</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Halim (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>14</td>
+                <td>Mustamar Dg Magangka</td>
+                <td>Petugas FS</td>
+                <td>HSSE</td>
+                <td>Rp 7,953,610.00</td>
+                <td>Rp 211,194.30</td>
+                <td>Rp 7,742,415.70</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Mustamar Dg Magangka (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>15</td>
+                <td>Akmal (B)</td>
+                <td>Pemuka FS</td>
+                <td>HSSE</td>
+                <td>Rp 11,944,139.00</td>
+                <td>Rp 627,189.59</td>
+                <td>Rp 11,316,949.41</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Akmal (B) (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>16</td>
+                <td>Rizal Tamoreka</td>
+                <td>Driver Ambulance</td>
+                <td>HSSE</td>
+                <td>Rp 9,134,395.00</td>
+                <td>Rp 270,551.12</td>
+                <td>Rp 8,863,843.88</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Rizal Tamoreka (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>17</td>
+                <td>Arianto Yahya</td>
+                <td>Pemuka Operator Alat Berat</td>
+                <td>SCM</td>
+                <td>Rp 6,785,679.00</td>
+                <td>Rp 181,612.29</td>
+                <td>Rp 6,604,066.71</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Arianto Yahya (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>18</td>
+                <td>Marjan Karim</td>
+                <td>Petugas Admin II Warehouse</td>
+                <td>SCM</td>
+                <td>Rp 8,056,072.00</td>
+                <td>Rp 212,218.92</td>
+                <td>Rp 7,843,853.08</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Marjan Karim (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>19</td>
+                <td>Kasman</td>
+                <td>Petugas Admin II Warehouse</td>
+                <td>SCM</td>
+                <td>Rp 6,299,443.00</td>
+                <td>Rp 193,910.19</td>
+                <td>Rp 6,105,532.81</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Kasman (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>20</td>
+                <td>Lukman Tasakka</td>
+                <td>Pemuka Ops. Alat Berat</td>
+                <td>SCM</td>
+                <td>Rp 6,778,308.00</td>
+                <td>Rp 180,819.87</td>
+                <td>Rp 6,597,488.13</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Lukman Tasakka (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>21</td>
+                <td>Nengah Darsana</td>
+                <td>Pemuka Ops. Alat Berat</td>
+                <td>SCM</td>
+                <td>Rp 6,233,508.00</td>
+                <td>Rp 160,216.90</td>
+                <td>Rp 6,073,291.10</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Nengah Darsana (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>22</td>
+                <td>I Gusti Ngurah Baliarta</td>
+                <td>Petugas Admin II Warehouse</td>
+                <td>SCM</td>
+                <td>Rp 6,234,935.00</td>
+                <td>Rp 160,955.88</td>
+                <td>Rp 6,073,979.12</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk I Gusti Ngurah Baliarta (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>23</td>
+                <td>Irpan Parenden</td>
+                <td>Petugas Admin II Warehouse</td>
+                <td>SCM</td>
+                <td>Rp 6,264,935.00</td>
+                <td>Rp 161,105.88</td>
+                <td>Rp 6,103,829.12</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Irpan Parenden (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>24</td>
+                <td>Sunita Ayu P.</td>
+                <td>Petugas Admin II</td>
+                <td>Legal & Relation</td>
+                <td>Rp 7,101,695.00</td>
+                <td>Rp 221,367.88</td>
+                <td>Rp 6,880,327.12</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Sunita Ayu P. (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>25</td>
+                <td>Dewi Setiawati M Dg M</td>
+                <td>Petugas Admin III</td>
+                <td>RAM</td>
+                <td>Rp 7,086,168.00</td>
+                <td>Rp 169,264.84</td>
+                <td>Rp 6,916,903.16</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Dewi Setiawati M Dg M (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>26</td>
+                <td>Marini Astari</td>
+                <td>Petugas Admin III</td>
+                <td>HR - GS</td>
+                <td>Rp 9,096,231.00</td>
+                <td>Rp 269,978.66</td>
+                <td>Rp 8,826,252.34</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Marini Astari (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>27</td>
+                <td>Ali Muhtar M. Amin</td>
+                <td>Supir Ambulance</td>
+                <td>HSSE</td>
+                <td>Rp 7,480,876.00</td>
+                <td>Rp 206,466.96</td>
+                <td>Rp 7,274,409.04</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Ali Muhtar M. Amin (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>28</td>
+                <td>Agus Rudiyanto</td>
+                <td>Petugas FS</td>
+                <td>HSSE</td>
+                <td>Rp 6,896,669.00</td>
+                <td>Rp 197,792.93</td>
+                <td>Rp 6,698,876.07</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Agus Rudiyanto (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>29</td>
+                <td>I Gede Ariana</td>
+                <td>Petugas FS</td>
+                <td>HSSE</td>
+                <td>Rp 8,444,931.00</td>
+                <td>Rp 216,107.51</td>
+                <td>Rp 8,228,823.49</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk I Gede Ariana (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>30</td>
+                <td>I Putu Adnyana Wijaya</td>
+                <td>Petugas FS</td>
+                <td>HSSE</td>
+                <td>Rp 9,484,885.00</td>
+                <td>Rp 275,808.47</td>
+                <td>Rp 9,209,076.53</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk I Putu Adnyana Wijaya (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>31</td>
+                <td>Mursalun Lasuru</td>
+                <td>Petugas FS</td>
+                <td>HSSE</td>
+                <td>Rp 8,560,414.00</td>
+                <td>Rp 218,525.72</td>
+                <td>Rp 8,341,888.28</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Mursalun Lasuru (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>32</td>
+                <td>Subandi</td>
+                <td>Pemuka FS</td>
+                <td>HSSE</td>
+                <td>Rp 11,661,641.00</td>
+                <td>Rp 495,348.43</td>
+                <td>Rp 11,166,292.57</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Subandi (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>33</td>
+                <td>Budi Santoso</td>
+                <td>Petugas FS</td>
+                <td>HSSE</td>
+                <td>Rp 8,326,576.00</td>
+                <td>Rp 216,187.34</td>
+                <td>Rp 8,110,388.66</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Budi Santoso (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>34</td>
+                <td>I Komang Santika</td>
+                <td>Pemuka FS</td>
+                <td>HSSE</td>
+                <td>Rp 10,153,278.00</td>
+                <td>Rp 291,911.13</td>
+                <td>Rp 9,861,366.87</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk I Komang Santika (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>35</td>
+                <td>Indra Natalianto Patasik</td>
+                <td>Petugas FS</td>
+                <td>HSSE</td>
+                <td>Rp 8,478,144.00</td>
+                <td>Rp 216,439.64</td>
+                <td>Rp 8,261,704.36</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Indra Natalianto Patasik (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>36</td>
+                <td>Kd Wiyad Nyana</td>
+                <td>Petugas FS</td>
+                <td>HSSE</td>
+                <td>Rp 9,091,709.00</td>
+                <td>Rp 269,910.83</td>
+                <td>Rp 8,821,798.17</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Kd Wiyad Nyana (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>37</td>
+                <td>I Nengah Rudi Artika</td>
+                <td>Pemuka FS</td>
+                <td>HSSE</td>
+                <td>Rp 11,379,144.00</td>
+                <td>Rp 486,873.52</td>
+                <td>Rp 10,892,270.48</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk I Nengah Rudi Artika (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>38</td>
+                <td>Sukardi Jalisingi</td>
+                <td>Supir Ambulance</td>
+                <td>HSSE</td>
+                <td>Rp 7,480,876.00</td>
+                <td>Rp 206,466.96</td>
+                <td>Rp 7,274,409.04</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Sukardi Jalisingi (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>39</td>
+                <td>Yotam</td>
+                <td>Petugas FS</td>
+                <td>HSSE</td>
+                <td>Rp 9,576,334.00</td>
+                <td>Rp 278,461.60</td>
+                <td>Rp 9,297,872.40</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Yotam (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>40</td>
+                <td>Thamar Thalib Mbau</td>
+                <td>Pemuka FS</td>
+                <td>HSSE</td>
+                <td>Rp 10,700,495.00</td>
+                <td>Rp 355,584.28</td>
+                <td>Rp 10,344,910.72</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Thamar Thalib Mbau (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>41</td>
+                <td>Arie Kurniawan</td>
+                <td>Petugas FS</td>
+                <td>HSSE</td>
+                <td>Rp 7,979,510.00</td>
+                <td>Rp 211,453.30</td>
+                <td>Rp 7,768,056.70</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Arie Kurniawan (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>42</td>
+                <td>Eko Wiyono</td>
+                <td>Petugas FS</td>
+                <td>HSSE</td>
+                <td>Rp 9,245,300.00</td>
+                <td>Rp 249,435.33</td>
+                <td>Rp 8,995,864.67</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Eko Wiyono (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>43</td>
+                <td>Fajriadi</td>
+                <td>Pemuka FS</td>
+                <td>HSSE</td>
+                <td>Rp 11,582,411.00</td>
+                <td>Rp 492,971.53</td>
+                <td>Rp 11,089,439.47</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Fajriadi (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>44</td>
+                <td>Jumalik H. Latungka</td>
+                <td>Petugas FS</td>
+                <td>HSSE</td>
+                <td>Rp 7,979,510.00</td>
+                <td>Rp 211,453.30</td>
+                <td>Rp 7,768,056.70</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Jumalik H. Latungka (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>45</td>
+                <td>Randianto</td>
+                <td>Petugas FS</td>
+                <td>HSSE</td>
+                <td>Rp 9,475,412.00</td>
+                <td>Rp 324,920.43</td>
+                <td>Rp 9,150,491.57</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Randianto (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>46</td>
+                <td>Saiful M. Zakar</td>
+                <td>Petugas FS</td>
+                <td>HSSE</td>
+                <td>Rp 8,168,964.00</td>
+                <td>Rp 213,347.84</td>
+                <td>Rp 7,955,616.00</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Saiful M. Zakar (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>47</td>
+                <td>I Nyoman Suwitra</td>
+                <td>Petugas Gudang (BBM)</td>
+                <td>SCM</td>
+                <td>Rp 6,189,084.00</td>
+                <td>Rp 160,726.62</td>
+                <td>Rp 6,028,357.38</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk I Nyoman Suwitra (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>48</td>
+                <td>I Putu Muryanto</td>
+                <td>Petugas Admin III</td>
+                <td>Operation</td>
+                <td>Rp 11,904,147.00</td>
+                <td>Rp 496,290.58</td>
+                <td>Rp 11,407,856.42</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk I Putu Muryanto (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>49</td>
+                <td>Siti Aisyah Dg Masese</td>
+                <td>Sekretaris FM</td>
+                <td>Field Manager</td>
+                <td>Rp 11,045,587.00</td>
+                <td>Rp 419,676.46</td>
+                <td>Rp 10,625,910.54</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Siti Aisyah Dg Masese (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>50</td>
+                <td>Dewi Khoirunnisa</td>
+                <td>Petugas Admin III</td>
+                <td>Finance</td>
+                <td>Rp 7,376,403.00</td>
+                <td>Rp 244,181.24</td>
+                <td>Rp 7,132,221.76</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Dewi Khoirunnisa (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>51</td>
+                <td>Eka Nurjannah</td>
+                <td>Petugas Admin III CSR</td>
+                <td>Legal & Relation</td>
+                <td>Rp 7,018,004.00</td>
+                <td>Rp 220,321.74</td>
+                <td>Rp 6,797,682.26</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Eka Nurjannah (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+            <tr>
+                <td>52</td>
+                <td>Findy Handayani</td>
+                <td>Petugas Admin II</td>
+                <td>SCM</td>
+                <td>Rp 3,277,547.00</td>
+                <td>Rp 127,904.21</td>
+                <td>Rp 3,149,642.79</td>
+                <td><a href="#" class="btn-link" onclick="alert('Slip gaji untuk Findy Handayani (Protected & Encrypted).'); return false;">🔗 Buka Slip</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
