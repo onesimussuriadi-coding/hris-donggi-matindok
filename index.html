@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Pustaka Otomatis untuk Download PDF Berkualitas Tinggi -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
@@ -491,11 +490,12 @@
                         <div class="flex justify-between text-gray-600 pl-2"><span>- Upah Pokok (30 Hari)</span><span>Rp 2,458,160</span></div>
                         <div class="flex justify-between text-gray-600 pl-2"><span>- TAUP (30 Hari)</span><span>Rp 819,387</span></div>
                         
+                        <!-- II. UPAH TIDAK TETAP & LEMBUR (DIRAPIKAN SEJAJAR KE KANAN) -->
                         <div class="flex justify-between font-bold border-b pt-2 pb-1 text-blue-900">
                             <span>II. UPAH TIDAK TETAP & LEMBUR</span>
                             <span>Detil Rincian</span>
                         </div>
-                        <div class="text-gray-700 pl-2 space-y-1 bg-gray-50 p-2 rounded border">
+                        <div class="text-gray-700 pl-2 space-y-1 bg-gray-50 p-2.5 rounded border">
                             ${emp["RincianUntek"]}
                         </div>
                         
@@ -504,7 +504,7 @@
                             <span>${emp["Bruto"]}</span>
                         </div>
 
-                        <!-- III. POTONGAN DENGAN BREAKDOWN ANGKA DETAIL -->
+                        <!-- III. POTONGAN RESMI -->
                         <div class="flex justify-between font-bold border-b pt-2 pb-1 text-red-900">
                             <span>III. POTONGAN RESMI</span>
                             <span>${emp["Potongan"]}</span>
@@ -534,13 +534,11 @@
             document.getElementById('slipModal').classList.add('hidden');
         }
 
-        // Fungsi Otomatis Download / Save as PDF Berbasis Canvas & jsPDF
         window.jsPDF = window.jspdf.jsPDF;
         function downloadSlipPDF() {
             const element = document.getElementById('printableSlip');
             const empName = document.getElementById('slipModal').dataset.empName || 'Karyawan';
             
-            // Konversi area slip menjadi kanvas gambar beresolusi tinggi lalu simpan sebagai file PDF
             html2canvas(element, { scale: 2, useCORS: true }).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
                 const pdf = new jsPDF('p', 'mm', 'a4');
@@ -560,7 +558,6 @@
                     heightLeft -= pageHeight;
                 }
 
-                // Simpan file otomatis dengan nama karyawan yang sesuai
                 pdf.save(`Slip_Gaji_${empName.replace(/\s+/g, '_')}.pdf`);
             });
         }
