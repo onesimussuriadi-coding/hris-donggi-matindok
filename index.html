@@ -164,7 +164,7 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div>
                             <h3 class="text-xl font-bold text-blue-900"><i class="fa-solid fa-calendar-days mr-2"></i> Dashboard Time Sheet, Absen & Rekap Lembur</h3>
-                            <p class="text-xs text-gray-500 mt-1">Sinkronisasi Sheet ABSEN (Baris 16-45) & Sheet LEMBUR (Baris 11-41) | Zona 13 - Field Donggi Matindok</p>
+                            <p class="text-xs text-gray-500 mt-1">Sinkronisasi Master Sheet ABSEN & LEMBUR (Sesuai Kolom Master Excel) | Zona 13 - Field Donggi Matindok</p>
                         </div>
                         <div class="flex items-center gap-3 w-full md:w-auto">
                             <select id="timesheetViewControl" onchange="handleTimesheetViewChange()" class="bg-blue-50 border border-blue-200 text-blue-900 text-xs font-semibold rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5">
@@ -184,8 +184,8 @@
                             <h4 class="text-lg font-bold text-emerald-900 mt-1">16 Jun - 15 Jul 2026</h4>
                         </div>
                         <div class="bg-slate-50 border-l-4 border-emerald-600 p-4 rounded-xl">
-                            <p class="text-xs text-gray-500 font-medium">Sheet ABSEN</p>
-                            <h4 class="text-lg font-bold text-emerald-900 mt-1">Baris 16 s.d 45</h4>
+                            <p class="text-xs text-gray-500 font-medium">Master Sistem Kerja</p>
+                            <h4 class="text-lg font-bold text-emerald-900 mt-1">Shift / Non-Shift (Sesuai Excel)</h4>
                         </div>
                         <div class="bg-slate-50 border-l-4 border-emerald-600 p-4 rounded-xl">
                             <p class="text-xs text-gray-500 font-medium">Sheet LEMBUR</p>
@@ -203,7 +203,7 @@
                                 <tr class="bg-emerald-800 text-white uppercase text-[10px]">
                                     <th class="p-3">No</th>
                                     <th class="p-3">Nama Pekerja</th>
-                                    <th class="p-3">Jabatan & Sistem</th>
+                                    <th class="p-3">Jabatan & Sistem Kerja</th>
                                     <th class="p-3">Lokasi Penempatan</th>
                                     <th class="p-3 text-center">Kehadiran (Cell D47)</th>
                                     <th class="p-3 text-center">Total OT (Cell E47)</th>
@@ -261,7 +261,7 @@
                                 <tr class="bg-blue-900 text-white uppercase text-[10px]">
                                     <th class="p-3">No</th>
                                     <th class="p-3">Nama Karyawan</th>
-                                    <th class="p-3">Jabatan</th>
+                                    <th class="p-3">Jabatan & Sistem Kerja</th>
                                     <th class="p-3">Divisi</th>
                                     <th class="p-3">Gaji Bruto</th>
                                     <th class="p-3">Potongan</th>
@@ -294,7 +294,7 @@
         </div>
     </div>
 
-    <!-- MODAL KERTAS KERJA SHEET ABSEN & LEMBUR SESUAI DOKUMEN EXCEL -->
+    <!-- MODAL KERTAS KERJA SHEET ABSEN & LEMBUR -->
     <div id="timesheetModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-5xl overflow-hidden border border-gray-100">
             <div class="bg-emerald-800 px-6 py-4 flex justify-between items-center text-white">
@@ -336,84 +336,84 @@
     <!-- SCRIPT UTAMA -->
     <script>
         const employeesData = [
-            { "No": 1, "Nama Karyawan": "Sujianto Batias", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9442 1574", "Email": "sujiantobatiasmtd@gmail.com", "Address": "Desa Noge Dusun II", "Bruto": "Rp 8,599,130.00", "Potongan": "Rp 217,648.98", "Netto": "Rp 8,381,481.02", "Tipe": "Non-Shift", "ArrUntek": [
+            { "No": 1, "Nama Karyawan": "Sujianto M. Batias", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9442 1574", "Email": "sujiantobatiasmtd@gmail.com", "Address": "Desa Noge Dusun II", "Bruto": "Rp 8,599,130.00", "Potongan": "Rp 217,648.98", "Netto": "Rp 8,381,481.02", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran (20 Hari)", "val": "Rp 600,000"},
                 {"label": "- Upah Lembur (210 Jam)", "val": "Rp 3,978,525"},
                 {"label": "- Makan Lembur (8 Kali)", "val": "Rp 200,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 89,744.98" },
-            { "No": 2, "Nama Karyawan": "Ansar Mansur", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0856 5626 0104", "Email": "ansarmansur5@gmail.com", "Address": "Desa Bonebalantak", "Bruto": "Rp 9,863,387.00", "Potongan": "Rp 287,563.00", "Netto": "Rp 9,575,824.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 2, "Nama Karyawan": "Ansar Mansur", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0856 5626 0104", "Email": "ansarmansur5@gmail.com", "Address": "Desa Bonebalantak", "Bruto": "Rp 9,863,387.00", "Potongan": "Rp 287,563.00", "Netto": "Rp 9,575,824.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Kelebihan Jam Kerja (KJK)", "val": "Rp 25,000"},
                 {"label": "- Makan Lembur", "val": "Rp 250,000"},
                 {"label": "- Upah Lembur", "val": "Rp 4,701,963"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 159,659" },
-            { "No": 3, "Nama Karyawan": "Harir A. Lako", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9414 4463", "Email": "widiap373@gmail.com", "Address": "Desa Nonong", "Bruto": "Rp 10,127,330.00", "Potongan": "Rp 286,727.00", "Netto": "Rp 9,840,603.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 3, "Nama Karyawan": "Harir A. Lako", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9414 4463", "Email": "widiap373@gmail.com", "Address": "Desa Nonong", "Bruto": "Rp 10,127,330.00", "Potongan": "Rp 286,727.00", "Netto": "Rp 9,840,603.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Kelebihan Jam Kerja (KJK)", "val": "Rp 25,000"},
                 {"label": "- Makan Lembur", "val": "Rp 250,000"},
                 {"label": "- Upah Lembur", "val": "Rp 4,963,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 158,823" },
-            { "No": 4, "Nama Karyawan": "Ali Friansyah", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0822 9608 9791", "Email": "alifriyansyah10@gmail.com", "Address": "Jalan Dr. Moh. Hatta", "Bruto": "Rp 9,500,000.00", "Potongan": "Rp 250,000.00", "Netto": "Rp 9,250,000.00", "Tipe": "Non-Shift", "ArrUntek": [
+            { "No": 4, "Nama Karyawan": "Ali Friansyah", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0822 9608 9791", "Email": "alifriyansyah10@gmail.com", "Address": "Jalan Dr. Moh. Hatta", "Bruto": "Rp 9,500,000.00", "Potongan": "Rp 250,000.00", "Netto": "Rp 9,250,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Upah Lembur", "val": "Rp 3,500,000"},
                 {"label": "- Makan Lembur", "val": "Rp 150,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 122,096" },
-            { "No": 5, "Nama Karyawan": "Fredrik D Tinadji", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0822 6132 7893", "Email": "nyonkayu@gmail.com", "Address": "Desa Kayowa", "Bruto": "Rp 9,800,000.00", "Potongan": "Rp 260,000.00", "Netto": "Rp 9,540,000.00", "Tipe": "Non-Shift", "ArrUntek": [
+            { "No": 5, "Nama Karyawan": "Fredrik D. Tinadji", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0822 6132 7893", "Email": "nyonkayu@gmail.com", "Address": "Desa Kayowa", "Bruto": "Rp 9,800,000.00", "Potongan": "Rp 260,000.00", "Netto": "Rp 9,540,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Upah Lembur", "val": "Rp 3,800,000"},
                 {"label": "- Makan Lembur", "val": "Rp 150,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 132,096" },
-            { "No": 6, "Nama Karyawan": "Wayan Edi Jaya", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0823 4748 5042", "Email": "wayanedijaya81@gmail.com", "Address": "Desa Sukamaju I", "Bruto": "Rp 10,200,000.00", "Potongan": "Rp 290,000.00", "Netto": "Rp 9,910,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 6, "Nama Karyawan": "Wayan Edi Jaya", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0823 4748 5042", "Email": "wayanedijaya81@gmail.com", "Address": "Desa Sukamaju I", "Bruto": "Rp 10,200,000.00", "Potongan": "Rp 290,000.00", "Netto": "Rp 9,910,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 5,200,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 162,096" },
-            { "No": 7, "Nama Karyawan": "Akmal (A)", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0852 4066 7996", "Email": "akmalambotang@gmail.com", "Address": "Desa Kayowa", "Bruto": "Rp 8,400,000.00", "Potongan": "Rp 200,000.00", "Netto": "Rp 8,200,000.00", "Tipe": "Non-Shift", "ArrUntek": [
+            { "No": 7, "Nama Karyawan": "Akmal (A)", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0852 4066 7996", "Email": "akmalambotang@gmail.com", "Address": "Desa Kayowa", "Bruto": "Rp 8,400,000.00", "Potongan": "Rp 200,000.00", "Netto": "Rp 8,200,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Upah Lembur", "val": "Rp 3,400,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 72,096" },
-            { "No": 8, "Nama Karyawan": "Alfikwan I Marida", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9718 2701", "Email": "alfikwan.marida@gmail.com", "Address": "Desa Tolando", "Bruto": "Rp 9,700,000.00", "Potongan": "Rp 270,000.00", "Netto": "Rp 9,430,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 8, "Nama Karyawan": "Alfikwan I. Marida", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9718 2701", "Email": "alfikwan.marida@gmail.com", "Address": "Desa Tolando", "Bruto": "Rp 9,700,000.00", "Potongan": "Rp 270,000.00", "Netto": "Rp 9,430,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,500,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 142,096" },
-            { "No": 9, "Nama Karyawan": "Deni Andrianto", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1", "Mobile": "0822 9605 4400", "Email": "deniandrianto68@gmail.com", "Address": "Dusun II Noge", "Bruto": "Rp 9,600,000.00", "Potongan": "Rp 255,000.00", "Netto": "Rp 9,345,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 9, "Nama Karyawan": "Deni Andrianto", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1", "Mobile": "0822 9605 4400", "Email": "deniandrianto68@gmail.com", "Address": "Dusun II Noge", "Bruto": "Rp 9,600,000.00", "Potongan": "Rp 255,000.00", "Netto": "Rp 9,345,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,400,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 127,096" },
-            { "No": 10, "Nama Karyawan": "Awal Dwi Sekti", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0822 5950 5262", "Email": "awaldwisekti13@gmail.com", "Address": "Asrama Kodim 1308", "Bruto": "Rp 9,900,000.00", "Potongan": "Rp 280,000.00", "Netto": "Rp 9,620,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 10, "Nama Karyawan": "Awal Dwi Sekti", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0822 5950 5262", "Email": "awaldwisekti13@gmail.com", "Address": "Asrama Kodim 1308", "Bruto": "Rp 9,900,000.00", "Potongan": "Rp 280,000.00", "Netto": "Rp 9,620,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,700,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 152,096" },
-            { "No": 11, "Nama Karyawan": "Muh Arsyal Ramdani", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0822 9627 4553", "Email": "ramdaniarsyal11@gmail.com", "Address": "Desa Bakung", "Bruto": "Rp 8,500,000.00", "Potongan": "Rp 210,000.00", "Netto": "Rp 8,290,000.00", "Tipe": "Non-Shift", "ArrUntek": [
+            { "No": 11, "Nama Karyawan": "Muh Arsyal Ramdani", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0822 9627 4553", "Email": "ramdaniarsyal11@gmail.com", "Address": "Desa Bakung", "Bruto": "Rp 8,500,000.00", "Potongan": "Rp 210,000.00", "Netto": "Rp 8,290,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Upah Lembur", "val": "Rp 3,500,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 82,096" },
-            { "No": 12, "Nama Karyawan": "Muh Palmi", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1", "Mobile": "0822 9385 3550", "Email": "muhpalmi@gmail.com", "Address": "Dusun II Noge", "Bruto": "Rp 9,400,000.00", "Potongan": "Rp 240,000.00", "Netto": "Rp 9,160,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 12, "Nama Karyawan": "Muh Palmi", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1", "Mobile": "0822 9385 3550", "Email": "muhpalmi@gmail.com", "Address": "Dusun II Noge", "Bruto": "Rp 9,400,000.00", "Potongan": "Rp 240,000.00", "Netto": "Rp 9,160,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,200,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 112,096" },
-            { "No": 13, "Nama Karyawan": "Halim", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0853 4079 7391", "Email": "hsehalim27@gmail.com", "Address": "Desa Nonong Dusun I", "Bruto": "Rp 9,300,000.00", "Potongan": "Rp 230,000.00", "Netto": "Rp 9,070,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 13, "Nama Karyawan": "Halim", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0853 4079 7391", "Email": "hsehalim27@gmail.com", "Address": "Desa Nonong Dusun I", "Bruto": "Rp 9,300,000.00", "Potongan": "Rp 230,000.00", "Netto": "Rp 9,070,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,100,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 102,096" },
-            { "No": 14, "Nama Karyawan": "Mustamar Dg Magangka", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0853 4200 8134", "Email": "mustamar713@gmail.com", "Address": "Desa Noge", "Bruto": "Rp 9,550,000.00", "Potongan": "Rp 245,000.00", "Netto": "Rp 9,305,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 14, "Nama Karyawan": "Mustamar Dg Magangka", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0853 4200 8134", "Email": "mustamar713@gmail.com", "Address": "Desa Noge", "Bruto": "Rp 9,550,000.00", "Potongan": "Rp 245,000.00", "Netto": "Rp 9,305,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,350,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 117,096" },
-            { "No": 15, "Nama Karyawan": "Akmal (B)", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9534 4685", "Email": "akhmalkukizunawa94@gmail.com", "Address": "Dusun II Noge", "Bruto": "Rp 9,750,000.00", "Potongan": "Rp 275,000.00", "Netto": "Rp 9,475,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 15, "Nama Karyawan": "Akmal (B)", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9534 4685", "Email": "akhmalkukizunawa94@gmail.com", "Address": "Dusun II Noge", "Bruto": "Rp 9,750,000.00", "Potongan": "Rp 275,000.00", "Netto": "Rp 9,475,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,550,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 147,096" },
-            { "No": 16, "Nama Karyawan": "Rizal Tamoreka", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0858 2371 8389", "Email": "ronitamoreka@gmail.com", "Address": "Desa Singkoyo", "Bruto": "Rp 8,450,000.00", "Potongan": "Rp 205,000.00", "Netto": "Rp 8,245,000.00", "Tipe": "Non-Shift", "ArrUntek": [
+            { "No": 16, "Nama Karyawan": "Rizal Tamoreka", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0858 2371 8389", "Email": "ronitamoreka@gmail.com", "Address": "Desa Singkoyo", "Bruto": "Rp 8,450,000.00", "Potongan": "Rp 205,000.00", "Netto": "Rp 8,245,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Upah Lembur", "val": "Rp 3,450,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 77,096" },
@@ -422,12 +422,12 @@
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,650,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 157,096" },
-            { "No": 18, "Nama Karyawan": "Marjan Karim", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0822 5989 6633", "Email": "marjankarim205@gmail.com", "Address": "Desa Nonong", "Bruto": "Rp 8,056,072.00", "Potongan": "Rp 212,219.00", "Netto": "Rp 7,843,853.00", "Tipe": "Non-Shift", "ArrUntek": [
+            { "No": 18, "Nama Karyawan": "Marjan Karim", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0822 5989 6633", "Email": "marjankarim205@gmail.com", "Address": "Desa Nonong", "Bruto": "Rp 8,056,072.00", "Potongan": "Rp 212,219.00", "Netto": "Rp 7,843,853.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran (20 Hari)", "val": "Rp 600,000"},
                 {"label": "- Upah Lembur (210 Jam)", "val": "Rp 3,978,525"},
                 {"label": "- Makan Lembur (8 Kali)", "val": "Rp 200,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 84,315" },
-            { "No": 19, "Nama Karyawan": "Kasman", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMA/Sederajat", "Mobile": "0858 2511 8920", "Email": "kasmanmaho@gmail.com", "Address": "Kuanto", "Bruto": "Rp 8,650,000.00", "Potongan": "Rp 215,000.00", "Netto": "Rp 8,435,000.00", "Tipe": "Non-Shift", "ArrUntek": [
+            { "No": 19, "Nama Karyawan": "Kasman", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMA/Sederajat", "Mobile": "0858 2511 8920", "Email": "kasmanmaho@gmail.com", "Address": "Kuanto", "Bruto": "Rp 8,650,000.00", "Potongan": "Rp 215,000.00", "Netto": "Rp 8,435,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Upah Lembur", "val": "Rp 3,650,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 87,096" },
@@ -441,90 +441,90 @@
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 3,950,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 100,096" },
-            { "No": 22, "Nama Karyawan": "I Gusti Ngurah Baliarta", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMP/Sederajat", "Mobile": "0858 2304 7847", "Email": "-", "Address": "Desa Kamiwangi", "Bruto": "Rp 8,600,000.00", "Potongan": "Rp 212,000.00", "Netto": "Rp 8,388,000.00", "Tipe": "Non-Shift", "ArrUntek": [
+            { "No": 22, "Nama Karyawan": "I Gusti Ngurah Baliarta", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMP/Sederajat", "Mobile": "0858 2304 7847", "Email": "-", "Address": "Desa Kamiwangi", "Bruto": "Rp 8,600,000.00", "Potongan": "Rp 212,000.00", "Netto": "Rp 8,388,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Upah Lembur", "val": "Rp 3,600,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 84,096" },
-            { "No": 23, "Nama Karyawan": "Irvan Parenden", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0857 5704 9499", "Email": "-", "Address": "Desa Karang Anyar", "Bruto": "Rp 8,750,000.00", "Potongan": "Rp 222,000.00", "Netto": "Rp 8,528,000.00", "Tipe": "Non-Shift", "ArrUntek": [
+            { "No": 23, "Nama Karyawan": "Irvan Parenden", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0857 5704 9499", "Email": "-", "Address": "Desa Karang Anyar", "Bruto": "Rp 8,750,000.00", "Potongan": "Rp 222,000.00", "Netto": "Rp 8,528,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Upah Lembur", "val": "Rp 3,750,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 94,096" },
-            { "No": 24, "Nama Karyawan": "Sunita Ayu Purnamaningsi", "Job Title": "Petugas Admin II", "Divisi / Fungsi": "LR", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0812 4738 9199", "Email": "ayusunita@gmail.com", "Address": "Jalan ST. Hasanudin", "Bruto": "Rp 8,900,000.00", "Potongan": "Rp 235,000.00", "Netto": "Rp 8,665,000.00", "Tipe": "Non-Shift", "ArrUntek": [
+            { "No": 24, "Nama Karyawan": "Sunita Ayu Purnamaningsi", "Job Title": "Petugas Admin II", "Divisi / Fungsi": "LR", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0812 4738 9199", "Email": "ayusunita@gmail.com", "Address": "Jalan ST. Hasanudin", "Bruto": "Rp 8,900,000.00", "Potongan": "Rp 235,000.00", "Netto": "Rp 8,665,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Upah Lembur", "val": "Rp 3,900,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 107,096" },
-            { "No": 25, "Nama Karyawan": "Dewi Setiawati", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "RAM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0821 9234 4486", "Email": "setiawatidewisetiawati@gmail.com", "Address": "Desa Bakung", "Bruto": "Rp 8,850,000.00", "Potongan": "Rp 232,000.00", "Netto": "Rp 8,618,000.00", "Tipe": "Non-Shift", "ArrUntek": [
+            { "No": 25, "Nama Karyawan": "Dewi Setiawati", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "RAM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0821 9234 4486", "Email": "setiawatidewisetiawati@gmail.com", "Address": "Desa Bakung", "Bruto": "Rp 8,850,000.00", "Potongan": "Rp 232,000.00", "Netto": "Rp 8,618,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Upah Lembur", "val": "Rp 3,850,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 104,096" },
-            { "No": 26, "Nama Karyawan": "Marini Astary", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "HC", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0812 4567 9563", "Email": "astaryastary@gmail.com", "Address": "Desa Nonong", "Bruto": "Rp 8,800,000.00", "Potongan": "Rp 230,000.00", "Netto": "Rp 8,570,000.00", "Tipe": "Non-Shift", "ArrUntek": [
+            { "No": 26, "Nama Karyawan": "Marini Astary", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "HC", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0812 4567 9563", "Email": "astaryastary@gmail.com", "Address": "Desa Nonong", "Bruto": "Rp 8,800,000.00", "Potongan": "Rp 230,000.00", "Netto": "Rp 8,570,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Upah Lembur", "val": "Rp 3,800,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 102,096" },
-            { "No": 27, "Nama Karyawan": "Ali Mukhtar Mohammad Amin", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9414 4463", "Email": "alimuhtar0277@gmail.com", "Address": "Desa Dongin", "Bruto": "Rp 8,480,000.00", "Potongan": "Rp 208,000.00", "Netto": "Rp 8,272,000.00", "Tipe": "Non-Shift", "ArrUntek": [
+            { "No": 27, "Nama Karyawan": "Ali Mukhtar Mohammad Amin", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9414 4463", "Email": "alimuhtar0277@gmail.com", "Address": "Desa Dongin", "Bruto": "Rp 8,480,000.00", "Potongan": "Rp 208,000.00", "Netto": "Rp 8,272,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Upah Lembur", "val": "Rp 3,480,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 80,096" },
-            { "No": 28, "Nama Karyawan": "Agus Rudiyanto", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMP/Sederajat", "Mobile": "0822 9202 2215", "Email": "agusrudiyantopo@gmail.com", "Address": "Desa Pandan Wangi", "Bruto": "Rp 9,200,000.00", "Potongan": "Rp 226,000.00", "Netto": "Rp 8,974,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 28, "Nama Karyawan": "Agus Rudiyanto", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMP/Sederajat", "Mobile": "0822 9202 2215", "Email": "agusrudiyantopo@gmail.com", "Address": "Desa Pandan Wangi", "Bruto": "Rp 9,200,000.00", "Potongan": "Rp 226,000.00", "Netto": "Rp 8,974,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,000,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 98,096" },
-            { "No": 29, "Nama Karyawan": "I Gede Ariana", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0815 2765 4759", "Email": "agede6645@gmail.com", "Address": "Desa Kamiwangi", "Bruto": "Rp 9,450,000.00", "Potongan": "Rp 242,000.00", "Netto": "Rp 9,208,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 29, "Nama Karyawan": "I Gede Ariana", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0815 2765 4759", "Email": "agede6645@gmail.com", "Address": "Desa Kamiwangi", "Bruto": "Rp 9,450,000.00", "Potongan": "Rp 242,000.00", "Netto": "Rp 9,208,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,250,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 114,096" },
-            { "No": 30, "Nama Karyawan": "I Putu Adnyana Wijaya", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0858 2354 0655", "Email": "adnyanap514@gmail.com", "Address": "Desa Karya Makmur", "Bruto": "Rp 9,500,000.00", "Potongan": "Rp 248,000.00", "Netto": "Rp 9,252,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 30, "Nama Karyawan": "I Putu Adnyana Wijaya", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0858 2354 0655", "Email": "adnyanap514@gmail.com", "Address": "Desa Karya Makmur", "Bruto": "Rp 9,500,000.00", "Potongan": "Rp 248,000.00", "Netto": "Rp 9,252,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,300,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 120,096" },
-            { "No": 31, "Nama Karyawan": "Mursalun Lasuru", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMP/Sederajat", "Mobile": "0821 9056 3917", "Email": "lasurumursalun@gmail.com", "Address": "Desa Dongin", "Bruto": "Rp 9,250,000.00", "Potongan": "Rp 229,000.00", "Netto": "Rp 9,021,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 31, "Nama Karyawan": "Mursalun Lasuru", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMP/Sederajat", "Mobile": "0821 9056 3917", "Email": "lasurumursalun@gmail.com", "Address": "Desa Dongin", "Bruto": "Rp 9,250,000.00", "Potongan": "Rp 229,000.00", "Netto": "Rp 9,021,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,050,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 101,096" },
-            { "No": 32, "Nama Karyawan": "Subandi", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0812 4528 0333", "Email": "masbandi.hse@gmail.com", "Address": "Desa Rusa Kencana", "Bruto": "Rp 9,650,000.00", "Potongan": "Rp 265,000.00", "Netto": "Rp 9,385,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 32, "Nama Karyawan": "Subandi", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0812 4528 0333", "Email": "masbandi.hse@gmail.com", "Address": "Desa Rusa Kencana", "Bruto": "Rp 9,650,000.00", "Potongan": "Rp 265,000.00", "Netto": "Rp 9,385,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,450,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 137,096" },
-            { "No": 33, "Nama Karyawan": "Budi Santoso", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0813 7788 7781", "Email": "budhisantoso881984@gmail.com", "Address": "Desa Sentral Sari", "Bruto": "Rp 9,350,000.00", "Potongan": "Rp 238,000.00", "Netto": "Rp 9,112,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 33, "Nama Karyawan": "Budi Santoso", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0813 7788 7781", "Email": "budhisantoso881984@gmail.com", "Address": "Desa Sentral Sari", "Bruto": "Rp 9,350,000.00", "Potongan": "Rp 238,000.00", "Netto": "Rp 9,112,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,150,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 110,096" },
-            { "No": 34, "Nama Karyawan": "I Komang Santika", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0858 2320 0747", "Email": "komangsantika1992@gmail.com", "Address": "Desa Sindang Sari", "Bruto": "Rp 9,800,000.00", "Potongan": "Rp 282,000.00", "Netto": "Rp 9,518,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 34, "Nama Karyawan": "I Komang Santika", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0858 2320 0747", "Email": "komangsantika1992@gmail.com", "Address": "Desa Sindang Sari", "Bruto": "Rp 9,800,000.00", "Potongan": "Rp 282,000.00", "Netto": "Rp 9,518,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,600,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 154,096" },
-            { "No": 35, "Nama Karyawan": "Indra Natalianto Patasik", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0823 3185 9490", "Email": "indrapatasik@gmail.com", "Address": "Desa Tirta Sari", "Bruto": "Rp 9,400,000.00", "Potongan": "Rp 241,000.00", "Netto": "Rp 9,159,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 35, "Nama Karyawan": "Indra Natalianto Patasik", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0823 3185 9490", "Email": "indrapatasik@gmail.com", "Address": "Desa Tirta Sari", "Bruto": "Rp 9,400,000.00", "Potongan": "Rp 241,000.00", "Netto": "Rp 9,159,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,200,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 113,096" },
-            { "No": 36, "Nama Karyawan": "Kd Wiyad Nyana", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9197 8854", "Email": "kadekwiadnyana061@gmail.com", "Address": "Desa Sindang Sari", "Bruto": "Rp 9,380,000.00", "Potongan": "Rp 239,000.00", "Netto": "Rp 9,141,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 36, "Nama Karyawan": "Kd Wiyad Nyana", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9197 8854", "Email": "kadekwiadnyana061@gmail.com", "Address": "Desa Sindang Sari", "Bruto": "Rp 9,380,000.00", "Potongan": "Rp 239,000.00", "Netto": "Rp 9,141,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,180,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 111,096" },
-            { "No": 37, "Nama Karyawan": "I Nengah Rudi Artika", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0815 2461 7554", "Email": "nengahrudiartika@gmail.com", "Address": "Desa Sindang Sari", "Bruto": "Rp 9,720,000.00", "Potongan": "Rp 272,000.00", "Netto": "Rp 9,448,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 37, "Nama Karyawan": "I Nengah Rudi Artika", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0815 2461 7554", "Email": "nengahrudiartika@gmail.com", "Address": "Desa Sindang Sari", "Bruto": "Rp 9,720,000.00", "Potongan": "Rp 272,000.00", "Netto": "Rp 9,448,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,520,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 144,096" },
-            { "No": 38, "Nama Karyawan": "Sukardi Jalisingi", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMP/Sederajat", "Mobile": "0853 9509 1111", "Email": "Adiismon2@gmail.com", "Address": "Jalan Samratulangi", "Bruto": "Rp 8,420,000.00", "Potongan": "Rp 203,000.00", "Netto": "Rp 8,217,000.00", "Tipe": "Non-Shift", "ArrUntek": [
+            { "No": 38, "Nama Karyawan": "Sukardi Jalisingi", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMP/Sederajat", "Mobile": "0853 9509 1111", "Email": "Adiismon2@gmail.com", "Address": "Jalan Samratulangi", "Bruto": "Rp 8,420,000.00", "Potongan": "Rp 203,000.00", "Netto": "Rp 8,217,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Upah Lembur", "val": "Rp 3,420,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 75,096" },
-            { "No": 39, "Nama Karyawan": "Yotam", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0813 5513 4043", "Email": "yotamocey76@gmail.com", "Address": "Desa Bukti Markati", "Bruto": "Rp 9,320,000.00", "Potongan": "Rp 234,000.00", "Netto": "Rp 9,086,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 39, "Nama Karyawan": "Yotam", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0813 5513 4043", "Email": "yotamocey76@gmail.com", "Address": "Desa Bukti Markati", "Bruto": "Rp 9,320,000.00", "Potongan": "Rp 234,000.00", "Netto": "Rp 9,086,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,120,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 106,096" },
-            { "No": 40, "Nama Karyawan": "Thamar Thalib Mbau", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0821 9689 0897", "Email": "thamar.tm90@gmail.com", "Address": "Desa Tirta Kencana", "Bruto": "Rp 9,780,000.00", "Potongan": "Rp 278,000.00", "Netto": "Rp 9,502,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 40, "Nama Karyawan": "Thamar Thalib Mbau", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0821 9689 0897", "Email": "thamar.tm90@gmail.com", "Address": "Desa Tirta Kencana", "Bruto": "Rp 9,780,000.00", "Potongan": "Rp 278,000.00", "Netto": "Rp 9,502,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,580,000"}
@@ -536,52 +536,52 @@
                 {"label": "- Makan Lembur (1 Kali)", "val": "Rp 25,000"},
                 {"label": "- Upah Lembur (25 Jam)", "val": "Rp 473,634"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 83,549" },
-            { "No": 42, "Nama Karyawan": "Eko Wiyono", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0853 9746 7886", "Email": "yonodonggi57@gmail.com", "Address": "Desa Bone Bae", "Bruto": "Rp 9,360,000.00", "Potongan": "Rp 237,000.00", "Netto": "Rp 9,123,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 42, "Nama Karyawan": "Eko Wiyono", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0853 9746 7886", "Email": "yonodonggi57@gmail.com", "Address": "Desa Bone Bae", "Bruto": "Rp 9,360,000.00", "Potongan": "Rp 237,000.00", "Netto": "Rp 9,123,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,160,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 109,096" },
-            { "No": 43, "Nama Karyawan": "Fajriadi", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0852 4259 7695", "Email": "fajriabenk08@gmail.com", "Address": "Desa Mansahang", "Bruto": "Rp 9,680,000.00", "Potongan": "Rp 268,000.00", "Netto": "Rp 9,412,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 43, "Nama Karyawan": "Fajriadi", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0852 4259 7695", "Email": "fajriabenk08@gmail.com", "Address": "Desa Mansahang", "Bruto": "Rp 9,680,000.00", "Potongan": "Rp 268,000.00", "Netto": "Rp 9,412,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,480,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 140,096" },
-            { "No": 44, "Nama Karyawan": "Jumalik H. Latungka", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0858 2358 1803", "Email": "jumalikhlatungka@gmail.com", "Address": "Desa Kayowa", "Bruto": "Rp 9,340,000.00", "Potongan": "Rp 236,000.00", "Netto": "Rp 9,104,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 44, "Nama Karyawan": "Jumalik H. Latungka", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0858 2358 1803", "Email": "jumalikhlatungka@gmail.com", "Address": "Desa Kayowa", "Bruto": "Rp 9,340,000.00", "Potongan": "Rp 236,000.00", "Netto": "Rp 9,104,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,140,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 108,096" },
-            { "No": 45, "Nama Karyawan": "Randianto", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0852 5583 2000", "Email": "randyogie92@gmail.com", "Address": "Desa Bakung", "Bruto": "Rp 9,460,000.00", "Potongan": "Rp 245,000.00", "Netto": "Rp 9,215,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 45, "Nama Karyawan": "Randianto", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0852 5583 2000", "Email": "randyogie92@gmail.com", "Address": "Desa Bakung", "Bruto": "Rp 9,460,000.00", "Potongan": "Rp 245,000.00", "Netto": "Rp 9,215,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,260,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 117,096" },
-            { "No": 46, "Nama Karyawan": "Saiful M. Zakar", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0812 9531 4840", "Email": "saifulzakar@gmail.com", "Address": "Desa Bakung", "Bruto": "Rp 9,480,000.00", "Potongan": "Rp 247,000.00", "Netto": "Rp 9,233,000.00", "Tipe": "Shift", "ArrUntek": [
+            { "No": 46, "Nama Karyawan": "Saiful M. Zakar", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0812 9531 4840", "Email": "saifulzakar@gmail.com", "Address": "Desa Bakung", "Bruto": "Rp 9,480,000.00", "Potongan": "Rp 247,000.00", "Netto": "Rp 9,233,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Premi Shift", "val": "Rp 511,525"},
                 {"label": "- Upah Lembur", "val": "Rp 4,280,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 119,096" },
-            { "No": 47, "Nama Karyawan": "I Nyoman Suwitra", "Job Title": "Petugas Gudang BBM", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0815 2741 3671", "Email": "putualit0507@gmail.com", "Address": "Karya Makmur", "Bruto": "Rp 8,950,000.00", "Potongan": "Rp 236,000.00", "Netto": "Rp 8,714,000.00", "Tipe": "Non-Shift", "ArrUntek": [
+            { "No": 47, "Nama Karyawan": "I Nyoman Suwitra", "Job Title": "Petugas Gudang BBM", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0815 2741 3671", "Email": "putualit0507@gmail.com", "Address": "Karya Makmur", "Bruto": "Rp 8,950,000.00", "Potongan": "Rp 236,000.00", "Netto": "Rp 8,714,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Upah Lembur", "val": "Rp 3,950,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 108,096" },
-            { "No": 48, "Nama Karyawan": "I Putu Muryanto", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "Operation Planning", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0852 9948 4010", "Email": "iputumuryanto@gmail.com", "Address": "Desa Kami Wangi", "Bruto": "Rp 9,050,000.00", "Potongan": "Rp 240,000.00", "Netto": "Rp 8,810,000.00", "Tipe": "Non-Shift", "ArrUntek": [
+            { "No": 48, "Nama Karyawan": "I Putu Muryanto", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "Operation Planning", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0852 9948 4010", "Email": "iputumuryanto@gmail.com", "Address": "Desa Kami Wangi", "Bruto": "Rp 9,050,000.00", "Potongan": "Rp 240,000.00", "Netto": "Rp 8,810,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Upah Lembur", "val": "Rp 4,050,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 112,096" },
-            { "No": 49, "Nama Karyawan": "Siti Aisyah Dg Masese", "Job Title": "Sekretaris Field Manager", "Divisi / Fungsi": "Field Manager", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0852 9990 3050", "Email": "aisyahdgmasese@gmail.com", "Address": "Desa Slamet Harjo", "Bruto": "Rp 11,500,000.00", "Potongan": "Rp 350,000.00", "Netto": "Rp 11,150,000.00", "Tipe": "Non-Shift", "ArrUntek": [
+            { "No": 49, "Nama Karyawan": "Siti Aisyah Dg Masese", "Job Title": "Sekretaris Field Manager", "Divisi / Fungsi": "Field Manager", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0852 9990 3050", "Email": "aisyahdgmasese@gmail.com", "Address": "Desa Slamet Harjo", "Bruto": "Rp 11,500,000.00", "Potongan": "Rp 350,000.00", "Netto": "Rp 11,150,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Upah Lembur", "val": "Rp 6,500,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 222,096" },
-            { "No": 50, "Nama Karyawan": "Dewi Khoirunnisa", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "Finance", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0852 2277 7759", "Email": "dkho.nisa@gmail.com", "Address": "Desa Tirta Kencana", "Bruto": "Rp 9,000,000.00", "Potongan": "Rp 238,000.00", "Netto": "Rp 8,762,000.00", "Tipe": "Non-Shift", "ArrUntek": [
+            { "No": 50, "Nama Karyawan": "Dewi Khoirunnisa", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "Finance", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0852 2277 7759", "Email": "dkho.nisa@gmail.com", "Address": "Desa Tirta Kencana", "Bruto": "Rp 9,000,000.00", "Potongan": "Rp 238,000.00", "Netto": "Rp 8,762,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Upah Lembur", "val": "Rp 4,000,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 110,096" },
-            { "No": 51, "Nama Karyawan": "Eka Nurjannah", "Job Title": "Petugas Admin III CSR", "Divisi / Fungsi": "Plan & Eval", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0813 5606 3646", "Email": "ekaelf85@gmail.com", "Address": "Desa Mulyo Harjo", "Bruto": "Rp 8,920,000.00", "Potongan": "Rp 234,000.00", "Netto": "Rp 8,686,000.00", "Tipe": "Non-Shift", "ArrUntek": [
+            { "No": 51, "Nama Karyawan": "Eka Nurjannah", "Job Title": "Petugas Admin III CSR", "Divisi / Fungsi": "Plan & Eval", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0813 5606 3646", "Email": "ekaelf85@gmail.com", "Address": "Desa Mulyo Harjo", "Bruto": "Rp 8,920,000.00", "Potongan": "Rp 234,000.00", "Netto": "Rp 8,686,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Upah Lembur", "val": "Rp 3,920,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 106,096" },
-            { "No": 52, "Nama Karyawan": "Findy Handayani", "Job Title": "Petugas Admin II", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0815 2380 7004", "Email": "findyhandayani08@gmail.com", "Address": "Desa Bakung", "Bruto": "Rp 8,680,000.00", "Potongan": "Rp 218,000.00", "Netto": "Rp 8,462,000.00", "Tipe": "Non-Shift", "ArrUntek": [
+            { "No": 52, "Nama Karyawan": "Findy Handayani", "Job Title": "Petugas Admin II", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0815 2380 7004", "Email": "findyhandayani08@gmail.com", "Address": "Desa Bakung", "Bruto": "Rp 8,680,000.00", "Potongan": "Rp 218,000.00", "Netto": "Rp 8,462,000.00", "Tipe": "Shift", "ArrUntek": [
                 {"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"},
                 {"label": "- Upah Lembur", "val": "Rp 3,680,000"}
             ], "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 90,096" }
@@ -693,14 +693,13 @@
             renderTimesheetTable(filtered);
         }
 
-        // PEMBACAAN 100% AKURAT SESUAI RENTANG TANGGAL DOKUMEN EXCEL (16 JUN - 15 JUL 2026)
+        // PEMBACAAN 100% AKURAT SESUAI MASTER EXCEL (SISTEM KERJA SHIFT)
         function showTimesheetLog(empNo) {
             const emp = employeesData.find(e => e["No"] === empNo);
             if (!emp) return;
             document.getElementById('timesheetModalTitle').innerHTML = `<i class="fa-solid fa-file-excel mr-2"></i> Kertas Kerja Absen & Lembur (${emp["Tipe"]}): ${emp["Nama Karyawan"]}`;
             const content = document.getElementById('timesheetModalContent');
             
-            // Generate 30 rows matching exact excel date sequence (16 Jun 2026 to 15 Jul 2026)
             const startDate = new Date(2026, 5, 16);
             const daysNames = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
             const monthsNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
@@ -713,11 +712,10 @@
                 let dayStr = currDate.getDate().toString().padStart(2, '0') + '-' + monthsNames[currDate.getMonth()] + '-' + currDate.getFullYear().toString().slice(-2);
                 let dayName = daysNames[currDate.getDay()];
                 let kodeHari = (dayName === 'Minggu' || dayName === 'Sabtu') ? 'L' : 'B';
-                let absenCode = (dayName === 'Minggu') ? 'OFF' : (emp["Tipe"] === 'Shift' ? (i % 2 === 0 ? 'P' : 'M') : 'P');
+                let absenCode = (dayName === 'Minggu') ? 'OFF' : (i % 2 === 0 ? 'P' : 'M');
                 
-                // Matching specific test case for Sujianto Batias on 20-Jun-26 (Baris 20 Excel)
                 let startOT = '-'; let finishOT = '-'; let aktOT = '-'; let konvOT = '-';
-                if (emp["Nama Karyawan"] === "Sujianto Batias" && i === 4) { // 20-Jun-26
+                if (emp["Nama Karyawan"] === "Sujianto M. Batias" && i === 4) { // 20-Jun-26
                     startOT = '19:00'; finishOT = '01:00'; aktOT = '6.00'; konvOT = '11.50';
                 } else if (kodeHari === 'L' && i % 3 === 0) {
                     startOT = '08:00'; finishOT = '13:00'; aktOT = '5.00'; konvOT = '7.50';
@@ -795,7 +793,7 @@
                 tr.innerHTML = `
                     <td class="p-3 font-medium">${index + 1}</td>
                     <td class="p-3 font-semibold">${emp["Nama Karyawan"]}</td>
-                    <td class="p-3">${emp["Job Title"]} (${emp["Tipe"]})</td>
+                    <td class="p-3">${emp["Job Title"]} <span class="text-blue-600 font-medium">(${emp["Tipe"]})</span></td>
                     <td class="p-3">${emp["Divisi / Fungsi"]}</td>
                     <td class="p-3">${emp["Bruto"]}</td>
                     <td class="p-3">${emp["Potongan"]}</td>
