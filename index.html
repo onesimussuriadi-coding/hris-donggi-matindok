@@ -165,7 +165,7 @@
                 <p class="text-gray-500 text-sm max-w-md mx-auto">Modul pencatatan kehadiran dan lembur tenaga kerja alih daya sedang dalam tahap penyiapan.</p>
             </div>
 
-            <!-- HALAMAN 4: ENGINE PAYROLL (Dinamis 52 Karyawan) -->
+            <!-- HALAMAN 4: ENGINE PAYROLL (52 Karyawan Lengkap) -->
             <div id="tab-payroll" class="hidden space-y-6">
                 <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
                     <h3 class="text-xl font-bold text-blue-900">Engine Payroll & Dashboard Upah Bulanan</h3>
@@ -204,9 +204,7 @@
                                     <th class="p-3 text-center">Aksi Slip</th>
                                 </tr>
                             </thead>
-                            <tbody id="payrollTableBody" class="divide-y divide-gray-100 text-gray-700">
-                                <!-- Dimuat otomatis via script -->
-                            </tbody>
+                            <tbody id="payrollTableBody" class="divide-y divide-gray-100 text-gray-700"></tbody>
                         </table>
                     </div>
                 </div>
@@ -231,7 +229,7 @@
         </div>
     </div>
 
-    <!-- MODAL SLIP GAJI INDIVIDUAL -->
+    <!-- MODAL SLIP GAJI & DOWNLOAD PDF -->
     <div id="slipModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden border border-gray-100">
             <div class="bg-emerald-800 px-6 py-4 flex justify-between items-center text-white">
@@ -240,15 +238,17 @@
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <div class="p-6 space-y-4 text-sm" id="slipModalContent"></div>
+            <div class="p-6 space-y-4 text-sm max-h-[70vh] overflow-y-auto" id="slipModalContent"></div>
             <div class="bg-gray-50 px-6 py-3 border-t border-gray-100 flex justify-between items-center">
-                <span class="text-xs text-emerald-700 font-semibold"><i class="fa-solid fa-lock"></i> Protected & Encrypted Slip</span>
-                <button onclick="closeSlipModal()" class="bg-slate-800 hover:bg-slate-900 text-white px-5 py-2 rounded-xl text-sm font-medium transition-all">Tutup</button>
+                <button onclick="printSlipPDF()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-medium transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-file-pdf"></i> Download / Cetak PDF
+                </button>
+                <button onclick="closeSlipModal()" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-medium transition-all">Tutup</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT -->
+    <!-- SCRIPT UTAMA -->
     <script>
         const employeesData = [
             { "No": 1, "Nama Karyawan": "Sujianto Batias", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9442 1574", "Email": "sujiantobatiasmtd@gmail.com", "Address": "Desa Noge Dusun II", "Bruto": "Rp 8,599,130.00", "Potongan": "Rp 217,648.98", "Netto": "Rp 8,381,481.02" },
@@ -268,7 +268,7 @@
             { "No": 15, "Nama Karyawan": "Akmal (B)", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9534 4685", "Email": "akhmalkukizunawa94@gmail.com", "Address": "Dusun II Noge", "Bruto": "Rp 9,750,000.00", "Potongan": "Rp 275,000.00", "Netto": "Rp 9,475,000.00" },
             { "No": 16, "Nama Karyawan": "Rizal Tamoreka", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0858 2371 8389", "Email": "ronitamoreka@gmail.com", "Address": "Desa Singkoyo", "Bruto": "Rp 8,450,000.00", "Potongan": "Rp 205,000.00", "Netto": "Rp 8,245,000.00" },
             { "No": 17, "Nama Karyawan": "Arianto Yahya", "Job Title": "Pemuka Operator Alat Berat", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0851 4634 2761", "Email": "-", "Address": "Desa Tolando", "Bruto": "Rp 9,850,000.00", "Potongan": "Rp 285,000.00", "Netto": "Rp 9,565,000.00" },
-            { "No": 18, "Nama Karyawan": "Marjan Karim", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0822 5989 6633", "Email": "marjankarim205@gmail.com", "Address": "Desa Nonong", "Bruto": "Rp 8,700,000.00", "Potongan": "Rp 220,000.00", "Netto": "Rp 8,480,000.00" },
+            { "No": 18, "Nama Karyawan": "Marjan Karim", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0822 5989 6633", "Email": "marjankarim205@gmail.com", "Address": "Desa Nonong", "Bruto": "Rp 8,056,072.00", "Potongan": "Rp 212,219.00", "Netto": "Rp 7,843,853.00" },
             { "No": 19, "Nama Karyawan": "Kasman", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMA/Sederajat", "Mobile": "0858 2511 8920", "Email": "kasmanmaho@gmail.com", "Address": "Kuanto", "Bruto": "Rp 8,650,000.00", "Potongan": "Rp 215,000.00", "Netto": "Rp 8,435,000.00" },
             { "No": 20, "Nama Karyawan": "Lukman Tasakka", "Job Title": "Pemuka Operator Alat Berat", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SD/Sederajat", "Mobile": "0858 2511 8937", "Email": "-", "Address": "Dusun III Kuantok", "Bruto": "Rp 9,100,000.00", "Potongan": "Rp 225,000.00", "Netto": "Rp 8,875,000.00" },
             { "No": 21, "Nama Karyawan": "I Nengah Darsana", "Job Title": "Pemuka Operator Alat Berat", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMP/Sederajat", "Mobile": "0813 4115 4439", "Email": "i.ketut.margi@gmail.com", "Address": "Desa Kamiwangi", "Bruto": "Rp 9,150,000.00", "Potongan": "Rp 228,000.00", "Netto": "Rp 8,922,000.00" },
@@ -291,7 +291,7 @@
             { "No": 38, "Nama Karyawan": "Sukardi Jalisingi", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMP/Sederajat", "Mobile": "0853 9509 1111", "Email": "Adiismon2@gmail.com", "Address": "Jalan Samratulangi", "Bruto": "Rp 8,420,000.00", "Potongan": "Rp 203,000.00", "Netto": "Rp 8,217,000.00" },
             { "No": 39, "Nama Karyawan": "Yotam", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0813 5513 4043", "Email": "yotamocey76@gmail.com", "Address": "Desa Bukti Markati", "Bruto": "Rp 9,320,000.00", "Potongan": "Rp 234,000.00", "Netto": "Rp 9,086,000.00" },
             { "No": 40, "Nama Karyawan": "Thamar Thalib Mbau", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0821 9689 0897", "Email": "thamar.tm90@gmail.com", "Address": "Desa Tirta Kencana", "Bruto": "Rp 9,780,000.00", "Potongan": "Rp 278,000.00", "Netto": "Rp 9,502,000.00" },
-            { "No": 41, "Nama Karyawan": "Arie Kurniawan", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0812 4182 4848", "Email": "ariekurniawan4683@gmail.com", "Address": "Desa Tirta Jaya", "Bruto": "Rp 9,420,000.00", "Potongan": "Rp 243,000.00", "Netto": "Rp 9,177,000.00" },
+            { "No": 41, "Nama Karyawan": "Arie Kurniawan", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE / Shift", "Location": "Donggi Matindok Field", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0812 4182 4848", "Email": "ariekurniawan4683@gmail.com", "Address": "Desa Tirta Jaya", "Bruto": "Rp 7,979,510.00", "Potongan": "Rp 211,453.00", "Netto": "Rp 7,768,057.00" },
             { "No": 42, "Nama Karyawan": "Eko Wiyono", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0853 9746 7886", "Email": "yonodonggi57@gmail.com", "Address": "Desa Bone Bae", "Bruto": "Rp 9,360,000.00", "Potongan": "Rp 237,000.00", "Netto": "Rp 9,123,000.00" },
             { "No": 43, "Nama Karyawan": "Fajriadi", "Job Title": "Pemuka Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0852 4259 7695", "Email": "fajriabenk08@gmail.com", "Address": "Desa Mansahang", "Bruto": "Rp 9,680,000.00", "Potongan": "Rp 268,000.00", "Netto": "Rp 9,412,000.00" },
             { "No": 44, "Nama Karyawan": "Jumalik H. Latungka", "Job Title": "Petugas Fire & Safety", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0858 2358 1803", "Email": "jumalikhlatungka@gmail.com", "Address": "Desa Kayowa", "Bruto": "Rp 9,340,000.00", "Potongan": "Rp 236,000.00", "Netto": "Rp 9,104,000.00" },
@@ -371,9 +371,9 @@
                     <td class="p-3 font-semibold">${emp["Nama Karyawan"]}</td>
                     <td class="p-3">${emp["Job Title"]}</td>
                     <td class="p-3">${emp["Divisi / Fungsi"]}</td>
-                    <td class="p-3">${emp["Bruto"] || 'Rp 9,000,000.00'}</td>
-                    <td class="p-3">${emp["Potongan"] || 'Rp 230,000.00'}</td>
-                    <td class="p-3 font-bold text-emerald-700">${emp["Netto"] || 'Rp 8,770,000.00'}</td>
+                    <td class="p-3">${emp["Bruto"]}</td>
+                    <td class="p-3">${emp["Potongan"]}</td>
+                    <td class="p-3 font-bold text-emerald-700">${emp["Netto"]}</td>
                     <td class="p-3 text-center">
                         <button onclick="showSlip(${emp['No']})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded text-[11px] font-medium shadow-xs">
                             <i class="fa-solid fa-file-invoice mr-1"></i> Buka Slip
@@ -418,27 +418,65 @@
         function showSlip(empNo) {
             const emp = employeesData.find(e => e["No"] === empNo);
             if (!emp) return;
-            document.getElementById('slipModalTitle').textContent = `Slip Gaji: ${emp["Nama Karyawan"]}`;
+            document.getElementById('slipModalTitle').innerHTML = `<i class="fa-solid fa-file-invoice-dollar mr-2"></i> Slip Gaji: ${emp["Nama Karyawan"]}`;
             const content = document.getElementById('slipModalContent');
             content.innerHTML = `
-                <div class="space-y-2 text-xs bg-slate-50 p-4 rounded-xl border border-gray-100">
-                    <div class="flex justify-between"><span class="text-gray-500">Jabatan:</span><span class="font-semibold">${emp["Job Title"]}</span></div>
-                    <div class="flex justify-between"><span class="text-gray-500">Divisi / Fungsi:</span><span class="font-semibold">${emp["Divisi / Fungsi"]}</span></div>
-                    <div class="flex justify-between"><span class="text-gray-500">Kontraktor:</span><span class="font-semibold">PT Sentral Sari Jaya</span></div>
-                    <div class="flex justify-between"><span class="text-gray-500">Lokasi Kerja:</span><span class="font-semibold">${emp["Location"]} (Zona 13)</span></div>
-                </div>
-                <div class="space-y-2 pt-2 border-t border-gray-100 text-sm">
-                    <div class="flex justify-between font-medium"><span>Gaji Bruto:</span><span>${emp["Bruto"] || 'Rp 9,000,000.00'}</span></div>
-                    <div class="flex justify-between font-medium text-red-600"><span>Total Potongan (JHT/BPJS/PΦ):</span><span>-${emp["Potongan"] || 'Rp 230,000.00'}</span></div>
-                    <div class="flex justify-between font-bold text-base pt-2 border-t border-gray-200 text-emerald-700"><span>Gaji Netto (Diterima):</span><span>${emp["Netto"] || 'Rp 8,770,000.00'}</span></div>
+                <div id="printableSlip" class="space-y-4 p-4 bg-white text-gray-800">
+                    <div class="text-center border-b pb-3">
+                        <h4 class="font-bold text-sm">PT SENTRAL SARI JAYA</h4>
+                        <p class="text-[10px] text-gray-500">General Contractor and Supplier | Field Donggi Matindok (Zona 13)</p>
+                        <p class="text-xs font-semibold text-blue-900 mt-1">SLIP UPAH TENAGA KERJA</p>
+                        <p class="text-[10px] text-gray-500">Periode: 16 Juni 2026 s/d 15 Juli 2026</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-2 text-xs bg-slate-50 p-3 rounded-lg">
+                        <div><span class="text-gray-500">Nama Pekerja:</span> <br/><strong class="text-gray-900">${emp["Nama Karyawan"]}</strong></div>
+                        <div><span class="text-gray-500">Jabatan:</span> <br/><strong class="text-gray-900">${emp["Job Title"]}</strong></div>
+                        <div><span class="text-gray-500">Divisi / Fungsi:</span> <br/><strong class="text-gray-900">${emp["Divisi / Fungsi"]}</strong></div>
+                        <div><span class="text-gray-500">Lokasi Penempatan:</span> <br/><strong class="text-gray-900">${emp["Location"]}</strong></div>
+                    </div>
+
+                    <div class="space-y-1.5 text-xs">
+                        <div class="flex justify-between font-semibold border-b pb-1"><span>I. UPAH TETAP (UT)</span><span>Rp 3,277,547</span></div>
+                        <div class="flex justify-between text-gray-600 pl-2"><span>- Upah Pokok (30 Hari)</span><span>Rp 2,458,160</span></div>
+                        <div class="flex justify-between text-gray-600 pl-2"><span>- TAUP (30 Hari)</span><span>Rp 819,387</span></div>
+                        
+                        <div class="flex justify-between font-semibold border-b pt-2 pb-1"><span>II. UPAH TIDAK TETAP & LEMBUR</span><span>Aktif</span></div>
+                        
+                        <div class="flex justify-between font-bold text-blue-900 bg-blue-50 p-2 rounded mt-2">
+                            <span>GAJI BRUTO (I + II):</span>
+                            <span>${emp["Bruto"]}</span>
+                        </div>
+
+                        <div class="flex justify-between font-semibold border-b pt-2 pb-1"><span>III. POTONGAN</span><span>${emp["Potongan"]}</span></div>
+                        <div class="flex justify-between text-gray-600 pl-2"><span>- BPJS JHT, JP, Kesehatan & PPh 21</span><span>Sesuai Ketentuan</span></div>
+                        
+                        <div class="flex justify-between font-extrabold text-emerald-800 bg-emerald-50 p-2.5 rounded-lg text-sm mt-3 border border-emerald-200">
+                            <span>UPAH DITERIMA BERSIH (NETTO):</span>
+                            <span>${emp["Netto"]}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center pt-4 text-[11px] text-gray-500 border-t">
+                        <div><span>Luwuk, 23 Juli 2026</span><br/><strong>PT Sentral Sari Jaya</strong></div>
+                        <div class="text-right"><span>Penerima,</span><br/><strong class="text-gray-900">${emp["Nama Karyawan"]}</strong></div>
+                    </div>
                 </div>
             `;
-            document.getElementById('slipModalTitle').innerHTML = `<i class="fa-solid fa-file-invoice-dollar mr-2"></i> Slip Gaji: ${emp["Nama Karyawan"]}`;
             document.getElementById('slipModal').classList.remove('hidden');
         }
 
         function closeSlipModal() {
             document.getElementById('slipModal').classList.add('hidden');
+        }
+
+        function printSlipPDF() {
+            const printContent = document.getElementById('printableSlip').innerHTML;
+            const originalBody = document.body.innerHTML;
+            document.body.innerHTML = printContent;
+            window.print();
+            document.body.innerHTML = originalBody;
+            location.reload();
         }
     </script>
 </body>
