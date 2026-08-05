@@ -9,6 +9,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
+        @media print {
+            body * { visibility: hidden; }
+            #printableSlip, #printableSlip * { visibility: visible; }
+            #printableSlip { position: absolute; left: 0; top: 0; width: 100%; }
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 flex h-screen overflow-hidden">
@@ -165,13 +170,28 @@
                 <p class="text-gray-500 text-sm max-w-md mx-auto">Modul pencatatan kehadiran dan lembur tenaga kerja alih daya sedang dalam tahap penyiapan.</p>
             </div>
 
-            <!-- HALAMAN 4: ENGINE PAYROLL (52 Karyawan Lengkap) -->
+            <!-- HALAMAN 4: ENGINE PAYROLL (Dilengkapi Kontrol Tampilan ALL / NON) -->
             <div id="tab-payroll" class="hidden space-y-6">
-                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                    <h3 class="text-xl font-bold text-blue-900">Engine Payroll & Dashboard Upah Bulanan</h3>
-                    <p class="text-xs text-gray-500 mt-1">PT Pertamina EP Regional 4 Zona 13 - Donggi Matindok Field</p>
+                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-blue-900">Engine Payroll & Dashboard Upah Bulanan</h3>
+                            <p class="text-xs text-gray-500 mt-1">PT Pertamina EP Regional 4 Zona 13 - Donggi Matindok Field</p>
+                        </div>
+                        <!-- Tombol Kontrol Tampilan All / Non / Nama -->
+                        <div class="flex items-center gap-3 w-full md:w-auto">
+                            <select id="payrollViewControl" onchange="handlePayrollViewChange()" class="bg-blue-50 border border-blue-200 text-blue-900 text-xs font-semibold rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                                <option value="non">📁 Status: Tutup Semua (Non)</option>
+                                <option value="all">📂 Status: Tampilkan Semua (All 52)</option>
+                            </select>
+                            <div class="relative w-full md:w-64">
+                                <input type="text" id="payrollSearchInput" onkeyup="filterPayrollTable()" placeholder="Cari nama karyawan..." class="bg-white border border-gray-200 text-gray-700 text-xs rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pl-8">
+                                <i class="fa-solid fa-search absolute left-3 top-3 text-gray-400 text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div class="bg-slate-50 border-l-4 border-blue-600 p-4 rounded-xl">
                             <p class="text-xs text-gray-500 font-medium">Total Tenaga Kerja</p>
                             <h4 class="text-lg font-bold text-blue-900 mt-1">52 Orang</h4>
@@ -190,7 +210,8 @@
                         </div>
                     </div>
 
-                    <div class="mt-6 overflow-x-auto">
+                    <!-- TABEL PAYROLL -->
+                    <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse text-xs">
                             <thead>
                                 <tr class="bg-blue-900 text-white uppercase text-[10px]">
@@ -229,7 +250,7 @@
         </div>
     </div>
 
-    <!-- MODAL SLIP GAJI DETIL (FORMAT RESMI PT SSJ) -->
+    <!-- MODAL SLIP GAJI & DOWNLOAD PDF -->
     <div id="slipModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-xl overflow-hidden border border-gray-100">
             <div class="bg-emerald-800 px-6 py-4 flex justify-between items-center text-white">
@@ -239,7 +260,6 @@
                 </button>
             </div>
             
-            <!-- KONTEN SLIP GAJI YANG AKAN DICETAK/PDF -->
             <div class="p-6 space-y-4 text-xs max-h-[70vh] overflow-y-auto bg-gray-50" id="slipModalContent"></div>
             
             <div class="bg-white px-6 py-3 border-t border-gray-100 flex justify-between items-center">
@@ -311,7 +331,7 @@
         document.addEventListener("DOMContentLoaded", () => {
             populateFilter(employeesData);
             renderTable(employeesData);
-            renderPayrollTable(employeesData);
+            renderPayrollTable([]); // Awal load tertutup (non) agar dashboard bersih
         });
 
         function switchTab(tabId) {
@@ -366,6 +386,12 @@
         function renderPayrollTable(data) {
             const tbody = document.getElementById('payrollTableBody');
             tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-gray-400 italic">Daftar tertutup (Non). Pilih "Tampilkan Semua (All)" atau cari nama karyawan pada kolom di atas.</td></tr>`;
+                return;
+            }
+
             data.forEach((emp, index) => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-gray-50";
@@ -385,6 +411,32 @@
                 `;
                 tbody.appendChild(tr);
             });
+        }
+
+        // Kontrol Tombol Pilihan All / Non / Nama di Payroll
+        function handlePayrollViewChange() {
+            const mode = document.getElementById('payrollViewControl').value;
+            const searchVal = document.getElementById('payrollSearchInput').value.toLowerCase();
+
+            if (mode === 'non') {
+                document.getElementById('payrollSearchInput').value = '';
+                renderPayrollTable([]);
+            } else if (mode === 'all') {
+                renderPayrollTable(employeesData);
+            }
+        }
+
+        function filterPayrollTable() {
+            const searchVal = document.getElementById('payrollSearchInput').value.toLowerCase();
+            if (searchVal.trim() === '') {
+                renderPayrollTable([]);
+                document.getElementById('payrollViewControl').value = 'non';
+                return;
+            }
+            
+            // Set otomatis ke mode pencarian jika mengetik nama
+            const filtered = employeesData.filter(emp => emp["Nama Karyawan"].toLowerCase().includes(searchVal) || emp["Job Title"].toLowerCase().includes(searchVal));
+            renderPayrollTable(filtered);
         }
 
         function filterTable() {
@@ -424,7 +476,6 @@
             document.getElementById('slipModalTitle').innerHTML = `<i class="fa-solid fa-file-invoice-dollar mr-2"></i> Slip Gaji (${emp["Tipe"]}): ${emp["Nama Karyawan"]}`;
             const content = document.getElementById('slipModalContent');
             
-            // Format detil slip resmi sesuai template PDF Shift / Non-Shift PT Sentral Sari Jaya
             content.innerHTML = `
                 <div id="printableSlip" class="space-y-3 p-4 bg-white text-gray-800 border rounded-lg shadow-xs">
                     <div class="text-center border-b pb-3">
@@ -481,6 +532,7 @@
                     </div>
                 </div>
             `;
+            document.getElementById('slipModal').classList.add('hidden'); // hidden sementara sebelum klik slip
             document.getElementById('slipModal').classList.remove('hidden');
         }
 
@@ -488,13 +540,9 @@
             document.getElementById('slipModal').classList.add('hidden');
         }
 
+        // Fungsi Cetak PDF yang Aman dan Langsung Memanggil Dialog Save as PDF Printer
         function printSlipPDF() {
-            const printContent = document.getElementById('printableSlip').innerHTML;
-            const originalBody = document.body.innerHTML;
-            document.body.innerHTML = `<div style="padding: 20px; font-family: Arial, sans-serif;">${printContent}</div>`;
             window.print();
-            document.body.innerHTML = originalBody;
-            location.reload();
         }
     </script>
 </body>
