@@ -158,13 +158,63 @@
                 </div>
             </div>
 
-            <!-- HALAMAN 3: TIME SHEET & ABSEN -->
-            <div id="tab-timesheet" class="hidden bg-white p-12 rounded-2xl border border-gray-100 text-center space-y-3">
-                <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mx-auto">
-                    <i class="fa-solid fa-calendar-days"></i>
+            <!-- HALAMAN 3: TIME SHEET & ABSEN (BARU DIKEMBANGKAN) -->
+            <div id="tab-timesheet" class="hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-blue-900"><i class="fa-solid fa-calendar-days mr-2"></i> Laporan Absensi & Rekap Lembur Bulanan</h3>
+                            <p class="text-xs text-gray-500 mt-1">Periode: 16 Juni 2026 s/d 15 Juli 2026 | Zona 13 - Field Donggi Matindok</p>
+                        </div>
+                        <div class="flex items-center gap-3 w-full md:w-auto">
+                            <select id="timesheetViewControl" onchange="handleTimesheetViewChange()" class="bg-blue-50 border border-blue-200 text-blue-900 text-xs font-semibold rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                                <option value="non">📁 Status: Tutup Semua (Non)</option>
+                                <option value="all">📂 Status: Tampilkan Semua (All 52)</option>
+                            </select>
+                            <div class="relative w-full md:w-64">
+                                <input type="text" id="timesheetSearchInput" onkeyup="filterTimesheetTable()" placeholder="Cari nama karyawan..." class="bg-white border border-gray-200 text-gray-700 text-xs rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pl-8">
+                                <i class="fa-solid fa-search absolute left-3 top-3 text-gray-400 text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="bg-slate-50 border-l-4 border-emerald-600 p-4 rounded-xl">
+                            <p class="text-xs text-gray-500 font-medium">Total Hari Kerja Efektif</p>
+                            <h4 class="text-lg font-bold text-emerald-900 mt-1">20 - 25 Hari</h4>
+                        </div>
+                        <div class="bg-slate-50 border-l-4 border-emerald-600 p-4 rounded-xl">
+                            <p class="text-xs text-gray-500 font-medium">Rata-rata Kehadiran</p>
+                            <h4 class="text-lg font-bold text-emerald-900 mt-1">100% (Aktif)</h4>
+                        </div>
+                        <div class="bg-slate-50 border-l-4 border-emerald-600 p-4 rounded-xl">
+                            <p class="text-xs text-gray-500 font-medium">Total Jam Lembur Terakumulasi</p>
+                            <h4 class="text-lg font-bold text-emerald-900 mt-1">± 3,450 Jam</h4>
+                        </div>
+                        <div class="bg-slate-50 border-l-4 border-emerald-600 p-4 rounded-xl">
+                            <p class="text-xs text-gray-500 font-medium">Status Verifikasi HSSE</p>
+                            <h4 class="text-lg font-bold text-emerald-900 mt-1"><i class="fa-solid fa-circle-check text-emerald-600"></i> Disetujui</h4>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-emerald-800 text-white uppercase text-[10px]">
+                                    <th class="p-3">No</th>
+                                    <th class="p-3">Nama Karyawan</th>
+                                    <th class="p-3">Jabatan / Tipe</th>
+                                    <th class="p-3">Divisi</th>
+                                    <th class="p-3 text-center">Kehadiran</th>
+                                    <th class="p-3 text-center">Jam Lembur</th>
+                                    <th class="p-3 text-center">Makan / Premi</th>
+                                    <th class="p-3 text-center">Aksi Time Sheet</th>
+                                </tr>
+                            </thead>
+                            <tbody id="timesheetTableBody" class="divide-y divide-gray-100 text-gray-700"></tbody>
+                        </table>
+                    </div>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800">Modul Time Sheet & Absen</h3>
-                <p class="text-gray-500 text-sm max-w-md mx-auto">Modul pencatatan kehadiran dan lembur tenaga kerja alih daya sedang dalam tahap penyiapan.</p>
             </div>
 
             <!-- HALAMAN 4: ENGINE PAYROLL -->
@@ -523,6 +573,7 @@
         document.addEventListener("DOMContentLoaded", () => {
             populateFilter(employeesData);
             renderTable(employeesData);
+            renderTimesheetTable([]);
             renderPayrollTable([]); 
         });
 
@@ -534,7 +585,7 @@
             document.getElementById('tab-' + tabId).classList.remove('hidden');
             document.getElementById('nav-' + tabId).className = "w-full flex items-center gap-3 px-4 py-3 bg-blue-600 text-white rounded-xl font-medium shadow-md transition-all";
             
-            const titles = { 'dashboard': 'Dashboard Utama', 'karyawan': 'Master Data Karyawan TAD', 'timesheet': 'Time Sheet & Absen', 'payroll': 'Engine Payroll' };
+            const titles = { 'dashboard': 'Dashboard Utama', 'karyawan': 'Master Data Karyawan TAD', 'timesheet': 'Laporan Absensi & Rekap Lembur', 'payroll': 'Engine Payroll' };
             document.getElementById('headerTitle').textContent = titles[tabId];
         }
 
@@ -573,6 +624,58 @@
                 `;
                 tbody.appendChild(tr);
             });
+        }
+
+        // FUNGSI RENDER TABEL TIMESHEET & LEMBUR
+        function renderTimesheetTable(data) {
+            const tbody = document.getElementById('timesheetTableBody');
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-gray-400 italic">Daftar absensi tertutup (Non). Pilih opsi "Tampilkan Semua (All)" atau cari nama karyawan pada kolom pencarian di atas.</td></tr>`;
+                return;
+            }
+
+            data.forEach((emp, index) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-50";
+                tr.innerHTML = `
+                    <td class="p-3 font-medium">${index + 1}</td>
+                    <td class="p-3 font-semibold">${emp["Nama Karyawan"]}</td>
+                    <td class="p-3">${emp["Job Title"]} <span class="text-blue-600 font-medium">(${emp["Tipe"]})</span></td>
+                    <td class="p-3">${emp["Divisi / Fungsi"]}</td>
+                    <td class="p-3 text-center"><span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">20 Hari / Full</span></td>
+                    <td class="p-3 text-center font-bold text-blue-900">Aktif Terverifikasi</td>
+                    <td class="p-3 text-center">Sesuai Rekap Zona 13</td>
+                    <td class="p-3 text-center">
+                        <button onclick="showSlip(${emp['No']})" class="bg-emerald-700 hover:bg-emerald-800 text-white px-2.5 py-1 rounded text-[11px] font-medium shadow-xs">
+                            <i class="fa-solid fa-file-lines mr-1"></i> Lihat Rincian
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function handleTimesheetViewChange() {
+            const mode = document.getElementById('timesheetViewControl').value;
+            if (mode === 'non') {
+                document.getElementById('timesheetSearchInput').value = '';
+                renderTimesheetTable([]);
+            } else if (mode === 'all') {
+                renderTimesheetTable(employeesData);
+            }
+        }
+
+        function filterTimesheetTable() {
+            const searchVal = document.getElementById('timesheetSearchInput').value.toLowerCase();
+            if (searchVal.trim() === '') {
+                renderTimesheetTable([]);
+                document.getElementById('timesheetViewControl').value = 'non';
+                return;
+            }
+            const filtered = employeesData.filter(emp => emp["Nama Karyawan"].toLowerCase().includes(searchVal) || emp["Job Title"].toLowerCase().includes(searchVal));
+            renderTimesheetTable(filtered);
         }
 
         function renderPayrollTable(data) {
@@ -663,7 +766,6 @@
             document.getElementById('slipModalTitle').innerHTML = `<i class="fa-solid fa-file-invoice-dollar mr-2"></i> Slip Gaji (${emp["Tipe"]}): ${emp["Nama Karyawan"]}`;
             const content = document.getElementById('slipModalContent');
             
-            // Generate list rincian upah tidak tetap sejajar ke kanan
             let untekHtml = '';
             emp.ArrUntek.forEach(item => {
                 untekHtml += `<div class="flex justify-between text-gray-600 pl-2"><span>${item.label}</span><span>${item.val}</span></div>`;
@@ -693,7 +795,6 @@
                         <div class="flex justify-between text-gray-600 pl-2"><span>- Upah Pokok (30 Hari)</span><span>Rp 2,458,160</span></div>
                         <div class="flex justify-between text-gray-600 pl-2"><span>- TAUP (30 Hari)</span><span>Rp 819,387</span></div>
                         
-                        <!-- II. UPAH TIDAK TETAP & LEMBUR SEJAJAR KE KANAN -->
                         <div class="flex justify-between font-bold border-b pt-2 pb-1 text-blue-900">
                             <span>II. UPAH TIDAK TETAP & LEMBUR</span>
                             <span>Rincian</span>
@@ -705,7 +806,6 @@
                             <span>${emp["Bruto"]}</span>
                         </div>
 
-                        <!-- III. POTONGAN RESMI -->
                         <div class="flex justify-between font-bold border-b pt-2 pb-1 text-red-900">
                             <span>III. POTONGAN RESMI</span>
                             <span>${emp["Potongan"]}</span>
