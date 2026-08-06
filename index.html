@@ -130,10 +130,16 @@
                     <div class="p-5 border-b border-gray-100 flex flex-col md:flex-row gap-4 justify-between items-center bg-gray-50/50">
                         <h3 class="font-bold text-gray-800 text-base">Daftar Karyawan TAD</h3>
                         <div class="flex items-center gap-3 w-full md:w-auto">
-                            <select id="divisionFilter" onchange="filterTable()" class="w-full md:w-56 bg-white border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5">
-                                <option value="">Semua Divisi / Fungsi</option>
+                            <!-- TOMBOL FILTER TAMBAHAN SHIFT & NON SHIFT -->
+                            <select id="workSystemFilter" onchange="filterTable()" class="w-full md:w-44 bg-white border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                                <option value="">Semua Sistem Kerja</option>
+                                <option value="Shift">Shift (12 Jam)</option>
+                                <option value="Non Shift">Non Shift (9 Jam)</option>
                             </select>
-                            <div class="relative w-full md:w-64">
+                            <select id="divisionFilter" onchange="filterTable()" class="w-full md:w-48 bg-white border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                                <option value="">Semua Divisi</option>
+                            </select>
+                            <div class="relative w-full md:w-56">
                                 <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Cari nama atau jabatan..." class="bg-white border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pl-9">
                                 <i class="fa-solid fa-search absolute left-3 top-3.5 text-gray-400 text-xs"></i>
                             </div>
@@ -147,7 +153,7 @@
                                     <th class="py-3 px-4">Nama Pekerja</th>
                                     <th class="py-3 px-4">Jabatan</th>
                                     <th class="py-3 px-4">Divisi / Fungsi</th>
-                                    <th class="py-3 px-4">Lokasi</th>
+                                    <th class="py-3 px-4">Sistem Kerja</th>
                                     <th class="py-3 px-4 text-center">Sisa Kontrak</th>
                                     <th class="py-3 px-4 text-center">Aksi Profil</th>
                                 </tr>
@@ -164,12 +170,15 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div>
                             <h3 class="text-xl font-bold text-blue-900"><i class="fa-solid fa-calendar-days mr-2"></i> Rekap Lembur & Man Hours (Jam Kerja)</h3>
-                            <p class="text-xs text-gray-500 mt-1">Normal: 07:00 - 16:00 (9 Jam/Hari) + Pembacaan Master Formula Excel | Zona 13 - Field Donggi Matindok</p>
+                            <p class="text-xs text-gray-500 mt-1">Shift (12 Jam - 07:00 s.d 07:00) | Non Shift (9 Jam - 07:00 s.d 16:00 Senin-Jumat) | Zona 13 - Field Donggi Matindok</p>
                         </div>
                         <div class="flex items-center gap-3 w-full md:w-auto">
-                            <select id="timesheetViewControl" onchange="handleTimesheetViewChange()" class="bg-blue-50 border border-blue-200 text-blue-900 text-xs font-semibold rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                            <!-- TOMBOL KONTROL TAMBAHAN -->
+                            <select id="timesheetSystemFilter" onchange="handleTimesheetViewChange()" class="bg-blue-50 border border-blue-200 text-blue-900 text-xs font-semibold rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5">
                                 <option value="non">📁 Status: Tutup Semua (Non)</option>
-                                <option value="all">📂 Status: Tampilkan Semua (All 52)</option>
+                                <option value="all">📂 Tampilkan Semua (All 52)</option>
+                                <option value="Shift">⚙️ Filter: Shift Saja</option>
+                                <option value="Non Shift">⚙️ Filter: Non Shift Saja</option>
                             </select>
                             <div class="relative w-full md:w-64">
                                 <input type="text" id="timesheetSearchInput" onkeyup="filterTimesheetTable()" placeholder="Cari nama karyawan..." class="bg-white border border-gray-200 text-gray-700 text-xs rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pl-8">
@@ -184,16 +193,16 @@
                             <h4 class="text-lg font-bold text-emerald-900 mt-1">16 Jun - 15 Jul 2026</h4>
                         </div>
                         <div class="bg-slate-50 border-l-4 border-emerald-600 p-4 rounded-xl">
-                            <p class="text-xs text-gray-500 font-medium">Jam Kerja Normal</p>
+                            <p class="text-xs text-gray-500 font-medium">Jam Kerja Shift</p>
+                            <h4 class="text-lg font-bold text-emerald-900 mt-1">07:00 s.d 07:00 (12 Jam)</h4>
+                        </div>
+                        <div class="bg-slate-50 border-l-4 border-emerald-600 p-4 rounded-xl">
+                            <p class="text-xs text-gray-500 font-medium">Jam Kerja Non Shift</p>
                             <h4 class="text-lg font-bold text-emerald-900 mt-1">07:00 s.d 16:00 (9 Jam)</h4>
                         </div>
                         <div class="bg-slate-50 border-l-4 border-emerald-600 p-4 rounded-xl">
-                            <p class="text-xs text-gray-500 font-medium">Sistem Kerja</p>
-                            <h4 class="text-lg font-bold text-emerald-900 mt-1">Shift / Non-Shift</h4>
-                        </div>
-                        <div class="bg-slate-50 border-l-4 border-emerald-600 p-4 rounded-xl">
-                            <p class="text-xs text-gray-500 font-medium">Status Pembacaan</p>
-                            <h4 class="text-lg font-bold text-emerald-900 mt-1"><i class="fa-solid fa-circle-check text-emerald-600"></i> Akurat & Sesuai Master</h4>
+                            <p class="text-xs text-gray-500 font-medium">Status Pengaturan</p>
+                            <h4 class="text-lg font-bold text-emerald-900 mt-1"><i class="fa-solid fa-circle-check text-emerald-600"></i> Akurat & Terpisah</h4>
                         </div>
                     </div>
 
@@ -225,9 +234,12 @@
                             <p class="text-xs text-gray-500 mt-1">PT Pertamina EP Regional 4 Zona 13 - Donggi Matindok Field</p>
                         </div>
                         <div class="flex items-center gap-3 w-full md:w-auto">
-                            <select id="payrollViewControl" onchange="handlePayrollViewChange()" class="bg-blue-50 border border-blue-200 text-blue-900 text-xs font-semibold rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                            <!-- TOMBOL KONTROL TAMBAHAN PAYROLL -->
+                            <select id="payrollSystemFilter" onchange="handlePayrollViewChange()" class="bg-blue-50 border border-blue-200 text-blue-900 text-xs font-semibold rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5">
                                 <option value="non">📁 Status: Tutup Semua (Non)</option>
-                                <option value="all">📂 Status: Tampilkan Semua (All 52)</option>
+                                <option value="all">📂 Tampilkan Semua (All 52)</option>
+                                <option value="Shift">⚙️ Filter: Shift Saja</option>
+                                <option value="Non Shift">⚙️ Filter: Non Shift Saja</option>
                             </select>
                             <div class="relative w-full md:w-64">
                                 <input type="text" id="payrollSearchInput" onkeyup="filterPayrollTable()" placeholder="Cari nama karyawan..." class="bg-white border border-gray-200 text-gray-700 text-xs rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pl-8">
@@ -405,8 +417,8 @@
             { "No": 14, "Nama Karyawan": "Mustamar Dg Magangka", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0853 4200 8134", "Email": "mustamar713@gmail.com", "Address": "Desa Noge", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Premi Shift", "val": "Rp 511,525"}, {"label": "- Upah Lembur", "val": "Rp 4,350,000"}], "TotalUntek": 5461525, "BrutoVal": 8739072, "Bruto": "Rp 8,739,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 117,096", "TotalPotongan": 245000, "Potongan": "Rp 245,000.00", "NettoVal": 8494072, "Netto": "Rp 8,494,072.00", "OTHours": 38.00 },
             { "No": 15, "Nama Karyawan": "Akmal (B)", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9534 4685", "Email": "akhmalkukizunawa94@gmail.com", "Address": "Dusun II Noge", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Premi Shift", "val": "Rp 511,525"}, {"label": "- Upah Lembur", "val": "Rp 4,550,000"}], "TotalUntek": 5661525, "BrutoVal": 8939072, "Bruto": "Rp 8,939,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 147,096", "TotalPotongan": 275000, "Potongan": "Rp 275,000.00", "NettoVal": 8664072, "Netto": "Rp 8,664,072.00", "OTHours": 39.00 },
             { "No": 16, "Nama Karyawan": "Rizal Tamoreka", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0858 2371 8389", "Email": "ronitamoreka@gmail.com", "Address": "Desa Singkoyo", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur", "val": "Rp 3,450,000"}], "TotalUntek": 4050000, "BrutoVal": 7327547, "Bruto": "Rp 7,327,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 77,096", "TotalPotongan": 205000, "Potongan": "Rp 205,000.00", "NettoVal": 7122547, "Netto": "Rp 7,122,547.00", "OTHours": 32.00 },
-            { "No": 17, "Nama Karyawan": "Arianto Yahya", "Job Title": "Pemuka Operator Alat Berat", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0851 4634 2761", "Email": "-", "Address": "Desa Tolando", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Premi Shift", "val": "Rp 511,525"}, {"label": "- Upah Lembur", "val": "Rp 4,650,000"}], "TotalUntek": 5761525, "BrutoVal": 9039072, "Bruto": "Rp 9,039,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 157,096", "TotalPotongan": 285000, "Potongan": "Rp 285,000.00", "NettoVal": 8754072, "Netto": "Rp 8,754,072.00", "OTHours": 40.00 },
-            { "No": 18, "Nama Karyawan": "Marjan Karim", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0822 5989 6633", "Email": "marjankarim205@gmail.com", "Address": "Desa Nonong", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur", "val": "Rp 3,978,525"}, {"label": "- Makan Lembur", "val": "Rp 200,000"}], "TotalUntek": 4778525, "BrutoVal": 8056072, "Bruto": "Rp 8,056,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 84,315", "TotalPotongan": 212219, "Potongan": "Rp 212,219.00", "NettoVal": 7843853, "Netto": "Rp 7,843,853.00", "OTHours": 35.00 },
+            { "No": 17, "Nama Karyawan": "Arianto Yahya", "Job Title": "Pemuka Operator Alat Berat", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0851 4634 2761", "Email": "-", "Address": "Desa Tolando", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur (Weekend)", "val": "Rp 2,500,000"}], "TotalUntek": 3100000, "BrutoVal": 6377547, "Bruto": "Rp 6,377,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 95,000", "TotalPotongan": 222904, "Potongan": "Rp 222,904.00", "NettoVal": 6154643, "Netto": "Rp 6,154,643.00", "OTHours": 20.00 },
+            { "No": 18, "Nama Karyawan": "Marjan Karim", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0822 5989 6633", "Email": "marjankarim205@gmail.com", "Address": "Desa Nonong", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur (Weekend)", "val": "Rp 2,800,000"}], "TotalUntek": 3400000, "BrutoVal": 6677547, "Bruto": "Rp 6,677,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 98,000", "TotalPotongan": 225904, "Potongan": "Rp 225,904.00", "NettoVal": 6451643, "Netto": "Rp 6,451,643.00", "OTHours": 22.00 },
             { "No": 19, "Nama Karyawan": "Kasman", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMA/Sederajat", "Mobile": "0858 2511 8920", "Email": "kasmanmaho@gmail.com", "Address": "Kuanto", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur", "val": "Rp 3,650,000"}], "TotalUntek": 4250000, "BrutoVal": 7527547, "Bruto": "Rp 7,527,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 87,096", "TotalPotongan": 215000, "Potongan": "Rp 215,000.00", "NettoVal": 7312547, "Netto": "Rp 7,312,547.00", "OTHours": 33.00 },
             { "No": 20, "Nama Karyawan": "Lukman Tasakka", "Job Title": "Pemuka Operator Alat Berat", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SD/Sederajat", "Mobile": "0858 2511 8937", "Email": "-", "Address": "Dusun III Kuantok", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Premi Shift", "val": "Rp 511,525"}, {"label": "- Upah Lembur", "val": "Rp 3,900,000"}], "TotalUntek": 5011525, "BrutoVal": 8289072, "Bruto": "Rp 8,289,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 97,096", "TotalPotongan": 225000, "Potongan": "Rp 225,000.00", "NettoVal": 8064072, "Netto": "Rp 8,064,072.00", "OTHours": 34.00 },
             { "No": 21, "Nama Karyawan": "I Nengah Darsana", "Job Title": "Pemuka Operator Alat Berat", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMP/Sederajat", "Mobile": "0813 4115 4439", "Email": "i.ketut.margi@gmail.com", "Address": "Desa Kamiwangi", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Premi Shift", "val": "Rp 511,525"}, {"label": "- Upah Lembur", "val": "Rp 3,950,000"}], "TotalUntek": 5061525, "BrutoVal": 8339072, "Bruto": "Rp 8,339,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 100,096", "TotalPotongan": 228000, "Potongan": "Rp 228,000.00", "NettoVal": 8111072, "Netto": "Rp 8,111,072.00", "OTHours": 34.00 },
@@ -435,12 +447,12 @@
             { "No": 44, "Nama Karyawan": "Jumalik H. Latungka", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0858 2358 1803", "Email": "jumalikhlatungka@gmail.com", "Address": "Desa Kayowa", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Premi Shift", "val": "Rp 511,525"}, {"label": "- Upah Lembur", "val": "Rp 4,140,000"}], "TotalUntek": 5251525, "BrutoVal": 8529072, "Bruto": "Rp 8,529,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 108,096", "TotalPotongan": 236000, "Potongan": "Rp 236,000.00", "NettoVal": 8293072, "Netto": "Rp 8,293,072.00", "OTHours": 36.00 },
             { "No": 45, "Nama Karyawan": "Randianto", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0852 5583 2000", "Email": "randyogie92@gmail.com", "Address": "Desa Bakung", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Premi Shift", "val": "Rp 511,525"}, {"label": "- Upah Lembur", "val": "Rp 4,260,000"}], "TotalUntek": 5371525, "BrutoVal": 8649072, "Bruto": "Rp 8,649,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 117,096", "TotalPotongan": 245000, "Potongan": "Rp 245,000.00", "NettoVal": 8404072, "Netto": "Rp 8,404,072.00", "OTHours": 37.00 },
             { "No": 46, "Nama Karyawan": "Saiful M. Zakar", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0812 9531 4840", "Email": "saifulzakar@gmail.com", "Address": "Desa Bakung", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Premi Shift", "val": "Rp 511,525"}, {"label": "- Upah Lembur", "val": "Rp 4,280,000"}], "TotalUntek": 5391525, "BrutoVal": 8669072, "Bruto": "Rp 8,669,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 119,096", "TotalPotongan": 247000, "Potongan": "Rp 247,000.00", "NettoVal": 8422072, "Netto": "Rp 8,422,072.00", "OTHours": 37.00 },
-            { "No": 47, "Nama Karyawan": "I Nyoman Suwitra", "Job Title": "Petugas Gudang BBM", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0815 2741 3671", "Email": "putualit0507@gmail.com", "Address": "Karya Makmur", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur", "val": "Rp 3,950,000"}], "TotalUntek": 4550000, "BrutoVal": 7827547, "Bruto": "Rp 7,827,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 108,096", "TotalPotongan": 236000, "Potongan": "Rp 236,000.00", "NettoVal": 7591547, "Netto": "Rp 7,591,547.00", "OTHours": 34.00 },
-            { "No": 48, "Nama Karyawan": "I Putu Muryanto", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "Operation Planning", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0852 9948 4010", "Email": "iputumuryanto@gmail.com", "Address": "Desa Kami Wangi", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur", "val": "Rp 4,050,000"}], "TotalUntek": 4650000, "BrutoVal": 7927547, "Bruto": "Rp 7,927,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 112,096", "TotalPotongan": 240000, "Potongan": "Rp 240,000.00", "NettoVal": 7687547, "Netto": "Rp 7,687,547.00", "OTHours": 35.00 },
-            { "No": 49, "Nama Karyawan": "Siti Aisyah Dg Masese", "Job Title": "Sekretaris Field Manager", "Divisi / Fungsi": "Field Manager", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0852 9990 3050", "Email": "aisyahdgmasese@gmail.com", "Address": "Desa Slamet Harjo", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur", "val": "Rp 6,500,000"}], "TotalUntek": 7100000, "BrutoVal": 10377547, "Bruto": "Rp 10,377,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 222,096", "TotalPotongan": 350000, "Potongan": "Rp 350,000.00", "NettoVal": 10027547, "Netto": "Rp 10,027,547.00", "OTHours": 50.00 },
-            { "No": 50, "Nama Karyawan": "Dewi Khoirunnisa", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "Finance", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0852 2277 7759", "Email": "dkho.nisa@gmail.com", "Address": "Desa Tirta Kencana", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur", "val": "Rp 4,000,000"}], "TotalUntek": 4600000, "BrutoVal": 7877547, "Bruto": "Rp 7,877,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 110,096", "TotalPotongan": 238000, "Potongan": "Rp 238,000.00", "NettoVal": 7639547, "Netto": "Rp 7,639,547.00", "OTHours": 35.00 },
-            { "No": 51, "Nama Karyawan": "Eka Nurjannah", "Job Title": "Petugas Admin III CSR", "Divisi / Fungsi": "Plan & Eval", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0813 5606 3646", "Email": "ekaelf85@gmail.com", "Address": "Desa Mulyo Harjo", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur", "val": "Rp 3,920,000"}], "TotalUntek": 4520000, "BrutoVal": 7797547, "Bruto": "Rp 7,797,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 106,096", "TotalPotongan": 234000, "Potongan": "Rp 234,000.00", "NettoVal": 7563547, "Netto": "Rp 7,563,547.00", "OTHours": 34.00 },
-            { "No": 52, "Nama Karyawan": "Findy Handayani", "Job Title": "Petugas Admin II", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0815 2380 7004", "Email": "findyhandayani08@gmail.com", "Address": "Desa Bakung", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur", "val": "Rp 3,680,000"}], "TotalUntek": 4280000, "BrutoVal": 7557547, "Bruto": "Rp 7,557,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 90,096", "TotalPotongan": 218000, "Potongan": "Rp 218,000.00", "NettoVal": 7339547, "Netto": "Rp 7,339,547.00", "OTHours": 33.00 }
+            { "No": 47, "Nama Karyawan": "I Nyoman Suwitra", "Job Title": "Petugas Gudang BBM", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0815 2741 3671", "Email": "putualit0507@gmail.com", "Address": "Karya Makmur", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur (Weekend)", "val": "Rp 2,150,000"}], "TotalUntek": 2750000, "BrutoVal": 6027547, "Bruto": "Rp 6,027,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 75,000", "TotalPotongan": 202904, "Potongan": "Rp 202,904.00", "NettoVal": 5824643, "Netto": "Rp 5,824,643.00", "OTHours": 18.00 },
+            { "No": 48, "Nama Karyawan": "I Putu Muryanto", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "Operation", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0852 9948 4010", "Email": "iputumuryanto@gmail.com", "Address": "Desa Kami Wangi", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur (Weekend)", "val": "Rp 4,050,000"}], "TotalUntek": 4650000, "BrutoVal": 7927547, "Bruto": "Rp 7,927,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 112,096", "TotalPotongan": 240000, "Potongan": "Rp 240,000.00", "NettoVal": 7687547, "Netto": "Rp 7,687,547.00", "OTHours": 35.00 },
+            { "No": 49, "Nama Karyawan": "Siti Aisyah Dg Masese", "Job Title": "Sekretaris FM", "Divisi / Fungsi": "Field Manager", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0852 9990 3050", "Email": "aisyahdgmasese@gmail.com", "Address": "Desa Slamet Harjo", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur (Weekend)", "val": "Rp 6,500,000"}], "TotalUntek": 7100000, "BrutoVal": 10377547, "Bruto": "Rp 10,377,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 222,096", "TotalPotongan": 350000, "Potongan": "Rp 350,000.00", "NettoVal": 10027547, "Netto": "Rp 10,027,547.00", "OTHours": 50.00 },
+            { "No": 50, "Nama Karyawan": "Dewi Khoirunnisa", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "Finance", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0852 2277 7759", "Email": "dkho.nisa@gmail.com", "Address": "Desa Tirta Kencana", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur (Weekend)", "val": "Rp 4,000,000"}], "TotalUntek": 4600000, "BrutoVal": 7877547, "Bruto": "Rp 7,877,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 110,096", "TotalPotongan": 238000, "Potongan": "Rp 238,000.00", "NettoVal": 7639547, "Netto": "Rp 7,639,547.00", "OTHours": 35.00 },
+            { "No": 51, "Nama Karyawan": "Eka Nurjannah", "Job Title": "Petugas Admin III CSR", "Divisi / Fungsi": "Legal & Relation", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0813 5606 3646", "Email": "ekaelf85@gmail.com", "Address": "Desa Mulyo Harjo", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur (Weekend)", "val": "Rp 3,920,000"}], "TotalUntek": 4520000, "BrutoVal": 7797547, "Bruto": "Rp 7,797,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 106,096", "TotalPotongan": 234000, "Potongan": "Rp 234,000.00", "NettoVal": 7563547, "Netto": "Rp 7,563,547.00", "OTHours": 34.00 },
+            { "No": 52, "Nama Karyawan": "Findy Handayani", "Job Title": "Petugas Admin II", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0815 2380 7004", "Email": "findyhandayani08@gmail.com", "Address": "Desa Bakung", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur (Weekend)", "val": "Rp 1,500,000"}], "TotalUntek": 2100000, "BrutoVal": 5377547, "Bruto": "Rp 5,377,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 60,000", "TotalPotongan": 185904, "Potongan": "Rp 185,904.00", "NettoVal": 5191643, "Netto": "Rp 5,191,643.00", "OTHours": 15.00 }
         ];
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -487,7 +499,11 @@
                     <td class="py-3 px-4 font-semibold text-gray-900">${emp["Nama Karyawan"]}</td>
                     <td class="py-3 px-4 text-gray-600">${emp["Job Title"]}</td>
                     <td class="py-3 px-4 text-gray-600">${emp["Divisi / Fungsi"]}</td>
-                    <td class="py-3 px-4 text-gray-600">${emp["Location"]}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${emp["Tipe"] === 'Shift' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'}">
+                            ${emp["Tipe"]}
+                        </span>
+                    </td>
                     <td class="py-3 px-4 text-center"><span class="bg-blue-50 text-blue-700 font-medium text-xs px-2.5 py-1 rounded-lg">${emp["Contract Remaining"]} Hari</span></td>
                     <td class="py-3 px-4 text-center">
                         <button onclick="showDetail(${emp['No']})" class="bg-slate-100 hover:bg-slate-900 hover:text-white text-slate-700 font-medium px-3 py-1.5 rounded-lg transition-all text-xs">
@@ -499,18 +515,32 @@
             });
         }
 
+        function filterTable() {
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            const selectedDiv = document.getElementById('divisionFilter').value;
+            const selectedSystem = document.getElementById('workSystemFilter').value;
+
+            const filtered = employeesData.filter(emp => {
+                const matchSearch = emp["Nama Karyawan"].toLowerCase().includes(searchText) || emp["Job Title"].toLowerCase().includes(searchText);
+                const matchDiv = selectedDiv === "" || emp["Divisi / Fungsi"] === selectedDiv;
+                const matchSystem = selectedSystem === "" || emp["Tipe"] === selectedSystem;
+                return matchSearch && matchDiv && matchSystem;
+            });
+            renderTable(filtered);
+        }
+
         function renderTimesheetTable(data) {
             const tbody = document.getElementById('timesheetTableBody');
             tbody.innerHTML = '';
             
             if (data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-gray-400 italic">Daftar absensi tertutup (Non). Pilih opsi "Tampilkan Semua (All)" atau cari nama karyawan pada kolom pencarian di atas.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-gray-400 italic">Daftar absensi tertutup (Non). Pilih opsi "Tampilkan Semua" atau filter sistem kerja di atas.</td></tr>`;
                 return;
             }
 
             data.forEach((emp, index) => {
                 let totalOT = emp.OTHours || 35.00;
-                let normalHours = 20 * 9; // 180 Jam Normal
+                let normalHours = 20 * (emp["Tipe"] === 'Shift' ? 12 : 9); 
                 let totalManHours = normalHours + totalOT;
 
                 const tr = document.createElement('tr');
@@ -518,8 +548,8 @@
                 tr.innerHTML = `
                     <td class="p-3 font-medium">${index + 1}</td>
                     <td class="p-3 font-semibold">${emp["Nama Karyawan"]}</td>
-                    <td class="p-3">${emp["Job Title"]} <span class="text-blue-600 font-medium">(${emp["Tipe"]})</span></td>
-                    <td class="p-3 text-center"><span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded font-bold">20 Hari (180 Jam)</span></td>
+                    <td class="p-3">${emp["Job Title"]} <span class="px-2 py-0.5 rounded text-[10px] font-bold ${emp["Tipe"] === 'Shift' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'}">${emp["Tipe"]}</span></td>
+                    <td class="p-3 text-center"><span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded font-bold">20 Hari (${normalHours} Jam)</span></td>
                     <td class="p-3 text-center font-bold text-blue-900">${totalOT.toFixed(2)} Jam</td>
                     <td class="p-3 text-center font-extrabold text-emerald-700">${totalManHours.toFixed(2)} Jam</td>
                     <td class="p-3 text-center">
@@ -533,12 +563,15 @@
         }
 
         function handleTimesheetViewChange() {
-            const mode = document.getElementById('timesheetViewControl').value;
+            const mode = document.getElementById('timesheetSystemFilter').value;
             if (mode === 'non') {
                 document.getElementById('timesheetSearchInput').value = '';
                 renderTimesheetTable([]);
             } else if (mode === 'all') {
                 renderTimesheetTable(employeesData);
+            } else {
+                const filtered = employeesData.filter(emp => emp["Tipe"] === mode);
+                renderTimesheetTable(filtered);
             }
         }
 
@@ -546,18 +579,17 @@
             const searchVal = document.getElementById('timesheetSearchInput').value.toLowerCase();
             if (searchVal.trim() === '') {
                 renderTimesheetTable([]);
-                document.getElementById('timesheetViewControl').value = 'non';
+                document.getElementById('timesheetSystemFilter').value = 'non';
                 return;
             }
             const filtered = employeesData.filter(emp => emp["Nama Karyawan"].toLowerCase().includes(searchVal) || emp["Job Title"].toLowerCase().includes(searchVal));
             renderTimesheetTable(filtered);
         }
 
-        // PEMBACAAN PRESISI 100% SESUAI MASTER KERTAS KERJA EXCEL ASLI
         function showTimesheetLog(empNo) {
             const emp = employeesData.find(e => e["No"] === empNo);
             if (!emp) return;
-            document.getElementById('timesheetModalTitle').innerHTML = `<i class="fa-solid fa-file-excel mr-2"></i> Kertas Kerja Absen & Lembur (${emp["Tipe"]}): ${emp["Nama Karyawan"]}`;
+            document.getElementById('timesheetModalTitle').innerHTML = `<i class="fa-solid fa-file-excel mr-2"></i> Kertas Kerja Absen & Lembur (${emp["Tipe"]} - ${emp["Tipe"] === 'Shift' ? '12 Jam' : '9 Jam Senin-Jumat'}): ${emp["Nama Karyawan"]}`;
             const content = document.getElementById('timesheetModalContent');
             
             const startDate = new Date(2026, 5, 16);
@@ -579,13 +611,12 @@
                 
                 let startOT = '-'; let finishOT = '-'; let aktOT = '-'; let konvOT = '-'; let numKonv = 0;
 
-                if (emp["Nama Karyawan"] === "Sujianto M. Batias") {
+                if (emp["Tipe"] === 'Shift') {
                     if (i === 4) { startOT = '19:00'; finishOT = '01:00'; aktOT = '6.00'; konvOT = '11.50'; numKonv = 11.50; }
                     else if (i === 11) { startOT = '06:00'; finishOT = '19:00'; aktOT = '13.00'; konvOT = '37.00'; numKonv = 37.00; }
-                    else if (i === 26) { startOT = '07:00'; finishOT = '15:00'; aktOT = '8.00'; konvOT = '17.00'; numKonv = 17.00; }
                 } else {
-                    if (i === 4) { startOT = '17:00'; finishOT = '19:00'; aktOT = '2.00'; konvOT = '10.00'; numKonv = 10.00; }
-                    else if (i === 11) { startOT = '08:00'; finishOT = '14:00'; aktOT = '6.00'; konvOT = '20.00'; numKonv = 20.00; }
+                    // Non Shift: Lembur di luar senin-jumat atau jam kerja 07:00-16:00
+                    if (kodeHari === 'L') { startOT = '07:00'; finishOT = '16:00'; aktOT = '9.00'; konvOT = '18.00'; numKonv = 18.00; }
                 }
                 totalSumOT += numKonv;
 
@@ -595,7 +626,7 @@
                         <td class="p-2">${dayName}</td>
                         <td class="p-2 text-center"><span class="${absenCode === 'OFF' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'} px-1.5 py-0.5 rounded font-bold">${absenCode}</span></td>
                         <td class="p-2 text-center font-bold ${kodeHari === 'L' ? 'text-red-600' : 'text-gray-700'}">${kodeHari}</td>
-                        <td class="p-2 text-center">07:00 - 16:00 (Normal)</td>
+                        <td class="p-2 text-center">${emp["Tipe"] === 'Shift' ? '07:00 - 07:00 (+1 Hari / 12 Jam)' : '07:00 - 16:00 (9 Jam)'}</td>
                         <td class="p-2 text-center">${startOT}</td>
                         <td class="p-2 text-center">${finishOT}</td>
                         <td class="p-2 text-center font-semibold text-blue-900">${aktOT}</td>
@@ -604,7 +635,7 @@
                 `;
             }
 
-            let normalManHours = totalDaysPresent * 9;
+            let normalManHours = totalDaysPresent * (emp["Tipe"] === 'Shift' ? 12 : 9);
             let grandTotalManHours = normalManHours + (emp.OTHours || totalSumOT);
 
             content.innerHTML = `
@@ -618,7 +649,7 @@
 
                     <div class="bg-white p-4 rounded-xl border space-y-3">
                         <div class="flex justify-between items-center border-b pb-2">
-                            <h4 class="font-bold text-gray-800 text-xs uppercase"><i class="fa-solid fa-table text-emerald-700 mr-1"></i> Rincian Absen, Jam Normal (07:00-16:00) & Lembur 16 Jun - 15 Jul 2026</h4>
+                            <h4 class="font-bold text-gray-800 text-xs uppercase"><i class="fa-solid fa-table text-emerald-700 mr-1"></i> Rincian Absen & Lembur (${emp["Tipe"]}) 16 Jun - 15 Jul 2026</h4>
                             <span class="text-[11px] text-gray-500 font-medium">Zona 13 - Field Donggi Matindok</span>
                         </div>
                         <div class="overflow-x-auto max-h-[400px]">
@@ -629,7 +660,7 @@
                                         <th class="p-2.5">Hari</th>
                                         <th class="p-2.5 text-center">Absen</th>
                                         <th class="p-2.5 text-center">Kode</th>
-                                        <th class="p-2.5 text-center">Jam Kerja Normal (07:00-16:00)</th>
+                                        <th class="p-2.5 text-center">Jam Kerja Normal</th>
                                         <th class="p-2.5 text-center">Start OT</th>
                                         <th class="p-2.5 text-center">Finish OT</th>
                                         <th class="p-2.5 text-center">Aktual OT</th>
@@ -694,7 +725,7 @@
             tbody.innerHTML = '';
             
             if (data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-gray-400 italic">Daftar tertutup (Non). Pilih "Tampilkan Semua (All)" atau cari nama karyawan pada kolom di atas.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-gray-400 italic">Daftar tertutup (Non). Pilih filter sistem kerja di atas.</td></tr>`;
                 return;
             }
 
@@ -704,7 +735,7 @@
                 tr.innerHTML = `
                     <td class="p-3 font-medium">${index + 1}</td>
                     <td class="p-3 font-semibold">${emp["Nama Karyawan"]}</td>
-                    <td class="p-3">${emp["Job Title"]} <span class="text-blue-600 font-medium">(${emp["Tipe"]})</span></td>
+                    <td class="p-3">${emp["Job Title"]} <span class="px-2 py-0.5 rounded text-[10px] font-bold ${emp["Tipe"] === 'Shift' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'}">${emp["Tipe"]}</span></td>
                     <td class="p-3">${emp["Divisi / Fungsi"]}</td>
                     <td class="p-3">${emp["Bruto"]}</td>
                     <td class="p-3">${emp["Potongan"]}</td>
@@ -720,12 +751,15 @@
         }
 
         function handlePayrollViewChange() {
-            const mode = document.getElementById('payrollViewControl').value;
+            const mode = document.getElementById('payrollSystemFilter').value;
             if (mode === 'non') {
                 document.getElementById('payrollSearchInput').value = '';
                 renderPayrollTable([]);
             } else if (mode === 'all') {
                 renderPayrollTable(employeesData);
+            } else {
+                const filtered = employeesData.filter(emp => emp["Tipe"] === mode);
+                renderPayrollTable(filtered);
             }
         }
 
@@ -733,22 +767,11 @@
             const searchVal = document.getElementById('payrollSearchInput').value.toLowerCase();
             if (searchVal.trim() === '') {
                 renderPayrollTable([]);
-                document.getElementById('payrollViewControl').value = 'non';
+                document.getElementById('payrollSystemFilter').value = 'non';
                 return;
             }
             const filtered = employeesData.filter(emp => emp["Nama Karyawan"].toLowerCase().includes(searchVal) || emp["Job Title"].toLowerCase().includes(searchVal));
             renderPayrollTable(filtered);
-        }
-
-        function filterTable() {
-            const searchText = document.getElementById('searchInput').value.toLowerCase();
-            const selectedDiv = document.getElementById('divisionFilter').value;
-            const filtered = employeesData.filter(emp => {
-                const matchSearch = emp["Nama Karyawan"].toLowerCase().includes(searchText) || emp["Job Title"].toLowerCase().includes(searchText);
-                const matchDiv = selectedDiv === "" || emp["Divisi / Fungsi"] === selectedDiv;
-                return matchSearch && matchDiv;
-            });
-            renderTable(filtered);
         }
 
         function showDetail(empNo) {
@@ -758,7 +781,7 @@
             const content = document.getElementById('modalContent');
             let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">';
             for (const [key, value] of Object.entries(emp)) {
-                if (key !== 'Bruto' && key !== 'Potongan' && key !== 'Netto' && key !== 'Tipe' && key !== 'ArrUntek' && key !== 'JHT' && key !== 'JP' && key !== 'Kesehatan' && key !== 'PPh21' && key !== 'UpahPokok' && key !== 'TAUP' && key !== 'TotalUT' && key !== 'TotalUntek' && key !== 'BrutoVal' && key !== 'TotalPotongan' && key !== 'NettoVal' && key !== 'OTHours' && value) {
+                if (key !== 'Bruto' && key !== 'Potongan' && key !== 'Netto' && key !== 'ArrUntek' && key !== 'JHT' && key !== 'JP' && key !== 'Kesehatan' && key !== 'PPh21' && key !== 'UpahPokok' && key !== 'TAUP' && key !== 'TotalUT' && key !== 'TotalUntek' && key !== 'BrutoVal' && key !== 'TotalPotongan' && key !== 'NettoVal' && key !== 'OTHours' && value) {
                     html += `<div class="bg-gray-50 p-3 rounded-xl border border-gray-100"><span class="block text-xs font-semibold text-gray-400 uppercase">${key}</span><span class="block font-medium text-gray-800 mt-0.5">${value}</span></div>`;
                 }
             }
@@ -771,7 +794,6 @@
             document.getElementById('profileModal').classList.add('hidden');
         }
 
-        // SLIP GAJI DENGAN BREAKDOWN MASTER EXCEL PRESISI 100%
         function showSlip(empNo) {
             const emp = employeesData.find(e => e["No"] === empNo);
             if (!emp) return;
