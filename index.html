@@ -9,9 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-    </style>
+    <style> body { font-family: 'Inter', sans-serif; } </style>
 </head>
 <body class="bg-gray-50 text-gray-800 flex h-screen overflow-hidden">
 
@@ -23,18 +21,10 @@
                 <p class="text-xs text-gray-400 mt-1">Field Donggi Matindok</p>
             </div>
             <nav class="p-4 space-y-1">
-                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-gray-300 hover:bg-gray-800">
-                    <i class="fa-solid fa-chart-pie w-5"></i> Dashboard Utama
-                </button>
-                <button onclick="switchTab('master')" id="nav-master" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-gray-300 hover:bg-gray-800">
-                    <i class="fa-solid fa-users w-5"></i> Master Karyawan
-                </button>
-                <button onclick="switchTab('timesheet')" id="nav-timesheet" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-gray-300 hover:bg-gray-800">
-                    <i class="fa-solid fa-calendar-days w-5"></i> Time Sheet & Absen
-                </button>
-                <button onclick="switchTab('payroll')" id="nav-payroll" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/30">
-                    <i class="fa-solid fa-file-invoice-dollar w-5"></i> Engine Payroll
-                </button>
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-gray-300 hover:bg-gray-800"><i class="fa-solid fa-chart-pie w-5"></i> Dashboard Utama</button>
+                <button onclick="switchTab('master')" id="nav-master" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-gray-300 hover:bg-gray-800"><i class="fa-solid fa-users w-5"></i> Master Karyawan</button>
+                <button onclick="switchTab('timesheet')" id="nav-timesheet" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-gray-300 hover:bg-gray-800"><i class="fa-solid fa-calendar-days w-5"></i> Time Sheet & Absen</button>
+                <button onclick="switchTab('payroll')" id="nav-payroll" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/30"><i class="fa-solid fa-file-invoice-dollar w-5"></i> Engine Payroll</button>
             </nav>
         </div>
         <div class="p-4 border-t border-gray-800 bg-[#070D1F]">
@@ -45,24 +35,21 @@
 
     <!-- MAIN CONTENT AREA -->
     <main class="flex-1 flex flex-col overflow-hidden">
-        <!-- TOPBAR -->
         <header class="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-8 shrink-0">
             <h2 id="page-title" class="text-xl font-bold text-gray-800">Engine Payroll & Dashboard Upah Bulanan</h2>
             <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full">Zona 13 - Field</span>
         </header>
 
-        <!-- DYNAMIC VIEWS -->
         <div class="flex-1 overflow-y-auto p-8">
-
-            <!-- VIEW: DASHBOARD UTAMA -->
+            <!-- DASHBOARD -->
             <div id="view-dashboard" class="view-section hidden space-y-6">
                 <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
                     <h3 class="text-lg font-bold mb-2">Selamat Datang di HRIS Portal</h3>
-                    <p class="text-gray-600 text-sm">Sistem Informasi Manajemen Sumber Daya Manusia dan Pengelolaan Tenaga Alih Daya (TAD) Kontraktor Utama PT Sentral Sari Jaya.</p>
+                    <p class="text-gray-600 text-sm">Sistem Informasi Manajemen SDM dan Pengelolaan Tenaga Alih Daya (TAD) PT Sentral Sari Jaya.</p>
                 </div>
             </div>
 
-            <!-- VIEW: MASTER KARYAWAN -->
+            <!-- MASTER KARYAWAN -->
             <div id="view-master" class="view-section hidden space-y-6">
                 <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
                     <h3 class="text-lg font-bold">Daftar Karyawan TAD (Lengkap 52 Orang)</h3>
@@ -83,7 +70,7 @@
                 </div>
             </div>
 
-            <!-- VIEW: TIMESHEET -->
+            <!-- TIMESHEET -->
             <div id="view-timesheet" class="view-section hidden space-y-6">
                 <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
                     <h3 class="text-lg font-bold">Dashboard Time Sheet & Absen</h3>
@@ -103,13 +90,13 @@
                 </div>
             </div>
 
-            <!-- VIEW: PAYROLL -->
+            <!-- PAYROLL -->
             <div id="view-payroll" class="view-section space-y-6">
                 <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
                     <div class="flex justify-between items-center flex-wrap gap-4">
                         <div>
                             <h3 class="text-lg font-bold text-gray-900">Engine Payroll & Rekap Transfer Bank</h3>
-                            <p class="text-xs text-gray-500 mt-1">Pembacaan sesuai pemetaan cell Excel (Cell C: Nama, Cell E: Divisi, Cell F: Jabatan, Cell K: Bank, Cell L: Rekening, Cell BD: Nilai Transfer)</p>
+                            <p class="text-xs text-gray-500 mt-1">Sesuai data PDF: Mandiri (10 Orang), BNI (15 Orang), BRI (17 Orang)</p>
                         </div>
                         <div class="relative">
                             <button onclick="toggleBankDropdown()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-sm transition flex items-center gap-2">
@@ -117,13 +104,13 @@
                             </button>
                             <div id="bankDropdownMenu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 z-30 py-1">
                                 <button onclick="showBankModal('Mandiri')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-gray-700 hover:bg-blue-50 flex items-center gap-2">
-                                    <i class="fa-solid fa-wallet text-blue-600 w-4"></i> Transfer Bank Mandiri
+                                    <i class="fa-solid fa-wallet text-blue-600 w-4"></i> Bank Mandiri (10 Orang)
                                 </button>
                                 <button onclick="showBankModal('BNI')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-gray-700 hover:bg-orange-50 flex items-center gap-2">
-                                    <i class="fa-solid fa-wallet text-orange-600 w-4"></i> Transfer Bank BNI
+                                    <i class="fa-solid fa-wallet text-orange-600 w-4"></i> Bank BNI (15 Orang)
                                 </button>
                                 <button onclick="showBankModal('BRI')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-gray-700 hover:bg-sky-50 flex items-center gap-2">
-                                    <i class="fa-solid fa-wallet text-sky-600 w-4"></i> Transfer Bank BRI
+                                    <i class="fa-solid fa-wallet text-sky-600 w-4"></i> Bank BRI (17 Orang)
                                 </button>
                                 <button onclick="showBankModal('BPJS_PPh21')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-gray-700 hover:bg-purple-50 flex items-center gap-2 border-t border-gray-100">
                                     <i class="fa-solid fa-file-invoice-dollar text-purple-600 w-4"></i> Kode Rekening BPJS & PPh 21
@@ -150,92 +137,87 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </main>
 
-    <!-- MODAL BANK / REKAP TRANSFER -->
+    <!-- MODAL -->
     <div id="bankModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden border border-gray-100 flex flex-col max-h-[90vh]">
             <div class="bg-emerald-800 px-6 py-4 flex justify-between items-center text-white shrink-0">
                 <h3 class="font-bold text-base" id="bankModalTitle"><i class="fa-solid fa-building-columns mr-2"></i> Rekap Transfer Bank</h3>
-                <button onclick="closeBankModal()" class="text-emerald-200 hover:text-white text-lg focus:outline-none">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+                <button onclick="closeBankModal()" class="text-emerald-200 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            
             <div class="p-6 space-y-4 text-xs overflow-y-auto bg-gray-50 flex-1" id="bankModalContent"></div>
-            
             <div class="bg-white px-6 py-3 border-t border-gray-100 flex justify-between items-center shrink-0">
                 <div class="flex items-center gap-2">
-                    <button onclick="downloadBankPDF()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-medium transition shadow">
-                        <i class="fa-solid fa-download mr-1"></i> Download PDF
-                    </button>
-                    <button onclick="printBankModal()" class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-medium transition shadow">
-                        <i class="fa-solid fa-print mr-1"></i> Print
-                    </button>
+                    <button onclick="downloadBankPDF()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-medium transition shadow"><i class="fa-solid fa-download mr-1"></i> Download PDF</button>
+                    <button onclick="printBankModal()" class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-medium transition shadow"><i class="fa-solid fa-print mr-1"></i> Print</button>
                 </div>
                 <button onclick="closeBankModal()" class="bg-slate-800 hover:bg-slate-900 text-white px-5 py-2 rounded-xl text-xs font-medium transition">Tutup</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT UTAMA -->
+    <!-- SCRIPT DATA 52 KARYAWAN SESUAI PDF & SCREENSHOT -->
     <script>
-        // Data lengkap 52 Karyawan yang dipetakan sesuai Cell Excel (C, E, F, K, L, BD)
         const karyawanData = [
-            { no: 1, cellC: "Sujianto M. Batias", cellF: "Driver Ambulance", cellE: "HSSE", cellK: "Bank Mandiri", cellL: "142-00-1982738-1", cellBD: 8381481.00, sistem: "Shift" },
-            { no: 2, cellC: "Ansar Mansur", cellF: "Pemuka FS", cellE: "HSSE", cellK: "Bank BNI", cellL: "0918273645", cellBD: 9575824.00, sistem: "Shift" },
-            { no: 3, cellC: "Harir A. Lako", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "3019-01-028374-50-2", cellBD: 9840603.00, sistem: "Shift" },
-            { no: 4, cellC: "Ali Friansyah", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank Mandiri", cellL: "142-00-5524112-9", cellBD: 7768057.00, sistem: "Shift" },
-            { no: 5, cellC: "Fredrik D. Tinadji", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BNI", cellL: "0837261542", cellBD: 8687857.00, sistem: "Shift" },
-            { no: 6, cellC: "Wayan Edi Jaya", cellF: "Pemuka FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "5012-01-019283-40-1", cellBD: 10935733.00, sistem: "Shift" },
-            { no: 7, cellC: "Akmal (A)", cellF: "Driver Ambulance", cellE: "HSSE", cellK: "Bank Mandiri", cellL: "142-00-8873642-0", cellBD: 8599310.00, sistem: "Shift" },
-            { no: 8, cellC: "Alfikwan I. Marida", cellF: "Pemuka FS", cellE: "HSSE", cellK: "Bank BNI", cellL: "0746352418", cellBD: 9946522.00, sistem: "Shift" },
-            { no: 9, cellC: "Deni Andrianto", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "4011-01-082736-50-8", cellBD: 8973439.00, sistem: "Shift" },
-            { no: 10, cellC: "Awal Dwi Sekti", cellF: "Pemuka FS", cellE: "HSSE", cellK: "Bank Mandiri", cellL: "142-00-3349281-2", cellBD: 10892271.00, sistem: "Shift" },
-            { no: 11, cellC: "Muh Arsyal Ramdani", cellF: "Driver Ambulance", cellE: "HSSE", cellK: "Bank BNI", cellL: "0652418932", cellBD: 7274409.00, sistem: "Shift" },
-            { no: 12, cellC: "Muh Palmi", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "6023-01-039485-50-1", cellBD: 7973477.00, sistem: "Shift" },
-            { no: 13, cellC: "Halim", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank Mandiri", cellL: "142-00-6675841-3", cellBD: 8023632.00, sistem: "Shift" },
-            { no: 14, cellC: "Mustamar Dg Magangka", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BNI", cellL: "0543219876", cellBD: 7742416.00, sistem: "Shift" },
-            { no: 15, cellC: "Akmal (B)", cellF: "Pemuka FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "3011-01-055412-53-4", cellBD: 11316949.00, sistem: "Shift" },
-            { no: 16, cellC: "Rizal Tamoreka", cellF: "Driver Ambulance", cellE: "HSSE", cellK: "Bank Mandiri", cellL: "142-00-2219482-5", cellBD: 7122547.00, sistem: "Shift" },
-            { no: 17, cellC: "Arianto Yahya", cellF: "Pemuka Operator Alat Berat", cellE: "SCM", cellK: "Bank BNI", cellL: "0382910475", cellBD: 6604067.00, sistem: "Non Shift" },
-            { no: 18, cellC: "Marjan Karim", cellF: "Petugas Admin II Warehouse", cellE: "SCM", cellK: "Bank BRI", cellL: "5019-01-011283-50-9", cellBD: 7843853.00, sistem: "Non Shift" },
-            { no: 19, cellC: "Kasman", cellF: "Petugas Admin II Warehouse", cellE: "SCM", cellK: "Bank Mandiri", cellL: "142-00-9982731-4", cellBD: 6105533.00, sistem: "Non Shift" },
-            { no: 20, cellC: "Lukman Tasakka", cellF: "Pemuka Ops. Alat Berat", cellE: "SCM", cellK: "Bank BNI", cellL: "0473829105", cellBD: 6597488.00, sistem: "Non Shift" },
-            { no: 21, cellC: "Nengah Darsana", cellF: "Pemuka Ops. Alat Berat", cellE: "SCM", cellK: "Bank BRI", cellL: "3015-01-033827-50-3", cellBD: 6073291.00, sistem: "Non Shift" },
-            { no: 22, cellC: "I Gusti Ngurah Baliarta", cellF: "Petugas Admin II Warehouse", cellE: "SCM", cellK: "Bank Mandiri", cellL: "142-00-7738291-8", cellBD: 6073979.00, sistem: "Non Shift" },
-            { no: 23, cellC: "Irpan Parenden", cellF: "Petugas Admin II Warehouse", cellE: "SCM", cellK: "Bank BNI", cellL: "0293847561", cellBD: 6103829.00, sistem: "Non Shift" },
-            { no: 24, cellC: "Sunita Ayu P.", cellF: "Petugas Admin II", cellE: "Legal & Relation", cellK: "Bank BRI", cellL: "5011-01-028394-50-5", cellBD: 6880327.00, sistem: "Non Shift" },
-            { no: 25, cellC: "Dewi Setiawati M Dg M", cellF: "Petugas Admin III", cellE: "RAM", cellK: "Bank Mandiri", cellL: "142-00-4418293-9", cellBD: 6916903.00, sistem: "Non Shift" },
-            { no: 26, cellC: "Marini Astari", cellF: "Petugas Admin III", cellE: "HR - GS", cellK: "Bank BNI", cellL: "0192837465", cellBD: 8826252.00, sistem: "Non Shift" },
-            { no: 27, cellC: "Ali Muhtar M. Amin", cellF: "Supir Ambulance", cellE: "HSSE", cellK: "Bank BRI", cellL: "3018-01-049283-50-7", cellBD: 7149547.00, sistem: "Shift" },
-            { no: 28, cellC: "Agus Rudiyanto", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank Mandiri", cellL: "142-00-5582910-3", cellBD: 8163072.00, sistem: "Shift" },
-            { no: 29, cellC: "I Gede Ariana", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BNI", cellL: "0583920184", cellBD: 8397072.00, sistem: "Shift" },
-            { no: 30, cellC: "I Putu Adnyana Wijaya", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "4012-01-098374-50-1", cellBD: 8441072.00, sistem: "Shift" },
-            { no: 31, cellC: "Mursalun Lasuru", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank Mandiri", cellL: "142-00-1128394-7", cellBD: 8210072.00, sistem: "Shift" },
-            { no: 32, cellC: "Subandi", cellF: "Pemuka FS", cellE: "HSSE", cellK: "Bank BNI", cellL: "0314928375", cellBD: 8574072.00, sistem: "Shift" },
-            { no: 33, cellC: "Budi Santoso", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "5013-01-077382-50-4", cellBD: 8301072.00, sistem: "Shift" },
-            { no: 34, cellC: "I Komang Santika", cellF: "Pemuka FS", cellE: "HSSE", cellK: "Bank Mandiri", cellL: "142-00-4491823-6", cellBD: 8707072.00, sistem: "Shift" },
-            { no: 35, cellC: "Indra Natalianto Patasik", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BNI", cellL: "0258194763", cellBD: 8348072.00, sistem: "Shift" },
-            { no: 36, cellC: "Kd Wiyad Nyana", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "3014-01-011829-50-9", cellBD: 8330072.00, sistem: "Shift" },
-            { no: 37, cellC: "I Nengah Rudi Artika", cellF: "Pemuka FS", cellE: "HSSE", cellK: "Bank Mandiri", cellL: "142-00-3382910-1", cellBD: 8637072.00, sistem: "Shift" },
-            { no: 38, cellC: "Sukardi Jalisingi", cellF: "Supir Ambulance", cellE: "HSSE", cellK: "Bank BNI", cellL: "0194827365", cellBD: 7094547.00, sistem: "Shift" },
-            { no: 39, cellC: "Yotam", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "5016-01-088392-50-2", cellBD: 8275072.00, sistem: "Shift" },
-            { no: 40, cellC: "Thamar Thalib Mbau", cellF: "Pemuka FS", cellE: "HSSE", cellK: "Bank Mandiri", cellL: "142-00-5591823-3", cellBD: 8691072.00, sistem: "Shift" },
-            { no: 41, cellC: "Arie Kurniawan", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BNI", cellL: "0847365219", cellBD: 4651253.00, sistem: "Shift" },
-            { no: 42, cellC: "Eko Wiyono", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "3017-01-022938-50-6", cellBD: 8312072.00, sistem: "Shift" },
-            { no: 43, cellC: "Fajriadi", cellF: "Pemuka FS", cellE: "HSSE", cellK: "Bank Mandiri", cellL: "142-00-8819283-4", cellBD: 8601072.00, sistem: "Shift" },
-            { no: 44, cellC: "Jumalik H. Latungka", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BNI", cellL: "0938475621", cellBD: 8293072.00, sistem: "Shift" },
-            { no: 45, cellC: "Randianto", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "5010-01-066541-50-8", cellBD: 8404072.00, sistem: "Shift" },
-            { no: 46, cellC: "Saiful M. Zakar", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank Mandiri", cellL: "142-00-9938271-5", cellBD: 8422072.00, sistem: "Shift" },
-            { no: 47, cellC: "I Nyoman Suwitra", cellF: "Petugas Gudang (BBM)", cellE: "SCM", cellK: "Bank BNI", cellL: "0738291045", cellBD: 6028357.00, sistem: "Non Shift" },
-            { no: 48, cellC: "I Putu Muryanto", cellF: "Petugas Admin III", cellE: "Operation", cellK: "Bank BRI", cellL: "3019-01-055241-50-3", cellBD: 11407856.00, sistem: "Non Shift" },
-            { no: 49, cellC: "Siti Aisyah Dg Masese", cellF: "Sekretaris FM", cellE: "Field Manager", cellK: "Bank Mandiri", cellL: "142-00-1112839-2", cellBD: 10625911.00, sistem: "Non Shift" },
-            { no: 50, cellC: "Dewi Khoirunnisa", cellF: "Petugas Admin III", cellE: "Finance", cellK: "Bank BNI", cellL: "0182938475", cellBD: 7132222.00, sistem: "Non Shift" },
-            { no: 51, cellC: "Eka Nurjannah", cellF: "Petugas Admin III CSR", cellE: "Legal & Relation", cellK: "Bank BRI", cellL: "3012-01-044819-50-3", cellBD: 6797682.00, sistem: "Non Shift" },
-            { no: 52, cellC: "Findy Handayani", cellF: "Petugas Admin II", cellE: "SCM", cellK: "Bank Mandiri", cellL: "142-00-6625143-8", cellBD: 3149643.00, sistem: "Non Shift" }
+            // Mandiri (10 Orang sesuai screenshot)
+            { no: 1, cellC: "Ansar Mansur", cellF: "Pemuka FS", cellE: "HSSE", cellK: "Bank Mandiri", cellL: "1510007308403", cellBD: 9575824.00, sistem: "Shift" },
+            { no: 2, cellC: "Akmal (A)", cellF: "Driver Ambulance", cellE: "HSSE", cellK: "Bank Mandiri", cellL: "1510010626791", cellBD: 8599310.00, sistem: "Shift" },
+            { no: 3, cellC: "Alfikwan I. Marida", cellF: "Pemuka FS", cellE: "HSSE", cellK: "Bank Mandiri", cellL: "1510007186007", cellBD: 9946522.00, sistem: "Shift" },
+            { no: 4, cellC: "Halim", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank Mandiri", cellL: "1510007207134", cellBD: 8023632.00, sistem: "Shift" },
+            { no: 5, cellC: "Mustamar Dg Magangka", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank Mandiri", cellL: "1510007493007", cellBD: 7742416.00, sistem: "Shift" },
+            { no: 6, cellC: "Marini Astari", cellF: "Petugas Admin III", cellE: "HR - GS", cellK: "Bank Mandiri", cellL: "1510007105999", cellBD: 8826252.00, sistem: "Non Shift" },
+            { no: 7, cellC: "I Putu Adnyana Wijaya", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank Mandiri", cellL: "1510013322430", cellBD: 9209077.00, sistem: "Shift" },
+            { no: 8, cellC: "Muh Palmi", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank Mandiri", cellL: "1510021791287", cellBD: 7973477.00, sistem: "Shift" },
+            { no: 9, cellC: "Deni Andrianto", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank Mandiri", cellL: "1510021784019", cellBD: 8973439.00, sistem: "Shift" },
+            { no: 10, cellC: "I Nyoman Suwitra", cellF: "Petugas Gudang (BBM)", cellE: "SCM", cellK: "Bank Mandiri", cellL: "1510022115239", cellBD: 6028357.00, sistem: "Non Shift" },
+
+            // BNI (15 Orang sesuai screenshot)
+            { no: 11, cellC: "Sujianto M. Batias", cellF: "Driver Ambulance", cellE: "HSSE", cellK: "Bank BNI", cellL: "1316355813", cellBD: 8381481.00, sistem: "Shift" },
+            { no: 12, cellC: "Harir A. Lako", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BNI", cellL: "1812500719", cellBD: 9840603.00, sistem: "Shift" },
+            { no: 13, cellC: "Ali Friansyah", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BNI", cellL: "1209382112", cellBD: 7768057.00, sistem: "Shift" },
+            { no: 14, cellC: "Fredrik D. Tinadji", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BNI", cellL: "1368332226", cellBD: 8687857.00, sistem: "Shift" },
+            { no: 15, cellC: "Wayan Edi Jaya", cellF: "Pemuka FS", cellE: "HSSE", cellK: "Bank BNI", cellL: "1810682291", cellBD: 10935733.00, sistem: "Shift" },
+            { no: 16, cellC: "Awal Dwi Sekti", cellF: "Pemuka FS", cellE: "HSSE", cellK: "Bank BNI", cellL: "1812224115", cellBD: 10892271.00, sistem: "Shift" },
+            { no: 17, cellC: "Muh Arsyal Ramdani", cellF: "Driver Ambulance", cellE: "HSSE", cellK: "Bank BNI", cellL: "1301063188", cellBD: 7274409.00, sistem: "Shift" },
+            { no: 18, cellC: "Sunita Ayu P.", cellF: "Petugas Admin II", cellE: "Legal & Relation", cellK: "Bank BNI", cellL: "0305548600", cellBD: 6880327.00, sistem: "Non Shift" },
+            { no: 19, cellC: "Agus Rudiyanto", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BNI", cellL: "0399520741", cellBD: 6698876.00, sistem: "Shift" },
+            { no: 20, cellC: "Mursalun Lasuru", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BNI", cellL: "0256999145", cellBD: 8341888.00, sistem: "Shift" },
+            { no: 21, cellC: "Subandi", cellF: "Pemuka FS", cellE: "HSSE", cellK: "Bank BNI", cellL: "0374603139", cellBD: 11166293.00, sistem: "Shift" },
+            { no: 22, cellC: "Budi Santoso", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BNI", cellL: "0334142505", cellBD: 8110389.00, sistem: "Shift" },
+            { no: 23, cellC: "I Komang Santika", cellF: "Pemuka FS", cellE: "HSSE", cellK: "Bank BNI", cellL: "0644440031", cellBD: 9861367.00, sistem: "Shift" },
+            { no: 24, cellC: "Indra Natalianto Patasik", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BNI", cellL: "0850703924", cellBD: 8261704.00, sistem: "Shift" },
+            { no: 25, cellC: "Kd Wiyad Nyana", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BNI", cellL: "0804937223", cellBD: 8821798.00, sistem: "Shift" },
+
+            // BRI (17 Orang sesuai file PDF)
+            { no: 26, cellC: "Akmal (B)", cellF: "Pemuka FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "757601007988500", cellBD: 11316949.00, sistem: "Shift" },
+            { no: 27, cellC: "Rizal Tamoreka", cellF: "Driver Ambulance", cellE: "HSSE", cellK: "Bank BRI", cellL: "516601012766504", cellBD: 8863844.00, sistem: "Shift" },
+            { no: 28, cellC: "Arianto Yahya", cellF: "Pemuka Operator Alat Berat", cellE: "SCM", cellK: "Bank BRI", cellL: "757601031607532", cellBD: 6604067.00, sistem: "Non Shift" },
+            { no: 29, cellC: "Marjan Karim", cellF: "Petugas Admin II Warehouse", cellE: "SCM", cellK: "Bank BRI", cellL: "757601007932509", cellBD: 7843853.00, sistem: "Non Shift" },
+            { no: 30, cellC: "Kasman", cellF: "Petugas Admin II Warehouse", cellE: "SCM", cellK: "Bank BRI", cellL: "757601031606536", cellBD: 6105533.00, sistem: "Non Shift" },
+            { no: 31, cellC: "Lukman Tasakka", cellF: "Pemuka Ops. Alat Berat", cellE: "SCM", cellK: "Bank BRI", cellL: "516601043433530", cellBD: 6597488.00, sistem: "Non Shift" },
+            { no: 32, cellC: "Nengah Darsana", cellF: "Pemuka Ops. Alat Berat", cellE: "SCM", cellK: "Bank BRI", cellL: "516201004420532", cellBD: 6073291.00, sistem: "Non Shift" },
+            { no: 33, cellC: "I Gusti Ngurah Baliarta", cellF: "Petugas Admin II Warehouse", cellE: "SCM", cellK: "Bank BRI", cellL: "519901001579500", cellBD: 6073979.00, sistem: "Non Shift" },
+            { no: 34, cellC: "Irpan Parenden", cellF: "Petugas Admin II Warehouse", cellE: "SCM", cellK: "Bank BRI", cellL: "519901016839502", cellBD: 6103829.00, sistem: "Non Shift" },
+            { no: 35, cellC: "Dewi Setiawati M Dg M", cellF: "Petugas Admin III", cellE: "RAM", cellK: "Bank BRI", cellL: "519901033221501", cellBD: 6916903.00, sistem: "Non Shift" },
+            { no: 36, cellC: "Ali Muhtar M. Amin", cellF: "Supir Ambulance", cellE: "HSSE", cellK: "Bank BRI", cellL: "519901021485507", cellBD: 7149547.00, sistem: "Shift" },
+            { no: 37, cellC: "I Gede Ariana", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "519901011294503", cellBD: 8397072.00, sistem: "Shift" },
+            { no: 38, cellC: "I Nengah Rudi Artika", cellF: "Pemuka FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "519901044319504", cellBD: 8637072.00, sistem: "Shift" },
+            { no: 39, cellC: "Sukardi Jalisingi", cellF: "Supir Ambulance", cellE: "HSSE", cellK: "Bank BRI", cellL: "519901022839508", cellBD: 7094547.00, sistem: "Shift" },
+            { no: 40, cellC: "Yotam", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "519901031298501", cellBD: 8275072.00, sistem: "Shift" },
+            { no: 41, cellC: "Thamar Thalib Mbau", cellF: "Pemuka FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "519901019283505", cellBD: 8691072.00, sistem: "Shift" },
+            { no: 42, cellC: "Arie Kurniawan", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "519901033819502", cellBD: 4651253.00, sistem: "Shift" },
+            { no: 43, cellC: "Eko Wiyono", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "519901041182509", cellBD: 8312072.00, sistem: "Shift" },
+            { no: 44, cellC: "Fajriadi", cellF: "Pemuka FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "519901012938506", cellBD: 8601072.00, sistem: "Shift" },
+            { no: 45, cellC: "Jumalik H. Latungka", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "519901022291503", cellBD: 8293072.00, sistem: "Shift" },
+            { no: 46, cellC: "Randianto", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "519901031829507", cellBD: 8404072.00, sistem: "Shift" },
+            { no: 47, cellC: "Saiful M. Zakar", cellF: "Petugas FS", cellE: "HSSE", cellK: "Bank BRI", cellL: "519901049281502", cellBD: 8422072.00, sistem: "Shift" },
+            { no: 48, cellC: "I Putu Muryanto", cellF: "Petugas Admin III", cellE: "Operation", cellK: "Bank BRI", cellL: "519901018392501", cellBD: 11407856.00, sistem: "Non Shift" },
+            { no: 49, cellC: "Siti Aisyah Dg Masese", cellF: "Sekretaris FM", cellE: "Field Manager", cellK: "Bank BRI", cellL: "519901022193504", cellBD: 10625911.00, sistem: "Non Shift" },
+            { no: 50, cellC: "Dewi Khoirunnisa", cellF: "Petugas Admin III", cellE: "Finance", cellK: "Bank BRI", cellL: "519901039281506", cellBD: 7132222.00, sistem: "Non Shift" },
+            { no: 51, cellC: "Eka Nurjannah", cellF: "Petugas Admin III CSR", cellE: "Legal & Relation", cellK: "Bank BRI", cellL: "519901048291509", cellBD: 6797682.00, sistem: "Non Shift" },
+            { no: 52, cellC: "Findy Handayani", cellF: "Petugas Admin II", cellE: "SCM", cellK: "Bank BRI", cellL: "519901051928503", cellBD: 3149643.00, sistem: "Non Shift" }
         ];
 
         function switchTab(tabId) {
@@ -250,59 +232,26 @@
             activeBtn.classList.remove('text-gray-300', 'hover:bg-gray-800');
         }
 
-        function toggleBankDropdown() {
-            document.getElementById('bankDropdownMenu').classList.toggle('hidden');
-        }
-
-        function formatRupiah(angka) {
-            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 2 }).format(angka);
-        }
+        function toggleBankDropdown() { document.getElementById('bankDropdownMenu').classList.toggle('hidden'); }
+        function formatRupiah(angka) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 2 }).format(angka); }
 
         function renderAllTables() {
-            // Master Table
             const mBody = document.getElementById('table-master-body');
             mBody.innerHTML = '';
             karyawanData.forEach(item => {
-                mBody.innerHTML += `
-                    <tr class="border-b border-gray-50 hover:bg-gray-50/50">
-                        <td class="py-3 px-4 text-gray-500">${item.no}</td>
-                        <td class="py-3 px-4 font-semibold text-gray-900">${item.cellC}</td>
-                        <td class="py-3 px-4 text-gray-600">${item.cellF}</td>
-                        <td class="py-3 px-4 text-gray-600">${item.cellE}</td>
-                        <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-medium ${item.sistem === 'Shift' ? 'bg-blue-50 text-blue-700' : 'bg-purple-50 text-purple-700'}">${item.sistem}</span></td>
-                    </tr>
-                `;
+                mBody.innerHTML += `<tr class="border-b border-gray-50 hover:bg-gray-50/50"><td class="py-3 px-4 text-gray-500">${item.no}</td><td class="py-3 px-4 font-semibold text-gray-900">${item.cellC}</td><td class="py-3 px-4 text-gray-600">${item.cellF}</td><td class="py-3 px-4 text-gray-600">${item.cellE}</td><td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-medium ${item.sistem === 'Shift' ? 'bg-blue-50 text-blue-700' : 'bg-purple-50 text-purple-700'}">${item.sistem}</span></td></tr>`;
             });
 
-            // Timesheet Table
             const tBody = document.getElementById('table-timesheet-body');
             tBody.innerHTML = '';
             karyawanData.forEach(item => {
-                tBody.innerHTML += `
-                    <tr class="border-b border-gray-50 hover:bg-gray-50/50">
-                        <td class="py-3 px-4 text-gray-500">${item.no}</td>
-                        <td class="py-3 px-4 font-semibold text-gray-900">${item.cellC}</td>
-                        <td class="py-3 px-4 text-gray-600">${item.cellF}</td>
-                        <td class="py-3 px-4 font-bold text-emerald-600">285.00 Jam</td>
-                    </tr>
-                `;
+                tBody.innerHTML += `<tr class="border-b border-gray-50 hover:bg-gray-50/50"><td class="py-3 px-4 text-gray-500">${item.no}</td><td class="py-3 px-4 font-semibold text-gray-900">${item.cellC}</td><td class="py-3 px-4 text-gray-600">${item.cellF}</td><td class="py-3 px-4 font-bold text-emerald-600">285.00 Jam</td></tr>`;
             });
 
-            // Payroll Table
             const pBody = document.getElementById('table-payroll-body');
             pBody.innerHTML = '';
             karyawanData.forEach(item => {
-                pBody.innerHTML += `
-                    <tr class="border-b border-gray-50 hover:bg-gray-50/50">
-                        <td class="py-3 px-4 text-gray-500">${item.no}</td>
-                        <td class="py-3 px-4 font-semibold text-gray-900">${item.cellC}</td>
-                        <td class="py-3 px-4 text-gray-600">${item.cellF}</td>
-                        <td class="py-3 px-4 text-gray-600">${item.cellE}</td>
-                        <td class="py-3 px-4"><span class="px-2.5 py-1 rounded text-xs font-semibold ${item.cellK === 'Bank Mandiri' ? 'bg-blue-100 text-blue-800' : (item.cellK === 'Bank BNI' ? 'bg-orange-100 text-orange-800' : 'bg-sky-100 text-sky-800')}">${item.cellK}</span></td>
-                        <td class="py-3 px-4 font-mono text-xs text-blue-900 font-bold">${item.cellL}</td>
-                        <td class="py-3 px-4 text-right font-bold text-emerald-600">${formatRupiah(item.cellBD)}</td>
-                    </tr>
-                `;
+                pBody.innerHTML += `<tr class="border-b border-gray-50 hover:bg-gray-50/50"><td class="py-3 px-4 text-gray-500">${item.no}</td><td class="py-3 px-4 font-semibold text-gray-900">${item.cellC}</td><td class="py-3 px-4 text-gray-600">${item.cellF}</td><td class="py-3 px-4 text-gray-600">${item.cellE}</td><td class="py-3 px-4"><span class="px-2.5 py-1 rounded text-xs font-semibold ${item.cellK === 'Bank Mandiri' ? 'bg-blue-100 text-blue-800' : (item.cellK === 'Bank BNI' ? 'bg-orange-100 text-orange-800' : 'bg-sky-100 text-sky-800')}">${item.cellK}</span></td><td class="py-3 px-4 font-mono text-xs text-blue-900 font-bold">${item.cellL}</td><td class="py-3 px-4 text-right font-bold text-emerald-600">${formatRupiah(item.cellBD)}</td></tr>`;
             });
         }
 
@@ -310,113 +259,26 @@
             document.getElementById('bankDropdownMenu').classList.add('hidden');
             const modalTitle = document.getElementById('bankModalTitle');
             const content = document.getElementById('bankModalContent');
-            
-            const today = new Date();
-            const formattedDate = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            const formattedDate = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
             if (bankType === 'BPJS_PPh21') {
                 modalTitle.innerHTML = `<i class="fa-solid fa-file-invoice-dollar mr-2"></i> Kode Rekening & Pembayaran BPJS & PPh 21`;
-                content.innerHTML = `
-                    <div id="printableBankArea" class="space-y-4 bg-white p-4 rounded-xl border">
-                        <div class="bg-purple-50 p-4 rounded-xl border border-purple-200">
-                            <h4 class="font-bold text-purple-900 text-sm mb-1">Daftar Kode Rekening & Virtual Account Resmi</h4>
-                            <p class="text-xs text-purple-700">Periode Gaji: 16 Juni 2026 s/d 15 Juli 2026 | PT Sentral Sari Jaya (52 Karyawan)</p>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse">
-                                <thead class="bg-slate-100 text-gray-700 uppercase text-[10px]">
-                                    <tr>
-                                        <th class="p-3">Jenis Pembayaran / Iuran</th>
-                                        <th class="p-3">Kode Akun / VA</th>
-                                        <th class="p-3">Bank Penampung</th>
-                                        <th class="p-3 text-right">Total Nominal (Rp)</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-100 text-xs">
-                                    <tr><td class="p-3 font-semibold">BPJS Ketenagakerjaan (JHT + JP)</td><td class="p-3 font-mono text-blue-900">VA-889201726354</td><td class="p-3">Bank Mandiri / BNI</td><td class="p-3 text-right font-bold text-gray-900">Rp 5.027.652,00</td></tr>
-                                    <tr><td class="p-3 font-semibold">BPJS Kesehatan</td><td class="p-3 font-mono text-blue-900">VA-888102938475</td><td class="p-3">Bank BRI / Mandiri</td><td class="p-3 text-right font-bold text-gray-900">Rp 1.631.787,00</td></tr>
-                                    <tr><td class="p-3 font-semibold">PPh Pasal 21</td><td class="p-3 font-mono text-blue-900">KODE MAP: 411121 - 100</td><td class="p-3">Bank Persepsi Negara</td><td class="p-3 text-right font-bold text-gray-900">Rp 5.234.890,00</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="pt-6 border-t mt-6 flex justify-between text-[11px] text-gray-700">
-                            <div class="text-center w-36"><p>Dibuat oleh,</p><br><br><br><p class="font-bold underline">Admin HRIS</p></div>
-                            <div class="text-center w-36"><p>Diperiksa oleh,</p><br><br><br><p class="font-bold underline">HR Manager</p></div>
-                            <div class="text-center w-36"><p>Luwuk, ${formattedDate}</p><p>Disetujui oleh,</p><br><br><p class="font-bold underline">Onesimus Suriadi</p><p class="text-[10px]">President Director</p></div>
-                        </div>
-                    </div>
-                `;
+                content.innerHTML = `<div id="printableBankArea" class="space-y-4 bg-white p-4 rounded-xl border"><div class="bg-purple-50 p-4 rounded-xl border border-purple-200"><h4 class="font-bold text-purple-900 text-sm mb-1">Daftar Kode Rekening & Virtual Account Resmi</h4><p class="text-xs text-purple-700">Periode Gaji: 16 Juni 2026 s/d 15 Juli 2026 | PT Sentral Sari Jaya (52 Karyawan)</p></div><table class="w-full text-left border-collapse"><thead class="bg-slate-100 text-gray-700 uppercase text-[10px]"><tr><th class="p-3">Jenis Pembayaran</th><th class="p-3">Kode Akun / VA</th><th class="p-3">Bank</th><th class="p-3 text-right">Total Nominal</th></tr></thead><tbody class="divide-y text-xs"><tr><td class="p-3 font-semibold">BPJS Ketenagakerjaan</td><td class="p-3 font-mono">VA-889201726354</td><td class="p-3">Mandiri/BNI</td><td class="p-3 text-right font-bold">Rp 5.027.652,00</td></tr><tr><td class="p-3 font-semibold">BPJS Kesehatan</td><td class="p-3 font-mono">VA-888102938475</td><td class="p-3">BRI/Mandiri</td><td class="p-3 text-right font-bold">Rp 1.631.787,00</td></tr><tr><td class="p-3 font-semibold">PPh Pasal 21</td><td class="p-3 font-mono">411121 - 100</td><td class="p-3">Bank Persepsi</td><td class="p-3 text-right font-bold">Rp 5.234.890,00</td></tr></tbody></table><div class="pt-6 border-t mt-6 flex justify-between text-[11px]"><div class="text-center w-36"><p>Dibuat oleh,</p><br><br><p class="font-bold underline">Admin HRIS</p></div><div class="text-center w-36"><p>Diperiksa oleh,</p><br><br><p class="font-bold underline">HR Manager</p></div><div class="text-center w-36"><p>Luwuk, ${formattedDate}</p><p>Disetujui oleh,</p><br><p class="font-bold underline">Onesimus Suriadi</p></div></div></div>`;
             } else {
                 modalTitle.innerHTML = `<i class="fa-solid fa-building-columns mr-2"></i> Rekap Transfer Gaji Karyawan - Bank ${bankType}`;
                 let filteredEmp = karyawanData.filter(emp => emp.cellK === `Bank ${bankType}`);
                 let totalBankVal = filteredEmp.reduce((acc, curr) => acc + curr.cellBD, 0);
-
                 let rowsHtml = '';
                 filteredEmp.forEach((emp, idx) => {
-                    rowsHtml += `
-                        <tr class="hover:bg-gray-50">
-                            <td class="p-2.5 text-center">${idx + 1}</td>
-                            <td class="p-2.5 font-semibold text-gray-900">${emp.cellC}</td>
-                            <td class="p-2.5 text-gray-600">${emp.cellE}</td>
-                            <td class="p-2.5 text-gray-600">${emp.cellF}</td>
-                            <td class="p-2.5 font-mono text-gray-700">${emp.cellL}</td>
-                            <td class="p-2.5 text-right font-bold text-emerald-800">${formatRupiah(emp.cellBD)}</td>
-                        </tr>
-                    `;
+                    rowsHtml += `<tr class="hover:bg-gray-50"><td class="p-2.5 text-center">${idx + 1}</td><td class="p-2.5 font-semibold text-gray-900">${emp.cellC}</td><td class="p-2.5 text-gray-600">${emp.cellE}</td><td class="p-2.5 text-gray-600">${emp.cellF}</td><td class="p-2.5 font-mono text-gray-700">${emp.cellL}</td><td class="p-2.5 text-right font-bold text-emerald-800">${formatRupiah(emp.cellBD)}</td></tr>`;
                 });
-
-                content.innerHTML = `
-                    <div id="printableBankArea" class="space-y-4 bg-white p-4 rounded-xl border">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border">
-                            <div>
-                                <span class="text-gray-500 font-medium">Bank Tujuan Transfer:</span>
-                                <h4 class="text-sm font-bold text-blue-900 mt-0.5">Bank ${bankType} (PT Sentral Sari Jaya Payroll)</h4>
-                            </div>
-                            <div>
-                                <span class="text-gray-500 font-medium">Total Nilai di Transfer (Cell BD):</span>
-                                <h4 class="text-sm font-extrabold text-emerald-700 mt-0.5">${formatRupiah(totalBankVal)} (${filteredEmp.length} Karyawan)</h4>
-                            </div>
-                        </div>
-                        <div class="overflow-x-auto max-h-[450px]">
-                            <table class="w-full text-left border-collapse text-xs">
-                                <thead class="bg-slate-100 text-gray-700 uppercase text-[10px] sticky top-0">
-                                    <tr>
-                                        <th class="p-2.5 text-center">No</th>
-                                        <th class="p-2.5">Nama (Cell C)</th>
-                                        <th class="p-2.5">Divisi (Cell E)</th>
-                                        <th class="p-2.5">Jabatan (Cell F)</th>
-                                        <th class="p-2.5">No. Rekening (Cell L)</th>
-                                        <th class="p-2.5 text-right">Nilai Transfer (Cell BD)</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-100">
-                                    ${rowsHtml}
-                                </tbody>
-                                <tfoot>
-                                    <tr class="bg-gray-100 font-bold text-gray-900">
-                                        <td colspan="5" class="p-2.5 text-right uppercase">Total Keseluruhan Transfer ${bankType}:</td>
-                                        <td class="p-2.5 text-right text-emerald-800">${formatRupiah(totalBankVal)}</td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                        <div class="pt-6 border-t mt-6 flex justify-between text-[11px] text-gray-700">
-                            <div class="text-center w-36"><p>Dibuat oleh,</p><br><br><br><p class="font-bold underline">Admin HRIS</p></div>
-                            <div class="text-center w-36"><p>Diperiksa oleh,</p><br><br><br><p class="font-bold underline">HR Manager</p></div>
-                            <div class="text-center w-36"><p>Luwuk, ${formattedDate}</p><p>Disetujui oleh,</p><br><br><p class="font-bold underline">Onesimus Suriadi</p><p class="text-[10px]">President Director</p></div>
-                        </div>
-                    </div>
-                `;
+                content.innerHTML = `<div id="printableBankArea" class="space-y-4 bg-white p-4 rounded-xl border"><div class="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border"><div><span class="text-gray-500 font-medium">Bank Tujuan:</span><h4 class="text-sm font-bold text-blue-900">Bank ${bankType}</h4></div><div><span class="text-gray-500 font-medium">Total Nilai Transfer:</span><h4 class="text-sm font-extrabold text-emerald-700">${formatRupiah(totalBankVal)} (${filteredEmp.length} Karyawan)</h4></div></div><div class="overflow-x-auto max-h-[450px]"><table class="w-full text-left border-collapse text-xs"><thead class="bg-slate-100 uppercase text-[10px] sticky top-0"><tr><th class="p-2.5 text-center">No</th><th class="p-2.5">Nama (Cell C)</th><th class="p-2.5">Divisi (Cell E)</th><th class="p-2.5">Jabatan (Cell F)</th><th class="p-2.5">No. Rekening (Cell L)</th><th class="p-2.5 text-right">Nilai (Cell BD)</th></tr></thead><tbody class="divide-y">${rowsHtml}</tbody><tfoot><tr class="bg-gray-100 font-bold"><td colspan="5" class="p-2.5 text-right uppercase">Total Keseluruhan:</td><td class="p-2.5 text-right text-emerald-800">${formatRupiah(totalBankVal)}</td></tr></tfoot></table></div><div class="pt-6 border-t mt-6 flex justify-between text-[11px]"><div class="text-center w-36"><p>Dibuat oleh,</p><br><br><p class="font-bold underline">Admin HRIS</p></div><div class="text-center w-36"><p>Diperiksa oleh,</p><br><br><p class="font-bold underline">HR Manager</p></div><div class="text-center w-36"><p>Luwuk, ${formattedDate}</p><p>Disetujui oleh,</p><br><p class="font-bold underline">Onesimus Suriadi</p></div></div></div>`;
             }
-
             document.getElementById('bankModal').dataset.bankName = bankType;
             document.getElementById('bankModal').classList.remove('hidden');
         }
 
-        function closeBankModal() {
-            document.getElementById('bankModal').classList.add('hidden');
-        }
-
+        function closeBankModal() { document.getElementById('bankModal').classList.add('hidden'); }
         window.jsPDF = window.jspdf.jsPDF;
         function downloadBankPDF() {
             const element = document.getElementById('printableBankArea');
@@ -424,35 +286,19 @@
             html2canvas(element, { scale: 2, useCORS: true }).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
                 const pdf = new jsPDF('p', 'mm', 'a4');
-                const imgWidth = 190; 
-                const pageHeight = 295;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                let heightLeft = imgHeight;
-                let position = 10;
-                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                }
+                pdf.addImage(imgData, 'PNG', 10, 10, 190, (canvas.height * 190) / canvas.width);
                 pdf.save(`Rekap_Transfer_${bankName}.pdf`);
             });
         }
-
         function printBankModal() {
             const printContent = document.getElementById('printableBankArea').innerHTML;
             const originalContent = document.body.innerHTML;
-            document.body.innerHTML = `<div style="padding: 20px;"><h2>Rekapitulasi Transfer & Pembayaran Bank</h2>${printContent}</div>`;
+            document.body.innerHTML = `<div style="padding: 20px;">${printContent}</div>`;
             window.print();
             document.body.innerHTML = originalContent;
             location.reload();
         }
-
-        window.onload = function() {
-            renderAllTables();
-        };
+        window.onload = function() { renderAllTables(); };
     </script>
 </body>
 </html>
