@@ -15,7 +15,7 @@
 </head>
 <body class="bg-gray-50 text-gray-800 flex h-screen overflow-hidden">
 
-    <!-- SIDEBAR UTUH -->
+    <!-- SIDEBAR -->
     <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between hidden md:flex shadow-xl">
         <div>
             <div class="p-6 border-b border-slate-800">
@@ -49,6 +49,9 @@
         <!-- HEADER ATAS -->
         <header class="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-6 shadow-sm">
             <div class="flex items-center gap-4">
+                <button class="md:hidden text-gray-600 hover:text-gray-900 focus:outline-none">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
                 <h2 class="text-lg font-bold text-gray-800 tracking-tight" id="headerTitle">Dashboard Utama</h2>
             </div>
             <div class="flex items-center gap-3">
@@ -61,7 +64,7 @@
         <!-- KONTEN BERGULIR -->
         <main class="flex-1 overflow-y-auto p-6 space-y-6">
             
-            <!-- 1. HALAMAN: DASHBOARD UTAMA -->
+            <!-- HALAMAN 1: DASHBOARD UTAMA -->
             <div id="tab-dashboard" class="space-y-6">
                 <div class="bg-gradient-to-r from-slate-900 to-blue-950 text-white p-8 rounded-3xl shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <div>
@@ -75,33 +78,9 @@
                         <p class="text-[11px] text-emerald-400 mt-1"><i class="fa-solid fa-circle-check"></i> 36 Shift | 16 Non Shift</p>
                     </div>
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-xs">
-                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-lg font-bold mb-4">
-                            <i class="fa-solid fa-building-shield"></i>
-                        </div>
-                        <h4 class="font-bold text-gray-900 text-base">Kontraktor Utama</h4>
-                        <p class="text-sm text-gray-500 mt-1">PT Sentral Sari Jaya (SSJ) - Pengelolaan Tenaga Kerja Lapangan & Onshore.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-xs">
-                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-lg font-bold mb-4">
-                            <i class="fa-solid fa-file-excel"></i>
-                        </div>
-                        <h4 class="font-bold text-gray-900 text-base">Database Terintegrasi</h4>
-                        <p class="text-sm text-gray-500 mt-1">Akses unduh laporan lengkap dengan parameter utama tersedia.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-xs">
-                        <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-lg font-bold mb-4">
-                            <i class="fa-solid fa-shield-halved"></i>
-                        </div>
-                        <h4 class="font-bold text-gray-900 text-base">Kepatuhan & HSSE</h4>
-                        <p class="text-sm text-gray-500 mt-1">Pemantauan masa kontrak, MCU, serta program keselamatan kerja secara berkala.</p>
-                    </div>
-                </div>
             </div>
 
-            <!-- 2. HALAMAN: MASTER KARYAWAN -->
+            <!-- HALAMAN 2: MASTER KARYAWAN -->
             <div id="tab-karyawan" class="space-y-6 hidden">
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
                     <div class="p-5 border-b border-gray-100 flex flex-col md:flex-row gap-4 justify-between items-center bg-gray-50/50">
@@ -140,13 +119,9 @@
                 </div>
             </div>
 
-            <!-- 3. HALAMAN: TIME SHEET & ABSEN -->
+            <!-- HALAMAN 3: TIME SHEET & ABSEN -->
             <div id="tab-timesheet" class="hidden space-y-6">
                 <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-xl font-bold text-blue-900"><i class="fa-solid fa-calendar-days mr-2"></i> Rekap Lembur & Man Hours (Jam Kerja)</h3>
-                        <span class="text-xs text-gray-500 font-medium">Periode: 16 Jun - 15 Jul 2026</span>
-                    </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse text-xs">
                             <thead>
@@ -154,9 +129,10 @@
                                     <th class="p-3">No</th>
                                     <th class="p-3">Nama Pekerja</th>
                                     <th class="p-3">Jabatan & Sistem Kerja</th>
-                                    <th class="p-3 text-center">Jam Normal</th>
+                                    <th class="p-3 text-center">Kehadiran / Jam Normal</th>
                                     <th class="p-3 text-center">Total Lembur (OT)</th>
                                     <th class="p-3 text-center">Total Man Hours</th>
+                                    <th class="p-3 text-center">Aksi Kertas Kerja</th>
                                 </tr>
                             </thead>
                             <tbody id="timesheetTableBody" class="divide-y divide-gray-100 text-gray-700"></tbody>
@@ -165,20 +141,20 @@
                 </div>
             </div>
 
-            <!-- 4. HALAMAN: ENGINE PAYROLL -->
+            <!-- HALAMAN 4: ENGINE PAYROLL -->
             <div id="tab-payroll" class="hidden space-y-6">
                 <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div>
                             <h3 class="text-xl font-bold text-blue-900">Engine Payroll & Dashboard Upah Bulanan</h3>
-                            <p class="text-xs text-gray-500 mt-1">PT Pertamina EP Regional 4 Zona 13 - Donggi Matindok Field (52 Orang)</p>
+                            <p class="text-xs text-gray-500 mt-1">PT Pertamina EP Regional 4 Zona 13 - Donggi Matindok Field</p>
                         </div>
-                        <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-3 w-full md:w-auto flex-wrap">
                             <div class="relative">
                                 <button onclick="toggleBankDropdown()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-xs transition-all flex items-center gap-2">
                                     <i class="fa-solid fa-building-columns"></i> Rekening & Transfer Bank <i class="fa-solid fa-chevron-down text-[10px]"></i>
                                 </button>
-                                <div id="bankDropdownMenu" class="hidden absolute right-0 mt-2 w-60 bg-white rounded-xl shadow-xl border border-gray-100 z-30 py-1">
+                                <div id="bankDropdownMenu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 z-30 py-1">
                                     <div class="px-4 py-2 border-b border-gray-100 text-[11px] font-bold text-gray-500 uppercase">Pilih Rekening / Bank</div>
                                     <button onclick="showBankModal('Mandiri')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-gray-700 hover:bg-blue-50 flex items-center gap-2">
                                         <i class="fa-solid fa-wallet text-blue-600 w-4"></i> Transfer Bank Mandiri
@@ -205,9 +181,10 @@
                                     <th class="p-3">Nama Karyawan</th>
                                     <th class="p-3">Jabatan & Sistem Kerja</th>
                                     <th class="p-3">Divisi</th>
-                                    <th class="p-3">Bank Tujuan</th>
-                                    <th class="p-3">Nomor Rekening</th>
-                                    <th class="p-3 text-right">Gaji Netto</th>
+                                    <th class="p-3">Gaji Bruto</th>
+                                    <th class="p-3">Potongan</th>
+                                    <th class="p-3">Gaji Netto</th>
+                                    <th class="p-3 text-center">Aksi Slip</th>
                                 </tr>
                             </thead>
                             <tbody id="payrollTableBody" class="divide-y divide-gray-100 text-gray-700"></tbody>
@@ -219,11 +196,11 @@
         </main>
     </div>
 
-    <!-- MODAL BANK / REKAP TRANSFER -->
+    <!-- MODAL BANK / KODE REKENING + PEMETAAN KOLOM BARU & TANDA TANGAN -->
     <div id="bankModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-5xl overflow-hidden border border-gray-100 flex flex-col max-h-[90vh]">
             <div class="bg-emerald-800 px-6 py-4 flex justify-between items-center text-white shrink-0">
-                <h3 class="font-bold text-base" id="bankModalTitle"><i class="fa-solid fa-building-columns mr-2"></i> Rekap Transfer Bank</h3>
+                <h3 class="font-bold text-base" id="bankModalTitle"><i class="fa-solid fa-building-columns mr-2"></i> Rekap Transfer & Kode Rekening</h3>
                 <button onclick="closeBankModal()" class="text-emerald-200 hover:text-white text-lg focus:outline-none">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
@@ -234,7 +211,7 @@
             <div class="bg-white px-6 py-3 border-t border-gray-100 flex justify-between items-center shrink-0">
                 <div class="flex items-center gap-2" id="bankModalActions">
                     <button onclick="downloadBankPDF()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-medium transition-all flex items-center gap-2 shadow">
-                        <i class="fa-solid fa-download"></i> Download PDF
+                        <i class="fa-solid fa-download"></i> Download Save as PDF
                     </button>
                     <button onclick="printBankModal()" class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-medium transition-all flex items-center gap-2 shadow">
                         <i class="fa-solid fa-print"></i> Print
@@ -245,80 +222,140 @@
         </div>
     </div>
 
-    <!-- MODAL PROFIL -->
+    <!-- MODAL PROFIL & SLIP LAINNYA -->
     <div id="profileModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden border border-gray-100">
             <div class="bg-slate-900 px-6 py-4 flex justify-between items-center text-white">
                 <h3 class="font-bold text-base" id="modalTitle">Detail Profil Karyawan</h3>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="p-6 max-h-[75vh] overflow-y-auto space-y-4" id="modalContent"></div>
-            <div class="bg-gray-50 px-6 py-3 border-t flex justify-end">
-                <button onclick="closeModal()" class="bg-slate-800 text-white px-5 py-2 rounded-xl text-sm">Tutup</button>
-            </div>
         </div>
     </div>
 
     <script>
         const employeesData = [
-            { "No": 1, "Nama Karyawan": "Sujianto M. Batias", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank Mandiri", "NoRek": "142-00-1982738-1", "NettoVal": 8381481.00 },
-            { "No": 2, "Nama Karyawan": "Ansar Mansur", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BNI", "NoRek": "0918273645", "NettoVal": 9575824.00 },
-            { "No": 3, "Nama Karyawan": "Harir A. Lako", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BRI", "NoRek": "3019-01-028374-50-2", "NettoVal": 9840603.00 },
-            { "No": 4, "Nama Karyawan": "Ali Friansyah", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank Mandiri", "NoRek": "142-00-5524112-9", "NettoVal": 7768057.00 },
-            { "No": 5, "Nama Karyawan": "Fredrik D. Tinadji", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BNI", "NoRek": "0837261542", "NettoVal": 8687857.00 },
-            { "No": 6, "Nama Karyawan": "Wayan Edi Jaya", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BRI", "NoRek": "5012-01-019283-40-1", "NettoVal": 10935733.00 },
-            { "No": 7, "Nama Karyawan": "Akmal (A)", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank Mandiri", "NoRek": "142-00-8873642-0", "NettoVal": 8599310.00 },
-            { "No": 8, "Nama Karyawan": "Alfikwan I. Marida", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BNI", "NoRek": "0746352418", "NettoVal": 9946522.00 },
-            { "No": 9, "Nama Karyawan": "Deni Andrianto", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BRI", "NoRek": "4011-01-082736-50-8", "NettoVal": 8973439.00 },
-            { "No": 10, "Nama Karyawan": "Awal Dwi Sekti", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank Mandiri", "NoRek": "142-00-3349281-2", "NettoVal": 10892271.00 },
-            { "No": 11, "Nama Karyawan": "Muh Arsyal Ramdani", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BNI", "NoRek": "0652418932", "NettoVal": 7274409.00 },
-            { "No": 12, "Nama Karyawan": "Muh Palmi", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BRI", "NoRek": "6023-01-039485-50-1", "NettoVal": 7973477.00 },
-            { "No": 13, "Nama Karyawan": "Halim", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank Mandiri", "NoRek": "142-00-6675841-3", "NettoVal": 8023632.00 },
-            { "No": 14, "Nama Karyawan": "Mustamar Dg Magangka", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BNI", "NoRek": "0543219876", "NettoVal": 7742416.00 },
-            { "No": 15, "Nama Karyawan": "Akmal (B)", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BRI", "NoRek": "3011-01-055412-53-4", "NettoVal": 11316949.00 },
-            { "No": 16, "Nama Karyawan": "Rizal Tamoreka", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank Mandiri", "NoRek": "142-00-2219482-5", "NettoVal": 7122547.00 },
-            { "No": 17, "Nama Karyawan": "Arianto Yahya", "Job Title": "Pemuka Operator Alat Berat", "Divisi / Fungsi": "SCM", "Tipe": "Non Shift", "Contract Remaining": 120, "Bank": "Bank BNI", "NoRek": "0382910475", "NettoVal": 6604067.00 },
-            { "No": 18, "Nama Karyawan": "Marjan Karim", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Tipe": "Non Shift", "Contract Remaining": 120, "Bank": "Bank BRI", "NoRek": "5019-01-011283-50-9", "NettoVal": 7843853.00 },
-            { "No": 19, "Nama Karyawan": "Kasman", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Tipe": "Non Shift", "Contract Remaining": 120, "Bank": "Bank Mandiri", "NoRek": "142-00-9982731-4", "NettoVal": 6105533.00 },
-            { "No": 20, "Nama Karyawan": "Lukman Tasakka", "Job Title": "Pemuka Ops. Alat Berat", "Divisi / Fungsi": "SCM", "Tipe": "Non Shift", "Contract Remaining": 120, "Bank": "Bank BNI", "NoRek": "0473829105", "NettoVal": 6597488.00 },
-            { "No": 21, "Nama Karyawan": "Nengah Darsana", "Job Title": "Pemuka Ops. Alat Berat", "Divisi / Fungsi": "SCM", "Tipe": "Non Shift", "Contract Remaining": 120, "Bank": "Bank BRI", "NoRek": "3015-01-033827-50-3", "NettoVal": 6073291.00 },
-            { "No": 22, "Nama Karyawan": "I Gusti Ngurah Baliarta", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Tipe": "Non Shift", "Contract Remaining": 120, "Bank": "Bank Mandiri", "NoRek": "142-00-7738291-8", "NettoVal": 6073979.00 },
-            { "No": 23, "Nama Karyawan": "Irpan Parenden", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Tipe": "Non Shift", "Contract Remaining": 120, "Bank": "Bank BNI", "NoRek": "0293847561", "NettoVal": 6103829.00 },
-            { "No": 24, "Nama Karyawan": "Sunita Ayu P.", "Job Title": "Petugas Admin II", "Divisi / Fungsi": "Legal & Relation", "Tipe": "Non Shift", "Contract Remaining": 120, "Bank": "Bank BRI", "NoRek": "5011-01-028394-50-5", "NettoVal": 6880327.00 },
-            { "No": 25, "Nama Karyawan": "Dewi Setiawati M Dg M", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "RAM", "Tipe": "Non Shift", "Contract Remaining": 120, "Bank": "Bank Mandiri", "NoRek": "142-00-4418293-9", "NettoVal": 6916903.00 },
-            { "No": 26, "Nama Karyawan": "Marini Astari", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "HR - GS", "Tipe": "Non Shift", "Contract Remaining": 120, "Bank": "Bank BNI", "NoRek": "0192837465", "NettoVal": 8826252.00 },
-            { "No": 27, "Nama Karyawan": "Ali Mukhtar Mohammad Amin", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BRI", "NoRek": "3018-01-049283-50-7", "NettoVal": 7149547.00 },
-            { "No": 28, "Nama Karyawan": "Agus Rudiyanto", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank Mandiri", "NoRek": "142-00-5582910-3", "NettoVal": 8163072.00 },
-            { "No": 29, "Nama Karyawan": "I Gede Ariana", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BNI", "NoRek": "0583920184", "NettoVal": 8397072.00 },
-            { "No": 30, "Nama Karyawan": "I Putu Adnyana Wijaya", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BRI", "NoRek": "4012-01-098374-50-1", "NettoVal": 8441072.00 },
-            { "No": 31, "Nama Karyawan": "Mursalun Lasuru", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank Mandiri", "NoRek": "142-00-1128394-7", "NettoVal": 8210072.00 },
-            { "No": 32, "Nama Karyawan": "Subandi", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BNI", "NoRek": "0314928375", "NettoVal": 8574072.00 },
-            { "No": 33, "Nama Karyawan": "Budi Santoso", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BRI", "NoRek": "5013-01-077382-50-4", "NettoVal": 8301072.00 },
-            { "No": 34, "Nama Karyawan": "I Komang Santika", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank Mandiri", "NoRek": "142-00-4491823-6", "NettoVal": 8707072.00 },
-            { "No": 35, "Nama Karyawan": "Indra Natalianto Patasik", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BNI", "NoRek": "0258194763", "NettoVal": 8348072.00 },
-            { "No": 36, "Nama Karyawan": "Kd Wiyad Nyana", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BRI", "NoRek": "3014-01-011829-50-9", "NettoVal": 8330072.00 },
-            { "No": 37, "Nama Karyawan": "I Nengah Rudi Artika", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank Mandiri", "NoRek": "142-00-3382910-1", "NettoVal": 8637072.00 },
-            { "No": 38, "Nama Karyawan": "Sukardi Jalisingi", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BNI", "NoRek": "0194827365", "NettoVal": 7094547.00 },
-            { "No": 39, "Nama Karyawan": "Yotam", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BRI", "NoRek": "5016-01-088392-50-2", "NettoVal": 8275072.00 },
-            { "No": 40, "Nama Karyawan": "Thamar Thalib Mbau", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank Mandiri", "NoRek": "142-00-5591823-3", "NettoVal": 8691072.00 },
-            { "No": 41, "Nama Karyawan": "Arie Kurniawan", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BNI", "NoRek": "0847365219", "NettoVal": 4651253.00 },
-            { "No": 42, "Nama Karyawan": "Eko Wiyono", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BRI", "NoRek": "3017-01-022938-50-6", "NettoVal": 8312072.00 },
-            { "No": 43, "Nama Karyawan": "Fajriadi", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank Mandiri", "NoRek": "142-00-8819283-4", "NettoVal": 8601072.00 },
-            { "No": 44, "Nama Karyawan": "Jumalik H. Latungka", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BNI", "NoRek": "0938475621", "NettoVal": 8293072.00 },
-            { "No": 45, "Nama Karyawan": "Randianto", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank BRI", "NoRek": "5010-01-066541-50-8", "NettoVal": 8404072.00 },
-            { "No": 46, "Nama Karyawan": "Saiful M. Zakar", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Tipe": "Shift", "Contract Remaining": 120, "Bank": "Bank Mandiri", "NoRek": "142-00-9938271-5", "NettoVal": 8422072.00 },
-            { "No": 47, "Nama Karyawan": "I Nyoman Suwitra", "Job Title": "Petugas Gudang BBM", "Divisi / Fungsi": "SCM", "Tipe": "Non Shift", "Contract Remaining": 120, "Bank": "Bank BNI", "NoRek": "0738291045", "NettoVal": 6028357.00 },
-            { "No": 48, "Nama Karyawan": "I Putu Muryanto", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "Operation", "Tipe": "Non Shift", "Contract Remaining": 120, "Bank": "Bank BRI", "NoRek": "3019-01-055241-50-3", "NettoVal": 11407856.00 },
-            { "No": 49, "Nama Karyawan": "Siti Aisyah Dg Masese", "Job Title": "Sekretaris FM", "Divisi / Fungsi": "Field Manager", "Tipe": "Non Shift", "Contract Remaining": 120, "Bank": "Bank Mandiri", "NoRek": "142-00-1112839-2", "NettoVal": 10625911.00 },
-            { "No": 50, "Nama Karyawan": "Dewi Khoirunnisa", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "Finance", "Tipe": "Non Shift", "Contract Remaining": 120, "Bank": "Bank BNI", "NoRek": "0182938475", "NettoVal": 7132222.00 },
-            { "No": 51, "Nama Karyawan": "Eka Nurjannah", "Job Title": "Petugas Admin III CSR", "Divisi / Fungsi": "Legal & Relation", "Tipe": "Non Shift", "Contract Remaining": 120, "Bank": "Bank BRI", "NoRek": "3012-01-044819-50-3", "NettoVal": 6797682.00 },
-            { "No": 52, "Nama Karyawan": "Findy Handayani", "Job Title": "Petugas Admin II", "Divisi / Fungsi": "SCM", "Tipe": "Non Shift", "Contract Remaining": 120, "Bank": "Bank Mandiri", "NoRek": "142-00-6625143-8", "NettoVal": 3149643.00 }
+            { 
+                "No": 1, "Nama Karyawan": "Sujianto M. Batias", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank Mandiri", "NoRek": "142-00-1982738-1", "Education": "SLT/SMA/SMK", "Mobile": "0821 9442 1574", "Email": "sujiantobatiasmtd@gmail.com", "Address": "Desa Noge Dusun II", 
+                "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547,
+                "ArrUntek": [], "TotalUntek": 5321583, "BrutoVal": 8599130, "Bruto": "Rp 8,599,130.00", 
+                "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 89,744.98",
+                "TotalPotongan": 217648.98, "Potongan": "Rp 217,648.98", "NettoVal": 8381481.00, "Netto": "Rp 8,381,481.00", "OTHours": 65.50
+            },
+            { 
+                "No": 2, "Nama Karyawan": "Ansar Mansur", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BNI", "NoRek": "0918273645", "Education": "Diploma III", "Mobile": "0856 5626 0104", "Email": "ansarmansur5@gmail.com", "Address": "Desa Bonebalantak", 
+                "Tipe": "Shift", "UpahPokok": 2600000, "TAUP": 900000, "TotalUT": 3500000,
+                "ArrUntek": [], "TotalUntek": 6338488, "BrutoVal": 9838488, "Bruto": "Rp 9,838,488.00", 
+                "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 159,659",
+                "TotalPotongan": 287563, "Potongan": "Rp 287,563.00", "NettoVal": 9575824.00, "Netto": "Rp 9,575,824.00", "OTHours": 60.00
+            },
+            { 
+                "No": 3, "Nama Karyawan": "Harir A. Lako", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BRI", "NoRek": "3019-01-028374-50-2", "Education": "SLT/SMA/SMK", "Mobile": "0821 9414 4463", "Email": "widiap373@gmail.com", "Address": "Desa Nonong", 
+                "Tipe": "Shift", "UpahPokok": 2650000, "TAUP": 920000, "TotalUT": 3570000,
+                "ArrUntek": [], "TotalUntek": 6599525, "BrutoVal": 10169525, "Bruto": "Rp 10,169,525.00", 
+                "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 158,823",
+                "TotalPotongan": 286727, "Potongan": "Rp 286,727.00", "NettoVal": 9840603.00, "Netto": "Rp 9,840,603.00", "OTHours": 45.00
+            },
+            { "No": 4, "Nama Karyawan": "Ali Friansyah", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank Mandiri", "NoRek": "142-00-5524112-9", "Education": "SLT/SMA/SMK", "Mobile": "0822 9608 9791", "Email": "alifriyansyah10@gmail.com", "Address": "Jalan Dr. Moh. Hatta", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 4100000, "BrutoVal": 7377547, "Bruto": "Rp 7,377,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 122,096", "TotalPotongan": 250000, "Potongan": "Rp 250,000.00", "NettoVal": 7768057.00, "Netto": "Rp 7,768,057.00", "OTHours": 35.00 },
+            { "No": 5, "Nama Karyawan": "Fredrik D. Tinadji", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BNI", "NoRek": "0837261542", "Education": "S1/Sederajat", "Mobile": "0822 6132 7893", "Email": "nyonkayu@gmail.com", "Address": "Desa Kayowa", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 4400000, "BrutoVal": 7677547, "Bruto": "Rp 7,677,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 132,096", "TotalPotongan": 260000, "Potongan": "Rp 260,000.00", "NettoVal": 8687857.00, "Netto": "Rp 8,687,857.00", "OTHours": 38.00 },
+            { "No": 6, "Nama Karyawan": "Wayan Edi Jaya", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BRI", "NoRek": "5012-01-019283-40-1", "Education": "S1/Sederajat", "Mobile": "0823 4748 5042", "Email": "wayanedijaya81@gmail.com", "Address": "Desa Sukamaju I", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 6311525, "BrutoVal": 9589072, "Bruto": "Rp 9,589,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 162,096", "TotalPotongan": 290000, "Potongan": "Rp 290,000.00", "NettoVal": 10935733.00, "Netto": "Rp 10,935,733.00", "OTHours": 42.00 },
+            { "No": 7, "Nama Karyawan": "Akmal (A)", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank Mandiri", "NoRek": "142-00-8873642-0", "Education": "SLT/SMA/SMK", "Mobile": "0852 4066 7996", "Email": "akmalambotang@gmail.com", "Address": "Desa Kayowa", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 4000000, "BrutoVal": 7277547, "Bruto": "Rp 7,277,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 72,096", "TotalPotongan": 200000, "Potongan": "Rp 200,000.00", "NettoVal": 8599310.00, "Netto": "Rp 8,599,310.00", "OTHours": 34.00 },
+            { "No": 8, "Nama Karyawan": "Alfikwan I. Marida", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BNI", "NoRek": "0746352418", "Education": "SLT/SMA/SMK", "Mobile": "0821 9718 2701", "Email": "alfikwan.marida@gmail.com", "Address": "Desa Tolando", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5611525, "BrutoVal": 8889072, "Bruto": "Rp 8,889,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 142,096", "TotalPotongan": 270000, "Potongan": "Rp 270,000.00", "NettoVal": 9946522.00, "Netto": "Rp 9,946,522.00", "OTHours": 40.00 },
+            { "No": 9, "Nama Karyawan": "Deni Andrianto", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BRI", "NoRek": "4011-01-082736-50-8", "Education": "S1", "Mobile": "0822 9605 4400", "Email": "deniandrianto68@gmail.com", "Address": "Dusun II Noge", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5511525, "BrutoVal": 8789072, "Bruto": "Rp 8,789,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 127,096", "TotalPotongan": 255000, "Potongan": "Rp 255,000.00", "NettoVal": 8973439.00, "Netto": "Rp 8,973,439.00", "OTHours": 39.00 },
+            { "No": 10, "Nama Karyawan": "Awal Dwi Sekti", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank Mandiri", "NoRek": "142-00-3349281-2", "Education": "S1/Sederajat", "Mobile": "0822 5950 5262", "Email": "awaldwisekti13@gmail.com", "Address": "Asrama Kodim 1308", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5811525, "BrutoVal": 9089072, "Bruto": "Rp 9,089,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 152,096", "TotalPotongan": 280000, "Potongan": "Rp 280,000.00", "NettoVal": 10892271.00, "Netto": "Rp 10,892,271.00", "OTHours": 41.00 },
+            { "No": 11, "Nama Karyawan": "Muh Arsyal Ramdani", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BNI", "NoRek": "0652418932", "Education": "SLT/SMA/SMK", "Mobile": "0822 9627 4553", "Email": "ramdaniarsyal11@gmail.com", "Address": "Desa Bakung", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 4100000, "BrutoVal": 7377547, "Bruto": "Rp 7,377,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 82,096", "TotalPotongan": 210000, "Potongan": "Rp 210,000.00", "NettoVal": 7274409.00, "Netto": "Rp 7,274,409.00", "OTHours": 32.00 },
+            { "No": 12, "Nama Karyawan": "Muh Palmi", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BRI", "NoRek": "6023-01-039485-50-1", "Education": "S1", "Mobile": "0822 9385 3550", "Email": "muhpalmi@gmail.com", "Address": "Dusun II Noge", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5311525, "BrutoVal": 8589072, "Bruto": "Rp 8,589,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 112,096", "TotalPotongan": 240000, "Potongan": "Rp 240,000.00", "NettoVal": 7973477.00, "Netto": "Rp 7,973,477.00", "OTHours": 37.00 },
+            { "No": 13, "Nama Karyawan": "Halim", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank Mandiri", "NoRek": "142-00-6675841-3", "Education": "SLT/SMA/SMK", "Mobile": "0853 4079 7391", "Email": "hsehalim27@gmail.com", "Address": "Desa Nonong Dusun I", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5211525, "BrutoVal": 8489072, "Bruto": "Rp 8,489,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 102,096", "TotalPotongan": 230000, "Potongan": "Rp 230,000.00", "NettoVal": 8023632.00, "Netto": "Rp 8,023,632.00", "OTHours": 36.00 },
+            { "No": 14, "Nama Karyawan": "Mustamar Dg Magangka", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BNI", "NoRek": "0543219876", "Education": "S1/Sederajat", "Mobile": "0853 4200 8134", "Email": "mustamar713@gmail.com", "Address": "Desa Noge", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5461525, "BrutoVal": 8739072, "Bruto": "Rp 8,739,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 117,096", "TotalPotongan": 245000, "Potongan": "Rp 245,000.00", "NettoVal": 7742416.00, "Netto": "Rp 7,742,416.00", "OTHours": 38.00 },
+            { "No": 15, "Nama Karyawan": "Akmal (B)", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BRI", "NoRek": "3011-01-055412-53-4", "Education": "SLT/SMA/SMK", "Mobile": "0821 9534 4685", "Email": "akhmalkukizunawa94@gmail.com", "Address": "Dusun II Noge", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5661525, "BrutoVal": 8939072, "Bruto": "Rp 8,939,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 147,096", "TotalPotongan": 275000, "Potongan": "Rp 275,000.00", "NettoVal": 11316949.00, "Netto": "Rp 11,316,949.00", "OTHours": 39.00 },
+            { "No": 16, "Nama Karyawan": "Rizal Tamoreka", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank Mandiri", "NoRek": "142-00-2219482-5", "Education": "SLT/SMA/SMK", "Mobile": "0858 2371 8389", "Email": "ronitamoreka@gmail.com", "Address": "Desa Singkoyo", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 4050000, "BrutoVal": 7327547, "Bruto": "Rp 7,327,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 77,096", "TotalPotongan": 205000, "Potongan": "Rp 205,000.00", "NettoVal": 7122547.00, "Netto": "Rp 7,122,547.00", "OTHours": 32.00 },
+            { 
+                "No": 17, "Nama Karyawan": "Arianto Yahya", "Job Title": "Pemuka Operator Alat Berat", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BNI", "NoRek": "0382910475", "Education": "SLT/SMA/SMK", "Mobile": "0851 4634 2761", "Email": "-", "Address": "Desa Tolando", 
+                "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547,
+                "ArrUntek": [], "TotalUntek": 3100000, "BrutoVal": 6377547, "Bruto": "Rp 6,377,547.00",
+                "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 95,000",
+                "TotalPotongan": 222904, "Potongan": "Rp 222,904.00", "NettoVal": 6604067.00, "Netto": "Rp 6,604,067.00", "OTHours": 20.00 
+            },
+            { 
+                "No": 18, "Nama Karyawan": "Marjan Karim", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BRI", "NoRek": "5019-01-011283-50-9", "Education": "SLT/SMA/SMK", "Mobile": "0822 5989 6633", "Email": "marjankarim205@gmail.com", "Address": "Desa Nonong", 
+                "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547,
+                "ArrUntek": [], "TotalUntek": 3400000, "BrutoVal": 6677547, "Bruto": "Rp 6,677,547.00",
+                "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 98,000",
+                "TotalPotongan": 225904, "Potongan": "Rp 225,904.00", "NettoVal": 7843853.00, "Netto": "Rp 7,843,853.00", "OTHours": 22.00 
+            },
+            { "No": 19, "Nama Karyawan": "Kasman", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank Mandiri", "NoRek": "142-00-9982731-4", "Education": "SMA/Sederajat", "Mobile": "0858 2511 8920", "Email": "kasmanmaho@gmail.com", "Address": "Kuanto", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 2827985, "BrutoVal": 6105532.81, "Bruto": "Rp 6,105,532.81", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 74,000", "TotalPotongan": 201899, "Potongan": "Rp 201,899.00", "NettoVal": 6105533.00, "Netto": "Rp 6,105,533.00", "OTHours": 21.00 },
+            { "No": 20, "Nama Karyawan": "Lukman Tasakka", "Job Title": "Pemuka Ops. Alat Berat", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BNI", "NoRek": "0473829105", "Education": "SD/Sederajat", "Mobile": "0858 2511 8937", "Email": "-", "Address": "Dusun III Kuantok", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 3319941, "BrutoVal": 6597488.13, "Bruto": "Rp 6,597,488.13", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 85,000", "TotalPotongan": 212904, "Potongan": "Rp 212,904.00", "NettoVal": 6597488.00, "Netto": "Rp 6,597,488.00", "OTHours": 23.00 },
+            { "No": 21, "Nama Karyawan": "Nengah Darsana", "Job Title": "Pemuka Ops. Alat Berat", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BRI", "NoRek": "3015-01-033827-50-3", "Education": "SMP/Sederajat", "Mobile": "0813 4115 4439", "Email": "i.ketut.margi@gmail.com", "Address": "Desa Kamiwangi", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 2795744, "BrutoVal": 6073291.10, "Bruto": "Rp 6,073,291.10", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 72,000", "TotalPotongan": 199904, "Potongan": "Rp 199,904.00", "NettoVal": 6073291.00, "Netto": "Rp 6,073,291.00", "OTHours": 18.00 },
+            { "No": 22, "Nama Karyawan": "I Gusti Ngurah Baliarta", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank Mandiri", "NoRek": "142-00-7738291-8", "Education": "SMP/Sederajat", "Mobile": "0858 2304 7847", "Email": "-", "Address": "Desa Kamiwangi", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 2796432, "BrutoVal": 6073979.12, "Bruto": "Rp 6,073,979.12", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 72,000", "TotalPotongan": 199904, "Potongan": "Rp 199,904.00", "NettoVal": 6073979.00, "Netto": "Rp 6,073,979.00", "OTHours": 18.00 },
+            { "No": 23, "Nama Karyawan": "Irpan Parenden", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BNI", "NoRek": "0293847561", "Education": "SLT/SMA/SMK", "Mobile": "0857 5704 9499", "Email": "-", "Address": "Desa Karang Anyar", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 2826282, "BrutoVal": 6103829.12, "Bruto": "Rp 6,103,829.12", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 74,000", "TotalPotongan": 201899, "Potongan": "Rp 201,899.00", "NettoVal": 6103829.00, "Netto": "Rp 6,103,829.00", "OTHours": 19.00 },
+            { "No": 24, "Nama Karyawan": "Sunita Ayu P.", "Job Title": "Petugas Admin II", "Divisi / Fungsi": "Legal & Relation", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BRI", "NoRek": "5011-01-028394-50-5", "Education": "S1/Sederajat", "Mobile": "0812 4738 9199", "Email": "ayusunita@gmail.com", "Address": "Jalan ST. Hasanudin", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 3602780, "BrutoVal": 6880327.12, "Bruto": "Rp 6,880,327.12", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 102,000", "TotalPotongan": 229904, "Potongan": "Rp 229,904.00", "NettoVal": 6880327.00, "Netto": "Rp 6,880,327.00", "OTHours": 25.00 },
+            { "No": 25, "Nama Karyawan": "Dewi Setiawati M Dg M", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "RAM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank Mandiri", "NoRek": "142-00-4418293-9", "Education": "S1/Sederajat", "Mobile": "0821 9234 4486", "Email": "setiawatidewisetiawati@gmail.com", "Address": "Desa Bakung", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 3639356, "BrutoVal": 6916903.16, "Bruto": "Rp 6,916,903.16", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 0", "PPh21": "Rp 103,000", "TotalPotongan": 198928, "Potongan": "Rp 198,928.00", "NettoVal": 6916903.00, "Netto": "Rp 6,916,903.00", "OTHours": 25.00 },
+            { "No": 26, "Nama Karyawan": "Marini Astari", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "HR - GS", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BNI", "NoRek": "0192837465", "Education": "Diploma III", "Mobile": "0812 4567 9563", "Email": "astaryastary@gmail.com", "Address": "Desa Nonong", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5548705, "BrutoVal": 8826252.34, "Bruto": "Rp 8,826,252.34", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 165,000", "TotalPotongan": 292904, "Potongan": "Rp 292,904.00", "NettoVal": 8826252.00, "Netto": "Rp 8,826,252.00", "OTHours": 38.00 },
+            { "No": 27, "Nama Karyawan": "Ali Mukhtar Mohammad Amin", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BRI", "NoRek": "3018-01-049283-50-7", "Education": "SLT/SMA/SMK", "Mobile": "0821 9414 4463", "Email": "alimuhtar0277@gmail.com", "Address": "Desa Dongin", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 4080000, "BrutoVal": 7357547, "Bruto": "Rp 7,357,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 80,096", "TotalPotongan": 208000, "Potongan": "Rp 208,000.00", "NettoVal": 7149547.00, "Netto": "Rp 7,149,547.00", "OTHours": 32.00 },
+            { "No": 28, "Nama Karyawan": "Agus Rudiyanto", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank Mandiri", "NoRek": "142-00-5582910-3", "Education": "SMP/Sederajat", "Mobile": "0822 9202 2215", "Email": "agusrudiyantopo@gmail.com", "Address": "Desa Pandan Wangi", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5111525, "BrutoVal": 8389072, "Bruto": "Rp 8,389,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 98,096", "TotalPotongan": 226000, "Potongan": "Rp 226,000.00", "NettoVal": 8163072.00, "Netto": "Rp 8,163,072.00", "OTHours": 35.00 },
+            { "No": 29, "Nama Karyawan": "I Gede Ariana", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BNI", "NoRek": "0583920184", "Education": "S1/Sederajat", "Mobile": "0815 2765 4759", "Email": "agede6645@gmail.com", "Address": "Desa Kamiwangi", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5361525, "BrutoVal": 8639072, "Bruto": "Rp 8,639,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 114,096", "TotalPotongan": 242000, "Potongan": "Rp 242,000.00", "NettoVal": 8397072.00, "Netto": "Rp 8,397,072.00", "OTHours": 37.00 },
+            { "No": 30, "Nama Karyawan": "I Putu Adnyana Wijaya", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BRI", "NoRek": "4012-01-098374-50-1", "Education": "S1/Sederajat", "Mobile": "0858 2354 0655", "Email": "adnyanap514@gmail.com", "Address": "Desa Karya Makmur", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5411525, "BrutoVal": 8689072, "Bruto": "Rp 8,689,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 120,096", "TotalPotongan": 248000, "Potongan": "Rp 248,000.00", "NettoVal": 8441072.00, "Netto": "Rp 8,441,072.00", "OTHours": 38.00 },
+            { "No": 31, "Nama Karyawan": "Mursalun Lasuru", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank Mandiri", "NoRek": "142-00-1128394-7", "Education": "SMP/Sederajat", "Mobile": "0821 9056 3917", "Email": "lasurumursalun@gmail.com", "Address": "Desa Dongin", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5161525, "BrutoVal": 8439072, "Bruto": "Rp 8,439,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 101,096", "TotalPotongan": 229000, "Potongan": "Rp 229,000.00", "NettoVal": 8210072.00, "Netto": "Rp 8,210,072.00", "OTHours": 35.00 },
+            { "No": 32, "Nama Karyawan": "Subandi", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BNI", "NoRek": "0314928375", "Education": "SLT/SMA/SMK", "Mobile": "0812 4528 0333", "Email": "masbandi.hse@gmail.com", "Address": "Desa Rusa Kencana", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5561525, "BrutoVal": 8839072, "Bruto": "Rp 8,839,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 137,096", "TotalPotongan": 265000, "Potongan": "Rp 265,000.00", "NettoVal": 8574072.00, "Netto": "Rp 8,574,072.00", "OTHours": 39.00 },
+            { "No": 33, "Nama Karyawan": "Budi Santoso", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BRI", "NoRek": "5013-01-077382-50-4", "Education": "SLT/SMA/SMK", "Mobile": "0813 7788 7781", "Email": "budhisantoso881984@gmail.com", "Address": "Desa Sentral Sari", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5261525, "BrutoVal": 8539072, "Bruto": "Rp 8,539,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 110,096", "TotalPotongan": 238000, "Potongan": "Rp 238,000.00", "NettoVal": 8301072.00, "Netto": "Rp 8,301,072.00", "OTHours": 36.00 },
+            { "No": 34, "Nama Karyawan": "I Komang Santika", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank Mandiri", "NoRek": "142-00-4491823-6", "Education": "S1/Sederajat", "Mobile": "0858 2320 0747", "Email": "komangsantika1992@gmail.com", "Address": "Desa Sindang Sari", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5711525, "BrutoVal": 8989072, "Bruto": "Rp 8,989,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 154,096", "TotalPotongan": 282000, "Potongan": "Rp 282,000.00", "NettoVal": 8707072.00, "Netto": "Rp 8,707,072.00", "OTHours": 40.00 },
+            { "No": 35, "Nama Karyawan": "Indra Natalianto Patasik", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BNI", "NoRek": "0258194763", "Education": "S1/Sederajat", "Mobile": "0823 3185 9490", "Email": "indrapatasik@gmail.com", "Address": "Desa Tirta Sari", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5311525, "BrutoVal": 8589072, "Bruto": "Rp 8,589,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 113,096", "TotalPotongan": 241000, "Potongan": "Rp 241,000.00", "NettoVal": 8348072.00, "Netto": "Rp 8,348,072.00", "OTHours": 37.00 },
+            { "No": 36, "Nama Karyawan": "Kd Wiyad Nyana", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BRI", "NoRek": "3014-01-011829-50-9", "Education": "SLT/SMA/SMK", "Mobile": "0821 9197 8854", "Email": "kadekwiadnyana061@gmail.com", "Address": "Desa Sindang Sari", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5291525, "BrutoVal": 8569072, "Bruto": "Rp 8,569,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 111,096", "TotalPotongan": 239000, "Potongan": "Rp 239,000.00", "NettoVal": 8330072.00, "Netto": "Rp 8,330,072.00", "OTHours": 36.50 },
+            { "No": 37, "Nama Karyawan": "I Nengah Rudi Artika", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank Mandiri", "NoRek": "142-00-3382910-1", "Education": "Diploma III", "Mobile": "0815 2461 7554", "Email": "nengahrudiartika@gmail.com", "Address": "Desa Sindang Sari", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5631525, "BrutoVal": 8909072, "Bruto": "Rp 8,909,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 144,096", "TotalPotongan": 272000, "Potongan": "Rp 272,000.00", "NettoVal": 8637072.00, "Netto": "Rp 8,637,072.00", "OTHours": 39.00 },
+            { "No": 38, "Nama Karyawan": "Sukardi Jalisingi", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BNI", "NoRek": "0194827365", "Education": "SMP/Sederajat", "Mobile": "0853 9509 1111", "Email": "Adiismon2@gmail.com", "Address": "Jalan Samratulangi", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 4020000, "BrutoVal": 7297547, "Bruto": "Rp 7,297,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 75,096", "TotalPotongan": 203000, "Potongan": "Rp 203,000.00", "NettoVal": 7094547.00, "Netto": "Rp 7,094,547.00", "OTHours": 32.00 },
+            { "No": 39, "Nama Karyawan": "Yotam", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BRI", "NoRek": "5016-01-088392-50-2", "Education": "SLT/SMA/SMK", "Mobile": "0813 5513 4043", "Email": "yotamocey76@gmail.com", "Address": "Desa Bukti Markati", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5231525, "BrutoVal": 8509072, "Bruto": "Rp 8,509,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 106,096", "TotalPotongan": 234000, "Potongan": "Rp 234,000.00", "NettoVal": 8275072.00, "Netto": "Rp 8,275,072.00", "OTHours": 36.00 },
+            { "No": 40, "Nama Karyawan": "Thamar Thalib Mbau", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank Mandiri", "NoRek": "142-00-5591823-3", "Education": "S1/Sederajat", "Mobile": "0821 9689 0897", "Email": "thamar.tm90@gmail.com", "Address": "Desa Tirta Kencana", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5691525, "BrutoVal": 8969072, "Bruto": "Rp 8,969,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 150,096", "TotalPotongan": 278000, "Potongan": "Rp 278,000.00", "NettoVal": 8691072.00, "Netto": "Rp 8,691,072.00", "OTHours": 40.00 },
+            { "No": 41, "Nama Karyawan": "Arie Kurniawan", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi Matindok Field", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BNI", "NoRek": "0847365219", "Education": "Diploma III", "Mobile": "0812 4182 4848", "Email": "ariekurniawan4683@gmail.com", "Address": "Desa Tirta Jaya", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 1585159, "BrutoVal": 4862706, "Bruto": "Rp 4,862,706.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 83,549", "TotalPotongan": 211453, "Potongan": "Rp 211,453.00", "NettoVal": 4651253.00, "Netto": "Rp 4,651,253.00", "OTHours": 25.00 },
+            { "No": 42, "Nama Karyawan": "Eko Wiyono", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BRI", "NoRek": "3017-01-022938-50-6", "Education": "SLT/SMA/SMK", "Mobile": "0853 9746 7886", "Email": "yonodonggi57@gmail.com", "Address": "Desa Bone Bae", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5271525, "BrutoVal": 8549072, "Bruto": "Rp 8,549,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 109,096", "TotalPotongan": 237000, "Potongan": "Rp 237,000.00", "NettoVal": 8312072.00, "Netto": "Rp 8,312,072.00", "OTHours": 36.00 },
+            { "No": 43, "Nama Karyawan": "Fajriadi", "Job Title": "Pemuka FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank Mandiri", "NoRek": "142-00-8819283-4", "Education": "SLT/SMA/SMK", "Mobile": "0852 4259 7695", "Email": "fajriabenk08@gmail.com", "Address": "Desa Mansahang", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5591525, "BrutoVal": 8869072, "Bruto": "Rp 8,869,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 140,096", "TotalPotongan": 268000, "Potongan": "Rp 268,000.00", "NettoVal": 8601072.00, "Netto": "Rp 8,601,072.00", "OTHours": 39.00 },
+            { "No": 44, "Nama Karyawan": "Jumalik H. Latungka", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BNI", "NoRek": "0938475621", "Education": "SLT/SMA/SMK", "Mobile": "0858 2358 1803", "Email": "jumalikhlatungka@gmail.com", "Address": "Desa Kayowa", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5251525, "BrutoVal": 8529072, "Bruto": "Rp 8,529,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 108,096", "TotalPotongan": 236000, "Potongan": "Rp 236,000.00", "NettoVal": 8293072.00, "Netto": "Rp 8,293,072.00", "OTHours": 36.00 },
+            { "No": 45, "Nama Karyawan": "Randianto", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BRI", "NoRek": "5010-01-066541-50-8", "Education": "S1/Sederajat", "Mobile": "0852 5583 2000", "Email": "randyogie92@gmail.com", "Address": "Desa Bakung", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5371525, "BrutoVal": 8649072, "Bruto": "Rp 8,649,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 117,096", "TotalPotongan": 245000, "Potongan": "Rp 245,000.00", "NettoVal": 8404072.00, "Netto": "Rp 8,404,072.00", "OTHours": 37.00 },
+            { "No": 46, "Nama Karyawan": "Saiful M. Zakar", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank Mandiri", "NoRek": "142-00-9938271-5", "Education": "S1/Sederajat", "Mobile": "0812 9531 4840", "Email": "saifulzakar@gmail.com", "Address": "Desa Bakung", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [], "TotalUntek": 5391525, "BrutoVal": 8669072, "Bruto": "Rp 8,669,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 119,096", "TotalPotongan": 247000, "Potongan": "Rp 247,000.00", "NettoVal": 8422072.00, "Netto": "Rp 8,422,072.00", "OTHours": 37.00 },
+            { 
+                "No": 47, "Nama Karyawan": "I Nyoman Suwitra", "Job Title": "Petugas Gudang BBM", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BNI", "NoRek": "0738291045", "Education": "SLT/SMA/SMK", "Mobile": "0815 2741 3671", "Email": "putualit0507@gmail.com", "Address": "Karya Makmur", 
+                "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547,
+                "ArrUntek": [], "TotalUntek": 2750000, "BrutoVal": 6027547, "Bruto": "Rp 6,027,547.00",
+                "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 75,000",
+                "TotalPotongan": 202904, "Potongan": "Rp 202,904.00", "NettoVal": 6028357.00, "Netto": "Rp 6,028,357.00", "OTHours": 18.00 
+            },
+            { 
+                "No": 48, "Nama Karyawan": "I Putu Muryanto", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "Operation", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BRI", "NoRek": "3019-01-055241-50-3", "Education": "S1/Sederajat", "Mobile": "0852 9948 4010", "Email": "iputumuryanto@gmail.com", "Address": "Desa Kami Wangi", 
+                "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547,
+                "ArrUntek": [], "TotalUntek": 4650000, "BrutoVal": 7927547, "Bruto": "Rp 7,927,547.00",
+                "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 112,096",
+                "TotalPotongan": 240000, "Potongan": "Rp 240,000.00", "NettoVal": 11407856.00, "Netto": "Rp 11,407,856.00", "OTHours": 35.00 
+            },
+            { 
+                "No": 49, "Nama Karyawan": "Siti Aisyah Dg Masese", "Job Title": "Sekretaris FM", "Divisi / Fungsi": "Field Manager", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank Mandiri", "NoRek": "142-00-1112839-2", "Education": "S1/Sederajat", "Mobile": "0852 9990 3050", "Email": "aisyahdgmasese@gmail.com", "Address": "Desa Slamet Harjo", 
+                "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547,
+                "ArrUntek": [], "TotalUntek": 7100000, "BrutoVal": 10377547, "Bruto": "Rp 10,377,547.00",
+                "JHT": "Rp 66,862.48", "JP": "Rp 33,431.24", "Kesehatan": "Rp 33,431.00", "PPh21": "Rp 285,951.74",
+                "TotalPotongan": 419676.46, "Potongan": "Rp 419,676.46", "NettoVal": 10625911.00, "Netto": "Rp 10,625,911.00", "OTHours": 50.00 
+            },
+            { 
+                "No": 50, "Nama Karyawan": "Dewi Khoirunnisa", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "Finance", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BNI", "NoRek": "0182938475", "Education": "S1/Sederajat", "Mobile": "0852 2277 7759", "Email": "dkho.nisa@gmail.com", "Address": "Desa Tirta Kencana", 
+                "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547,
+                "ArrUntek": [], "TotalUntek": 4600000, "BrutoVal": 7877547, "Bruto": "Rp 7,877,547.00",
+                "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 116,277",
+                "TotalPotongan": 244181, "Potongan": "Rp 244,181.24", "NettoVal": 7132222.00, "Netto": "Rp 7,132,222.00", "OTHours": 35.00 
+            },
+            { 
+                "No": 51, "Nama Karyawan": "Eka Nurjannah", "Job Title": "Petugas Admin III CSR", "Divisi / Fungsi": "Legal & Relation", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank BRI", "NoRek": "3012-01-044819-50-3", "Education": "Diploma III", "Mobile": "0813 5606 3646", "Email": "ekaelf85@gmail.com", "Address": "Desa Mulyo Harjo", 
+                "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547,
+                "ArrUntek": [], "TotalUntek": 4520000, "BrutoVal": 7797547, "Bruto": "Rp 7,797,547.00",
+                "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 92,417",
+                "TotalPotongan": 220321.74, "Potongan": "Rp 220,321.74", "NettoVal": 6797682.00, "Netto": "Rp 6,797,682.00", "OTHours": 34.00 
+            },
+            { 
+                "No": 52, "Nama Karyawan": "Findy Handayani", "Job Title": "Petugas Admin II", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Bank": "Bank Mandiri", "NoRek": "142-00-6625143-8", "Education": "Diploma III", "Mobile": "0815 2380 7004", "Email": "findyhandayani08@gmail.com", "Address": "Desa Bakung", 
+                "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547,
+                "ArrUntek": [], "TotalUntek": 0, "BrutoVal": 3277547, "Bruto": "Rp 3,277,547.00",
+                "JHT": "Rp 63,952.14", "JP": "Rp 31,976.07", "Kesehatan": "Rp 31,976.00", "PPh21": "Rp 0",
+                "TotalPotongan": 127904.21, "Potongan": "Rp 127,904.21", "NettoVal": 3149643.00, "Netto": "Rp 3,149,643.00", "OTHours": 0.00 
+            }
         ];
 
         document.addEventListener("DOMContentLoaded", () => {
-            populateFilter(employeesData);
-            renderTable(employeesData);
-            renderTimesheetTable(employeesData);
             renderPayrollTable(employeesData);
         });
 
@@ -326,127 +363,14 @@
             ['dashboard', 'karyawan', 'timesheet', 'payroll'].forEach(id => {
                 const el = document.getElementById('tab-' + id);
                 if(el) el.classList.add('hidden');
-                const nav = document.getElementById('nav-' + id);
-                if(nav) {
-                    nav.classList.remove('bg-blue-600', 'text-white', 'shadow-md');
-                    nav.classList.add('text-slate-400');
-                }
             });
             const targetTab = document.getElementById('tab-' + tabId);
             if(targetTab) targetTab.classList.remove('hidden');
-            const targetNav = document.getElementById('nav-' + tabId);
-            if(targetNav) {
-                targetNav.classList.add('bg-blue-600', 'text-white', 'shadow-md');
-                targetNav.classList.remove('text-slate-400');
-            }
-            const titles = { 'dashboard': 'Dashboard Utama', 'karyawan': 'Master Data Karyawan TAD', 'timesheet': 'Dashboard Time Sheet & Absen', 'payroll': 'Engine Payroll & Rekap Bank' };
-            document.getElementById('headerTitle').textContent = titles[tabId];
         }
 
         function toggleBankDropdown() {
             const menu = document.getElementById('bankDropdownMenu');
             menu.classList.toggle('hidden');
-        }
-
-        function populateFilter(data) {
-            const divisionSet = new Set();
-            data.forEach(emp => { if (emp["Divisi / Fungsi"]) divisionSet.add(emp["Divisi / Fungsi"]); });
-            const select = document.getElementById('divisionFilter');
-            if(!select) return;
-            divisionSet.forEach(div => {
-                const opt = document.createElement('option');
-                opt.value = div; opt.textContent = div;
-                select.appendChild(opt);
-            });
-        }
-
-        function renderTable(data) {
-            const tbody = document.getElementById('tableBody');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            data.forEach((emp, index) => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-gray-50 border-b border-gray-100">
-                        <td class="py-3 px-4 text-center text-gray-500 font-medium">${index + 1}</td>
-                        <td class="py-3 px-4 font-semibold text-gray-900">${emp["Nama Karyawan"]}</td>
-                        <td class="py-3 px-4 text-gray-600">${emp["Job Title"]}</td>
-                        <td class="py-3 px-4 text-gray-600">${emp["Divisi / Fungsi"]}</td>
-                        <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${emp["Tipe"] === 'Shift' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'}">${emp["Tipe"]}</span></td>
-                        <td class="py-3 px-4 text-center"><span class="bg-blue-50 text-blue-700 font-medium text-xs px-2.5 py-1 rounded-lg">${emp["Contract Remaining"]} Hari</span></td>
-                        <td class="py-3 px-4 text-center">
-                            <button onclick="showDetail(${emp['No']})" class="bg-slate-100 hover:bg-slate-900 hover:text-white text-slate-700 font-medium px-3 py-1.5 rounded-lg text-xs">Detail</button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        function filterTable() {
-            const searchText = document.getElementById('searchInput').value.toLowerCase();
-            const selectedDiv = document.getElementById('divisionFilter').value;
-            const selectedSystem = document.getElementById('workSystemFilter').value;
-            const filtered = employeesData.filter(emp => {
-                const matchSearch = emp["Nama Karyawan"].toLowerCase().includes(searchText) || emp["Job Title"].toLowerCase().includes(searchText);
-                const matchDiv = selectedDiv === "" || emp["Divisi / Fungsi"] === selectedDiv;
-                const matchSystem = selectedSystem === "" || emp["Tipe"] === selectedSystem;
-                return matchSearch && matchDiv && matchSystem;
-            });
-            renderTable(filtered);
-        }
-
-        function renderTimesheetTable(data) {
-            const tbody = document.getElementById('timesheetTableBody');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            data.forEach((emp, index) => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-medium">${index + 1}</td>
-                        <td class="p-3 font-semibold">${emp["Nama Karyawan"]}</td>
-                        <td class="p-3">${emp["Job Title"]} (${emp["Tipe"]})</td>
-                        <td class="p-3 text-center">21 Hari Kerja</td>
-                        <td class="p-3 text-center font-bold text-blue-900">35 Jam</td>
-                    </tr>
-                `;
-            });
-        }
-
-        function renderPayrollTable(data) {
-            const tbody = document.getElementById('payrollTableBody');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            data.forEach((emp, index) => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-medium">${index + 1}</td>
-                        <td class="p-3 font-semibold">${emp["Nama Karyawan"]}</td>
-                        <td class="p-3">${emp["Job Title"]} <span class="px-2 py-0.5 rounded text-[10px] font-bold ${emp["Tipe"] === 'Shift' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'}">${emp["Tipe"]}</span></td>
-                        <td class="p-3">${emp["Divisi / Fungsi"]}</td>
-                        <td class="p-3"><span class="px-2 py-1 rounded text-xs font-semibold ${emp.Bank === 'Bank Mandiri' ? 'bg-blue-100 text-blue-800' : (emp.Bank === 'Bank BNI' ? 'bg-orange-100 text-orange-800' : 'bg-sky-100 text-sky-800')}">${emp.Bank}</span></td>
-                        <td class="p-3 font-mono">${emp["NoRek"]}</td>
-                        <td class="p-3 text-right font-bold text-emerald-700">Rp ${emp["NettoVal"].toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        function showDetail(empNo) {
-            const emp = employeesData.find(e => e["No"] === empNo);
-            if (!emp) return;
-            document.getElementById('modalTitle').textContent = `Profil: ${emp["Nama Karyawan"]}`;
-            document.getElementById('modalContent').innerHTML = `
-                <div class="grid grid-cols-2 gap-3 text-sm">
-                    <div class="bg-gray-50 p-3 rounded-xl"><span class="text-xs text-gray-400">Jabatan</span><p class="font-semibold">${emp["Job Title"]}</p></div>
-                    <div class="bg-gray-50 p-3 rounded-xl"><span class="text-xs text-gray-400">Divisi</span><p class="font-semibold">${emp["Divisi / Fungsi"]}</p></div>
-                    <div class="bg-gray-50 p-3 rounded-xl"><span class="text-xs text-gray-400">Bank & Rekening</span><p class="font-semibold">${emp.Bank} - ${emp.NoRek}</p></div>
-                    <div class="bg-gray-50 p-3 rounded-xl"><span class="text-xs text-gray-400">Gaji Netto</span><p class="font-semibold text-emerald-700">Rp ${emp.NettoVal.toLocaleString('id-ID')}</p></div>
-                </div>
-            `;
-            document.getElementById('profileModal').classList.remove('hidden');
-        }
-
-        function closeModal() {
-            document.getElementById('profileModal').classList.add('hidden');
         }
 
         function showBankModal(bankType) {
@@ -465,22 +389,37 @@
                     <div id="printableBankArea" class="space-y-4 bg-white p-4 rounded-xl border">
                         <div class="bg-purple-50 p-4 rounded-xl border border-purple-200">
                             <h4 class="font-bold text-purple-900 text-sm mb-1">Daftar Kode Rekening & Virtual Account Resmi</h4>
-                            <p class="text-xs text-purple-700">Periode Gaji: 16 Juni 2026 s/d 15 Juli 2026 | PT Sentral Sari Jaya (52 Karyawan)</p>
+                            <p class="text-xs text-purple-700">Periode Gaji: 16 Juni 2026 s/d 15 Juli 2026 | PT Sentral Sari Jaya (Zona 13 - Field Donggi Matindok)</p>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead class="bg-slate-100 text-gray-700 uppercase text-[10px]">
                                     <tr>
                                         <th class="p-3">Jenis Pembayaran / Iuran</th>
-                                        <th class="p-3">Kode Akun / VA</th>
+                                        <th class="p-3">Kode Akun / VA / Biller</th>
                                         <th class="p-3">Bank Penampung</th>
                                         <th class="p-3 text-right">Total Nominal (Rp)</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-100 text-xs">
-                                    <tr><td class="p-3 font-semibold">BPJS Ketenagakerjaan (JHT + JP)</td><td class="p-3 font-mono text-blue-900">VA-889201726354</td><td class="p-3">Bank Mandiri / BNI</td><td class="p-3 text-right font-bold text-gray-900">Rp 5.027.652,00</td></tr>
-                                    <tr><td class="p-3 font-semibold">BPJS Kesehatan</td><td class="p-3 font-mono text-blue-900">VA-888102938475</td><td class="p-3">Bank BRI / Mandiri</td><td class="p-3 text-right font-bold text-gray-900">Rp 1.631.787,00</td></tr>
-                                    <tr><td class="p-3 font-semibold">PPh Pasal 21</td><td class="p-3 font-mono text-blue-900">KODE MAP: 411121 - 100</td><td class="p-3">Bank Persepsi Negara</td><td class="p-3 text-right font-bold text-gray-900">Rp 5.234.890,00</td></tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold">BPJS Ketenagakerjaan (JHT + JP)</td>
+                                        <td class="p-3 font-mono text-blue-900">VA-889201726354</td>
+                                        <td class="p-3">Bank Mandiri / BNI</td>
+                                        <td class="p-3 text-right font-bold text-gray-900">Rp 5.027.652,00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold">BPJS Kesehatan</td>
+                                        <td class="p-3 font-mono text-blue-900">VA-888102938475</td>
+                                        <td class="p-3">Bank BRI / Mandiri</td>
+                                        <td class="p-3 text-right font-bold text-gray-900">Rp 1.631.787,00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold">PPh Pasal 21</td>
+                                        <td class="p-3 font-mono text-blue-900">KODE MAP: 411121 - 100</td>
+                                        <td class="p-3">Bank Persepsi Negara</td>
+                                        <td class="p-3 text-right font-bold text-gray-900">Rp 5.234.890,00</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -492,7 +431,7 @@
                     </div>
                 `;
             } else {
-                modalTitle.innerHTML = `<i class="fa-solid fa-building-columns mr-2"></i> Rekap Transfer Gaji Karyawan - Bank ${bankType}`;
+                modalTitle.innerHTML = `<i class="fa-solid fa-building-columns mr-2"></i> Rekap Transfer Gaji Karyawan - Bank ${bankType} (Berdasarkan Pemetaan Kolom)`;
                 actionContainer.style.display = 'flex';
                 let filteredEmp = employeesData.filter(emp => emp["Bank"] === `Bank ${bankType}`);
                 let totalBankVal = filteredEmp.reduce((acc, curr) => acc + curr["NettoVal"], 0);
@@ -523,16 +462,16 @@
                                 <h4 class="text-sm font-extrabold text-emerald-700 mt-0.5">Rp ${totalBankVal.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} (${filteredEmp.length} Karyawan)</h4>
                             </div>
                         </div>
-                        <div class="overflow-x-auto max-h-[450px]">
+                        <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse text-xs">
                                 <thead class="bg-slate-100 text-gray-700 uppercase text-[10px] sticky top-0">
                                     <tr>
                                         <th class="p-2.5 text-center">No</th>
-                                        <th class="p-2.5">Nama Karyawan</th>
-                                        <th class="p-2.5">Divisi</th>
-                                        <th class="p-2.5">Jabatan</th>
-                                        <th class="p-2.5">Nomor Rekening</th>
-                                        <th class="p-2.5 text-right">Nilai di Transfer (Rp)</th>
+                                        <th class="p-2.5">Nama Karyawan (Cell C...)</th>
+                                        <th class="p-2.5">Divisi (Cell E...)</th>
+                                        <th class="p-2.5">Jabatan (Cell F...)</th>
+                                        <th class="p-2.5">Nomor Rekening (Cell L...)</th>
+                                        <th class="p-2.5 text-right">Nilai di Transfer (Cell BD...)</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-100">
@@ -540,16 +479,30 @@
                                 </tbody>
                                 <tfoot>
                                     <tr class="bg-gray-100 font-bold text-gray-900">
-                                        <td colspan="5" class="p-2.5 text-right uppercase">Total Keseluruhan Transfer ${bankType}:</td>
+                                        <td colspan="5" class="p-2.5 text-right uppercase">Total Keseluruhan Transfer:</td>
                                         <td class="p-2.5 text-right text-emerald-800">Rp ${totalBankVal.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                                     </tr>
                                 </tfoot>
                             </table>
                         </div>
                         <div class="pt-6 border-t mt-6 flex justify-between text-[11px] text-gray-700">
-                            <div class="text-center w-36"><p>Dibuat oleh,</p><br><br><br><p class="font-bold underline">Admin HRIS</p></div>
-                            <div class="text-center w-36"><p>Diperiksa oleh,</p><br><br><br><p class="font-bold underline">HR Manager</p></div>
-                            <div class="text-center w-36"><p>Luwuk, ${formattedDate}</p><p>Disetujui oleh,</p><br><br><p class="font-bold underline">Onesimus Suriadi</p><p class="text-[10px]">President Director</p></div>
+                            <div class="text-center w-36">
+                                <p>Dibuat oleh,</p>
+                                <br><br><br>
+                                <p class="font-bold underline">Admin HRIS</p>
+                            </div>
+                            <div class="text-center w-36">
+                                <p>Diperiksa oleh,</p>
+                                <br><br><br>
+                                <p class="font-bold underline">HR Manager</p>
+                            </div>
+                            <div class="text-center w-36">
+                                <p>Luwuk, ${formattedDate}</p>
+                                <p>Disetujui oleh,</p>
+                                <br><br>
+                                <p class="font-bold underline">Onesimus Suriadi</p>
+                                <p class="text-[10px]">President Director</p>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -567,6 +520,7 @@
         function downloadBankPDF() {
             const element = document.getElementById('printableBankArea');
             const bankName = document.getElementById('bankModal').dataset.bankName || 'Bank';
+            
             html2canvas(element, { scale: 2, useCORS: true }).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
                 const pdf = new jsPDF('p', 'mm', 'a4');
@@ -575,14 +529,17 @@
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
                 let heightLeft = imgHeight;
                 let position = 10;
+
                 pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
                 heightLeft -= pageHeight;
+
                 while (heightLeft >= 0) {
                     position = heightLeft - imgHeight;
                     pdf.addPage();
                     pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
                     heightLeft -= pageHeight;
                 }
+
                 pdf.save(`Rekap_Transfer_${bankName}.pdf`);
             });
         }
@@ -594,6 +551,31 @@
             window.print();
             document.body.innerHTML = originalContent;
             location.reload();
+        }
+
+        function renderPayrollTable(data) {
+            const tbody = document.getElementById('payrollTableBody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            data.forEach((emp, index) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-50";
+                tr.innerHTML = `
+                    <td class="p-3 font-medium">${index + 1}</td>
+                    <td class="p-3 font-semibold">${emp["Nama Karyawan"]}</td>
+                    <td class="p-3">${emp["Job Title"]} <span class="px-2 py-0.5 rounded text-[10px] font-bold ${emp["Tipe"] === 'Shift' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'}">${emp["Tipe"]}</span></td>
+                    <td class="p-3">${emp["Divisi / Fungsi"]}</td>
+                    <td class="p-3">${emp["Bruto"]}</td>
+                    <td class="p-3">${emp["Potongan"]}</td>
+                    <td class="p-3 font-bold text-emerald-700">Rp ${emp["NettoVal"].toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="showBankModal('${emp["Bank"].replace('Bank ', '')}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded text-[11px] font-medium shadow-xs">
+                            Cek Bank
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
     </script>
 </body>
