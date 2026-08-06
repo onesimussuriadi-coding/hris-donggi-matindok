@@ -323,17 +323,27 @@
         </div>
     </div>
 
-    <!-- MODAL BANK / KODE REKENING -->
+    <!-- MODAL BANK / KODE REKENING + TOMBOL DOWNLOAD PDF & PRINT -->
     <div id="bankModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-3xl overflow-hidden border border-gray-100">
-            <div class="bg-emerald-800 px-6 py-4 flex justify-between items-center text-white">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden border border-gray-100 flex flex-col max-h-[90vh]">
+            <div class="bg-emerald-800 px-6 py-4 flex justify-between items-center text-white shrink-0">
                 <h3 class="font-bold text-base" id="bankModalTitle"><i class="fa-solid fa-building-columns mr-2"></i> Rekap Transfer & Kode Rekening</h3>
                 <button onclick="closeBankModal()" class="text-emerald-200 hover:text-white text-lg focus:outline-none">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <div class="p-6 max-h-[75vh] overflow-y-auto space-y-4 text-xs" id="bankModalContent"></div>
-            <div class="bg-gray-50 px-6 py-3 border-t border-gray-100 flex justify-end">
+            
+            <div class="p-6 space-y-4 text-xs overflow-y-auto bg-gray-50 flex-1" id="bankModalContent"></div>
+            
+            <div class="bg-white px-6 py-3 border-t border-gray-100 flex justify-between items-center shrink-0">
+                <div class="flex items-center gap-2" id="bankModalActions">
+                    <button onclick="downloadBankPDF()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-medium transition-all flex items-center gap-2 shadow">
+                        <i class="fa-solid fa-download"></i> Download Save as PDF
+                    </button>
+                    <button onclick="printBankModal()" class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-medium transition-all flex items-center gap-2 shadow">
+                        <i class="fa-solid fa-print"></i> Print
+                    </button>
+                </div>
                 <button onclick="closeBankModal()" class="bg-slate-800 hover:bg-slate-900 text-white px-5 py-2 rounded-xl text-xs font-medium transition-all">Tutup</button>
             </div>
         </div>
@@ -582,11 +592,18 @@
             document.getElementById('bankDropdownMenu').classList.add('hidden');
             const modalTitle = document.getElementById('bankModalTitle');
             const content = document.getElementById('bankModalContent');
+            const actionContainer = document.getElementById('bankModalActions');
             
+            // Format tanggal hari ini untuk bagian cetak di bawah
+            const today = new Date();
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            const formattedDate = today.toLocaleDateString('id-ID', options);
+
             if (bankType === 'BPJS_PPh21') {
                 modalTitle.innerHTML = `<i class="fa-solid fa-file-invoice-dollar mr-2"></i> Kode Rekening & Pembayaran BPJS & PPh 21`;
+                actionContainer.style.display = 'flex';
                 content.innerHTML = `
-                    <div class="space-y-4">
+                    <div id="printableBankArea" class="space-y-4 bg-white p-4 rounded-xl border">
                         <div class="bg-purple-50 p-4 rounded-xl border border-purple-200">
                             <h4 class="font-bold text-purple-900 text-sm mb-1">Daftar Kode Rekening & Virtual Account Resmi</h4>
                             <p class="text-xs text-purple-700">Periode Gaji: 16 Juni 2026 s/d 15 Juli 2026 | PT Sentral Sari Jaya (Zona 13 - Field Donggi Matindok)</p>
@@ -623,10 +640,30 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div class="pt-6 border-t mt-6 flex justify-between text-[11px] text-gray-700">
+                            <div class="text-center w-36">
+                                <p>Dibuat oleh,</p>
+                                <br><br><br>
+                                <p class="font-bold underline">Admin HRIS</p>
+                            </div>
+                            <div class="text-center w-36">
+                                <p>Diperiksa oleh,</p>
+                                <br><br><br>
+                                <p class="font-bold underline">HR Manager</p>
+                            </div>
+                            <div class="text-center w-36">
+                                <p>Luwuk, ${formattedDate}</p>
+                                <p>Disetujui oleh,</p>
+                                <br><br>
+                                <p class="font-bold underline">Onesimus Suriadi</p>
+                                <p class="text-[10px]">President Director</p>
+                            </div>
+                        </div>
                     </div>
                 `;
             } else {
                 modalTitle.innerHTML = `<i class="fa-solid fa-building-columns mr-2"></i> Rekap Transfer Gaji Karyawan - ${bankType}`;
+                actionContainer.style.display = 'flex';
                 let filteredEmp = employeesData.filter(emp => emp["Bank"] === `Bank ${bankType}`);
                 let totalBankVal = filteredEmp.reduce((acc, curr) => acc + curr["NettoVal"], 0);
 
@@ -644,7 +681,7 @@
                 });
 
                 content.innerHTML = `
-                    <div class="space-y-4">
+                    <div id="printableBankArea" class="space-y-4 bg-white p-4 rounded-xl border">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border">
                             <div>
                                 <span class="text-gray-500 font-medium">Bank Tujuan Transfer:</span>
@@ -655,7 +692,7 @@
                                 <h4 class="text-sm font-extrabold text-emerald-700 mt-0.5">Rp ${totalBankVal.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})} (${filteredEmp.length} Karyawan)</h4>
                             </div>
                         </div>
-                        <div class="overflow-x-auto max-h-[400px]">
+                        <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse text-xs">
                                 <thead class="bg-slate-100 text-gray-700 uppercase text-[10px] sticky top-0">
                                     <tr>
@@ -671,15 +708,72 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div class="pt-6 border-t mt-6 flex justify-between text-[11px] text-gray-700">
+                            <div class="text-center w-36">
+                                <p>Dibuat oleh,</p>
+                                <br><br><br>
+                                <p class="font-bold underline">Admin HRIS</p>
+                            </div>
+                            <div class="text-center w-36">
+                                <p>Diperiksa oleh,</p>
+                                <br><br><br>
+                                <p class="font-bold underline">HR Manager</p>
+                            </div>
+                            <div class="text-center w-36">
+                                <p>Luwuk, ${formattedDate}</p>
+                                <p>Disetujui oleh,</p>
+                                <br><br>
+                                <p class="font-bold underline">Onesimus Suriadi</p>
+                                <p class="text-[10px]">President Director</p>
+                            </div>
+                        </div>
                     </div>
                 `;
             }
 
+            document.getElementById('bankModal').dataset.bankName = bankType;
             document.getElementById('bankModal').classList.remove('hidden');
         }
 
         function closeBankModal() {
             document.getElementById('bankModal').classList.add('hidden');
+        }
+
+        window.jsPDF = window.jspdf.jsPDF;
+        function downloadBankPDF() {
+            const element = document.getElementById('printableBankArea');
+            const bankName = document.getElementById('bankModal').dataset.bankName || 'Bank';
+            
+            html2canvas(element, { scale: 2, useCORS: true }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgWidth = 190; 
+                const pageHeight = 295;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 10;
+
+                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                pdf.save(`Rekap_Transfer_${bankName}.pdf`);
+            });
+        }
+
+        function printBankModal() {
+            const printContent = document.getElementById('printableBankArea').innerHTML;
+            const originalContent = document.body.innerHTML;
+            document.body.innerHTML = `<div style="padding: 20px;"><h2>Rekapitulasi Transfer & Pembayaran Bank</h2>${printContent}</div>`;
+            window.print();
+            document.body.innerHTML = originalContent;
+            location.reload();
         }
 
         function populateFilter(data) {
@@ -883,7 +977,6 @@
             document.getElementById('timesheetModal').classList.add('hidden');
         }
 
-        window.jsPDF = window.jspdf.jsPDF;
         function downloadTimesheetPDF() {
             const element = document.getElementById('printableTimesheet');
             const empName = document.getElementById('timesheetModal').dataset.empName || 'Karyawan';
