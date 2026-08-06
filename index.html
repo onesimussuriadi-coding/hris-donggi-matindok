@@ -74,7 +74,7 @@
                     </div>
                     <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/10 text-center min-w-[180px]">
                         <p class="text-xs text-slate-300 font-medium">Total Karyawan Aktif</p>
-                        <h3 class="text-3xl font-extrabold text-white mt-1" id="dashTotalEmp">52</h3>
+                        <h3 class="text-3xl font-extrabold text-white mt-1">52</h3>
                         <p class="text-[11px] text-emerald-400 mt-1"><i class="fa-solid fa-circle-check"></i> Zona 13 Terhubung</p>
                     </div>
                 </div>
@@ -131,9 +131,9 @@
                         <h3 class="font-bold text-gray-800 text-base">Daftar Karyawan TAD</h3>
                         <div class="flex items-center gap-3 w-full md:w-auto">
                             <select id="workSystemFilter" onchange="filterTable()" class="w-full md:w-44 bg-white border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5">
-                                <option value="">Semua Sistem Kerja</option>
-                                <option value="Shift">Shift (12 Jam)</option>
-                                <option value="Non Shift">Non Shift (9 Jam)</option>
+                                <option value="">Semua Sistem Kerja (52)</option>
+                                <option value="Shift">Shift (36 Orang)</option>
+                                <option value="Non Shift">Non Shift (16 Orang)</option>
                             </select>
                             <select id="divisionFilter" onchange="filterTable()" class="w-full md:w-48 bg-white border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5">
                                 <option value="">Semua Divisi</option>
@@ -169,14 +169,14 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div>
                             <h3 class="text-xl font-bold text-blue-900"><i class="fa-solid fa-calendar-days mr-2"></i> Rekap Lembur & Man Hours (Jam Kerja)</h3>
-                            <p class="text-xs text-gray-500 mt-1">Shift (12 Jam - 07:00 s.d 07:00) | Non Shift (9 Jam - 07:00 s.d 16:00 Senin-Jumat) | Zona 13 - Field Donggi Matindok</p>
+                            <p class="text-xs text-gray-500 mt-1">Shift (36 Orang - 12 Jam) | Non Shift (16 Orang - 9 Jam Senin-Jumat) | Zona 13 - Field Donggi Matindok</p>
                         </div>
                         <div class="flex items-center gap-3 w-full md:w-auto">
                             <select id="timesheetSystemFilter" onchange="handleTimesheetViewChange()" class="bg-blue-50 border border-blue-200 text-blue-900 text-xs font-semibold rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5">
                                 <option value="non">📁 Status: Tutup Semua (Non)</option>
                                 <option value="all">📂 Tampilkan Semua (All 52)</option>
-                                <option value="Shift">⚙️ Filter: Shift Saja</option>
-                                <option value="Non Shift">⚙️ Filter: Non Shift Saja</option>
+                                <option value="Shift">⚙️ Filter: Shift (36 Orang)</option>
+                                <option value="Non Shift">⚙️ Filter: Non Shift (16 Orang)</option>
                             </select>
                             <div class="relative w-full md:w-64">
                                 <input type="text" id="timesheetSearchInput" onkeyup="filterTimesheetTable()" placeholder="Cari nama karyawan..." class="bg-white border border-gray-200 text-gray-700 text-xs rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pl-8">
@@ -191,11 +191,11 @@
                             <h4 class="text-lg font-bold text-emerald-900 mt-1">16 Jun - 15 Jul 2026</h4>
                         </div>
                         <div class="bg-slate-50 border-l-4 border-emerald-600 p-4 rounded-xl">
-                            <p class="text-xs text-gray-500 font-medium">Jam Kerja Shift</p>
+                            <p class="text-xs text-gray-500 font-medium">Jam Kerja Shift (36 Orang)</p>
                             <h4 class="text-lg font-bold text-emerald-900 mt-1">07:00 s.d 07:00 (12 Jam)</h4>
                         </div>
                         <div class="bg-slate-50 border-l-4 border-emerald-600 p-4 rounded-xl">
-                            <p class="text-xs text-gray-500 font-medium">Jam Kerja Non Shift</p>
+                            <p class="text-xs text-gray-500 font-medium">Jam Kerja Non Shift (16 Orang)</p>
                             <h4 class="text-lg font-bold text-emerald-900 mt-1">07:00 s.d 16:00 (9 Jam)</h4>
                         </div>
                         <div class="bg-slate-50 border-l-4 border-emerald-600 p-4 rounded-xl">
@@ -235,8 +235,8 @@
                             <select id="payrollSystemFilter" onchange="handlePayrollViewChange()" class="bg-blue-50 border border-blue-200 text-blue-900 text-xs font-semibold rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5">
                                 <option value="non">📁 Status: Tutup Semua (Non)</option>
                                 <option value="all">📂 Tampilkan Semua (All 52)</option>
-                                <option value="Shift">⚙️ Filter: Shift Saja</option>
-                                <option value="Non Shift">⚙️ Filter: Non Shift Saja</option>
+                                <option value="Shift">⚙️ Filter: Shift (36 Orang)</option>
+                                <option value="Non Shift">⚙️ Filter: Non Shift (16 Orang)</option>
                             </select>
                             <div class="relative w-full md:w-64">
                                 <input type="text" id="payrollSearchInput" onkeyup="filterPayrollTable()" placeholder="Cari nama karyawan..." class="bg-white border border-gray-200 text-gray-700 text-xs rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pl-8">
@@ -248,7 +248,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div class="bg-slate-50 border-l-4 border-blue-600 p-4 rounded-xl">
                             <p class="text-xs text-gray-500 font-medium">Total Tenaga Kerja</p>
-                            <h4 class="text-lg font-bold text-blue-900 mt-1">52 Orang</h4>
+                            <h4 class="text-lg font-bold text-blue-900 mt-1">52 Orang (36 Shift, 16 Non Shift)</h4>
                         </div>
                         <div class="bg-slate-50 border-l-4 border-blue-600 p-4 rounded-xl">
                             <p class="text-xs text-gray-500 font-medium">Total Upah Tetap</p>
@@ -486,7 +486,6 @@
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
             document.getElementById('totalEmployeeCount').textContent = data.length + ' Orang';
-            document.getElementById('dashTotalEmp').textContent = data.length;
 
             data.forEach((emp, index) => {
                 const tr = document.createElement('tr');
