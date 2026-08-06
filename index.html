@@ -75,7 +75,7 @@
                     <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/10 text-center min-w-[180px]">
                         <p class="text-xs text-slate-300 font-medium">Total Karyawan Aktif</p>
                         <h3 class="text-3xl font-extrabold text-white mt-1">52</h3>
-                        <p class="text-[11px] text-emerald-400 mt-1"><i class="fa-solid fa-circle-check"></i> Zona 13 Terhubung</p>
+                        <p class="text-[11px] text-emerald-400 mt-1"><i class="fa-solid fa-circle-check"></i> 36 Shift | 16 Non Shift</p>
                     </div>
                 </div>
 
@@ -113,8 +113,8 @@
                         <h3 class="text-3xl font-extrabold text-gray-900 mt-2" id="totalEmployeeCount">52 Orang</h3>
                     </div>
                     <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-xs">
-                        <p class="text-sm font-medium text-gray-500">Kontraktor Utama</p>
-                        <h3 class="text-xl font-bold text-gray-900 mt-2">PT Sentral Sari Jaya</h3>
+                        <p class="text-sm font-medium text-gray-500">Komposisi Sistem Kerja</p>
+                        <h3 class="text-lg font-bold text-gray-900 mt-2">36 Shift | 16 Non Shift</h3>
                     </div>
                     <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-xs flex flex-col justify-between">
                         <p class="text-sm font-medium text-gray-500">Aksi Data Laporan</p>
@@ -128,7 +128,7 @@
 
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
                     <div class="p-5 border-b border-gray-100 flex flex-col md:flex-row gap-4 justify-between items-center bg-gray-50/50">
-                        <h3 class="font-bold text-gray-800 text-base">Daftar Karyawan TAD</h3>
+                        <h3 class="font-bold text-gray-800 text-base">Daftar Karyawan TAD (Lengkap 52 Orang)</h3>
                         <div class="flex items-center gap-3 w-full md:w-auto">
                             <select id="workSystemFilter" onchange="filterTable()" class="w-full md:w-44 bg-white border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5">
                                 <option value="">Semua Sistem Kerja (52)</option>
@@ -173,7 +173,6 @@
                         </div>
                         <div class="flex items-center gap-3 w-full md:w-auto">
                             <select id="timesheetSystemFilter" onchange="handleTimesheetViewChange()" class="bg-blue-50 border border-blue-200 text-blue-900 text-xs font-semibold rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5">
-                                <option value="non">📁 Status: Tutup Semua (Non)</option>
                                 <option value="all">📂 Tampilkan Semua (All 52)</option>
                                 <option value="Shift">⚙️ Filter: Shift (36 Orang)</option>
                                 <option value="Non Shift">⚙️ Filter: Non Shift (16 Orang)</option>
@@ -233,7 +232,6 @@
                         </div>
                         <div class="flex items-center gap-3 w-full md:w-auto">
                             <select id="payrollSystemFilter" onchange="handlePayrollViewChange()" class="bg-blue-50 border border-blue-200 text-blue-900 text-xs font-semibold rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5">
-                                <option value="non">📁 Status: Tutup Semua (Non)</option>
                                 <option value="all">📂 Tampilkan Semua (All 52)</option>
                                 <option value="Shift">⚙️ Filter: Shift (36 Orang)</option>
                                 <option value="Non Shift">⚙️ Filter: Non Shift (16 Orang)</option>
@@ -430,14 +428,14 @@
                 "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 98,000",
                 "TotalPotongan": 225904, "Potongan": "Rp 225,904.00", "NettoVal": 7843853.00, "Netto": "Rp 7,843,853.00", "OTHours": 22.00 
             },
-            { "No": 19, "Nama Karyawan": "Kasman", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMA/Sederajat", "Mobile": "0858 2511 8920", "Email": "kasmanmaho@gmail.com", "Address": "Kuanto", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur", "val": "Rp 3,650,000"}], "TotalUntek": 4250000, "BrutoVal": 7527547, "Bruto": "Rp 7,527,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 87,096", "TotalPotongan": 215000, "Potongan": "Rp 215,000.00", "NettoVal": 7312547.00, "Netto": "Rp 7,312,547.00", "OTHours": 33.00 },
-            { "No": 20, "Nama Karyawan": "Lukman Tasakka", "Job Title": "Pemuka Operator Alat Berat", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SD/Sederajat", "Mobile": "0858 2511 8937", "Email": "-", "Address": "Dusun III Kuantok", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Premi Shift", "val": "Rp 511,525"}, {"label": "- Upah Lembur", "val": "Rp 3,900,000"}], "TotalUntek": 5011525, "BrutoVal": 8289072, "Bruto": "Rp 8,289,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 97,096", "TotalPotongan": 225000, "Potongan": "Rp 225,000.00", "NettoVal": 8064072.00, "Netto": "Rp 8,064,072.00", "OTHours": 34.00 },
-            { "No": 21, "Nama Karyawan": "I Nengah Darsana", "Job Title": "Pemuka Operator Alat Berat", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMP/Sederajat", "Mobile": "0813 4115 4439", "Email": "i.ketut.margi@gmail.com", "Address": "Desa Kamiwangi", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Premi Shift", "val": "Rp 511,525"}, {"label": "- Upah Lembur", "val": "Rp 3,950,000"}], "TotalUntek": 5061525, "BrutoVal": 8339072, "Bruto": "Rp 8,339,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 100,096", "TotalPotongan": 228000, "Potongan": "Rp 228,000.00", "NettoVal": 8111072.00, "Netto": "Rp 8,111,072.00", "OTHours": 34.00 },
-            { "No": 22, "Nama Karyawan": "I Gusti Ngurah Baliarta", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMP/Sederajat", "Mobile": "0858 2304 7847", "Email": "-", "Address": "Desa Kamiwangi", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur", "val": "Rp 3,600,000"}], "TotalUntek": 4200000, "BrutoVal": 7477547, "Bruto": "Rp 7,477,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 84,096", "TotalPotongan": 212000, "Potongan": "Rp 212,000.00", "NettoVal": 7265547.00, "Netto": "Rp 7,265,547.00", "OTHours": 32.00 },
-            { "No": 23, "Nama Karyawan": "Irvan Parenden", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0857 5704 9499", "Email": "-", "Address": "Desa Karang Anyar", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur", "val": "Rp 3,750,000"}], "TotalUntek": 4350000, "BrutoVal": 7627547, "Bruto": "Rp 7,627,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 94,096", "TotalPotongan": 222000, "Potongan": "Rp 222,000.00", "NettoVal": 7405547.00, "Netto": "Rp 7,405,547.00", "OTHours": 33.00 },
-            { "No": 24, "Nama Karyawan": "Sunita Ayu Purnamaningsi", "Job Title": "Petugas Admin II", "Divisi / Fungsi": "LR", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0812 4738 9199", "Email": "ayusunita@gmail.com", "Address": "Jalan ST. Hasanudin", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur", "val": "Rp 3,900,000"}], "TotalUntek": 4500000, "BrutoVal": 7777547, "Bruto": "Rp 7,777,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 107,096", "TotalPotongan": 235000, "Potongan": "Rp 235,000.00", "NettoVal": 7542547.00, "Netto": "Rp 7,542,547.00", "OTHours": 34.00 },
-            { "No": 25, "Nama Karyawan": "Dewi Setiawati", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "RAM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0821 9234 4486", "Email": "setiawatidewisetiawati@gmail.com", "Address": "Desa Bakung", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur", "val": "Rp 3,850,000"}], "TotalUntek": 4450000, "BrutoVal": 7727547, "Bruto": "Rp 7,727,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 104,096", "TotalPotongan": 232000, "Potongan": "Rp 232,000.00", "NettoVal": 7495547.00, "Netto": "Rp 7,495,547.00", "OTHours": 34.00 },
-            { "No": 26, "Nama Karyawan": "Marini Astary", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "HC", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0812 4567 9563", "Email": "astaryastary@gmail.com", "Address": "Desa Nonong", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur", "val": "Rp 3,800,000"}], "TotalUntek": 4400000, "BrutoVal": 7677547, "Bruto": "Rp 7,677,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 102,096", "TotalPotongan": 230000, "Potongan": "Rp 230,000.00", "NettoVal": 7447547.00, "Netto": "Rp 7,447,547.00", "OTHours": 33.00 },
+            { "No": 19, "Nama Karyawan": "Kasman", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMA/Sederajat", "Mobile": "0858 2511 8920", "Email": "kasmanmaho@gmail.com", "Address": "Kuanto", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur Weekend", "val": "Rp 2,227,985"}], "TotalUntek": 2827985, "BrutoVal": 6105532.81, "Bruto": "Rp 6,105,532.81", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 74,000", "TotalPotongan": 201899, "Potongan": "Rp 201,899.00", "NettoVal": 6105533.00, "Netto": "Rp 6,105,533.00", "OTHours": 21.00 },
+            { "No": 20, "Nama Karyawan": "Lukman Tasakka", "Job Title": "Pemuka Ops. Alat Berat", "Divisi / Fungsi": "SCM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SD/Sederajat", "Mobile": "0858 2511 8937", "Email": "-", "Address": "Dusun III Kuantok", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur Weekend", "val": "Rp 2,719,941"}], "TotalUntek": 3319941, "BrutoVal": 6597488.13, "Bruto": "Rp 6,597,488.13", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 85,000", "TotalPotongan": 212904, "Potongan": "Rp 212,904.00", "NettoVal": 6597488.00, "Netto": "Rp 6,597,488.00", "OTHours": 23.00 },
+            { "No": 21, "Nama Karyawan": "Nengah Darsana", "Job Title": "Pemuka Ops. Alat Berat", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMP/Sederajat", "Mobile": "0813 4115 4439", "Email": "i.ketut.margi@gmail.com", "Address": "Desa Kamiwangi", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur Weekend", "val": "Rp 2,195,744"}], "TotalUntek": 2795744, "BrutoVal": 6073291.10, "Bruto": "Rp 6,073,291.10", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 72,000", "TotalPotongan": 199904, "Potongan": "Rp 199,904.00", "NettoVal": 6073291.00, "Netto": "Rp 6,073,291.00", "OTHours": 18.00 },
+            { "No": 22, "Nama Karyawan": "I Gusti Ngurah Baliarta", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMP/Sederajat", "Mobile": "0858 2304 7847", "Email": "-", "Address": "Desa Kamiwangi", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur Weekend", "val": "Rp 2,196,432"}], "TotalUntek": 2796432, "BrutoVal": 6073979.12, "Bruto": "Rp 6,073,979.12", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 72,000", "TotalPotongan": 199904, "Potongan": "Rp 199,904.00", "NettoVal": 6073979.00, "Netto": "Rp 6,073,979.00", "OTHours": 18.00 },
+            { "No": 23, "Nama Karyawan": "Irpan Parenden", "Job Title": "Petugas Admin II Warehouse", "Divisi / Fungsi": "SCM", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0857 5704 9499", "Email": "-", "Address": "Desa Karang Anyar", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur Weekend", "val": "Rp 2,226,282"}], "TotalUntek": 2826282, "BrutoVal": 6103829.12, "Bruto": "Rp 6,103,829.12", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 74,000", "TotalPotongan": 201899, "Potongan": "Rp 201,899.00", "NettoVal": 6103829.00, "Netto": "Rp 6,103,829.00", "OTHours": 19.00 },
+            { "No": 24, "Nama Karyawan": "Sunita Ayu P.", "Job Title": "Petugas Admin II", "Divisi / Fungsi": "Legal & Relation", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0812 4738 9199", "Email": "ayusunita@gmail.com", "Address": "Jalan ST. Hasanudin", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur Weekend", "val": "Rp 3,002,780"}], "TotalUntek": 3602780, "BrutoVal": 6880327.12, "Bruto": "Rp 6,880,327.12", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 102,000", "TotalPotongan": 229904, "Potongan": "Rp 229,904.00", "NettoVal": 6880327.00, "Netto": "Rp 6,880,327.00", "OTHours": 25.00 },
+            { "No": 25, "Nama Karyawan": "Dewi Setiawati M Dg M", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "RAM", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0821 9234 4486", "Email": "setiawatidewisetiawati@gmail.com", "Address": "Desa Bakung", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur Weekend", "val": "Rp 3,039,356"}], "TotalUntek": 3639356, "BrutoVal": 6916903.16, "Bruto": "Rp 6,916,903.16", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 103,000", "TotalPotongan": 230904, "Potongan": "Rp 230,904.00", "NettoVal": 6916903.00, "Netto": "Rp 6,916,903.00", "OTHours": 25.00 },
+            { "No": 26, "Nama Karyawan": "Marini Astari", "Job Title": "Petugas Admin III", "Divisi / Fungsi": "HR - GS", "Location": "Matindok", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "Diploma III", "Mobile": "0812 4567 9563", "Email": "astaryastary@gmail.com", "Address": "Desa Nonong", "Tipe": "Non Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur Weekend", "val": "Rp 4,948,705"}], "TotalUntek": 5548705, "BrutoVal": 8826252.34, "Bruto": "Rp 8,826,252.34", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 165,000", "TotalPotongan": 292904, "Potongan": "Rp 292,904.00", "NettoVal": 8826252.00, "Netto": "Rp 8,826,252.00", "OTHours": 38.00 },
             { "No": 27, "Nama Karyawan": "Ali Mukhtar Mohammad Amin", "Job Title": "Driver Ambulance", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SLT/SMA/SMK", "Mobile": "0821 9414 4463", "Email": "alimuhtar0277@gmail.com", "Address": "Desa Dongin", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Upah Lembur", "val": "Rp 3,480,000"}], "TotalUntek": 4080000, "BrutoVal": 7357547, "Bruto": "Rp 7,357,547.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 80,096", "TotalPotongan": 208000, "Potongan": "Rp 208,000.00", "NettoVal": 7149547.00, "Netto": "Rp 7,149,547.00", "OTHours": 32.00 },
             { "No": 28, "Nama Karyawan": "Agus Rudiyanto", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "SMP/Sederajat", "Mobile": "0822 9202 2215", "Email": "agusrudiyantopo@gmail.com", "Address": "Desa Pandan Wangi", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Premi Shift", "val": "Rp 511,525"}, {"label": "- Upah Lembur", "val": "Rp 4,000,000"}], "TotalUntek": 5111525, "BrutoVal": 8389072, "Bruto": "Rp 8,389,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 98,096", "TotalPotongan": 226000, "Potongan": "Rp 226,000.00", "NettoVal": 8163072.00, "Netto": "Rp 8,163,072.00", "OTHours": 35.00 },
             { "No": 29, "Nama Karyawan": "I Gede Ariana", "Job Title": "Petugas FS", "Divisi / Fungsi": "HSSE", "Location": "Donggi", "Contract Remaining": 120, "Entitas": "Regional 4", "Zona": "Zona 13 - Field", "Contractor": "PT Sentral Sari Jaya", "Education": "S1/Sederajat", "Mobile": "0815 2765 4759", "Email": "agede6645@gmail.com", "Address": "Desa Kamiwangi", "Tipe": "Shift", "UpahPokok": 2458160, "TAUP": 819387, "TotalUT": 3277547, "ArrUntek": [{"label": "- Tunjangan Kehadiran", "val": "Rp 600,000"}, {"label": "- Premi Shift", "val": "Rp 511,525"}, {"label": "- Upah Lembur", "val": "Rp 4,250,000"}], "TotalUntek": 5361525, "BrutoVal": 8639072, "Bruto": "Rp 8,639,072.00", "JHT": "Rp 63,952", "JP": "Rp 31,976", "Kesehatan": "Rp 31,976", "PPh21": "Rp 114,096", "TotalPotongan": 242000, "Potongan": "Rp 242,000.00", "NettoVal": 8397072.00, "Netto": "Rp 8,397,072.00", "OTHours": 37.00 },
@@ -511,8 +509,8 @@
         document.addEventListener("DOMContentLoaded", () => {
             populateFilter(employeesData);
             renderTable(employeesData);
-            renderTimesheetTable([]);
-            renderPayrollTable([]); 
+            renderTimesheetTable(employeesData);
+            renderPayrollTable(employeesData); 
         });
 
         function switchTab(tabId) {
@@ -585,11 +583,6 @@
             const tbody = document.getElementById('timesheetTableBody');
             tbody.innerHTML = '';
             
-            if (data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-gray-400 italic">Daftar absensi tertutup (Non). Pilih opsi "Tampilkan Semua" atau filter sistem kerja di atas.</td></tr>`;
-                return;
-            }
-
             data.forEach((emp, index) => {
                 let totalOT = emp.OTHours || 35.00;
                 let normalHours = 20 * (emp["Tipe"] === 'Shift' ? 12 : 9); 
@@ -616,10 +609,7 @@
 
         function handleTimesheetViewChange() {
             const mode = document.getElementById('timesheetSystemFilter').value;
-            if (mode === 'non') {
-                document.getElementById('timesheetSearchInput').value = '';
-                renderTimesheetTable([]);
-            } else if (mode === 'all') {
+            if (mode === 'all') {
                 renderTimesheetTable(employeesData);
             } else {
                 const filtered = employeesData.filter(emp => emp["Tipe"] === mode);
@@ -629,12 +619,12 @@
 
         function filterTimesheetTable() {
             const searchVal = document.getElementById('timesheetSearchInput').value.toLowerCase();
-            if (searchVal.trim() === '') {
-                renderTimesheetTable([]);
-                document.getElementById('timesheetSystemFilter').value = 'non';
-                return;
-            }
-            const filtered = employeesData.filter(emp => emp["Nama Karyawan"].toLowerCase().includes(searchVal) || emp["Job Title"].toLowerCase().includes(searchVal));
+            const mode = document.getElementById('timesheetSystemFilter').value;
+            const filtered = employeesData.filter(emp => {
+                const matchMode = (mode === 'all') || (emp["Tipe"] === mode);
+                const matchSearch = emp["Nama Karyawan"].toLowerCase().includes(searchVal) || emp["Job Title"].toLowerCase().includes(searchVal);
+                return matchMode && matchSearch;
+            });
             renderTimesheetTable(filtered);
         }
 
@@ -775,11 +765,6 @@
             const tbody = document.getElementById('payrollTableBody');
             tbody.innerHTML = '';
             
-            if (data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-gray-400 italic">Daftar tertutup (Non). Pilih filter sistem kerja di atas.</td></tr>`;
-                return;
-            }
-
             data.forEach((emp, index) => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-gray-50";
@@ -803,10 +788,7 @@
 
         function handlePayrollViewChange() {
             const mode = document.getElementById('payrollSystemFilter').value;
-            if (mode === 'non') {
-                document.getElementById('payrollSearchInput').value = '';
-                renderPayrollTable([]);
-            } else if (mode === 'all') {
+            if (mode === 'all') {
                 renderPayrollTable(employeesData);
             } else {
                 const filtered = employeesData.filter(emp => emp["Tipe"] === mode);
@@ -816,12 +798,12 @@
 
         function filterPayrollTable() {
             const searchVal = document.getElementById('payrollSearchInput').value.toLowerCase();
-            if (searchVal.trim() === '') {
-                renderPayrollTable([]);
-                document.getElementById('payrollSystemFilter').value = 'non';
-                return;
-            }
-            const filtered = employeesData.filter(emp => emp["Nama Karyawan"].toLowerCase().includes(searchVal) || emp["Job Title"].toLowerCase().includes(searchVal));
+            const mode = document.getElementById('payrollSystemFilter').value;
+            const filtered = employeesData.filter(emp => {
+                const matchMode = (mode === 'all') || (emp["Tipe"] === mode);
+                const matchSearch = emp["Nama Karyawan"].toLowerCase().includes(searchVal) || emp["Job Title"].toLowerCase().includes(searchVal);
+                return matchMode && matchSearch;
+            });
             renderPayrollTable(filtered);
         }
 
