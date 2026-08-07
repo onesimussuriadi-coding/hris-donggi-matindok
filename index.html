@@ -89,46 +89,19 @@
                         <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-lg font-bold mb-4">
                             <i class="fa-solid fa-file-excel"></i>
                         </div>
-<<<<<<< HEAD
-                       <!-- AWAL KARTU -->
-<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-    <div class="flex items-center space-x-3 mb-4">
-        <!-- Ikon Excel -->
-        <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
-             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/></svg>
-        </div>
-        <h3 class="text-lg font-bold text-gray-800">Database Terintegrasi</h3>
-    </div>
-    <p class="text-gray-600 text-sm mb-6">
-        Akses unduh laporan lengkap dengan parameter utama tersedia.
-    </p>
-    <!-- TOMBOL DOWNLOAD -->
-    <a href="https://docs.google.com/spreadsheets/d/1Mu_POmiVk4A8ISsIhff5O0o4QH1grADjFCYHX7Vtx50/export?format=xlsx" 
-       class="inline-flex items-center justify-center w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded-xl shadow-sm transition-all text-sm gap-2">
-        Download / Export Excel
-    </a>
-</div>
-<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-    <div class="flex items-center space-x-3 mb-4">
-        <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-            </svg>
-        </div>
-        <h3 class="text-lg font-bold text-gray-800">Database Terintegrasi</h3>
-    </div>
-    <p class="text-gray-600 text-sm mb-6">
-        Akses unduh laporan lengkap dengan parameter utama tersedia.
-    </p>
-    <a href="https://docs.google.com/spreadsheets/d/1Mu_POmiVk4A8ISsIhff5O0o4QH1grADjFCYHX7Vtx50/export?format=xlsx" 
-       class="inline-flex items-center justify-center w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded-xl shadow-sm transition-all text-sm gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-        </svg>
-        Download / Export Excel
-    </a>
-</div>
-           </div>
+                        <h4 class="font-bold text-gray-900 text-base">Database Terintegrasi</h4>
+                        <p class="text-sm text-gray-500 mt-1">Akses unduh laporan lengkap dengan parameter utama tersedia.</p>
+                        <a href="SSJ - Prime Database TAD.xlsx" download="" class="inline-block mt-3 text-sm font-semibold text-emerald-600 hover:text-emerald-700">Download Excel →</a>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-xs">
+                        <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-lg font-bold mb-4">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <h4 class="font-bold text-gray-900 text-base">Kepatuhan &amp; HSSE</h4>
+                        <p class="text-sm text-gray-500 mt-1">Pemantauan masa kontrak, MCU, serta program keselamatan kerja secara berkala.</p>
+                    </div>
+                </div>
+            </div>
 
             <!-- HALAMAN 2: MASTER KARYAWAN -->
             <div id="tab-karyawan" class="space-y-6 hidden">
@@ -3341,46 +3314,6 @@
                 pdf.save(`Slip_Gaji_${empName.replace(/\s+/g, '_')}.pdf`);
             });
         }
-// Konfigurasi tautan data dari kedua Google Sheets Anda
-const urlGaji = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQja5eB7v4Fa1YYnobGqUkvPZfSSb0nGZ0zLi_8ttbtIPkfC2QTkcnlPkUMgl2y0OI6-Z5MkbBZaAwM/pub?output=csv';
-const urlDatabase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSBbrQZth_U6bh2dYFDUEOriIzVJ_yFYD0W_SBmm3w5txbKP4gsKMvRiBPq-3aXvgIs36Pi5-F3oP9H/pub?output=csv';
-
-async function loadData() {
-    try {
-        const fetchCSV = async (url) => {
-            const response = await fetch(url);
-            const text = await response.text();
-            const rows = text.split('\n').map(r => r.split(','));
-            const headers = rows[0].map(h => h.trim().replace(/^"|"$/g, ''));
-            return rows.slice(1).filter(r => r.length === headers.length).map(row => {
-                let obj = {};
-                row.map((val, i) => {
-                    obj[headers[i]] = val ? val.trim().replace(/^"|"$/g, '') : '';
-                });
-                return obj;
-            });
-        };
-
-        const [dataGaji, dataDatabase] = await Promise.all([
-            fetchCSV(urlGaji),
-            fetchCSV(urlDatabase)
-        ]);
-
-        console.log("Data berhasil dimuat!", { dataGaji, dataDatabase });
-        
-        // Sesuaikan dengan fungsi update dashboard Anda yang sudah ada
-        if (typeof updateDashboard === 'function') {
-            updateDashboard({ gaji: dataGaji, database: dataDatabase });
-        }
-
-    } catch (error) {
-        console.error('Kendala saat memuat data:', error);
-        // Notifikasi error dimatikan sementara agar tidak mengganggu tampilan, 
-        // Anda bisa melihat detail error di Console (F12) jika diperlukan.
-    }
-}
-
-loadData();
     </script>
 
 </body></html>
