@@ -3320,44 +3320,39 @@ const urlDatabase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSBbrQZth_U
 
 async function loadData() {
     try {
-        // Tarik data Gaji dan Database secara bersamaan
-        const [resGaji, resDb] = await Promise.all([
-            fetch(urlGaji),
-            fetch(urlDatabase)
-        ]);
-
-        const csvGaji = await resGaji.text();
-        const csvDb = await resDb.text();
-
-        // Fungsi parsing sederhana untuk data Gaji
-        const parseCSV = (text) => {
-            const rows = text.split('\n');
-            const headers = rows[0].split(',').map(h => h.trim());
-            return rows.slice(1).map(row => {
-                const values = row.split(',');
+        const fetchCSV = async (url) => {
+            const response = await fetch(url);
+            const text = await response.text();
+            const rows = text.split('\n').map(r => r.split(','));
+            const headers = rows[0].map(h => h.trim().replace(/^"|"$/g, ''));
+            return rows.slice(1).filter(r => r.length === headers.length).map(row => {
                 let obj = {};
-                headers.forEach((header, i) => {
-                    obj[header] = values[i] ? values[i].trim() : '';
+                row.map((val, i) => {
+                    obj[headers[i]] = val ? val.trim().replace(/^"|"$/g, '') : '';
                 });
                 return obj;
             });
         };
 
-        const dataGaji = parseCSV(csvGaji);
-        const dataDatabase = parseCSV(csvDb);
+        const [dataGaji, dataDatabase] = await Promise.all([
+            fetchCSV(urlGaji),
+            fetchCSV(urlDatabase)
+        ]);
 
-        console.log("Data Gaji & Database berhasil dimuat dari Google Sheets!");
-
-        // Jalankan fungsi update dashboard Anda dengan data gabungan
-        updateDashboard({ gaji: dataGaji, database: dataDatabase });
+        console.log("Data berhasil dimuat!", { dataGaji, dataDatabase });
+        
+        // Sesuaikan dengan fungsi update dashboard Anda yang sudah ada
+        if (typeof updateDashboard === 'function') {
+            updateDashboard({ gaji: dataGaji, database: dataDatabase });
+        }
 
     } catch (error) {
-        console.error('Gagal memuat data dari Google Sheets:', error);
-        alert('Data gagal dimuat. Pastikan koneksi internet aktif.');
+        console.error('Kendala saat memuat data:', error);
+        // Notifikasi error dimatikan sementara agar tidak mengganggu tampilan, 
+        // Anda bisa melihat detail error di Console (F12) jika diperlukan.
     }
 }
 
-// Jalankan fungsi saat halaman dimuat
 loadData();
     </script>
 
