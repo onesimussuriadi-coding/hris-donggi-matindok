@@ -3314,33 +3314,43 @@
                 pdf.save(`Slip_Gaji_${empName.replace(/\s+/g, '_')}.pdf`);
             });
         }
-// Konfigurasi tautan data Google Sheets Anda
-const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSBbrQZth_U6bh2dYFDUEOriIzVJ_yFYD0W_SBmm3w5txbKP4gsKMvRiBPq-3aXvgIs36Pi5-F3oP9H/pub?output=csv';
+// Konfigurasi tautan data dari kedua Google Sheets Anda
+const urlGaji = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQja5eB7v4Fa1YYnobGqUkvPZfSSb0nGZ0zLi_8ttbtIPkfC2QTkcnlPkUMgl2y0OI6-Z5MkbBZaAwM/pub?output=csv';
+const urlDatabase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSBbrQZth_U6bh2dYFDUEOriIzVJ_yFYD0W_SBmm3w5txbKP4gsKMvRiBPq-3aXvgIs36Pi5-F3oP9H/pub?output=csv';
 
 async function loadData() {
     try {
-        const response = await fetch(sheetUrl);
-        const csvText = await response.text();
-        
-        // Memecah CSV menjadi baris dan kolom
-        const rows = csvText.split('\n');
-        const headers = rows[0].split(',').map(h => h.trim());
-        
-        const data = rows.slice(1).map(row => {
-            const values = row.split(',');
-            let obj = {};
-            headers.forEach((header, i) => {
-                obj[header] = values[i] ? values[i].trim() : '';
-            });
-            return obj;
-        });
+        // Tarik data Gaji dan Database secara bersamaan
+        const [resGaji, resDb] = await Promise.all([
+            fetch(urlGaji),
+            fetch(urlDatabase)
+        ]);
 
-        console.log("Data berhasil dimuat dari Google Sheets (termasuk Prime Database):", data);
-        
-        // Panggil fungsi untuk memperbarui tampilan dashboard Anda
-        // Pastikan nama fungsi di bawah ini sesuai dengan fungsi yang sudah ada di file Anda
-        updateDashboard(data); 
-        
+        const csvGaji = await resGaji.text();
+        const csvDb = await resDb.text();
+
+        // Fungsi parsing sederhana untuk data Gaji
+        const parseCSV = (text) => {
+            const rows = text.split('\n');
+            const headers = rows[0].split(',').map(h => h.trim());
+            return rows.slice(1).map(row => {
+                const values = row.split(',');
+                let obj = {};
+                headers.forEach((header, i) => {
+                    obj[header] = values[i] ? values[i].trim() : '';
+                });
+                return obj;
+            });
+        };
+
+        const dataGaji = parseCSV(csvGaji);
+        const dataDatabase = parseCSV(csvDb);
+
+        console.log("Data Gaji & Database berhasil dimuat dari Google Sheets!");
+
+        // Jalankan fungsi update dashboard Anda dengan data gabungan
+        updateDashboard({ gaji: dataGaji, database: dataDatabase });
+
     } catch (error) {
         console.error('Gagal memuat data dari Google Sheets:', error);
         alert('Data gagal dimuat. Pastikan koneksi internet aktif.');
@@ -3349,7 +3359,6 @@ async function loadData() {
 
 // Jalankan fungsi saat halaman dimuat
 loadData();
-
     </script>
 
 </body></html>
