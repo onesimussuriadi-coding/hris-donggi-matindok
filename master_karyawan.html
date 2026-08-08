@@ -12,7 +12,7 @@
         @media print {
             body * { visibility: hidden; }
             #profileModal, #profileModal * { visibility: visible; }
-            #profileModal { position: absolute; left: 0; top: 0; width: 100%; height: auto; background: white !important; }
+            #profileModal { position: absolute; left: 0; top: 0; width: 100%; height: auto; background: white !important; box-shadow: none !important; }
             .no-print { display: none !important; }
         }
     </style>
@@ -159,14 +159,14 @@
 
     </main>
 
-    <!-- MODAL POP-UP DETAIL PROFIL LENGKAP 66 KOLOM KE BAWAH + TOMBOL PRINT -->
+    <!-- MODAL POP-UP DETAIL PROFIL LENGKAP SEMUA 72 BARIS + TOMBOL DOWNLOAD PDF -->
     <div id="profileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden border border-slate-100 animate-in fade-in zoom-in duration-200">
             <!-- Header Modal -->
             <div class="bg-slate-900 text-white p-6 flex justify-between items-center shrink-0">
                 <div>
                     <h3 class="text-lg font-bold">Lembar Profil & Histori Lengkap Karyawan</h3>
-                    <p class="text-xs text-slate-400 mt-0.5">Rekapitulasi Seluruh 66 Kolom Atribut Master Database</p>
+                    <p class="text-xs text-slate-400 mt-0.5">Rekapitulasi Seluruh Atribut Komprehensif Master Database</p>
                 </div>
                 <button onclick="closeProfileModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 transition no-print">
                     ✕
@@ -176,12 +176,12 @@
             <div id="modalBodyContent" class="p-6 space-y-2 overflow-y-auto text-xs flex-1 divide-y divide-slate-100 bg-slate-50">
                 <!-- Konten dinamis dirender via JS -->
             </div>
-            <!-- Footer Modal dengan Tombol Print -->
+            <!-- Footer Modal dengan Tombol Download PDF & Print -->
             <div class="bg-white px-6 py-4 border-t border-slate-100 flex justify-between items-center shrink-0 no-print">
                 <span class="text-[11px] text-slate-400 font-medium">Field Donggi Matindok HRIS Portal</span>
                 <div class="flex gap-2">
-                    <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-2.5 rounded-xl text-xs transition shadow-sm flex items-center gap-1.5">
-                        <span>🖨️</span> Print Profil
+                    <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl text-xs transition shadow-sm flex items-center gap-1.5">
+                        <span>📥</span> Download / Print PDF
                     </button>
                     <button onclick="closeProfileModal()" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-5 py-2.5 rounded-xl text-xs transition shadow-sm">
                         Tutup
@@ -191,11 +191,12 @@
         </div>
     </div>
 
-    <!-- Skrip Interaktif & Modal Profil 66 Kolom -->
+    <!-- Skrip Interaktif & Modal Profil Lengkap 72 Baris -->
     <script>
         let globalMasterData = [];
         let rawWorkbookRows = [];
 
+        // Data default awal 52 karyawan
         const defaultMasterData = [
             { "Nama Karyawan": "Sujianto Batias", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 4 },
             { "Nama Karyawan": "Ansar Mansur", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 5 },
@@ -266,7 +267,7 @@
             if (downloadMenu) downloadMenu.classList.add('hidden');
         }
 
-        // Buka Modal Profil & Susun 66 Kolom ke Bawah Vertikal
+        // Buka Modal Profil & Susun Seluruh 72 Baris Atribut ke Bawah secara Komprehensif
         function openProfileModal(index) {
             const emp = globalMasterData[index];
             if (!emp) return;
@@ -274,50 +275,61 @@
             const modalBody = document.getElementById('modalBodyContent');
             modalBody.innerHTML = '';
 
-            // Jika rawWorkbookRows tersedia, ekstrak semua baris (hingga 66 atribut lebih) ke bawah
-            if (rawWorkbookRows && rawWorkbookRows.length > 0 && emp._rawColIndex !== undefined) {
-                let colIdx = emp._rawColIndex;
-                rawWorkbookRows.forEach((row, rIdx) => {
-                    let attrName = row[3] ? String(row[3]).trim() : (row[2] ? String(row[2]).trim() : `Atribut ${rIdx}`);
-                    let attrVal = row[colIdx] !== undefined && row[colIdx] !== null ? String(row[colIdx]).trim() : "-";
-                    
-                    if (!attrName || attrName === "undefined" || attrName === "-") return;
-                    attrName = attrName.replace(/\n/g, ' ');
+            // Jika rawWorkbookRows sudah dimuat dari file upload atau sheet aktif
+            const rowsToUse = (rawWorkbookRows && rawWorkbookRows.length > 0) ? rawWorkbookRows : getDefaultMockWorkbookRows(emp);
+            let colIdx = emp._rawColIndex !== undefined ? emp._rawColIndex : (4 + index);
 
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = "flex flex-col sm:flex-row justify-between py-2 px-3 bg-white hover:bg-slate-100 rounded-lg transition gap-1 border border-slate-100";
-                    itemDiv.innerHTML = `
-                        <span class="text-slate-500 font-semibold sm:w-1/2">${rIdx + 1}. ${attrName}</span>
-                        <span class="font-bold text-slate-900 sm:w-1/2 sm:text-right break-words">${attrVal}</span>
-                    `;
-                    modalBody.appendChild(itemDiv);
-                });
-            } else {
-                // Fallback jika menggunakan data default
-                const fallbackAttributes = [
-                    ["Nomor Urut", "#" + (index + 1)],
-                    ["Nama Karyawan", emp["Nama Karyawan"]],
-                    ["Jabatan", emp["Jabatan"]],
-                    ["Divisi / Fungsi", emp["Divisi"]],
-                    ["Sistem Kerja", emp["Sistem Kerja"]],
-                    ["Sisa Kontrak", emp["Sisa Kontrak"]]
-                ];
-                fallbackAttributes.forEach(([k, v], i) => {
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = "flex justify-between py-2 px-3 bg-white rounded-lg border border-slate-100";
-                    itemDiv.innerHTML = `<span class="text-slate-500 font-semibold">${i + 1}. ${k}</span><span class="font-bold text-slate-900">${v}</span>`;
-                    modalBody.appendChild(itemDiv);
-                });
-            }
+            rowsToUse.forEach((row, rIdx) => {
+                let attrName = row[3] ? String(row[3]).trim() : (row[2] ? String(row[2]).trim() : `Atribut ${rIdx + 1}`);
+                let attrVal = row[colIdx] !== undefined && row[colIdx] !== null ? String(row[colIdx]).trim() : "-";
+                
+                if (!attrName || attrName === "undefined" || attrName === "-" || attrName.includes("Today*") || attrName.includes("Up.*")) return;
+                attrName = attrName.replace(/\n/g, ' ');
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = "flex flex-col sm:flex-row justify-between py-2 px-3 bg-white hover:bg-slate-100 rounded-lg transition gap-1 border border-slate-100";
+                itemDiv.innerHTML = `
+                    <span class="text-slate-500 font-semibold sm:w-1/2">${rIdx + 1}. ${attrName}</span>
+                    <span class="font-bold text-slate-900 sm:w-1/2 sm:text-right break-words">${attrVal}</span>
+                `;
+                modalBody.appendChild(itemDiv);
+            });
 
             document.getElementById('profileModal').classList.remove('hidden');
+        }
+
+        // Data mock 72 baris lengkap untuk fallback default
+        function getDefaultMockWorkbookRows(emp) {
+            let mockAttributes = [
+                ["No", "1"], ["Entitas", "Regional 4"], ["Zona", "Zona 13 - Field"], ["No. Pekerja (Contractor)", "1124 1223 034"], 
+                ["No Pekerja (New format)", "1141300014"], ["Nama Karyawan", emp["Nama Karyawan"]], ["Job Title", emp["Jabatan"]], 
+                ["Details Title", "-"], ["Group", "Non Office"], ["Location", "Matindok"], ["Division", "Zona 13"], 
+                ["Fungsi", emp["Divisi"]], ["Department", "HSSE Operations Zona 13"], ["Spesific", "HSSE"], ["Job Group", "Worker"], 
+                ["Kota Tempat Lahir", "Noge"], ["Tanggal Lahir", "1991-12-25"], ["Age", "34"], ["Age (Details)", "34 Tahun 7 Bulan 14 Hari"], 
+                ["Retired Remaining (Max. 56 YO)", "1921-05-18"], ["Kelompok Umur", "31-35 Tahun"], ["Kategori Pekerja", "Mandays"], 
+                ["Lokasi Kerja", "Donggi Matindok"], ["Area Kerja", "Onshore"], ["Shift / NonShift", emp["Sistem Kerja"]], 
+                ["Education", "SLT/SMA/SMK"], ["Jurusan Pendidikan Terakhir", "Ilmu Pengetahuan Alam"], ["Last Education Institution", "SMA Negeri 1 Batui"], 
+                ["Grade", "D"], ["Upah Dasar / BS (gross)", "-"], ["Tunjangan Tetap", "Tidak Ada"], ["Contractor", "PT Sentral Sari Jaya"], 
+                ["Reff No.", "4710002085"], ["Place of Hire", "Donggi Matindok"], ["Contract (Started)", "2025-12-01"], 
+                ["Contract (Ended)", "2026-11-30"], ["Contract Remaining", emp["Sisa Kontrak"]], ["Pengalaman Kerja Pertama", "2014-01-01"], 
+                ["Bergabung Pertama kali di Pertamina", "2018-01-01"], ["Kategory Project/ Rutin", "Rutin"], ["Nama Perusahaan Sebelum SHU", "PT. Pertamina PEP"], 
+                ["Nama Atasan", "Indradi Noor Akbar"], ["ID Pos Atasan", "30284899"], ["Job Title User", "Manager"], ["Cost Center", "BS431310D"], 
+                ["KTP No.", "7201012512910001"], ["NPWP No.", "7201012512910001"], ["Status Pernikahan", "Menikah"], ["Status", "K/2"], 
+                ["Gender", "Laki - Laki"], ["Agama", "Islam"], ["Mobile", "0821 9442 1574"], ["Email", "sujiantobatiasmtd@gmail.com"], 
+                ["Email (Pertamina)", "-"], ["Address", "Desa Noge Dusun II"], ["Kecamatan", "Batui"], ["Kota", "Banggai"], 
+                ["Provinsi", "Sulawesi Tengah"], ["Kode Pos", "-"], ["No Kartu Keluarga", "7201012005160003"], ["BPJS Tenaga Kerja", "22040703948"], 
+                ["BPJS Kesehatan", "0001572079509"], ["BPJS Pensiun", "22040703948"], ["Nomor Kontak Emergency", "0858 2413 6649"], 
+                ["Nama Kontak Emergency", "Rismawati"], ["Relationship", "Istri"], ["MCU Updated", "2026-01-28"], ["MCU Remaining", "174 Day(s)"], 
+                ["Vaksin 1", "√"], ["Vaksin 2", "√"], ["365 Program", "Active"]
+            ];
+            return mockAttributes.map(item => [null, null, null, item[0], item[1]]);
         }
 
         function closeProfileModal() {
             document.getElementById('profileModal').classList.add('hidden');
         }
 
-        // Proses Upload File & Simpan Seluruh Workbook Rows
+        // Proses Upload File & Simpan Seluruh Workbook Rows (72 Baris)
         function processUploadedFile(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -331,7 +343,7 @@
                     const worksheet = workbook.Sheets[firstSheetName];
                     const rows = XLSX.utils.sheet_to_json(worksheet, {header: 1});
                     
-                    rawWorkbookRows = rows; // Simpan seluruh baris lengkap
+                    rawWorkbookRows = rows; // Menyimpan seluruh baris master lengkap
 
                     let parsedEmployees = [];
                     for (let c = 4; c < rows[5].length; c++) {
