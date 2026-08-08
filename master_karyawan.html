@@ -44,7 +44,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">Master Data Karyawan TAD</h2>
-                <p class="text-xs text-slate-500 mt-1">Database lengkap 52 personel sesuai rujukan asli Google Sheet.</p>
+                <p class="text-xs text-slate-500 mt-1">Database lengkap 52 personel sinkronisasi langsung dari Google Sheet.</p>
             </div>
             <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full">Zona 13 - Field</span>
         </div>
@@ -78,7 +78,7 @@
                         <option value="Shift">Shift (36)</option>
                         <option value="Non Shift">Non Shift (16)</option>
                     </select>
-                    <!-- Dropdown Filter Divisi / Fungsi -->
+                    <!-- Dropdown Filter Divisi / Fungsi Riil -->
                     <select id="filterDivisi" class="px-3 py-2 text-xs border rounded-xl bg-slate-50 text-slate-600 focus:outline-none">
                         <option value="">Semua Divisi</option>
                         <option value="HSSE">HSSE</option>
@@ -86,7 +86,10 @@
                         <option value="LR">LR</option>
                         <option value="RAM">RAM</option>
                         <option value="HC">HC</option>
+                        <option value="Operation Planning">Operation Planning</option>
+                        <option value="Field Manager">Field Manager</option>
                         <option value="Finance">Finance</option>
+                        <option value="Plan & Eval">Plan & Eval</option>
                     </select>
                     <!-- Input Pencarian Nama / Jabatan -->
                     <input type="text" id="searchMaster" placeholder="Cari nama atau jabatan..." class="px-3 py-2 text-xs border rounded-xl focus:outline-none w-64">
@@ -115,7 +118,7 @@
 
     </main>
 
-    <!-- Skrip Database Lengkap 52 Karyawan Sesuai Google Sheet Asli -->
+    <!-- Skrip Database Presisi 52 Personel Sinkron Satu Baris Lurus -->
     <script>
         const globalMasterData = [
             { "Nama Karyawan": "Sujianto Batias", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
@@ -205,7 +208,7 @@
             });
         }
 
-        // Fungsi Filter Dinamis & Penomoran Otomatis Berurutan 1 s.d. Seterusnya
+        // Fungsi Filter Sempurna (Satu Baris Lurus per Karyawan)
         function filterData() {
             const keyword = document.getElementById('searchMaster').value.toLowerCase();
             const selectedShift = document.getElementById('filterSistemKerja').value;
@@ -226,7 +229,7 @@
 
                 let matchDivisi = true;
                 if (selectedDivisi !== "") {
-                    matchDivisi = divisi.toLowerCase() === selectedDivisi.toLowerCase();
+                    matchDivisi = divisi === selectedDivisi.toLowerCase();
                 }
 
                 return matchKeyword && matchShift && matchDivisi;
@@ -235,12 +238,10 @@
             renderMasterTable(filtered);
         }
 
-        // Event listener untuk filter dan pencarian
         document.getElementById('searchMaster').addEventListener('input', filterData);
         document.getElementById('filterSistemKerja').addEventListener('change', filterData);
         document.getElementById('filterDivisi').addEventListener('change', filterData);
 
-        // Muat tabel saat halaman pertama kali dibuka
         document.addEventListener('DOMContentLoaded', () => {
             renderMasterTable(globalMasterData);
         });
