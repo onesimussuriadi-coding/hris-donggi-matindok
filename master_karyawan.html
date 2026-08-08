@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master Karyawan TAD - Field Donggi Matindok</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 font-sans flex h-screen overflow-hidden">
@@ -36,13 +37,19 @@
         </div>
     </aside>
 
-    <!-- Konten Utama -->
+    <!-- Konten Utama Halaman Master Karyawan -->
     <main class="flex-1 overflow-y-auto p-8">
+        
+        <!-- Header Atas -->
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold text-slate-800">Master Data Karyawan TAD</h2>
+            <div>
+                <h2 class="text-2xl font-bold text-slate-800">Master Data Karyawan TAD</h2>
+                <p class="text-xs text-slate-500 mt-1">Database utama personel tenaga alih daya aktif.</p>
+            </div>
             <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full">Zona 13 - Field</span>
         </div>
 
+        <!-- Kartu Statistik Atas -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
                 <p class="text-xs text-slate-500 font-medium mb-1">Total Karyawan (TAD)</p>
@@ -54,12 +61,13 @@
             </div>
             <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
                 <p class="text-xs text-slate-500 font-medium mb-1">Aksi Data Laporan</p>
-                <button onclick="alert('Menyiapkan file ekspor Excel...')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition flex items-center justify-center gap-2">
+                <button onclick="alert('Menyiapkan file ekspor Excel Master Karyawan...')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition flex items-center justify-center gap-2 shadow-sm">
                     <span>📥</span> Download / Export Excel
                 </button>
             </div>
         </div>
 
+        <!-- Bagian Tabel & Filter -->
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
                 <h4 class="font-bold text-slate-800">Daftar Karyawan TAD (Lengkap 52 Orang)</h4>
@@ -75,7 +83,7 @@
                         <option>SCM</option>
                         <option>Legal & Relation</option>
                     </select>
-                    <input type="text" placeholder="Cari nama atau jabatan..." class="px-3 py-2 text-xs border rounded-xl focus:outline-none w-64">
+                    <input type="text" id="searchMaster" placeholder="Cari nama atau jabatan..." class="px-3 py-2 text-xs border rounded-xl focus:outline-none w-64">
                 </div>
             </div>
 
@@ -100,40 +108,65 @@
                 </table>
             </div>
         </div>
+
     </main>
 
+    <!-- Skrip Pembacaan Data Master Utama -->
     <script>
+        let globalMasterData = [];
+
         async function loadMasterKaryawan() {
             try {
                 const response = await fetch('employee_data.json');
                 if (!response.ok) throw new Error('File tidak ditemukan');
-                const data = await response.json();
-                const tbody = document.getElementById('masterTableBody');
-                tbody.innerHTML = '';
-                
-                data.forEach((emp, index) => {
-                    const row = document.createElement('tr');
-                    row.className = "hover:bg-slate-50 border-b border-slate-100 text-xs transition";
-                    row.innerHTML = `
-                        <td class="p-3 text-slate-500">${emp["No"] || (index + 1)}</td>
-                        <td class="p-3 font-bold text-slate-800">${emp["Nama Karyawan"] || '-'}</td>
-                        <td class="p-3 text-slate-600">${emp["Job Title"] || '-'}</td>
-                        <td class="p-3 text-slate-600">${emp["Fungsi"] || '-'}</td>
-                        <td class="p-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md font-semibold">Shift</span></td>
-                        <td class="p-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md font-semibold">120 Hari</span></td>
-                        <td class="p-3 text-center">
-                            <button onclick="alert('Membuka profil: ${emp["Nama Karyawan"]}')" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-semibold transition">
-                                👁️ Detail
-                            </button>
-                        </td>
-                    `;
-                    tbody.appendChild(row);
-                });
+                globalMasterData = await response.json();
+                renderMasterTable(globalMasterData);
             } catch (err) {
                 console.error(err);
                 document.getElementById('masterTableBody').innerHTML = `<tr><td colspan="7" class="p-6 text-center text-rose-500 text-xs">Gagal memuat file database employee_data.json</td></tr>`;
             }
         }
+
+        function renderMasterTable(data) {
+            const tbody = document.getElementById('masterTableBody');
+            tbody.innerHTML = '';
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 text-xs">Data tidak ditemukan.</td></tr>`;
+                return;
+            }
+
+            data.forEach((emp, index) => {
+                const row = document.createElement('tr');
+                row.className = "hover:bg-slate-50 border-b border-slate-100 text-xs transition";
+                row.innerHTML = `
+                    <td class="p-3 text-slate-500">${emp["No"] || (index + 1)}</td>
+                    <td class="p-3 font-bold text-slate-800">${emp["Nama Karyawan"] || '-'}</td>
+                    <td class="p-3 text-slate-600">${emp["Job Title"] || '-'}</td>
+                    <td class="p-3 text-slate-600">${emp["Fungsi"] || '-'}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md font-semibold">Shift</span></td>
+                    <td class="p-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md font-semibold">120 Hari</span></td>
+                    <td class="p-3 text-center">
+                        <button onclick="alert('Membuka profil: ${emp["Nama Karyawan"]}')" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-semibold transition">
+                            👁️ Detail
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Pencarian Real-Time
+        document.getElementById('searchMaster').addEventListener('input', function(e) {
+            const keyword = e.target.value.toLowerCase();
+            const filtered = globalMasterData.filter(emp => 
+                (emp["Nama Karyawan"] && emp["Nama Karyawan"].toLowerCase().includes(keyword)) ||
+                (emp["Job Title"] && emp["Job Title"].toLowerCase().includes(keyword)) ||
+                (emp["Fungsi"] && emp["Fungsi"].toLowerCase().includes(keyword))
+            );
+            renderMasterTable(filtered);
+        });
+
         document.addEventListener('DOMContentLoaded', loadMasterKaryawan);
     </script>
 </body>
