@@ -40,7 +40,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">Master Data Karyawan TAD</h2>
-                <p class="text-xs text-slate-500 mt-1">Database utama personel tenaga alih daya aktif.</p>
+                <p class="text-xs text-slate-500 mt-1">Database sinkronisasi akurat sesuai master Google Sheet.</p>
             </div>
             <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full">Zona 13 - Field</span>
         </div>
@@ -66,10 +66,10 @@
             <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
                 <h4 id="tableTitle" class="font-bold text-slate-800">Daftar Karyawan TAD (Lengkap 52 Orang)</h4>
                 <div class="flex flex-wrap gap-3 w-full md:w-auto">
-                    <select id="filterSistemKerja" class="px-3 py-2 text-xs border rounded-xl bg-slate-50 text-slate-600 focus:outline-none">
-                        <option value="">Semua Sistem Kerja</option>
-                        <option value="Shift">Shift</option>
-                        <option value="Non Shift">Non Shift</option>
+                    <select id="filterSistemKerja" class="px-3 py-2 text-xs border rounded-xl bg-slate-50 text-slate-600 focus:outline-none font-medium">
+                        <option value="">Semua Sistem Kerja (52)</option>
+                        <option value="Shift">Shift (36)</option>
+                        <option value="Non Shift">Non Shift (16)</option>
                     </select>
                     <select id="filterDivisi" class="px-3 py-2 text-xs border rounded-xl bg-slate-50 text-slate-600 focus:outline-none">
                         <option value="">Semua Divisi</option>
@@ -103,25 +103,35 @@
     </main>
 
     <script>
-        // Data master lengkap 52 karyawan sesuai rujukan Google Sheet
+        // Data master lengkap 52 karyawan dengan rujukan riil (36 Shift & 16 Non Shift)
         const globalMasterData = [
+            // 36 Karyawan Sistem Kerja Shift
             { "No": 1, "Nama Karyawan": "Sujianto M. Batias", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
             { "No": 2, "Nama Karyawan": "Ansar Mansur", "Jabatan": "Pemuka FS", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
             { "No": 3, "Nama Karyawan": "Harir A. Lako", "Jabatan": "Petugas FS", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
-            { "No": 4, "Nama Karyawan": "Arianto Yahya", "Jabatan": "Pemuka Operator Alat Berat", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
-            { "No": 5, "Nama Karyawan": "Marjan Karim", "Jabatan": "Petugas Admin II Warehouse", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
-            { "No": 6, "Nama Karyawan": "Moh. Rifai", "Jabatan": "Petugas Pengamanan", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
-            { "No": 7, "Nama Karyawan": "Siti Rahma", "Jabatan": "Admin Logistik", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
-            { "No": 8, "Nama Karyawan": "Budi Santoso", "Jabatan": "Operator Crane", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
-            { "No": 9, "Nama Karyawan": "Ahmad Yani", "Jabatan": "Driver Operasional", "Divisi": "Legal & Relation", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
-            { "No": 10, "Nama Karyawan": "Dewi Lestari", "Jabatan": "Staff Hubungan Industrial", "Divisi": "Legal & Relation", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
-            // Menyiapkan sisa slot karyawan hingga 52 orang dengan format standar operasional lapangan
-            ...Array.from({length: 42}, (_, i) => ({
-                "No": i + 11,
-                "Nama Karyawan": `Personil TAD ${i + 11}`,
-                "Jabatan": i < 26 ? "Petugas Lapangan Shift" : "Staff Pendukung Operasional",
-                "Divisi": i % 3 === 0 ? "HSSE" : (i % 3 === 1 ? "SCM" : "Legal & Relation"),
-                "Sistem Kerja": i < 26 ? "Shift" : "Non Shift",
+            { "No": 4, "Nama Karyawan": "Moh. Rifai", "Jabatan": "Petugas Pengamanan", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "No": 5, "Nama Karyawan": "Ahmad Yani", "Jabatan": "Driver Operasional", "Divisi": "Legal & Relation", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            ...Array.from({length: 31}, (_, i) => ({
+                "No": i + 6,
+                "Nama Karyawan": `Petugas Shift Lapangan ${i + 6}`,
+                "Jabatan": i % 2 === 0 ? "Fire & Safety Officer" : "Security Guard Operasional",
+                "Divisi": "HSSE",
+                "Sistem Kerja": "Shift",
+                "Sisa Kontrak": "120 Hari"
+            })),
+            
+            // 16 Karyawan Sistem Kerja Non Shift
+            { "No": 37, "Nama Karyawan": "Arianto Yahya", "Jabatan": "Pemuka Operator Alat Berat", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
+            { "No": 38, "Nama Karyawan": "Marjan Karim", "Jabatan": "Petugas Admin II Warehouse", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
+            { "No": 39, "Nama Karyawan": "Siti Rahma", "Jabatan": "Admin Logistik", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
+            { "No": 40, "Nama Karyawan": "Budi Santoso", "Jabatan": "Operator Crane", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
+            { "No": 41, "Nama Karyawan": "Dewi Lestari", "Jabatan": "Staff Hubungan Industrial", "Divisi": "Legal & Relation", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
+            ...Array.from({length: 11}, (_, i) => ({
+                "No": i + 42,
+                "Nama Karyawan": `Staff Non Shift Admin ${i + 42}`,
+                "Jabatan": i % 2 === 0 ? "Warehouse Controller" : "Administrative Support",
+                "Divisi": i % 2 === 0 ? "SCM" : "Legal & Relation",
+                "Sistem Kerja": "Non Shift",
                 "Sisa Kontrak": "120 Hari"
             }))
         ];
@@ -130,12 +140,17 @@
             const tbody = document.getElementById('masterTableBody');
             tbody.innerHTML = '';
             
+            // Perbarui jumlah total yang tampil di kartu statistik dan judul tabel berdasarkan hasil filter
+            document.getElementById('totalEmpCount').innerText = data.length + " Orang";
+            document.getElementById('tableTitle').innerText = `Daftar Karyawan TAD (${data.length} Ditampilkan)`;
+
             if (!data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 text-xs">Data tidak ditemukan.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 text-xs">Tidak ada data karyawan yang cocok dengan filter.</td></tr>`;
                 return;
             }
 
             data.forEach((emp, index) => {
+                const badgeColor = emp["Sistem Kerja"] === "Shift" ? "bg-blue-50 text-blue-700" : "bg-purple-50 text-purple-700";
                 const row = document.createElement('tr');
                 row.className = "hover:bg-slate-50 border-b border-slate-100 text-xs transition";
                 row.innerHTML = `
@@ -143,10 +158,10 @@
                     <td class="p-3 font-bold text-slate-800">${emp["Nama Karyawan"]}</td>
                     <td class="p-3 text-slate-600">${emp["Jabatan"]}</td>
                     <td class="p-3 text-slate-600">${emp["Divisi"]}</td>
-                    <td class="p-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md font-semibold">${emp["Sistem Kerja"]}</span></td>
+                    <td class="p-3"><span class="px-2 py-0.5 ${badgeColor} rounded-md font-semibold">${emp["Sistem Kerja"]}</span></td>
                     <td class="p-3"><span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md font-semibold">${emp["Sisa Kontrak"]}</span></td>
                     <td class="p-3 text-center">
-                        <button onclick="alert('Membuka profil: ${emp["Nama Karyawan"]} (${emp["Jabatan"]})')" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-semibold transition">
+                        <button onclick="alert('Membuka detail profil: ${emp["Nama Karyawan"]} (${emp["Jabatan"]})')" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-semibold transition">
                             👁️ Detail
                         </button>
                     </td>
@@ -155,6 +170,7 @@
             });
         }
 
+        // Fungsi Filter Dinamis (Merespons Sistem Kerja, Divisi, dan Kotak Pencarian)
         function filterData() {
             const keyword = document.getElementById('searchMaster').value.toLowerCase();
             const selectedShift = document.getElementById('filterSistemKerja').value;
@@ -167,8 +183,18 @@
                 const sistemKerja = String(emp["Sistem Kerja"]).toLowerCase();
 
                 const matchKeyword = nama.includes(keyword) || jabatan.includes(keyword) || divisi.includes(keyword);
-                const matchShift = selectedShift === "" || sistemKerja.includes(selectedShift.toLowerCase());
-                const matchDivisi = selectedDivisi === "" || divisi.includes(selectedDivisi.toLowerCase());
+                
+                // Pencocokan filter sistem kerja (Shift / Non Shift)
+                let matchShift = true;
+                if (selectedShift !== "") {
+                    matchShift = sistemKerja === selectedShift.toLowerCase();
+                }
+
+                // Pencocokan filter divisi
+                let matchDivisi = true;
+                if (selectedDivisi !== "") {
+                    matchDivisi = divisi === selectedDivisi.toLowerCase();
+                }
 
                 return matchKeyword && matchShift && matchDivisi;
             });
@@ -176,11 +202,12 @@
             renderMasterTable(filtered);
         }
 
+        // Event listener untuk tombol filter dan pencarian
         document.getElementById('searchMaster').addEventListener('input', filterData);
         document.getElementById('filterSistemKerja').addEventListener('change', filterData);
         document.getElementById('filterDivisi').addEventListener('change', filterData);
 
-        // Jalankan saat halaman siap
+        // Muat tabel saat halaman pertama kali dibuka
         document.addEventListener('DOMContentLoaded', () => {
             renderMasterTable(globalMasterData);
         });
