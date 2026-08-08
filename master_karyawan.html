@@ -151,115 +151,93 @@
 
     </main>
 
-    <!-- MODAL POP-UP DETAIL PROFIL KARYAWAN (MEMANJANG KE BAWAH) -->
-    <div id="profileModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-100 animate-in fade-in zoom-in duration-200">
+    <!-- MODAL POP-UP DETAIL PROFIL LENGKAP (VERTICAL SCROLLING) -->
+    <div id="profileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden border border-slate-100 animate-in fade-in zoom-in duration-200">
             <!-- Header Modal -->
-            <div class="bg-slate-900 text-white p-6 flex justify-between items-center">
+            <div class="bg-slate-900 text-white p-6 flex justify-between items-center shrink-0">
                 <div>
-                    <h3 class="text-lg font-bold">Identitas & Profil Karyawan</h3>
-                    <p class="text-xs text-slate-400 mt-0.5">Rekapitulasi Histori Data Master Karyawan</p>
+                    <h3 class="text-lg font-bold">Identitas & Profil Lengkap Karyawan</h3>
+                    <p class="text-xs text-slate-400 mt-0.5">Rekapitulasi Seluruh Atribut dari Database Master</p>
                 </div>
                 <button onclick="closeProfileModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 transition">
                     ✕
                 </button>
             </div>
-            <!-- Isi Rekap Profil Memanjang ke Bawah -->
-            <div class="p-6 space-y-4 text-xs">
-                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <span class="text-slate-500 font-medium">Nomor Urut Master</span>
-                    <span id="modalNo" class="font-bold text-slate-900 text-sm">-</span>
-                </div>
-                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <span class="text-slate-500 font-medium">Nama Lengkap Karyawan</span>
-                    <span id="modalNama" class="font-bold text-slate-900 text-sm">-</span>
-                </div>
-                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <span class="text-slate-500 font-medium">Jabatan</span>
-                    <span id="modalJabatan" class="font-bold text-slate-800">-</span>
-                </div>
-                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <span class="text-slate-500 font-medium">Divisi / Fungsi</span>
-                    <span id="modalDivisi" class="font-bold text-slate-800">-</span>
-                </div>
-                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <span class="text-slate-500 font-medium">Sistem Kerja</span>
-                    <span id="modalSistemKerja" class="font-bold px-2.5 py-1 rounded-md">-</span>
-                </div>
-                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <span class="text-slate-500 font-medium">Sisa Kontrak Aktif</span>
-                    <span id="modalSisaKontrak" class="font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md">-</span>
-                </div>
+            <!-- Isi Profil Memanjang ke Bawah (Scrollable) -->
+            <div id="modalBodyContent" class="p-6 space-y-3 overflow-y-auto text-xs flex-1 divide-y divide-slate-100">
+                <!-- Konten dinamis dirender via JS -->
             </div>
             <!-- Footer Modal -->
-            <div class="bg-slate-50 px-6 py-4 border-t border-slate-100 flex justify-end">
-                <button onclick="closeProfileModal()" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-5 py-2.5 rounded-xl text-xs transition">
+            <div class="bg-slate-50 px-6 py-4 border-t border-slate-100 flex justify-end shrink-0">
+                <button onclick="closeProfileModal()" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-6 py-2.5 rounded-xl text-xs transition shadow-sm">
                     Tutup Profil
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Skrip Interaktif & Modal Profil -->
+    <!-- Skrip Interaktif & Modal Profil Lengkap -->
     <script>
         let globalMasterData = [];
+        let rawWorkbookRows = []; // Menyimpan baris mentah excel untuk detail selengkapnya
 
         const defaultMasterData = [
-            { "Nama Karyawan": "Sujianto Batias", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Ansar Mansur", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Harir A. Lako", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Ali Friansyah", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Fredrik D Tinadji", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Wayan Edi Jaya", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Akmal (A)", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Alfikwan I Marida", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Deni Andrianto", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Awal Dwi Sekti", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Muh Arsyal Ramdani", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Muh Palmi", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Halim", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Mustamar Dg Magangka", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Akmal (B)", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Rizal Tamoreka", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Arianto Yahya", "Jabatan": "Pemuka Operator Alat Berat", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Marjan Karim", "Jabatan": "Petugas Admin II Warehouse", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Kasman", "Jabatan": "Petugas Admin II Warehouse", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Lukman Tasakka", "Jabatan": "Pemuka Operator Alat Berat", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "I Nengah Darsana", "Jabatan": "Pemuka Operator Alat Berat", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "I Gusti Ngurah Baliarta", "Jabatan": "Petugas Admin II Warehouse", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Irvan Parenden", "Jabatan": "Petugas Admin II Warehouse", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Sunita Ayu Purnamaningsi", "Jabatan": "Petugas Admin II", "Divisi": "LR", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Dewi Setiawati", "Jabatan": "Petugas Admin III", "Divisi": "RAM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Marini Astary", "Jabatan": "Petugas Admin III", "Divisi": "HC", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Ali Mukhtar Mohammad Amin", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Agus Rudiyanto", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "I Gede Ariana", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "I Putu Adnyana Wijaya", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Mursalun Lasuru", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Subandi", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Budi Santoso", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "I Komang Santika", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Indra Natalianto Patasik", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Kd Wiyad Nyana", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "I Nengah Rudi Artika", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Sukardi Jalisingi", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Yotam", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Thamar Thalib Mbau", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Arie Kurniawan", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Eko Wiyono", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Fajriadi", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Jumalik H. Latungka", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Randianto", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Saiful M. Zakar", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "I Nyoman Suwitra", "Jabatan": "Petugas Gudang BBM", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "I Putu Muryanto", "Jabatan": "Petugas Admin III", "Divisi": "Operation Planning", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Siti Aisyah Dg Masese", "Jabatan": "Sekretaris Field Manager", "Divisi": "Field Manager", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Dewi Khoirunnisa", "Jabatan": "Petugas Admin III", "Divisi": "Finance", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Eka Nurjannah", "Jabatan": "Petugas Admin III CSR", "Divisi": "Plan & Eval", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)" },
-            { "Nama Karyawan": "Findy Handayani", "Jabatan": "Petugas Admin II", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)" }
+            { "Nama Karyawan": "Sujianto Batias", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 4 },
+            { "Nama Karyawan": "Ansar Mansur", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 5 },
+            { "Nama Karyawan": "Harir A. Lako", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 6 },
+            { "Nama Karyawan": "Ali Friansyah", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 7 },
+            { "Nama Karyawan": "Fredrik D Tinadji", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 8 },
+            { "Nama Karyawan": "Wayan Edi Jaya", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 9 },
+            { "Nama Karyawan": "Akmal (A)", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 10 },
+            { "Nama Karyawan": "Alfikwan I Marida", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 11 },
+            { "Nama Karyawan": "Deni Andrianto", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 12 },
+            { "Nama Karyawan": "Awal Dwi Sekti", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 13 },
+            { "Nama Karyawan": "Muh Arsyal Ramdani", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 14 },
+            { "Nama Karyawan": "Muh Palmi", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 15 },
+            { "Nama Karyawan": "Halim", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 16 },
+            { "Nama Karyawan": "Mustamar Dg Magangka", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 17 },
+            { "Nama Karyawan": "Akmal (B)", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 18 },
+            { "Nama Karyawan": "Rizal Tamoreka", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 19 },
+            { "Nama Karyawan": "Arianto Yahya", "Jabatan": "Pemuka Operator Alat Berat", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 20 },
+            { "Nama Karyawan": "Marjan Karim", "Jabatan": "Petugas Admin II Warehouse", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 21 },
+            { "Nama Karyawan": "Kasman", "Jabatan": "Petugas Admin II Warehouse", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 22 },
+            { "Nama Karyawan": "Lukman Tasakka", "Jabatan": "Pemuka Operator Alat Berat", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 23 },
+            { "Nama Karyawan": "I Nengah Darsana", "Jabatan": "Pemuka Operator Alat Berat", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 24 },
+            { "Nama Karyawan": "I Gusti Ngurah Baliarta", "Jabatan": "Petugas Admin II Warehouse", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 25 },
+            { "Nama Karyawan": "Irvan Parenden", "Jabatan": "Petugas Admin II Warehouse", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 26 },
+            { "Nama Karyawan": "Sunita Ayu Purnamaningsi", "Jabatan": "Petugas Admin II", "Divisi": "LR", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 27 },
+            { "Nama Karyawan": "Dewi Setiawati", "Jabatan": "Petugas Admin III", "Divisi": "RAM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 28 },
+            { "Nama Karyawan": "Marini Astary", "Jabatan": "Petugas Admin III", "Divisi": "HC", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 29 },
+            { "Nama Karyawan": "Ali Mukhtar Mohammad Amin", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 30 },
+            { "Nama Karyawan": "Agus Rudiyanto", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 31 },
+            { "Nama Karyawan": "I Gede Ariana", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 32 },
+            { "Nama Karyawan": "I Putu Adnyana Wijaya", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 33 },
+            { "Nama Karyawan": "Mursalun Lasuru", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 34 },
+            { "Nama Karyawan": "Subandi", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 35 },
+            { "Nama Karyawan": "Budi Santoso", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 36 },
+            { "Nama Karyawan": "I Komang Santika", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 37 },
+            { "Nama Karyawan": "Indra Natalianto Patasik", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 38 },
+            { "Nama Karyawan": "Kd Wiyad Nyana", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 39 },
+            { "Nama Karyawan": "I Nengah Rudi Artika", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 40 },
+            { "Nama Karyawan": "Sukardi Jalisingi", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 41 },
+            { "Nama Karyawan": "Yotam", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 42 },
+            { "Nama Karyawan": "Thamar Thalib Mbau", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 43 },
+            { "Nama Karyawan": "Arie Kurniawan", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 44 },
+            { "Nama Karyawan": "Eko Wiyono", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 45 },
+            { "Nama Karyawan": "Fajriadi", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 46 },
+            { "Nama Karyawan": "Jumalik H. Latungka", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 47 },
+            { "Nama Karyawan": "Randianto", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 48 },
+            { "Nama Karyawan": "Saiful M. Zakar", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 49 },
+            { "Nama Karyawan": "I Nyoman Suwitra", "Jabatan": "Petugas Gudang BBM", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 50 },
+            { "Nama Karyawan": "I Putu Muryanto", "Jabatan": "Petugas Admin III", "Divisi": "Operation Planning", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 51 },
+            { "Nama Karyawan": "Siti Aisyah Dg Masese", "Jabatan": "Sekretaris Field Manager", "Divisi": "Field Manager", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 52 },
+            { "Nama Karyawan": "Dewi Khoirunnisa", "Jabatan": "Petugas Admin III", "Divisi": "Finance", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 53 },
+            { "Nama Karyawan": "Eka Nurjannah", "Jabatan": "Petugas Admin III CSR", "Divisi": "Plan & Eval", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 54 },
+            { "Nama Karyawan": "Findy Handayani", "Jabatan": "Petugas Admin II", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 55 }
         ];
 
-        // Toggle Dropdown Menu
+        // Toggle Dropdown
         function toggleDropdown(event, menuId) {
             event.stopPropagation();
             closeAllDropdowns();
@@ -274,34 +252,59 @@
             if (downloadMenu) downloadMenu.classList.add('hidden');
         }
 
-        // Buka Modal Profil Lengkap Memanjang ke Bawah
+        // Buka Modal Profil Lengkap Vertikal ke Bawah (Semua Atribut Master)
         function openProfileModal(index) {
             const emp = globalMasterData[index];
             if (!emp) return;
 
-            document.getElementById('modalNo').innerText = "#" + (index + 1);
-            document.getElementById('modalNama').innerText = emp["Nama Karyawan"];
-            document.getElementById('modalJabatan').innerText = emp["Jabatan"];
-            document.getElementById('modalDivisi').innerText = emp["Divisi"];
-            
-            const badge = document.getElementById('modalSistemKerja');
-            badge.innerText = emp["Sistem Kerja"];
-            if (emp["Sistem Kerja"] === "Shift") {
-                badge.className = "font-bold px-2.5 py-1 rounded-md bg-blue-50 text-blue-700";
+            const modalBody = document.getElementById('modalBodyContent');
+            modalBody.innerHTML = '';
+
+            // Jika ada data mentah excel (rawWorkbookRows), tampilkan semua atribut baris ke bawah
+            if (rawWorkbookRows && rawWorkbookRows.length > 0 && emp._rawColIndex !== undefined) {
+                let colIdx = emp._rawColIndex;
+                rawWorkbookRows.forEach((row, rIdx) => {
+                    let attrName = row[3] ? String(row[3]).trim() : `Atribut ${rIdx}`;
+                    let attrVal = row[colIdx] !== undefined && row[colIdx] !== null ? String(row[colIdx]).trim() : "-";
+                    
+                    if (!attrName || attrName === "undefined" || attrName === "-") return;
+                    // Bersihkan teks newline pada nama atribut
+                    attrName = attrName.replace(/\n/g, ' ');
+
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = "flex flex-col sm:flex-row justify-between py-2 px-3 hover:bg-slate-50 rounded-lg transition gap-1";
+                    itemDiv.innerHTML = `
+                        <span class="text-slate-500 font-medium sm:w-1/2">${attrName}</span>
+                        <span class="font-bold text-slate-900 sm:w-1/2 sm:text-right break-words">${attrVal}</span>
+                    `;
+                    modalBody.appendChild(itemDiv);
+                });
             } else {
-                badge.className = "font-bold px-2.5 py-1 rounded-md bg-purple-50 text-purple-700";
+                // Fallback jika menggunakan data default
+                const fallbackAttributes = [
+                    ["Nomor Urut", "#" + (index + 1)],
+                    ["Nama Karyawan", emp["Nama Karyawan"]],
+                    ["Jabatan", emp["Jabatan"]],
+                    ["Divisi / Fungsi", emp["Divisi"]],
+                    ["Sistem Kerja", emp["Sistem Kerja"]],
+                    ["Sisa Kontrak", emp["Sisa Kontrak"]]
+                ];
+                fallbackAttributes.forEach(([k, v]) => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = "flex justify-between py-2 px-3 hover:bg-slate-50 rounded-lg transition";
+                    itemDiv.innerHTML = `<span class="text-slate-500 font-medium">${k}</span><span class="font-bold text-slate-900">${v}</span>`;
+                    modalBody.appendChild(itemDiv);
+                });
             }
 
-            document.getElementById('modalSisaKontrak').innerText = emp["Sisa Kontrak"];
             document.getElementById('profileModal').classList.remove('hidden');
         }
 
-        // Tutup Modal Profil
         function closeProfileModal() {
             document.getElementById('profileModal').classList.add('hidden');
         }
 
-        // Proses Upload File
+        // Proses Upload File & Simpan Seluruh Workbook Rows
         function processUploadedFile(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -314,17 +317,20 @@
                     const firstSheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[firstSheetName];
                     const rows = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+                    
+                    rawWorkbookRows = rows; // Simpan seluruh baris untuk profil detail lengkap
 
                     let parsedEmployees = [];
-                    for (let r = 6; r <= 57; r++) {
-                        if (!rows[r]) continue;
-                        let name = rows[r][5] ? String(rows[r][5]).trim() : "";
-                        if (!name || name === "" || name === "-") continue;
+                    // Baris 7 sampai 58 (indeks 6 sampai 57) untuk Nama di Kolom F (index 5) sesuai rujukan awal, 
+                    // atau scan dari baris 5/6 untuk kolom data karyawan (indeks >= 4)
+                    for (let c = 4; c < rows[5].length; c++) {
+                        let name = rows[5][c] ? String(rows[5][c]).trim() : "";
+                        if (!name || name.includes("Nama") || name.includes("Today") || name === "-") continue;
 
-                        let job = rows[r][6] ? String(rows[r][6]).trim() : "-";
-                        let div = rows[r][11] ? String(rows[r][11]).trim() : "HSSE";
-                        let shiftVal = rows[r][24] ? String(rows[r][24]).trim() : "Shift";
-                        let contractRem = rows[r][36] ? String(rows[r][36]).trim() : "115";
+                        let job = rows[6] && rows[6][c] ? String(rows[6][c]).trim() : "-";
+                        let div = rows[11] && rows[11][c] ? String(rows[11][c]).trim() : (rows[10] && rows[10][c] ? String(rows[10][c]).trim() : "HSSE");
+                        let shiftVal = rows[24] && rows[24][c] ? String(rows[24][c]).trim() : "Shift";
+                        let contractRem = rows[36] && rows[36][c] ? String(rows[36][c]).trim() : "115";
 
                         let sistemKerja = (shiftVal.toLowerCase().includes("shift") && !shiftVal.toLowerCase().includes("non")) ? "Shift" : "Non Shift";
                         let sisaKontrak = contractRem.includes("Day") || contractRem.includes("Hari") ? contractRem : contractRem + " Day(s)";
@@ -334,13 +340,14 @@
                             "Jabatan": job,
                             "Divisi": div,
                             "Sistem Kerja": sistemKerja,
-                            "Sisa Kontrak": sisaKontrak
+                            "Sisa Kontrak": sisaKontrak,
+                            "_rawColIndex": c
                         });
                     }
 
                     if (parsedEmployees.length > 0) {
                         globalMasterData = parsedEmployees;
-                        alert(`Berhasil memperbarui data! ${globalMasterData.length} data karyawan berhasil dimuat.`);
+                        alert(`Berhasil memperbarui data! ${globalMasterData.length} data karyawan berhasil dimuat dengan histori lengkap.`);
                     } else {
                         alert("Format baris tidak terdeteksi, menggunakan data default.");
                         globalMasterData = defaultMasterData;
