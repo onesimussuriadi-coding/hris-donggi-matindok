@@ -8,11 +8,19 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- SheetJS untuk Membaca File Excel secara Lokal/Interaktif -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        @media print {
+            body * { visibility: hidden; }
+            #profileModal, #profileModal * { visibility: visible; }
+            #profileModal { position: absolute; left: 0; top: 0; width: 100%; height: auto; background: white !important; }
+            .no-print { display: none !important; }
+        }
+    </style>
 </head>
 <body class="bg-gray-100 font-sans flex h-screen overflow-hidden" onclick="closeAllDropdowns(event)">
 
     <!-- Sidebar Navigasi Kiri -->
-    <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between p-6">
+    <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between p-6 no-print">
         <div>
             <div class="mb-8">
                 <h1 class="text-xl font-bold tracking-wide">HRIS Portal</h1>
@@ -43,7 +51,7 @@
     <main class="flex-1 overflow-y-auto p-8 relative">
         
         <!-- Header Atas -->
-        <div class="flex justify-between items-center mb-6">
+        <div class="flex justify-between items-center mb-6 no-print">
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">Master Data Karyawan TAD</h2>
                 <p class="text-xs text-slate-500 mt-1">Kelola dan Perbarui Data Master Karyawan Field Donggi Matindok.</p>
@@ -54,7 +62,7 @@
         </div>
 
         <!-- Kartu Statistik Atas & Tombol Aksi Simetris & Seragam -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 no-print">
             <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
                 <p class="text-xs text-slate-500 font-medium mb-1">Total Karyawan (TAD)</p>
                 <p id="totalEmpCount" class="text-3xl font-extrabold text-slate-900">52 Orang</p>
@@ -104,7 +112,7 @@
         </div>
 
         <!-- Bagian Tabel & Filter -->
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 no-print">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
                 <h4 id="tableTitle" class="font-bold text-slate-800">Daftar Karyawan TAD (Lengkap 52 Orang)</h4>
                 <div class="flex flex-wrap gap-3 w-full md:w-auto">
@@ -151,36 +159,42 @@
 
     </main>
 
-    <!-- MODAL POP-UP DETAIL PROFIL LENGKAP (VERTICAL SCROLLING) -->
+    <!-- MODAL POP-UP DETAIL PROFIL LENGKAP 66 KOLOM KE BAWAH + TOMBOL PRINT -->
     <div id="profileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden border border-slate-100 animate-in fade-in zoom-in duration-200">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden border border-slate-100 animate-in fade-in zoom-in duration-200">
             <!-- Header Modal -->
             <div class="bg-slate-900 text-white p-6 flex justify-between items-center shrink-0">
                 <div>
-                    <h3 class="text-lg font-bold">Identitas & Profil Lengkap Karyawan</h3>
-                    <p class="text-xs text-slate-400 mt-0.5">Rekapitulasi Seluruh Atribut dari Database Master</p>
+                    <h3 class="text-lg font-bold">Lembar Profil & Histori Lengkap Karyawan</h3>
+                    <p class="text-xs text-slate-400 mt-0.5">Rekapitulasi Seluruh 66 Kolom Atribut Master Database</p>
                 </div>
-                <button onclick="closeProfileModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 transition">
+                <button onclick="closeProfileModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 transition no-print">
                     ✕
                 </button>
             </div>
-            <!-- Isi Profil Memanjang ke Bawah (Scrollable) -->
-            <div id="modalBodyContent" class="p-6 space-y-3 overflow-y-auto text-xs flex-1 divide-y divide-slate-100">
+            <!-- Isi Profil Vertikal ke Bawah (Scrollable) -->
+            <div id="modalBodyContent" class="p-6 space-y-2 overflow-y-auto text-xs flex-1 divide-y divide-slate-100 bg-slate-50">
                 <!-- Konten dinamis dirender via JS -->
             </div>
-            <!-- Footer Modal -->
-            <div class="bg-slate-50 px-6 py-4 border-t border-slate-100 flex justify-end shrink-0">
-                <button onclick="closeProfileModal()" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-6 py-2.5 rounded-xl text-xs transition shadow-sm">
-                    Tutup Profil
-                </button>
+            <!-- Footer Modal dengan Tombol Print -->
+            <div class="bg-white px-6 py-4 border-t border-slate-100 flex justify-between items-center shrink-0 no-print">
+                <span class="text-[11px] text-slate-400 font-medium">Field Donggi Matindok HRIS Portal</span>
+                <div class="flex gap-2">
+                    <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-2.5 rounded-xl text-xs transition shadow-sm flex items-center gap-1.5">
+                        <span>🖨️</span> Print Profil
+                    </button>
+                    <button onclick="closeProfileModal()" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-5 py-2.5 rounded-xl text-xs transition shadow-sm">
+                        Tutup
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Skrip Interaktif & Modal Profil Lengkap -->
+    <!-- Skrip Interaktif & Modal Profil 66 Kolom -->
     <script>
         let globalMasterData = [];
-        let rawWorkbookRows = []; // Menyimpan baris mentah excel untuk detail selengkapnya
+        let rawWorkbookRows = [];
 
         const defaultMasterData = [
             { "Nama Karyawan": "Sujianto Batias", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 4 },
@@ -252,7 +266,7 @@
             if (downloadMenu) downloadMenu.classList.add('hidden');
         }
 
-        // Buka Modal Profil Lengkap Vertikal ke Bawah (Semua Atribut Master)
+        // Buka Modal Profil & Susun 66 Kolom ke Bawah Vertikal
         function openProfileModal(index) {
             const emp = globalMasterData[index];
             if (!emp) return;
@@ -260,21 +274,20 @@
             const modalBody = document.getElementById('modalBodyContent');
             modalBody.innerHTML = '';
 
-            // Jika ada data mentah excel (rawWorkbookRows), tampilkan semua atribut baris ke bawah
+            // Jika rawWorkbookRows tersedia, ekstrak semua baris (hingga 66 atribut lebih) ke bawah
             if (rawWorkbookRows && rawWorkbookRows.length > 0 && emp._rawColIndex !== undefined) {
                 let colIdx = emp._rawColIndex;
                 rawWorkbookRows.forEach((row, rIdx) => {
-                    let attrName = row[3] ? String(row[3]).trim() : `Atribut ${rIdx}`;
+                    let attrName = row[3] ? String(row[3]).trim() : (row[2] ? String(row[2]).trim() : `Atribut ${rIdx}`);
                     let attrVal = row[colIdx] !== undefined && row[colIdx] !== null ? String(row[colIdx]).trim() : "-";
                     
                     if (!attrName || attrName === "undefined" || attrName === "-") return;
-                    // Bersihkan teks newline pada nama atribut
                     attrName = attrName.replace(/\n/g, ' ');
 
                     const itemDiv = document.createElement('div');
-                    itemDiv.className = "flex flex-col sm:flex-row justify-between py-2 px-3 hover:bg-slate-50 rounded-lg transition gap-1";
+                    itemDiv.className = "flex flex-col sm:flex-row justify-between py-2 px-3 bg-white hover:bg-slate-100 rounded-lg transition gap-1 border border-slate-100";
                     itemDiv.innerHTML = `
-                        <span class="text-slate-500 font-medium sm:w-1/2">${attrName}</span>
+                        <span class="text-slate-500 font-semibold sm:w-1/2">${rIdx + 1}. ${attrName}</span>
                         <span class="font-bold text-slate-900 sm:w-1/2 sm:text-right break-words">${attrVal}</span>
                     `;
                     modalBody.appendChild(itemDiv);
@@ -289,10 +302,10 @@
                     ["Sistem Kerja", emp["Sistem Kerja"]],
                     ["Sisa Kontrak", emp["Sisa Kontrak"]]
                 ];
-                fallbackAttributes.forEach(([k, v]) => {
+                fallbackAttributes.forEach(([k, v], i) => {
                     const itemDiv = document.createElement('div');
-                    itemDiv.className = "flex justify-between py-2 px-3 hover:bg-slate-50 rounded-lg transition";
-                    itemDiv.innerHTML = `<span class="text-slate-500 font-medium">${k}</span><span class="font-bold text-slate-900">${v}</span>`;
+                    itemDiv.className = "flex justify-between py-2 px-3 bg-white rounded-lg border border-slate-100";
+                    itemDiv.innerHTML = `<span class="text-slate-500 font-semibold">${i + 1}. ${k}</span><span class="font-bold text-slate-900">${v}</span>`;
                     modalBody.appendChild(itemDiv);
                 });
             }
@@ -318,11 +331,9 @@
                     const worksheet = workbook.Sheets[firstSheetName];
                     const rows = XLSX.utils.sheet_to_json(worksheet, {header: 1});
                     
-                    rawWorkbookRows = rows; // Simpan seluruh baris untuk profil detail lengkap
+                    rawWorkbookRows = rows; // Simpan seluruh baris lengkap
 
                     let parsedEmployees = [];
-                    // Baris 7 sampai 58 (indeks 6 sampai 57) untuk Nama di Kolom F (index 5) sesuai rujukan awal, 
-                    // atau scan dari baris 5/6 untuk kolom data karyawan (indeks >= 4)
                     for (let c = 4; c < rows[5].length; c++) {
                         let name = rows[5][c] ? String(rows[5][c]).trim() : "";
                         if (!name || name.includes("Nama") || name.includes("Today") || name === "-") continue;
@@ -347,7 +358,7 @@
 
                     if (parsedEmployees.length > 0) {
                         globalMasterData = parsedEmployees;
-                        alert(`Berhasil memperbarui data! ${globalMasterData.length} data karyawan berhasil dimuat dengan histori lengkap.`);
+                        alert(`Berhasil memperbarui data! ${globalMasterData.length} data karyawan berhasil dimuat dengan seluruh atribut lengkap.`);
                     } else {
                         alert("Format baris tidak terdeteksi, menggunakan data default.");
                         globalMasterData = defaultMasterData;
