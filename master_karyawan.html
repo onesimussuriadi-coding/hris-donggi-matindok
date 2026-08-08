@@ -124,7 +124,7 @@
 
     </main>
 
-    <!-- Skrip Parsing Presisi Tinggi Sesuai Struktur Google Sheet Asli -->
+    <!-- Skrip Parsing Presisi Sesuai Struktur Kolom Vertikal Google Sheet -->
     <script>
         let globalMasterData = [];
         const googleSheetCsvUrl = "https://docs.google.com/spreadsheets/d/1Mu_POmiVk4A8ISsIhff5O0o4QH1grADjFCYHX7Vtx50/export?format=csv&gid=580855545";
@@ -138,7 +138,7 @@
                         const rows = results.data;
                         let parsedEmployees = [];
 
-                        // Iterasi kolom mulai dari indeks 4 (kolom E) hingga 52 personel total
+                        // Karyawan mulai dari Kolom E (indeks 4) sampai 52 personel berikutnya
                         for (let cIdx = 4; cIdx < 4 + 52; cIdx++) {
                             if (!rows[5] || !rows[5][cIdx]) continue;
                             let name = rows[5][cIdx] ? rows[5][cIdx].trim() : "";
@@ -174,13 +174,13 @@
                     }
                 },
                 error: function(err) {
-                    console.warn("Gagal terhubung online, menggunakan cache data rujukan:", err);
+                    console.warn("Gagal terhubung online, menggunakan cache data lokal:", err);
                     loadFallbackData();
                 }
             });
         }
 
-        // Data cadangan 52 karyawan asli sesuai Google Sheet jika offline
+        // Data cadangan 52 karyawan asli jika offline
         function loadFallbackData() {
             globalMasterData = [
                 { "Nama Karyawan": "Sujianto Batias", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
