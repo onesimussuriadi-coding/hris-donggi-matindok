@@ -1,4 +1,4 @@
-// Data referensi awal karyawan TAD Zona 13 - Field Donggi Matindok
+// Data referensi sementara (akan digantikan otomatis saat terhubung dengan Google Sheet API / JSON)
 let employeeData = [
     { no: 1, nama: "Sujianto Batias", jabatan: "Driver Ambulance", penempatan: "HSSE", sistemKerja: "Shift", grade: "D" },
     { no: 2, nama: "Ansar Mansur", jabatan: "Pemuka Fire & Safety", penempatan: "HSSE", sistemKerja: "Shift", grade: "F" },
@@ -11,7 +11,7 @@ let employeeData = [
     { no: 9, nama: "Siti Aisyah Dg Masese", jabatan: "Sekretaris Field Manager", penempatan: "Field Manager", sistemKerja: "Non Shift", grade: "F" }
 ];
 
-// Fungsi untuk menampilkan data ke dalam tabel HTML
+// Fungsi untuk merender/menampilkan data ke dalam tabel HTML secara dinamis
 function renderTable(data) {
     const tableBody = document.getElementById('employeeTableBody');
     if (!tableBody) return;
@@ -19,26 +19,43 @@ function renderTable(data) {
     tableBody.innerHTML = '';
 
     if (data.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Data tidak ditemukan.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 text-xs">Data personel tidak ditemukan.</td></tr>`;
         return;
     }
 
     data.forEach((emp) => {
         const row = document.createElement('tr');
-        row.className = "hover:bg-gray-50 transition";
+        row.className = "hover:bg-slate-50 transition border-b border-slate-100 text-xs";
         row.innerHTML = `
-            <td class="p-3">${emp.no}</td>
-            <td class="p-3 font-medium text-gray-900">${emp.nama}</td>
-            <td class="p-3">${emp.jabatan}</td>
-            <td class="p-3"><span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-semibold">${emp.penempatan}</span></td>
-            <td class="p-3">${emp.sistemKerja}</td>
-            <td class="p-3 font-bold">${emp.grade}</td>
+            <td class="p-3 text-slate-500">${emp.no}</td>
+            <td class="p-3 font-semibold text-slate-800">${emp.nama}</td>
+            <td class="p-3 text-slate-600">${emp.jabatan}</td>
+            <td class="p-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded font-medium">${emp.penempatan}</span></td>
+            <td class="p-3 text-slate-600">${emp.sistemKerja}</td>
+            <td class="p-3 font-bold text-slate-700">${emp.grade}</td>
         `;
         tableBody.appendChild(row);
     });
 }
 
-// Fitur Pencarian / Filter Karyawan secara real-time
+// Fungsi untuk Menarik Data dari Google Sheet / File JSON Eksternal
+async function fetchGoogleSheetData() {
+    try {
+        // Di sini nantinya Anda bisa mengarahkan ke file JSON hasil sinkronisasi Python atau URL API Google Sheet
+        const response = await fetch('employee_data.json'); 
+        if (response.ok) {
+            const data = await response.json();
+            if (data && data.length > 0) {
+                employeeData = data;
+            }
+        }
+    } catch (error) {
+        console.log("Menggunakan data cache/referensi lokal.");
+    }
+    renderTable(employeeData);
+}
+
+// Fitur Pencarian Real-Time pada Tabel
 const searchInput = document.getElementById('searchInput');
 if (searchInput) {
     searchInput.addEventListener('input', function (e) {
@@ -52,13 +69,17 @@ if (searchInput) {
     });
 }
 
-// Fungsi Tombol Refresh Data
-function refreshData() {
-    alert("Menyinkronkan data terbaru dari sistem...");
-    renderTable(employeeData);
-}
-
-// Jalankan render awal saat halaman pertama kali dimuat
+// Fungsi Interaktif Tombol Download Excel
 document.addEventListener('DOMContentLoaded', () => {
-    renderTable(employeeData);
+    fetchGoogleSheetData();
+
+    // Mengaktifkan tombol Download Excel secara otomatis
+    const downloadBtn = document.querySelector('a[href="#"]');
+    if (downloadBtn && downloadBtn.textContent.includes('Download Excel')) {
+        downloadBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert("Menyiapkan unduhan data terintegrasi dari database Google Sheet...");
+            // Logika export ke excel bisa disesuaikan di sini
+        });
+    }
 });
