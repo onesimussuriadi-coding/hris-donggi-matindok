@@ -1,0 +1,64 @@
+// Data referensi awal karyawan TAD Zona 13 - Field Donggi Matindok
+let employeeData = [
+    { no: 1, nama: "Sujianto Batias", jabatan: "Driver Ambulance", penempatan: "HSSE", sistemKerja: "Shift", grade: "D" },
+    { no: 2, nama: "Ansar Mansur", jabatan: "Pemuka Fire & Safety", penempatan: "HSSE", sistemKerja: "Shift", grade: "F" },
+    { no: 3, nama: "Harir A. Lako", jabatan: "Petugas Fire & Safety", penempatan: "HSSE", sistemKerja: "Shift", grade: "E" },
+    { no: 4, nama: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", penempatan: "SCM", sistemKerja: "Non Shift", grade: "F" },
+    { no: 5, nama: "Marjan Karim", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistemKerja: "Non Shift", grade: "E" },
+    { no: 6, nama: "Sunita Ayu Purnamasari", jabatan: "Petugas Admin II", penempatan: "Legal & Relation", sistemKerja: "Non Shift", grade: "E" },
+    { no: 7, nama: "Dewi Setiawati", jabatan: "Petugas Admin III", penempatan: "RAM", sistemKerja: "Non Shift", grade: "F" },
+    { no: 8, nama: "Marini Astary", jabatan: "Petugas Admin III", penempatan: "HR - GS", sistemKerja: "Non Shift", grade: "F" },
+    { no: 9, nama: "Siti Aisyah Dg Masese", jabatan: "Sekretaris Field Manager", penempatan: "Field Manager", sistemKerja: "Non Shift", grade: "F" }
+];
+
+// Fungsi untuk menampilkan data ke dalam tabel HTML
+function renderTable(data) {
+    const tableBody = document.getElementById('employeeTableBody');
+    if (!tableBody) return;
+    
+    tableBody.innerHTML = '';
+
+    if (data.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Data tidak ditemukan.</td></tr>`;
+        return;
+    }
+
+    data.forEach((emp) => {
+        const row = document.createElement('tr');
+        row.className = "hover:bg-gray-50 transition";
+        row.innerHTML = `
+            <td class="p-3">${emp.no}</td>
+            <td class="p-3 font-medium text-gray-900">${emp.nama}</td>
+            <td class="p-3">${emp.jabatan}</td>
+            <td class="p-3"><span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-semibold">${emp.penempatan}</span></td>
+            <td class="p-3">${emp.sistemKerja}</td>
+            <td class="p-3 font-bold">${emp.grade}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+// Fitur Pencarian / Filter Karyawan secara real-time
+const searchInput = document.getElementById('searchInput');
+if (searchInput) {
+    searchInput.addEventListener('input', function (e) {
+        const keyword = e.target.value.toLowerCase();
+        const filteredData = employeeData.filter(emp => 
+            emp.nama.toLowerCase().includes(keyword) || 
+            emp.jabatan.toLowerCase().includes(keyword) ||
+            emp.penempatan.toLowerCase().includes(keyword)
+        );
+        renderTable(filteredData);
+    });
+}
+
+// Fungsi Tombol Refresh Data
+function refreshData() {
+    alert("Menyinkronkan data terbaru dari sistem...");
+    renderTable(employeeData);
+}
+
+// Jalankan render awal saat halaman pertama kali dimuat
+document.addEventListener('DOMContentLoaded', () => {
+    renderTable(employeeData);
+});
