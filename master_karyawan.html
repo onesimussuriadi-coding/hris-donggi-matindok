@@ -8,11 +8,27 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- SheetJS untuk Membaca File Excel secara Lokal/Interaktif -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- jsPDF untuk Download PDF Langsung -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         @media print {
             body * { visibility: hidden; }
             #profileModal, #profileModal * { visibility: visible; }
-            #profileModal { position: absolute; left: 0; top: 0; width: 100%; height: auto; background: white !important; box-shadow: none !important; }
+            #profileModal { 
+                position: absolute !important; 
+                left: 0 !important; 
+                top: 0 !important; 
+                width: 100% !important; 
+                height: auto !important; 
+                max-height: none !important; 
+                background: white !important; 
+                box-shadow: none !important; 
+                overflow: visible !important;
+            }
+            #modalBodyContent {
+                max-height: none !important;
+                overflow: visible !important;
+            }
             .no-print { display: none !important; }
         }
     </style>
@@ -159,13 +175,13 @@
 
     </main>
 
-    <!-- MODAL POP-UP DETAIL PROFIL LENGKAP SEMUA 72 BARIS + TOMBOL DOWNLOAD PDF -->
+    <!-- MODAL POP-UP DETAIL PROFIL LENGKAP 72 BARIS + DOWNLOAD PDF LANGSUNG & PRINT -->
     <div id="profileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden border border-slate-100 animate-in fade-in zoom-in duration-200">
             <!-- Header Modal -->
             <div class="bg-slate-900 text-white p-6 flex justify-between items-center shrink-0">
                 <div>
-                    <h3 class="text-lg font-bold">Lembar Profil & Histori Lengkap Karyawan</h3>
+                    <h3 class="text-lg font-bold" id="modalHeaderTitle">Lembar Profil & Histori Lengkap Karyawan</h3>
                     <p class="text-xs text-slate-400 mt-0.5">Rekapitulasi Seluruh Atribut Komprehensif Master Database</p>
                 </div>
                 <button onclick="closeProfileModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 transition no-print">
@@ -176,12 +192,15 @@
             <div id="modalBodyContent" class="p-6 space-y-2 overflow-y-auto text-xs flex-1 divide-y divide-slate-100 bg-slate-50">
                 <!-- Konten dinamis dirender via JS -->
             </div>
-            <!-- Footer Modal dengan Tombol Download PDF & Print -->
+            <!-- Footer Modal dengan Tombol Download PDF Resmi & Print -->
             <div class="bg-white px-6 py-4 border-t border-slate-100 flex justify-between items-center shrink-0 no-print">
                 <span class="text-[11px] text-slate-400 font-medium">Field Donggi Matindok HRIS Portal</span>
                 <div class="flex gap-2">
-                    <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl text-xs transition shadow-sm flex items-center gap-1.5">
-                        <span>📥</span> Download / Print PDF
+                    <button onclick="downloadProfilePDF()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl text-xs transition shadow-sm flex items-center gap-1.5">
+                        <span>📥</span> Download PDF
+                    </button>
+                    <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-2.5 rounded-xl text-xs transition shadow-sm flex items-center gap-1.5">
+                        <span>🖨️</span> Print Profil
                     </button>
                     <button onclick="closeProfileModal()" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-5 py-2.5 rounded-xl text-xs transition shadow-sm">
                         Tutup
@@ -191,12 +210,12 @@
         </div>
     </div>
 
-    <!-- Skrip Interaktif & Modal Profil Lengkap 72 Baris -->
+    <!-- Skrip Interaktif & jsPDF Export -->
     <script>
         let globalMasterData = [];
         let rawWorkbookRows = [];
+        let currentActiveEmployeeName = "Karyawan";
 
-        // Data default awal 52 karyawan
         const defaultMasterData = [
             { "Nama Karyawan": "Sujianto Batias", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 4 },
             { "Nama Karyawan": "Ansar Mansur", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Day(s)", "_rawColIndex": 5 },
@@ -267,15 +286,17 @@
             if (downloadMenu) downloadMenu.classList.add('hidden');
         }
 
-        // Buka Modal Profil & Susun Seluruh 72 Baris Atribut ke Bawah secara Komprehensif
+        // Buka Modal Profil & Susun Seluruh Atribut ke Bawah
         function openProfileModal(index) {
             const emp = globalMasterData[index];
             if (!emp) return;
 
+            currentActiveEmployeeName = emp["Nama Karyawan"] || "Karyawan";
+            document.getElementById('modalHeaderTitle').innerText = `Profil Lengkap: ${currentActiveEmployeeName}`;
+
             const modalBody = document.getElementById('modalBodyContent');
             modalBody.innerHTML = '';
 
-            // Jika rawWorkbookRows sudah dimuat dari file upload atau sheet aktif
             const rowsToUse = (rawWorkbookRows && rawWorkbookRows.length > 0) ? rawWorkbookRows : getDefaultMockWorkbookRows(emp);
             let colIdx = emp._rawColIndex !== undefined ? emp._rawColIndex : (4 + index);
 
@@ -298,7 +319,54 @@
             document.getElementById('profileModal').classList.remove('hidden');
         }
 
-        // Data mock 72 baris lengkap untuk fallback default
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+        }
+
+        // Fungsi Download PDF Menggunakan jsPDF
+        async function downloadProfilePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(14);
+            doc.text("LEMBAR PROFIL & HISTORI LENGKAP KARYAWAN", 14, 15);
+            
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(10);
+            doc.text(`Nama: ${currentActiveEmployeeName}`, 14, 22);
+            doc.text("Field Donggi Matindok HRIS Portal", 14, 27);
+            doc.line(14, 30, 196, 30);
+
+            const modalBody = document.getElementById('modalBodyContent');
+            const items = modalBody.querySelectorAll('div');
+            
+            let y = 36;
+            doc.setFontSize(9);
+
+            items.forEach((item, idx) => {
+                const spans = item.querySelectorAll('span');
+                if (spans.length >= 2) {
+                    let label = spans[0].innerText;
+                    let val = spans[1].innerText;
+
+                    if (y > 280) {
+                        doc.addPage();
+                        y = 20;
+                    }
+
+                    doc.setFont("helvetica", "bold");
+                    doc.text(label, 14, y);
+                    doc.setFont("helvetica", "normal");
+                    doc.text(val, 110, y, { maxWidth: 86 });
+                    y += 7;
+                }
+            });
+
+            doc.save(`Profil_${currentActiveEmployeeName.replace(/\s+/g, '_')}.pdf`);
+        }
+
+        // Data mock cadangan
         function getDefaultMockWorkbookRows(emp) {
             let mockAttributes = [
                 ["No", "1"], ["Entitas", "Regional 4"], ["Zona", "Zona 13 - Field"], ["No. Pekerja (Contractor)", "1124 1223 034"], 
@@ -325,11 +393,7 @@
             return mockAttributes.map(item => [null, null, null, item[0], item[1]]);
         }
 
-        function closeProfileModal() {
-            document.getElementById('profileModal').classList.add('hidden');
-        }
-
-        // Proses Upload File & Simpan Seluruh Workbook Rows (72 Baris)
+        // Proses Upload File & Simpan Seluruh Workbook Rows
         function processUploadedFile(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -343,7 +407,7 @@
                     const worksheet = workbook.Sheets[firstSheetName];
                     const rows = XLSX.utils.sheet_to_json(worksheet, {header: 1});
                     
-                    rawWorkbookRows = rows; // Menyimpan seluruh baris master lengkap
+                    rawWorkbookRows = rows;
 
                     let parsedEmployees = [];
                     for (let c = 4; c < rows[5].length; c++) {
@@ -372,7 +436,6 @@
                         globalMasterData = parsedEmployees;
                         alert(`Berhasil memperbarui data! ${globalMasterData.length} data karyawan berhasil dimuat dengan seluruh atribut lengkap.`);
                     } else {
-                        alert("Format baris tidak terdeteksi, menggunakan data default.");
                         globalMasterData = defaultMasterData;
                     }
 
