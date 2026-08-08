@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Engine Payroll & Dashboard Upah - Field Donggi Matindok</title>
+    <title>Engine Payroll - Field Donggi Matindok</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -42,72 +42,86 @@
         
         <!-- Header Atas -->
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold text-slate-800">Engine Payroll & Dashboard Upah Bulanan</h2>
+            <h2 class="text-2xl font-bold text-slate-800">Engine Payroll</h2>
             <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full">Zona 13 - Field</span>
         </div>
 
-        <!-- Banner Keamanan Sistem -->
-        <div class="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-xl text-xs font-medium mb-6 flex items-center gap-2">
-            <span>🔒</span> Keamanan Sistem Aktif: Enkripsi Password & Role-Based Access Control (Admin / Manajer / User).
-        </div>
-
-        <!-- Kartu Statistik Keuangan / Payroll -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                <p class="text-xs text-slate-500 font-medium">Total Tenaga Kerja</p>
-                <p class="text-2xl font-extrabold text-blue-900 mt-1">52 Orang</p>
-            </div>
-            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                <p class="text-xs text-slate-500 font-medium">Total Upah Tetap</p>
-                <p class="text-2xl font-extrabold text-slate-900 mt-1">Rp 171.993.333.80</p>
-            </div>
-            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                <p class="text-xs text-slate-500 font-medium">Total Gaji Bruto</p>
-                <p class="text-2xl font-extrabold text-slate-900 mt-1">Rp 448.483.663.00</p>
-            </div>
-            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                <p class="text-xs text-slate-500 font-medium">Total Gaji Netto</p>
-                <p class="text-2xl font-extrabold text-emerald-600 mt-1">Rp 434.474.629.13</p>
-            </div>
-        </div>
-
-        <!-- Bagian Tabel Rincian Gaji & Slip -->
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
-                <h4 class="font-bold text-slate-800">Daftar Rincian Karyawan & Akses Slip Gaji Individual</h4>
-                <div class="flex gap-3 w-full md:w-auto">
-                    <input type="text" placeholder="Cari nama karyawan..." class="px-3 py-2 text-xs border rounded-xl focus:outline-none w-64">
+        <!-- Kartu Kontainer Utama Payroll -->
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-8">
+            
+            <!-- Judul Bagian & Tombol Tindakan Atas -->
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900">Engine Payroll & Dashboard Upah Bulanan</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">PT Pertamina EP Regional 4 Zona 13 - Donggi Matindok Field</p>
+                </div>
+                
+                <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+                    <!-- Tombol Rekening & Transfer Bank -->
+                    <button onclick="alert('Membuka modul rekening & transfer bank...')" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-sm">
+                        <span>🏦</span> Rekening & Transfer Bank
+                    </button>
+                    <!-- Filter Tampilkan Semua -->
+                    <select class="px-3 py-2.5 text-xs border rounded-xl bg-slate-50 text-slate-600 focus:outline-none">
+                        <option>Tampilkan Semua (All 52)</option>
+                        <option>Shift Saja</option>
+                        <option>Non Shift Saja</option>
+                    </select>
+                    <!-- Kotak Pencarian -->
+                    <input type="text" id="searchPayroll" placeholder="Cari nama karyawan..." class="px-3 py-2.5 text-xs border rounded-xl focus:outline-none w-56">
                 </div>
             </div>
 
+            <!-- 4 Kartu Statistik Keuangan -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white p-5 rounded-xl border-l-4 border-blue-600 border border-slate-100 shadow-sm">
+                    <p class="text-xs text-slate-500 font-medium">Total Tenaga Kerja</p>
+                    <p class="text-xl font-extrabold text-blue-900 mt-1">52 Orang (36 Shift, 16 Non Shift)</p>
+                </div>
+                <div class="bg-white p-5 rounded-xl border-l-4 border-blue-600 border border-slate-100 shadow-sm">
+                    <p class="text-xs text-slate-500 font-medium">Total Upah Tetap</p>
+                    <p class="text-xl font-extrabold text-slate-900 mt-1">Rp 171.993.333.80</p>
+                </div>
+                <div class="bg-white p-5 rounded-xl border-l-4 border-blue-600 border border-slate-100 shadow-sm">
+                    <p class="text-xs text-slate-500 font-medium">Total Gaji Bruto</p>
+                    <p class="text-xl font-extrabold text-slate-900 mt-1">Rp 448.483.663.00</p>
+                </div>
+                <div class="bg-white p-5 rounded-xl border-l-4 border-blue-600 border border-slate-100 shadow-sm">
+                    <p class="text-xs text-slate-500 font-medium">Total Gaji Netto</p>
+                    <p class="text-xl font-extrabold text-blue-900 mt-1">Rp 434.474.629.13</p>
+                </div>
+            </div>
+
+            <!-- Tabel Rincian Karyawan & Slip Gaji -->
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-sm">
                     <thead>
-                        <tr class="bg-slate-900 text-white border-b text-xs uppercase">
+                        <tr class="bg-blue-900 text-white border-b text-xs uppercase">
                             <th class="p-3">No</th>
                             <th class="p-3">Nama Karyawan</th>
-                            <th class="p-3">Jabatan</th>
+                            <th class="p-3">Jabatan & Sistem Kerja</th>
                             <th class="p-3">Divisi</th>
                             <th class="p-3">Gaji Bruto</th>
                             <th class="p-3">Potongan</th>
                             <th class="p-3">Gaji Netto</th>
-                            <th class="p-3 text-center">Aksi / Slip Gaji</th>
+                            <th class="p-3 text-center">Aksi Slip</th>
                         </tr>
                     </thead>
                     <tbody id="payrollTableBody" class="divide-y divide-slate-100 text-slate-700">
                         <tr>
-                            <td colspan="8" class="p-6 text-center text-slate-400 text-xs">Memuat data engine payroll...</td>
+                            <td colspan="8" class="p-6 text-center text-slate-400 text-xs">Memuat data rincian upah bulanan...</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+
         </div>
 
     </main>
 
-    <!-- Skrip Pembacaan Data JSON ke Tabel Payroll -->
+    <!-- Skrip Sinkronisasi Data JSON untuk Engine Payroll -->
     <script>
-        async function loadPayrollData() {
+        async function loadPayrollMaster() {
             try {
                 const response = await fetch('employee_data.json');
                 const data = await response.json();
@@ -120,13 +134,16 @@
                     row.innerHTML = `
                         <td class="p-3 text-slate-500">${emp["No"] || (index + 1)}</td>
                         <td class="p-3 font-bold text-slate-800">${emp["Nama Karyawan"] || '-'}</td>
-                        <td class="p-3 text-slate-600">${emp["Job Title"] || '-'}</td>
+                        <td class="p-3 text-slate-600">
+                            ${emp["Job Title"] || '-'} 
+                            <span class="ml-1 px-1.5 py-0.5 bg-blue-50 text-blue-700 rounded text-[10px] font-semibold">Shift</span>
+                        </td>
                         <td class="p-3 text-slate-600">${emp["Fungsi"] || '-'}</td>
                         <td class="p-3 font-semibold text-slate-800">Rp 8.599.130.00</td>
-                        <td class="p-3 text-rose-600 font-medium">Rp 217.649.50</td>
-                        <td class="p-3 font-bold text-emerald-700">Rp 8.381.480.50</td>
+                        <td class="p-3 text-slate-600">Rp 217.648.98</td>
+                        <td class="p-3 font-bold text-emerald-700">Rp 8.381.481.00</td>
                         <td class="p-3 text-center">
-                            <button onclick="alert('Membuka Slip Gaji: ${emp["Nama Karyawan"]}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold transition flex items-center justify-center gap-1 mx-auto">
+                            <button onclick="alert('Membuka Slip Gaji: ${emp["Nama Karyawan"]}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold transition flex items-center justify-center gap-1 mx-auto shadow-sm">
                                 <span>📄</span> Buka Slip
                             </button>
                         </td>
@@ -137,7 +154,7 @@
                 console.error("Gagal memuat payroll:", err);
             }
         }
-        document.addEventListener('DOMContentLoaded', loadPayrollData);
+        document.addEventListener('DOMContentLoaded', loadPayrollMaster);
     </script>
 </body>
 </html>
