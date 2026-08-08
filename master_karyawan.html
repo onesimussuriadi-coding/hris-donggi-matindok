@@ -124,7 +124,7 @@
 
     </main>
 
-    <!-- Skrip Parsing Presisi Sesuai Struktur Kolom Vertikal Google Sheet -->
+    <!-- Skrip Parsing Sesuai Struktur Baris (Row 4 s.d. 55 di CSV / Row 7 s.d. 58 di Google Sheet) -->
     <script>
         let globalMasterData = [];
         const googleSheetCsvUrl = "https://docs.google.com/spreadsheets/d/1Mu_POmiVk4A8ISsIhff5O0o4QH1grADjFCYHX7Vtx50/export?format=csv&gid=580855545";
@@ -138,18 +138,20 @@
                         const rows = results.data;
                         let parsedEmployees = [];
 
-                        // Karyawan mulai dari Kolom E (indeks 4) sampai 52 personel berikutnya
-                        for (let cIdx = 4; cIdx < 4 + 52; cIdx++) {
-                            if (!rows[5] || !rows[5][cIdx]) continue;
-                            let name = rows[5][cIdx] ? rows[5][cIdx].trim() : "";
-                            if (!name || name === "" || name.includes("Nama Karyawan")) continue;
+                        // Karyawan tersusun horizontal sebagai row (baris 4 hingga 55 dalam indeks CSV, setara baris 7 sampai 58 di Google Sheet)
+                        for (let r = 4; r < rows.length; r++) {
+                            let row = rows[r];
+                            if (!row) continue;
 
-                            let job = (rows[6] && rows[6][cIdx]) ? rows[6][cIdx].trim() : "-";
-                            let div = (rows[11] && rows[11][cIdx]) ? rows[11][cIdx].trim() : "HSSE";
-                            let shiftVal = (rows[24] && rows[24][cIdx]) ? rows[24][cIdx].trim() : "Non Shift";
-                            let contractRem = (rows[36] && rows[36][cIdx]) ? rows[36][cIdx].trim() : "115";
+                            let name = row[5] ? row[5].trim() : ""; // Kolom F (Nama Karyawan)
+                            if (!name || name === "" || name.includes("Nama Karyawan") || name.includes("Today")) continue;
 
-                            let sistemKerja = (shiftVal.includes("Shift") && !shiftVal.includes("Non")) ? "Shift" : "Non Shift";
+                            let job = row[6] ? row[6].trim() : "-";       // Kolom G (Job Title)
+                            let div = row[11] ? row[11].trim() : "HSSE";   // Kolom L (Fungsi / Divisi)
+                            let shiftVal = row[24] ? row[24].trim() : "Shift"; // Kolom Y (Shift / NonShift)
+                            let contractRem = row[36] ? row[36].trim() : "115"; // Kolom AK (Contract Remaining)
+
+                            let sistemKerja = (shiftVal.toLowerCase().includes("shift") && !shiftVal.toLowerCase().includes("non")) ? "Shift" : "Non Shift";
                             let sisaKontrak = contractRem.includes("Hari") ? contractRem : contractRem + " Hari";
 
                             parsedEmployees.push({
@@ -180,7 +182,7 @@
             });
         }
 
-        // Data cadangan 52 karyawan asli jika offline
+        // Data cadangan 52 karyawan asli sesuai Google Sheet
         function loadFallbackData() {
             globalMasterData = [
                 { "Nama Karyawan": "Sujianto Batias", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
