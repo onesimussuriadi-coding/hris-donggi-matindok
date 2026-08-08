@@ -53,7 +53,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
                 <p class="text-xs text-slate-500 font-medium mb-1">Total Karyawan (TAD)</p>
-                <p class="text-3xl font-extrabold text-slate-900">52 Orang</p>
+                <p id="totalEmpCount" class="text-3xl font-extrabold text-slate-900">52 Orang</p>
             </div>
             <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
                 <p class="text-xs text-slate-500 font-medium mb-1">Komposisi Sistem Kerja</p>
@@ -61,7 +61,8 @@
             </div>
             <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
                 <p class="text-xs text-slate-500 font-medium mb-1">Aksi Data Laporan</p>
-                <button onclick="alert('Menyiapkan file ekspor Excel Master Karyawan...')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition flex items-center justify-center gap-2 shadow-sm">
+                <!-- Tombol Export Excel Aktif -->
+                <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition flex items-center justify-center gap-2 shadow-sm">
                     <span>📥</span> Download / Export Excel
                 </button>
             </div>
@@ -70,18 +71,18 @@
         <!-- Bagian Tabel & Filter -->
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
-                <h4 class="font-bold text-slate-800">Daftar Karyawan TAD (Lengkap 52 Orang)</h4>
+                <h4 id="tableTitle" class="font-bold text-slate-800">Daftar Karyawan TAD</h4>
                 <div class="flex flex-wrap gap-3 w-full md:w-auto">
-                    <select class="px-3 py-2 text-xs border rounded-xl bg-slate-50 text-slate-600 focus:outline-none">
-                        <option>Semua Sistem Kerja</option>
-                        <option>Shift</option>
-                        <option>Non Shift</option>
+                    <select id="filterSistemKerja" class="px-3 py-2 text-xs border rounded-xl bg-slate-50 text-slate-600 focus:outline-none">
+                        <option value="">Semua Sistem Kerja</option>
+                        <option value="Shift">Shift</option>
+                        <option value="Non Shift">Non Shift</option>
                     </select>
-                    <select class="px-3 py-2 text-xs border rounded-xl bg-slate-50 text-slate-600 focus:outline-none">
-                        <option>Semua Divisi</option>
-                        <option>HSSE</option>
-                        <option>SCM</option>
-                        <option>Legal & Relation</option>
+                    <select id="filterDivisi" class="px-3 py-2 text-xs border rounded-xl bg-slate-50 text-slate-600 focus:outline-none">
+                        <option value="">Semua Divisi</option>
+                        <option value="HSSE">HSSE</option>
+                        <option value="SCM">SCM</option>
+                        <option value="Legal & Relation">Legal & Relation</option>
                     </select>
                     <input type="text" id="searchMaster" placeholder="Cari nama atau jabatan..." class="px-3 py-2 text-xs border rounded-xl focus:outline-none w-64">
                 </div>
@@ -111,7 +112,7 @@
 
     </main>
 
-    <!-- Skrip Pembacaan Data Master Utama -->
+    <!-- Skrip Pembacaan Data & Fungsi Download Excel -->
     <script>
         let globalMasterData = [];
 
@@ -131,6 +132,9 @@
             const tbody = document.getElementById('masterTableBody');
             tbody.innerHTML = '';
             
+            document.getElementById('totalEmpCount').innerText = data.length + " Orang";
+            document.getElementById('tableTitle').innerText = `Daftar Karyawan TAD (Lengkap ${data.length} Orang)`;
+
             if (!data || data.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 text-xs">Data tidak ditemukan.</td></tr>`;
                 return;
@@ -144,8 +148,8 @@
                     <td class="p-3 font-bold text-slate-800">${emp["Nama Karyawan"] || '-'}</td>
                     <td class="p-3 text-slate-600">${emp["Job Title"] || '-'}</td>
                     <td class="p-3 text-slate-600">${emp["Fungsi"] || '-'}</td>
-                    <td class="p-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md font-semibold">Shift</span></td>
-                    <td class="p-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md font-semibold">120 Hari</span></td>
+                    <td class="p-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md font-semibold">${emp["Sistem Kerja"] || 'Shift'}</span></td>
+                    <td class="p-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md font-semibold">${emp["Sisa Kontrak"] || '120 Hari'}</span></td>
                     <td class="p-3 text-center">
                         <button onclick="alert('Membuka profil: ${emp["Nama Karyawan"]}')" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-semibold transition">
                             👁️ Detail
@@ -156,16 +160,59 @@
             });
         }
 
-        // Pencarian Real-Time
-        document.getElementById('searchMaster').addEventListener('input', function(e) {
-            const keyword = e.target.value.toLowerCase();
-            const filtered = globalMasterData.filter(emp => 
-                (emp["Nama Karyawan"] && emp["Nama Karyawan"].toLowerCase().includes(keyword)) ||
-                (emp["Job Title"] && emp["Job Title"].toLowerCase().includes(keyword)) ||
-                (emp["Fungsi"] && emp["Fungsi"].toLowerCase().includes(keyword))
-            );
+        // Fungsi Filter & Pencarian
+        function filterData() {
+            const keyword = document.getElementById('searchMaster').value.toLowerCase();
+            const selectedShift = document.getElementById('filterSistemKerja').value;
+            const selectedDivisi = document.getElementById('filterDivisi').value;
+
+            const filtered = globalMasterData.filter(emp => {
+                const matchKeyword = (emp["Nama Karyawan"] && emp["Nama Karyawan"].toLowerCase().includes(keyword)) ||
+                                     (emp["Job Title"] && emp["Job Title"].toLowerCase().includes(keyword)) ||
+                                     (emp["Fungsi"] && emp["Fungsi"].toLowerCase().includes(keyword));
+                
+                const matchShift = selectedShift === "" || (emp["Sistem Kerja"] && emp["Sistem Kerja"].includes(selectedShift));
+                const matchDivisi = selectedDivisi === "" || (emp["Fungsi"] && emp["Fungsi"].includes(selectedDivisi));
+
+                return matchKeyword && matchShift && matchDivisi;
+            });
+
             renderMasterTable(filtered);
-        });
+        }
+
+        document.getElementById('searchMaster').addEventListener('input', filterData);
+        document.getElementById('filterSistemKerja').addEventListener('change', filterData);
+        document.getElementById('filterDivisi').addEventListener('change', filterData);
+
+        // Fungsi Download / Export ke Excel (Format CSV kompatibel Excel)
+        function exportToExcel() {
+            if (!globalMasterData || globalMasterData.length === 0) {
+                alert("Tidak ada data untuk diekspor!");
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,No,Nama Pekerja,Jabatan,Divisi / Fungsi,Sistem Kerja,Sisa Kontrak\r\n";
+            
+            globalMasterData.forEach((emp, index) => {
+                let row = [
+                    emp["No"] || (index + 1),
+                    `"${emp["Nama Karyawan"] || '-'}"`,
+                    `"${emp["Job Title"] || '-'}"`,
+                    `"${emp["Fungsi"] || '-'}"`,
+                    `"${emp["Sistem Kerja"] || 'Shift'}"`,
+                    `"${emp["Sisa Kontrak"] || '120 Hari'}"`
+                ];
+                csvContent += row.join(",") + "\r\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Master_Data_Karyawan_TAD_Zona13.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
 
         document.addEventListener('DOMContentLoaded', loadMasterKaryawan);
     </script>
