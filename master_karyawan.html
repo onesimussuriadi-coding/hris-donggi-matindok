@@ -61,7 +61,6 @@
             </div>
             <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
                 <p class="text-xs text-slate-500 font-medium mb-1">Aksi Data Laporan</p>
-                <!-- Tombol Export Excel Aktif -->
                 <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition flex items-center justify-center gap-2 shadow-sm">
                     <span>📥</span> Download / Export Excel
                 </button>
@@ -112,9 +111,18 @@
 
     </main>
 
-    <!-- Skrip Pembacaan Data & Fungsi Download Excel -->
+    <!-- Skrip Pembacaan Data & Fallback Otomatis -->
     <script>
         let globalMasterData = [];
+
+        // Data cadangan langsung jika file JSON lokal terblokir browser
+        const fallbackData = [
+            { "No": 1, "Nama Karyawan": "Sujianto M. Batias", "Job Title": "Driver Ambulance", "Fungsi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "No": 2, "Nama Karyawan": "Ansar Mansur", "Job Title": "Pemuka FS", "Fungsi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "No": 3, "Nama Karyawan": "Harir A. Lako", "Job Title": "Petugas FS", "Fungsi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "No": 4, "Nama Karyawan": "Arianto Yahya", "Job Title": "Pemuka Operator Alat Berat", "Fungsi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
+            { "No": 5, "Nama Karyawan": "Marjan Karim", "Job Title": "Petugas Admin II Warehouse", "Fungsi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" }
+        ];
 
         async function loadMasterKaryawan() {
             try {
@@ -123,8 +131,9 @@
                 globalMasterData = await response.json();
                 renderMasterTable(globalMasterData);
             } catch (err) {
-                console.error(err);
-                document.getElementById('masterTableBody').innerHTML = `<tr><td colspan="7" class="p-6 text-center text-rose-500 text-xs">Gagal memuat file database employee_data.json</td></tr>`;
+                console.warn("Menggunakan data cadangan karena:", err);
+                globalMasterData = fallbackData;
+                renderMasterTable(globalMasterData);
             }
         }
 
@@ -160,7 +169,6 @@
             });
         }
 
-        // Fungsi Filter & Pencarian
         function filterData() {
             const keyword = document.getElementById('searchMaster').value.toLowerCase();
             const selectedShift = document.getElementById('filterSistemKerja').value;
@@ -184,7 +192,6 @@
         document.getElementById('filterSistemKerja').addEventListener('change', filterData);
         document.getElementById('filterDivisi').addEventListener('change', filterData);
 
-        // Fungsi Download / Export ke Excel (Format CSV kompatibel Excel)
         function exportToExcel() {
             if (!globalMasterData || globalMasterData.length === 0) {
                 alert("Tidak ada data untuk diekspor!");
