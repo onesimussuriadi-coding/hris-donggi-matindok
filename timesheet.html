@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Sheet & Absen - HRIS Field Donggi Matindok</title>
+    <title>Dashboard Time Sheet & Absen - Field Donggi Matindok</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -42,55 +42,70 @@
         
         <!-- Header Atas -->
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold text-slate-800">Time Sheet & Rekap Absensi</h2>
-            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1.5 rounded-full">Zona 13 - Field</span>
+            <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
+            <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full">Zona 13 - Field</span>
         </div>
 
-        <!-- Kartu Ringkasan Atas -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                <p class="text-xs text-slate-500 font-medium mb-1">Periode Kehadiran</p>
-                <p class="text-2xl font-extrabold text-slate-900">Bulan Berjalan</p>
-            </div>
-            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                <p class="text-xs text-slate-500 font-medium mb-1">Status Sinkronisasi Absen</p>
-                <p class="text-lg font-bold text-emerald-600">✓ Terhubung ke Sistem</p>
-            </div>
-            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
-                <p class="text-xs text-slate-500 font-medium mb-1">Aksi Laporan Absensi</p>
-                <button onclick="alert('Mengunduh rekapitulasi time sheet...')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition flex items-center justify-center gap-2">
-                    <span>📥</span> Download Rekap Absen
-                </button>
-            </div>
-        </div>
-
-        <!-- Bagian Tabel Time Sheet & Absen -->
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
-                <h4 class="font-bold text-slate-800">Daftar Kehadiran & Time Sheet Pekerja</h4>
+        <!-- Kartu Utama Rekap Lembur & Man Hours -->
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <span>📅</span> Rekap Lembur & Man Hours (Jam Kerja)
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-1">
+                        Shift (36 Orang - 12 Jam) | Non Shift (16 Orang - 9 Jam Senin-Jumat) | Zona 13 - Field Donggi Matindok
+                    </p>
+                </div>
                 <div class="flex gap-3 w-full md:w-auto">
-                    <input type="text" placeholder="Cari nama pekerja..." class="px-3 py-2 text-xs border rounded-xl focus:outline-none w-64">
+                    <select class="px-3 py-2 text-xs border rounded-xl bg-slate-50 text-slate-600 focus:outline-none">
+                        <option>Tampilkan Semua (All 52)</option>
+                        <option>Shift Saja</option>
+                        <option>Non Shift Saja</option>
+                    </select>
+                    <input type="text" placeholder="Cari nama karyawan..." class="px-3 py-2 text-xs border rounded-xl focus:outline-none w-64">
                 </div>
             </div>
 
+            <!-- 4 Kartu Parameter dengan Aksen Garis Hijau -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-slate-50/50 p-4 rounded-xl border-l-4 border-emerald-600 border border-slate-100">
+                    <p class="text-[11px] text-slate-500 font-medium">Rentang Tanggal</p>
+                    <p class="text-sm font-bold text-slate-900 mt-1">16 Jun - 15 Jul 2026</p>
+                </div>
+                <div class="bg-slate-50/50 p-4 rounded-xl border-l-4 border-emerald-600 border border-slate-100">
+                    <p class="text-[11px] text-slate-500 font-medium">Jam Kerja Shift (36 Orang)</p>
+                    <p class="text-sm font-bold text-slate-900 mt-1">07:00 s.d 07:00 (12 Jam)</p>
+                </div>
+                <div class="bg-slate-50/50 p-4 rounded-xl border-l-4 border-emerald-600 border border-slate-100">
+                    <p class="text-[11px] text-slate-500 font-medium">Jam Kerja Non Shift (16 Orang)</p>
+                    <p class="text-sm font-bold text-slate-900 mt-1">07:00 s.d 16:00 (9 Jam)</p>
+                </div>
+                <div class="bg-slate-50/50 p-4 rounded-xl border-l-4 border-emerald-600 border border-slate-100">
+                    <p class="text-[11px] text-slate-500 font-medium">Status Pengaturan</p>
+                    <p class="text-sm font-bold text-emerald-600 mt-1">✓ Akurat & Terpisah</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabel Rincian Kehadiran & Man Hours -->
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-sm">
                     <thead>
-                        <tr class="bg-slate-50 text-slate-600 border-b text-xs uppercase">
+                        <tr class="bg-emerald-800 text-white border-b text-xs uppercase">
                             <th class="p-3">No</th>
                             <th class="p-3">Nama Pekerja</th>
-                            <th class="p-3">Jabatan</th>
-                            <th class="p-3 text-center">Hadir (H)</th>
-                            <th class="p-3 text-center">Sakit (S)</th>
-                            <th class="p-3 text-center">Izin (I)</th>
-                            <th class="p-3 text-center">Alpha (A)</th>
-                            <th class="p-3 text-center">Aksi</th>
+                            <th class="p-3">Jabatan & Sistem Kerja</th>
+                            <th class="p-3">Kehadiran / Jam Normal</th>
+                            <th class="p-3">Total Lembur (OT)</th>
+                            <th class="p-3">Total Man Hours</th>
+                            <th class="p-3 text-center">Aksi Kertas Kerja</th>
                         </tr>
                     </thead>
                     <tbody id="timesheetTableBody" class="divide-y divide-slate-100 text-slate-700">
-                        <!-- Data akan ditarik otomatis dari JSON -->
                         <tr>
-                            <td colspan="8" class="p-6 text-center text-slate-400 text-xs">Memuat data time sheet & absensi...</td>
+                            <td colspan="7" class="p-6 text-center text-slate-400 text-xs">Memuat database time sheet...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -99,9 +114,9 @@
 
     </main>
 
-    <!-- Skrip Pembacaan Data untuk Time Sheet -->
+    <!-- Skrip Pembacaan Data JSON ke Tabel Time Sheet -->
     <script>
-        async function loadTimeSheetData() {
+        async function loadTimeSheet() {
             try {
                 const response = await fetch('employee_data.json');
                 const data = await response.json();
@@ -114,14 +129,18 @@
                     row.innerHTML = `
                         <td class="p-3 text-slate-500">${emp["No"] || (index + 1)}</td>
                         <td class="p-3 font-bold text-slate-800">${emp["Nama Karyawan"] || '-'}</td>
-                        <td class="p-3 text-slate-600">${emp["Job Title"] || '-'}</td>
-                        <td class="p-3 text-center font-semibold text-emerald-600">22</td>
-                        <td class="p-3 text-center text-slate-600">0</td>
-                        <td class="p-3 text-center text-slate-600">0</td>
-                        <td class="p-3 text-center text-slate-600">0</td>
+                        <td class="p-3 text-slate-600">
+                            ${emp["Job Title"] || '-'} 
+                            <span class="ml-1 px-1.5 py-0.5 bg-blue-50 text-blue-700 rounded text-[10px] font-semibold">Shift</span>
+                        </td>
+                        <td class="p-3">
+                            <span class="px-2 py-1 bg-emerald-100 text-emerald-800 rounded font-semibold text-[11px]">20 Hari (240 Jam)</span>
+                        </td>
+                        <td class="p-3 font-semibold text-slate-800">65.50 Jam</td>
+                        <td class="p-3 font-bold text-slate-900">305.50 Jam</td>
                         <td class="p-3 text-center">
-                            <button onclick="alert('Melihat detail absensi: ${emp["Nama Karyawan"]}')" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-semibold transition">
-                                📋 Detail Absen
+                            <button onclick="alert('Membuka rekap & rincian: ${emp["Nama Karyawan"]}')" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl font-semibold transition flex items-center justify-center gap-1 mx-auto">
+                                <span>📄</span> Rekap & Rincian
                             </button>
                         </td>
                     `;
@@ -131,7 +150,7 @@
                 console.error("Gagal memuat timesheet:", err);
             }
         }
-        document.addEventListener('DOMContentLoaded', loadTimeSheetData);
+        document.addEventListener('DOMContentLoaded', loadTimeSheet);
     </script>
 </body>
 </html>
