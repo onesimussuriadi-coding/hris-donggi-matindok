@@ -57,7 +57,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
                 <p class="text-xs text-slate-500 font-medium mb-1">Total Karyawan (TAD)</p>
-                <p id="totalEmpCount" class="text-3xl font-extrabold text-slate-900">Memuat...</p>
+                <p id="totalEmpCount" class="text-3xl font-extrabold text-slate-900">52 Orang</p>
             </div>
             <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
                 <p class="text-xs text-slate-500 font-medium mb-1">Komposisi Sistem Kerja</p>
@@ -74,11 +74,11 @@
         <!-- Bagian Tabel & Filter -->
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
-                <h4 id="tableTitle" class="font-bold text-slate-800">Daftar Karyawan TAD (Live dari Google Sheet)</h4>
+                <h4 id="tableTitle" class="font-bold text-slate-800">Daftar Karyawan TAD (Lengkap 52 Orang)</h4>
                 <div class="flex flex-wrap gap-3 w-full md:w-auto">
                     <!-- Dropdown Filter Sistem Kerja -->
                     <select id="filterSistemKerja" class="px-3 py-2 text-xs border rounded-xl bg-slate-50 text-slate-600 focus:outline-none font-medium">
-                        <option value="">Semua Sistem Kerja</option>
+                        <option value="">Semua Sistem Kerja (52)</option>
                         <option value="Shift">Shift (36)</option>
                         <option value="Non Shift">Non Shift (16)</option>
                     </select>
@@ -90,6 +90,8 @@
                         <option value="LR">LR</option>
                         <option value="RAM">RAM</option>
                         <option value="HC">HC</option>
+                        <option value="Operation Planning">Operation Planning</option>
+                        <option value="Field Manager">Field Manager</option>
                         <option value="Finance">Finance</option>
                         <option value="Plan & Eval">Plan & Eval</option>
                     </select>
@@ -122,11 +124,9 @@
 
     </main>
 
-    <!-- Skrip Pengambilan Data Online Real-Time via PapaParse -->
+    <!-- Skrip Parsing Kolom Vertikal Google Sheet secara Real-Time -->
     <script>
         let globalMasterData = [];
-
-        // Tautan CSV Publik Google Sheet Anda
         const googleSheetCsvUrl = "https://docs.google.com/spreadsheets/d/1Mu_POmiVk4A8ISsIhff5O0o4QH1grADjFCYHX7Vtx50/export?format=csv&gid=580855545";
 
         function fetchRealtimeGoogleSheetData() {
@@ -136,81 +136,106 @@
                 complete: function(results) {
                     try {
                         const rows = results.data;
-                        // Berdasarkan struktur Google Sheet Anda:
-                        // Baris indeks ke-5 (baris 6 di Excel) adalah header nama karyawan (kolom 4 ke kanan)
-                        // Baris indeks ke-0 (Job Title)
-                        // Baris indeks ke-5 (Fungsi)
-                        // Baris indeks ke-13 atau pencarian teks Shift/NonShift
-                        // Baris indeks ke-36 (Contract Remaining)
-                        
-                        const headerNames = rows[5]; // Kolom nama karyawan mulai dari indeks 4
-                        const jobTitles = rows[0];
-                        const fungsiRows = rows[5]; // Fungsi
-                        const contractRemRows = rows[36]; // Contract Remaining (115 Days)
-
                         let parsedEmployees = [];
 
-                        for (let colIdx = 4; colIdx < headerNames.length; colIdx++) {
-                            let empName = headerNames[colIdx];
-                            if (!empName || empName.trim() === "") continue;
+                        // Berdasarkan struktur Google Sheet rujukan Anda:
+                        // Kolom data karyawan dimulai dari indeks kolom ke-4 (kolom E) hingga akhir (52 orang)
+                        for (let cIdx = 4; cIdx < rows[5].length; cIdx++) {
+                            let name = rows[5][cIdx] ? rows[5][cIdx].trim() : "";
+                            if (!name || name === "" || name.includes("Nama Karyawan") || name.includes("No Pekerja")) continue;
 
-                            let jobTitle = jobTitles[colIdx] || "-";
-                            let fungsi = "HSSE";
-                            
-                            // Mencari baris Fungsi/Divisi untuk kolom ini
-                            for (let r = 0; r < rows.length; r++) {
-                                if (rows[r] && rows[r][3] && rows[r][3].includes("Fungsi")) {
-                                    fungsi = rows[r][colIdx] || "HSSE";
-                                    break;
-                                }
-                            }
+                            let job = rows[6][cIdx] ? rows[6][cIdx].trim() : "-";
+                            let div = rows[11][cIdx] ? rows[11][cIdx].trim() : "HSSE";
+                            let shiftVal = rows[24][cIdx] ? rows[24][cIdx].trim() : "Non Shift";
+                            let contractRem = rows[36][cIdx] ? rows[36][cIdx].trim() : "115";
 
-                            // Menentukan Shift / Non Shift berdasarkan group/lokasi atau aturan riil (36 shift pertama, 16 non shift berikutnya)
-                            let sistemKerja = (parsedEmployees.length < 36) ? "Shift" : "Non Shift";
-                            
-                            // Mendapatkan sisa kontrak secara real-time dari baris contract remaining di Google Sheet
-                            let sisaKontrak = "115 Hari";
-                            for (let r = 0; r < rows.length; r++) {
-                                if (rows[r] && rows[r][3] && rows[r][3].includes("Contract Remaining")) {
-                                    let val = rows[r][colIdx];
-                                    if (val) sisaKontrak = val + " Hari";
-                                    break;
-                                }
-                            }
+                            let sistemKerja = (shiftVal.includes("Shift") && !shiftVal.includes("Non")) ? "Shift" : "Non Shift";
+                            let sisaKontrak = contractRem + " Hari";
 
                             parsedEmployees.push({
-                                "Nama Karyawan": empName.trim(),
-                                "Jabatan": jobTitle.trim(),
-                                "Divisi": fungsi.trim(),
+                                "Nama Karyawan": name,
+                                "Jabatan": job,
+                                "Divisi": div,
                                 "Sistem Kerja": sistemKerja,
                                 "Sisa Kontrak": sisaKontrak
                             });
                         }
 
-                        globalMasterData = parsedEmployees;
+                        if (parsedEmployees.length > 0) {
+                            globalMasterData = parsedEmployees;
+                        } else {
+                            loadFallbackData();
+                        }
                         renderMasterTable(globalMasterData);
 
-                    } catch (parseErr) {
-                        console.error("Kesalahan parsing data:", parseErr);
+                    } catch (err) {
+                        console.error("Gagal memproses data online:", err);
                         loadFallbackData();
                     }
                 },
                 error: function(err) {
-                    console.warn("Gagal terhubung online, menggunakan cache lokal:", err);
+                    console.warn("Gagal terhubung online:", err);
                     loadFallbackData();
                 }
             });
         }
 
-        // Data cadangan online jika koneksi terganggu
+        // Data cadangan 52 karyawan asli sesuai Google Sheet jika offline
         function loadFallbackData() {
-            globalMasterData = Array.from({length: 52}, (_, i) => ({
-                "Nama Karyawan": i < 36 ? `Karyawan Shift ${i+1}` : `Karyawan Non Shift ${i+1}`,
-                "Jabatan": i < 36 ? "Petugas Fire & Safety" : "Petugas Admin",
-                "Divisi": "HSSE",
-                "Sistem Kerja": i < 36 ? "Shift" : "Non Shift",
-                "Sisa Kontrak": "115 Hari"
-            }));
+            globalMasterData = [
+                { "Nama Karyawan": "Sujianto Batias", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Ansar Mansur", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Harir A. Lako", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Ali Friansyah", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Fredrik D Tinadji", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Wayan Edi Jaya", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Akmal (A)", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Alfikwan I Marida", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Deni Andrianto", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Awal Dwi Sekti", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Muh Arsyal Ramdani", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Muh Palmi", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Halim", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Mustamar Dg Magangka", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Akmal (B)", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Rizal Tamoreka", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Arianto Yahya", "Jabatan": "Pemuka Operator Alat Berat", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Marjan Karim", "Jabatan": "Petugas Admin II Warehouse", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Kasman", "Jabatan": "Petugas Admin II Warehouse", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Lukman Tasakka", "Jabatan": "Pemuka Operator Alat Berat", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "I Nengah Darsana", "Jabatan": "Pemuka Operator Alat Berat", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "I Gusti Ngurah Baliarta", "Jabatan": "Petugas Admin II Warehouse", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Irvan Parenden", "Jabatan": "Petugas Admin II Warehouse", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Sunita Ayu Purnamaningsi", "Jabatan": "Petugas Admin II", "Divisi": "LR", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Dewi Setiawati", "Jabatan": "Petugas Admin III", "Divisi": "RAM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Marini Astary", "Jabatan": "Petugas Admin III", "Divisi": "HC", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Ali Mukhtar Mohammad Amin", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Agus Rudiyanto", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "I Gede Ariana", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "I Putu Adnyana Wijaya", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Mursalun Lasuru", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Subandi", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Budi Santoso", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "I Komang Santika", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Indra Natalianto Patasik", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Kd Wiyad Nyana", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "I Nengah Rudi Artika", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Sukardi Jalisingi", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Yotam", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Thamar Thalib Mbau", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Arie Kurniawan", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Eko Wiyono", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Fajriadi", "Jabatan": "Pemuka Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Jumalik H. Latungka", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Randianto", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Saiful M. Zakar", "Jabatan": "Petugas Fire & Safety", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "I Nyoman Suwitra", "Jabatan": "Petugas Gudang BBM", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "I Putu Muryanto", "Jabatan": "Petugas Admin III", "Divisi": "Operation Planning", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Siti Aisyah Dg Masese", "Jabatan": "Sekretaris Field Manager", "Divisi": "Field Manager", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Dewi Khoirunnisa", "Jabatan": "Petugas Admin III", "Divisi": "Finance", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Eka Nurjannah", "Jabatan": "Petugas Admin III CSR", "Divisi": "Plan & Eval", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Hari" },
+                { "Nama Karyawan": "Findy Handayani", "Jabatan": "Petugas Admin II", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "115 Hari" }
+            ];
             renderMasterTable(globalMasterData);
         }
 
@@ -222,7 +247,7 @@
             document.getElementById('tableTitle').innerText = `Daftar Karyawan TAD (${data.length} Ditampilkan)`;
 
             if (!data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 text-xs">Tidak ada data ditemukan.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 text-xs">Tidak ada data karyawan yang cocok dengan filter.</td></tr>`;
                 return;
             }
 
@@ -280,7 +305,7 @@
         document.getElementById('filterSistemKerja').addEventListener('change', filterData);
         document.getElementById('filterDivisi').addEventListener('change', filterData);
 
-        // Jalankan sinkronisasi online real-time saat halaman dimuat
+        // Jalankan sinkronisasi saat halaman dimuat
         document.addEventListener('DOMContentLoaded', () => {
             fetchRealtimeGoogleSheetData();
         });
