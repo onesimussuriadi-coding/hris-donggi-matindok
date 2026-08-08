@@ -153,61 +153,61 @@
         </div>
     </div>
 
-    <!-- Skrip Proses Data 52 Karyawan -->
+    <!-- Skrip Proses Data 52 Karyawan & Kalkulasi Man Hours Otomatis -->
     <script>
         let timesheetData = [
-            { no: 1, nama: "Sujianto M. Batias", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiran: "19 Hari", total_lembur: "19 Jam", total_man_hours: "65.5 Jam" },
-            { no: 2, nama: "Ansar Mansur", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiran: "20 Hari", total_lembur: "1 Jam", total_man_hours: "100 Jam" },
-            { no: 3, nama: "Harir A. Lako", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiran: "20 Hari", total_lembur: "4 Jam", total_man_hours: "128.5 Jam" },
-            { no: 4, nama: "Ali Friansyah", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiran: "20 Hari", total_lembur: "7 Jam", total_man_hours: "25 Jam" },
-            { no: 5, nama: "Fredrik D. Tinadji", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiran: "20 Hari", total_lembur: "1 Jam", total_man_hours: "70 Jam" },
-            { no: 6, nama: "Wayan Edi Jaya", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiran: "20 Hari", total_lembur: "6 Jam", total_man_hours: "175 Jam" },
-            { no: 7, nama: "Akmal (A)", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiran: "20 Hari", total_lembur: "19 Jam", total_man_hours: "68 Jam" },
-            { no: 8, nama: "Alfikwan I. Marida", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiran: "20 Hari", total_lembur: "1.5 Jam", total_man_hours: "119 Jam" },
-            { no: 9, nama: "Deni Andrianto", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiran: "20 Hari", total_lembur: "8 Jam", total_man_hours: "100 Jam" },
-            { no: 10, nama: "Awal Dwi Sekti", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiran: "20 Hari", total_lembur: "14 Jam", total_man_hours: "174 Jam" },
-            { no: 11, nama: "Muh Arsyal Ramdani", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiran: "20 Hari", total_lembur: "3 Jam", total_man_hours: "0 Jam" },
-            { no: 12, nama: "Muh Palmi", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiran: "20 Hari", total_lembur: "24 Jam", total_man_hours: "50 Jam" },
-            { no: 13, nama: "Halim", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiran: "20 Hari", total_lembur: "50.5 Jam", total_man_hours: "35 Jam" },
-            { no: 14, nama: "Mustamar Dg Magangka", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiran: "18 Hari", total_lembur: "1 Jam", total_man_hours: "44.5 Jam" },
-            { no: 15, nama: "Akmal (B)", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiran: "20 Hari", total_lembur: "1 Jam", total_man_hours: "200 Jam" },
-            { no: 16, nama: "Rizal Tamoreka", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiran: "20 Hari", total_lembur: "0 Jam", total_man_hours: "82 Jam" },
-            { no: 17, nama: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "F", kehadiran: "20 Hari", total_lembur: "10 Jam", total_man_hours: "0 Jam" },
-            { no: 18, nama: "Marjan Karim", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "E", kehadiran: "17 Hari", total_lembur: "0 Jam", total_man_hours: "0 Jam" },
-            { no: 19, nama: "Kasman", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "E", kehadiran: "19 Hari", total_lembur: "0 Jam", total_man_hours: "60 Jam" },
-            { no: 20, nama: "Lukman Tasakka", jabatan: "Pemuka Ops. Alat Berat", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "F", kehadiran: "20 Hari", total_lembur: "7 Jam", total_man_hours: "100.5 Jam" },
-            { no: 21, nama: "Nengah Darsana", jabatan: "Pemuka Ops. Alat Berat", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "F", kehadiran: "20 Hari", total_lembur: "1 Jam", total_man_hours: "50.5 Jam" },
-            { no: 22, nama: "I Gusti Ngurah Baliarta", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "E", kehadiran: "20 Hari", total_lembur: "2 Jam", total_man_hours: "187 Jam" },
-            { no: 23, nama: "Irpan Parenden", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "E", kehadiran: "19 Hari", total_lembur: "10 Jam", total_man_hours: "50 Jam" },
-            { no: 24, nama: "Sunita Ayu P.", jabatan: "Petugas Admin II", penempatan: "Legal & Relation", sistem_kerja: "Non Shift", grade: "E", kehadiran: "19 Hari", total_lembur: "0 Jam", total_man_hours: "125 Jam" },
-            { no: 25, nama: "Dewi Setiawati M Dg M", jabatan: "Petugas Admin III", penempatan: "RAM", sistem_kerja: "Non Shift", grade: "F", kehadiran: "20 Hari", total_lembur: "0 Jam", total_man_hours: "50 Jam" },
-            { no: 26, nama: "Marini Astari", jabatan: "Petugas Admin III", penempatan: "HR - GS", sistem_kerja: "Non Shift", grade: "F", kehadiran: "19 Hari", total_lembur: "14 Jam", total_man_hours: "91.5 Jam" },
-            { no: 27, nama: "Ali Muhtar M. Amin", jabatan: "Supir Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiran: "20 Hari", total_lembur: "3 Jam", total_man_hours: "174 Jam" },
-            { no: 28, nama: "Agus Rudiyanto", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiran: "20 Hari", total_lembur: "8 Jam", total_man_hours: "0 Jam" },
-            { no: 29, nama: "I Gede Ariana", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiran: "20 Hari", total_lembur: "25 Jam", total_man_hours: "101 Jam" },
-            { no: 30, nama: "I Putu Adnyana Wijaya", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiran: "20 Hari", total_lembur: "1 Jam", total_man_hours: "141 Jam" },
-            { no: 31, nama: "Mursalun Lasuru", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiran: "20 Hari", total_lembur: "0 Jam", total_man_hours: "25 Jam" },
-            { no: 32, nama: "Subandi", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiran: "20 Hari", total_lembur: "0 Jam", total_man_hours: "85 Jam" },
-            { no: 33, nama: "Budi Santoso", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiran: "20 Hari", total_lembur: "30 Jam", total_man_hours: "183 Jam" },
-            { no: 34, nama: "I Komang Santika", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiran: "20 Hari", total_lembur: "0 Jam", total_man_hours: "25 Jam" },
-            { no: 35, nama: "Indra Natalianto Patasik", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiran: "20 Hari", total_lembur: "0 Jam", total_man_hours: "100 Jam" },
-            { no: 36, nama: "Kd Wiyad Nyana", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiran: "20 Hari", total_lembur: "24 Jam", total_man_hours: "35 Jam" },
-            { no: 37, nama: "I Nengah Rudi Artika", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiran: "21 Hari", total_lembur: "2 Jam", total_man_hours: "144 Jam" },
-            { no: 38, nama: "Sukardi Jalisingi", jabatan: "Supir Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiran: "20 Hari", total_lembur: "4 Jam", total_man_hours: "210 Jam" },
-            { no: 39, nama: "Yotam", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiran: "19 Hari", total_lembur: "30 Jam", total_man_hours: "124.5 Jam" },
-            { no: 40, nama: "Thamar Thalib Mbau", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiran: "20 Hari", total_lembur: "0 Jam", total_man_hours: "147 Jam" },
-            { no: 41, nama: "Arie Kurniawan", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiran: "19 Hari", total_lembur: "0 Jam", total_man_hours: "121 Jam" },
-            { no: 42, nama: "Eko Wiyono", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiran: "18 Hari", total_lembur: "48 Jam", total_man_hours: "121 Jam" },
-            { no: 43, nama: "Fajriadi", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiran: "19 Hari", total_lembur: "6 Jam", total_man_hours: "121 Jam" },
-            { no: 44, nama: "Jumalik H. Latungka", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiran: "21 Hari", total_lembur: "16 Jam", total_man_hours: "162 Jam" },
-            { no: 45, nama: "Randianto", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiran: "21 Hari", total_lembur: "70 Jam", total_man_hours: "162.5 Jam" },
-            { no: 46, nama: "Saiful M. Zakar", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiran: "21 Hari", total_lembur: "2 Jam", total_man_hours: "262 Jam" },
-            { no: 47, nama: "I Nyoman Suwitra", jabatan: "Petugas Gudang (BBM)", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "D", kehadiran: "21 Hari", total_lembur: "0 Jam", total_man_hours: "121 Jam" },
-            { no: 48, nama: "I Putu Muryanto", jabatan: "Petugas Admin III", penempatan: "Operation", sistem_kerja: "Non Shift", grade: "F", kehadiran: "21 Hari", total_lembur: "0 Jam", total_man_hours: "382.5 Jam" },
-            { no: 49, nama: "Siti Aisyah Dg Masese", jabatan: "Sekretaris FM", penempatan: "Field Manager", sistem_kerja: "Non Shift", grade: "F", kehadiran: "18 Hari", total_lembur: "70 Jam", total_man_hours: "343.5 Jam" },
-            { no: 50, nama: "Dewi Khoirunnisa", jabatan: "Petugas Admin III", penempatan: "Finance", sistem_kerja: "Non Shift", grade: "F", kehadiran: "21 Hari", total_lembur: "0 Jam", total_man_hours: "176.5 Jam" },
-            { no: 51, nama: "Eka Nurjannah", jabatan: "Petugas Admin III CSR", penempatan: "Legal & Relation", sistem_kerja: "Non Shift", grade: "F", kehadiran: "16 Hari", total_lembur: "0 Jam", total_man_hours: "165.5 Jam" },
-            { no: 52, nama: "Findy Handayani", jabatan: "Petugas Admin II", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "E", kehadiran: "3 Hari", total_lembur: "49 Jam", total_man_hours: "0 Jam" }
+            { no: 1, nama: "Sujianto M. Batias", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiranDays: 19, lemburHours: 19 },
+            { no: 2, nama: "Ansar Mansur", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiranDays: 20, lemburHours: 1 },
+            { no: 3, nama: "Harir A. Lako", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburHours: 4 },
+            { no: 4, nama: "Ali Friansyah", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburHours: 7 },
+            { no: 5, nama: "Fredrik D. Tinadji", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburHours: 1 },
+            { no: 6, nama: "Wayan Edi Jaya", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiranDays: 20, lemburHours: 6 },
+            { no: 7, nama: "Akmal (A)", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiranDays: 20, lemburHours: 19 },
+            { no: 8, nama: "Alfikwan I. Marida", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiranDays: 20, lemburHours: 1.5 },
+            { no: 9, nama: "Deni Andrianto", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburHours: 8 },
+            { no: 10, nama: "Awal Dwi Sekti", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiranDays: 20, lemburHours: 14 },
+            { no: 11, nama: "Muh Arsyal Ramdani", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiranDays: 20, lemburHours: 3 },
+            { no: 12, nama: "Muh Palmi", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburHours: 24 },
+            { no: 13, nama: "Halim", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburHours: 50.5 },
+            { no: 14, nama: "Mustamar Dg Magangka", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 18, lemburHours: 1 },
+            { no: 15, nama: "Akmal (B)", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiranDays: 20, lemburHours: 1 },
+            { no: 16, nama: "Rizal Tamoreka", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiranDays: 20, lemburHours: 0 },
+            { no: 17, nama: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 20, lemburHours: 10 },
+            { no: 18, nama: "Marjan Karim", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "E", kehadiranDays: 17, lemburHours: 0 },
+            { no: 19, nama: "Kasman", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "E", kehadiranDays: 19, lemburHours: 0 },
+            { no: 20, nama: "Lukman Tasakka", jabatan: "Pemuka Ops. Alat Berat", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 20, lemburHours: 7 },
+            { no: 21, nama: "Nengah Darsana", jabatan: "Pemuka Ops. Alat Berat", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 20, lemburHours: 1 },
+            { no: 22, nama: "I Gusti Ngurah Baliarta", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "E", kehadiranDays: 20, lemburHours: 2 },
+            { no: 23, nama: "Irpan Parenden", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "E", kehadiranDays: 19, lemburHours: 10 },
+            { no: 24, nama: "Sunita Ayu P.", jabatan: "Petugas Admin II", penempatan: "Legal & Relation", sistem_kerja: "Non Shift", grade: "E", kehadiranDays: 19, lemburHours: 0 },
+            { no: 25, nama: "Dewi Setiawati M Dg M", jabatan: "Petugas Admin III", penempatan: "RAM", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 20, lemburHours: 0 },
+            { no: 26, nama: "Marini Astari", jabatan: "Petugas Admin III", penempatan: "HR - GS", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 19, lemburHours: 14 },
+            { no: 27, nama: "Ali Muhtar M. Amin", jabatan: "Supir Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiranDays: 20, lemburHours: 3 },
+            { no: 28, nama: "Agus Rudiyanto", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiranDays: 20, lemburHours: 8 },
+            { no: 29, nama: "I Gede Ariana", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburHours: 25 },
+            { no: 30, nama: "I Putu Adnyana Wijaya", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburHours: 1 },
+            { no: 31, nama: "Mursalun Lasuru", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburHours: 0 },
+            { no: 32, nama: "Subandi", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiranDays: 20, lemburHours: 0 },
+            { no: 33, nama: "Budi Santoso", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburHours: 30 },
+            { no: 34, nama: "I Komang Santika", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiranDays: 20, lemburHours: 0 },
+            { no: 35, nama: "Indra Natalianto Patasik", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburHours: 0 },
+            { no: 36, nama: "Kd Wiyad Nyana", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburHours: 24 },
+            { no: 37, nama: "I Nengah Rudi Artika", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 21, lemburHours: 2 },
+            { no: 38, nama: "Sukardi Jalisingi", jabatan: "Supir Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiranDays: 20, lemburHours: 4 },
+            { no: 39, nama: "Yotam", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 19, lemburHours: 30 },
+            { no: 40, nama: "Thamar Thalib Mbau", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiranDays: 20, lemburHours: 0 },
+            { no: 41, nama: "Arie Kurniawan", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 19, lemburHours: 0 },
+            { no: 42, nama: "Eko Wiyono", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 18, lemburHours: 48 },
+            { no: 43, nama: "Fajriadi", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiranDays: 19, lemburHours: 6 },
+            { no: 44, nama: "Jumalik H. Latungka", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 21, lemburHours: 16 },
+            { no: 45, nama: "Randianto", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 21, lemburHours: 70 },
+            { no: 46, nama: "Saiful M. Zakar", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 21, lemburHours: 2 },
+            { no: 47, nama: "I Nyoman Suwitra", jabatan: "Petugas Gudang (BBM)", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "D", kehadiranDays: 21, lemburHours: 0 },
+            { no: 48, nama: "I Putu Muryanto", jabatan: "Petugas Admin III", penempatan: "Operation", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 21, lemburHours: 0 },
+            { no: 49, nama: "Siti Aisyah Dg Masese", jabatan: "Sekretaris FM", penempatan: "Field Manager", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 18, lemburHours: 70 },
+            { no: 50, nama: "Dewi Khoirunnisa", jabatan: "Petugas Admin III", penempatan: "Finance", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 21, lemburHours: 0 },
+            { no: 51, nama: "Eka Nurjannah", jabatan: "Petugas Admin III CSR", penempatan: "Legal & Relation", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 16, lemburHours: 0 },
+            { no: 52, nama: "Findy Handayani", jabatan: "Petugas Admin II", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "E", kehadiranDays: 3, lemburHours: 49 }
         ];
 
         let activeEmp = null;
@@ -221,7 +221,12 @@
                 return;
             }
 
-            data.forEach((emp, index) => {
+            data.forEach((emp) => {
+                // Kalkulasi Jam Normal: Shift = 12 Jam/hari, Non Shift = 9 Jam/hari
+                const hoursPerDay = emp.sistem_kerja === "Shift" ? 12 : 9;
+                const normalHours = emp.kehadiranDays * hoursPerDay;
+                const totalManHours = normalHours + emp.lemburHours;
+
                 const badgeColor = emp.sistem_kerja === "Shift" ? "bg-blue-50 text-blue-700" : "bg-purple-50 text-purple-700";
                 const row = document.createElement('tr');
                 row.className = "hover:bg-slate-50 border-b border-slate-100 text-xs transition";
@@ -232,9 +237,9 @@
                         <div class="font-semibold text-slate-700">${emp.jabatan}</div>
                         <span class="px-2 py-0.5 ${badgeColor} rounded-md font-bold text-[10px]">${emp.sistem_kerja}</span>
                     </td>
-                    <td class="p-3 font-semibold text-slate-700">${emp.kehadiran}</td>
-                    <td class="p-3 font-bold text-emerald-600">${emp.total_lembur}</td>
-                    <td class="p-3 font-bold text-blue-600">${emp.total_man_hours}</td>
+                    <td class="p-3 font-semibold text-slate-700">${emp.kehadiranDays} Hari (${normalHours} Jam)</td>
+                    <td class="p-3 font-bold text-emerald-600">${emp.lemburHours} Jam</td>
+                    <td class="p-3 font-bold text-blue-600">${totalManHours} Jam</td>
                     <td class="p-3 text-center">
                         <button onclick="openModal(${emp.no})" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-semibold transition">
                             👁️ Detail Kertas Kerja
@@ -249,6 +254,10 @@
             activeEmp = timesheetData.find(e => e.no === no);
             if (!activeEmp) return;
 
+            const hoursPerDay = activeEmp.sistem_kerja === "Shift" ? 12 : 9;
+            const normalHours = activeEmp.kehadiranDays * hoursPerDay;
+            const totalManHours = normalHours + activeEmp.lemburHours;
+
             document.getElementById('modalEmpName').innerText = `Rincian Absen: ${activeEmp.nama}`;
             const modalBody = document.getElementById('modalBody');
             modalBody.innerHTML = `
@@ -262,19 +271,19 @@
                 </div>
                 <div class="flex justify-between py-2 px-3 bg-white rounded-lg border border-slate-100">
                     <span class="text-slate-500 font-semibold">Sistem Kerja & Grade</span>
-                    <span class="font-bold text-slate-900">${activeEmp.sistem_kerja} (Grade ${activeEmp.grade})</span>
+                    <span class="font-bold text-slate-900">${activeEmp.sistem_kerja} (${hoursPerDay} Jam/Hari, Grade ${activeEmp.grade})</span>
                 </div>
                 <div class="flex justify-between py-2 px-3 bg-white rounded-lg border border-slate-100">
-                    <span class="text-slate-500 font-semibold">Kehadiran (Hari Efektif)</span>
-                    <span class="font-bold text-slate-900">${activeEmp.kehadiran}</span>
+                    <span class="text-slate-500 font-semibold">Kehadiran & Jam Normal</span>
+                    <span class="font-bold text-slate-900">${activeEmp.kehadiranDays} Hari × ${hoursPerDay} Jam = ${normalHours} Jam</span>
                 </div>
                 <div class="flex justify-between py-2 px-3 bg-white rounded-lg border border-slate-100">
                     <span class="text-slate-500 font-semibold">Total Lembur (OT)</span>
-                    <span class="font-bold text-emerald-600">${activeEmp.total_lembur}</span>
+                    <span class="font-bold text-emerald-600">${activeEmp.lemburHours} Jam</span>
                 </div>
-                <div class="flex justify-between py-2 px-3 bg-white rounded-lg border border-slate-100">
-                    <span class="text-slate-500 font-semibold">Total Man Hours (Jam Kerja)</span>
-                    <span class="font-bold text-blue-600">${activeEmp.total_man_hours}</span>
+                <div class="flex justify-between py-2 px-3 bg-white rounded-lg border border-slate-100 bg-blue-50/50">
+                    <span class="text-blue-900 font-bold">Total Man Hours (Jam Normal + Lembur)</span>
+                    <span class="font-extrabold text-blue-700 text-sm">${normalHours} + ${activeEmp.lemburHours} = ${totalManHours} Jam</span>
                 </div>
             `;
             document.getElementById('timesheetModal').classList.remove('hidden');
@@ -289,6 +298,10 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('p', 'mm', 'a4');
             
+            const hoursPerDay = activeEmp.sistem_kerja === "Shift" ? 12 : 9;
+            const normalHours = activeEmp.kehadiranDays * hoursPerDay;
+            const totalManHours = normalHours + activeEmp.lemburHours;
+
             doc.setFont("helvetica", "bold");
             doc.setFontSize(14);
             doc.text("RINCIAN KERTAS KERJA ABSEN & TIMESHEET", 14, 15);
@@ -301,9 +314,10 @@
             doc.setFont("helvetica", "normal");
             doc.text(`Penempatan: ${activeEmp.penempatan}`, 14, y); y += 8;
             doc.text(`Grade: ${activeEmp.grade}`, 14, y); y += 8;
-            doc.text(`Kehadiran: ${activeEmp.kehadiran}`, 14, y); y += 8;
-            doc.text(`Total Lembur (OT): ${activeEmp.total_lembur}`, 14, y); y += 8;
-            doc.text(`Total Man Hours: ${activeEmp.total_man_hours}`, 14, y);
+            doc.text(`Kehadiran: ${activeEmp.kehadiranDays} Hari (${normalHours} Jam Normal)`, 14, y); y += 8;
+            doc.text(`Total Lembur (OT): ${activeEmp.lemburHours} Jam`, 14, y); y += 8;
+            doc.setFont("helvetica", "bold");
+            doc.text(`Total Man Hours: ${totalManHours} Jam`, 14, y);
 
             doc.save(`Timesheet_${activeEmp.nama.replace(/\s+/g, '_')}.pdf`);
         }
