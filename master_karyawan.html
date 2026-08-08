@@ -61,9 +61,10 @@
             </div>
             <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
                 <p class="text-xs text-slate-500 font-medium mb-1">Aksi Data Laporan</p>
-                <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition flex items-center justify-center gap-2 shadow-sm">
-                    <span>📥</span> Download / Export Excel
-                </button>
+                <!-- Tombol Download diarahkan langsung ke file asli Google Drive / Sheet -->
+                <a href="https://docs.google.com/spreadsheets/d/1Mu_POmiVk4A8ISsIhff5O0o4QH1grADjFCYHX7Vtx50/export?format=xlsx&gid=580855545" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-2 shadow-sm text-center">
+                    <span>📥</span> Download File Master Asli (Excel)
+                </a>
             </div>
         </div>
 
@@ -111,11 +112,10 @@
 
     </main>
 
-    <!-- Skrip Pembacaan Data & Fallback Otomatis -->
+    <!-- Skrip Pembacaan Data -->
     <script>
         let globalMasterData = [];
 
-        // Data cadangan langsung jika file JSON lokal terblokir browser
         const fallbackData = [
             { "No": 1, "Nama Karyawan": "Sujianto M. Batias", "Job Title": "Driver Ambulance", "Fungsi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
             { "No": 2, "Nama Karyawan": "Ansar Mansur", "Job Title": "Pemuka FS", "Fungsi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
@@ -191,35 +191,6 @@
         document.getElementById('searchMaster').addEventListener('input', filterData);
         document.getElementById('filterSistemKerja').addEventListener('change', filterData);
         document.getElementById('filterDivisi').addEventListener('change', filterData);
-
-        function exportToExcel() {
-            if (!globalMasterData || globalMasterData.length === 0) {
-                alert("Tidak ada data untuk diekspor!");
-                return;
-            }
-
-            let csvContent = "data:text/csv;charset=utf-8,No,Nama Pekerja,Jabatan,Divisi / Fungsi,Sistem Kerja,Sisa Kontrak\r\n";
-            
-            globalMasterData.forEach((emp, index) => {
-                let row = [
-                    emp["No"] || (index + 1),
-                    `"${emp["Nama Karyawan"] || '-'}"`,
-                    `"${emp["Job Title"] || '-'}"`,
-                    `"${emp["Fungsi"] || '-'}"`,
-                    `"${emp["Sistem Kerja"] || 'Shift'}"`,
-                    `"${emp["Sisa Kontrak"] || '120 Hari'}"`
-                ];
-                csvContent += row.join(",") + "\r\n";
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "Master_Data_Karyawan_TAD_Zona13.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
 
         document.addEventListener('DOMContentLoaded', loadMasterKaryawan);
     </script>
