@@ -124,7 +124,7 @@
 
     </main>
 
-    <!-- Skrip Parsing Kolom Vertikal Google Sheet secara Real-Time -->
+    <!-- Skrip Parsing Presisi Tinggi Sesuai Struktur Google Sheet Asli -->
     <script>
         let globalMasterData = [];
         const googleSheetCsvUrl = "https://docs.google.com/spreadsheets/d/1Mu_POmiVk4A8ISsIhff5O0o4QH1grADjFCYHX7Vtx50/export?format=csv&gid=580855545";
@@ -138,19 +138,19 @@
                         const rows = results.data;
                         let parsedEmployees = [];
 
-                        // Berdasarkan struktur Google Sheet rujukan Anda:
-                        // Kolom data karyawan dimulai dari indeks kolom ke-4 (kolom E) hingga akhir (52 orang)
-                        for (let cIdx = 4; cIdx < rows[5].length; cIdx++) {
+                        // Iterasi kolom mulai dari indeks 4 (kolom E) hingga 52 personel total
+                        for (let cIdx = 4; cIdx < 4 + 52; cIdx++) {
+                            if (!rows[5] || !rows[5][cIdx]) continue;
                             let name = rows[5][cIdx] ? rows[5][cIdx].trim() : "";
-                            if (!name || name === "" || name.includes("Nama Karyawan") || name.includes("No Pekerja")) continue;
+                            if (!name || name === "" || name.includes("Nama Karyawan")) continue;
 
-                            let job = rows[6][cIdx] ? rows[6][cIdx].trim() : "-";
-                            let div = rows[11][cIdx] ? rows[11][cIdx].trim() : "HSSE";
-                            let shiftVal = rows[24][cIdx] ? rows[24][cIdx].trim() : "Non Shift";
-                            let contractRem = rows[36][cIdx] ? rows[36][cIdx].trim() : "115";
+                            let job = (rows[6] && rows[6][cIdx]) ? rows[6][cIdx].trim() : "-";
+                            let div = (rows[11] && rows[11][cIdx]) ? rows[11][cIdx].trim() : "HSSE";
+                            let shiftVal = (rows[24] && rows[24][cIdx]) ? rows[24][cIdx].trim() : "Non Shift";
+                            let contractRem = (rows[36] && rows[36][cIdx]) ? rows[36][cIdx].trim() : "115";
 
                             let sistemKerja = (shiftVal.includes("Shift") && !shiftVal.includes("Non")) ? "Shift" : "Non Shift";
-                            let sisaKontrak = contractRem + " Hari";
+                            let sisaKontrak = contractRem.includes("Hari") ? contractRem : contractRem + " Hari";
 
                             parsedEmployees.push({
                                 "Nama Karyawan": name,
@@ -174,7 +174,7 @@
                     }
                 },
                 error: function(err) {
-                    console.warn("Gagal terhubung online:", err);
+                    console.warn("Gagal terhubung online, menggunakan cache data rujukan:", err);
                     loadFallbackData();
                 }
             });
@@ -305,7 +305,7 @@
         document.getElementById('filterSistemKerja').addEventListener('change', filterData);
         document.getElementById('filterDivisi').addEventListener('change', filterData);
 
-        // Jalankan sinkronisasi saat halaman dimuat
+        // Jalankan sinkronisasi online saat halaman dimuat
         document.addEventListener('DOMContentLoaded', () => {
             fetchRealtimeGoogleSheetData();
         });
