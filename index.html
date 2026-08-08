@@ -17,13 +17,13 @@
                 <p class="text-xs text-slate-400 mt-1">Field Donggi Matindok</p>
             </div>
             <nav class="space-y-2">
-                <a href="#" class="flex items-center gap-3 px-4 py-3 bg-blue-600 rounded-lg text-white font-medium transition">
+                <a href="index.html" class="flex items-center gap-3 px-4 py-3 bg-blue-600 rounded-lg text-white font-medium transition">
                     <span>📊</span> Dashboard Utama
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition">
+                <a href="master_karyawan.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition">
                     <span>👥</span> Master Karyawan
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition">
+                <a href="timesheet.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition">
                     <span>📅</span> Time Sheet & Absen
                 </a>
                 <a href="engine_payroll.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition">
@@ -82,7 +82,7 @@
             </div>
         </div>
 
-        <!-- Tabel Data Cadangan / Wadah Dinamis untuk Data Google Sheet -->
+        <!-- Tabel Data Cadangan / Wadah Dinamis untuk Data -->
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
             <div class="flex justify-between items-center mb-4">
                 <h4 class="font-bold text-slate-800">Daftar Ringkas Personel</h4>
@@ -101,9 +101,8 @@
                         </tr>
                     </thead>
                     <tbody id="employeeTableBody" class="divide-y divide-slate-100 text-slate-700">
-                        <!-- Data akan otomatis diisi/disinkronkan dari Google Sheet melalui skrip di belakang layar -->
                         <tr>
-                            <td colspan="6" class="p-4 text-center text-slate-400 text-xs">Menunggu sinkronisasi data dari Google Sheet...</td>
+                            <td colspan="6" class="p-4 text-center text-slate-400 text-xs">Menunggu sinkronisasi data...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -112,7 +111,7 @@
 
     </main>
 
-    <!-- Menghubungkan kembali ke file script.js -->
+    <!-- Panggil file skrip -->
     <script src="scripts/script.js"></script>
 </body>
 </html>
