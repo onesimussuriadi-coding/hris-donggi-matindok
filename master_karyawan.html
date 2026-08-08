@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Karyawan - HRIS Field Donggi Matindok</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans flex h-screen overflow-hidden">
+
+    <!-- Sidebar Navigasi Kiri -->
+    <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between p-6">
+        <div>
+            <div class="mb-8">
+                <h1 class="text-xl font-bold tracking-wide">HRIS Portal</h1>
+                <p class="text-xs text-slate-400 mt-1">Field Donggi Matindok</p>
+            </div>
+            <nav class="space-y-2">
+                <a href="index.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition">
+                    <span>📊</span> Dashboard Utama
+                </a>
+                <a href="master_karyawan.html" class="flex items-center gap-3 px-4 py-3 bg-blue-600 rounded-lg text-white font-medium transition">
+                    <span>👥</span> Master Karyawan
+                </a>
+                <a href="timesheet.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition">
+                    <span>📅</span> Time Sheet & Absen
+                </a>
+                <a href="engine_payroll.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition">
+                    <span>💰</span> Engine Payroll
+                </a>
+            </nav>
+        </div>
+        <div class="border-t border-slate-800 pt-4">
+            <p class="text-sm font-semibold">Onesimus Suriadi</p>
+            <p class="text-xs text-slate-400">President Director</p>
+        </div>
+    </aside>
+
+    <!-- Konten Utama Master Karyawan -->
+    <main class="flex-1 overflow-y-auto p-8">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-slate-800">Master Data Karyawan</h2>
+            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1.5 rounded-full">Database Terintegrasi</span>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+            <div class="flex justify-between items-center mb-4">
+                <p class="text-xs text-slate-500">Menampilkan seluruh data tenaga kerja aktif.</p>
+                <input type="text" id="searchMasterInput" placeholder="Cari nama atau jabatan..." class="px-3 py-1.5 text-xs border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-50 text-slate-600 border-b text-xs uppercase">
+                            <th class="p-3">No</th>
+                            <th class="p-3">Nama Karyawan</th>
+                            <th class="p-3">Job Title</th>
+                            <th class="p-3">Divisi / Fungsi</th>
+                            <th class="p-3">Lokasi</th>
+                            <th class="p-3">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="masterTableBody" class="divide-y divide-slate-100 text-slate-700">
+                        <tr>
+                            <td colspan="6" class="p-4 text-center text-slate-400 text-xs">Memuat database master karyawan...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Skrip khusus Master Karyawan untuk membaca JSON -->
+    <script>
+        async function loadMasterData() {
+            try {
+                const response = await fetch('employee_data.json');
+                const data = await response.json();
+                const tbody = document.getElementById('masterTableBody');
+                tbody.innerHTML = '';
+                
+                data.forEach(emp => {
+                    const row = document.createElement('tr');
+                    row.className = "hover:bg-slate-50 border-b border-slate-100 text-xs";
+                    row.innerHTML = `
+                        <td class="p-3 text-slate-500">${emp["No"] || '-'}</td>
+                        <td class="p-3 font-semibold text-slate-800">${emp["Nama Karyawan"] || '-'}</td>
+                        <td class="p-3 text-slate-600">${emp["Job Title"] || '-'}</td>
+                        <td class="p-3 text-slate-600">${emp["Fungsi"] || '-'}</td>
+                        <td class="p-3 text-slate-600">${emp["Location"] || '-'}</td>
+                        <td class="p-3"><span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded font-medium">Aktif</span></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (err) {
+                console.error("Gagal memuat master data:", err);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', loadMasterData);
+    </script>
+</body>
+</html>
