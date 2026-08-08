@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Karyawan - HRIS Field Donggi Matindok</title>
+    <title>Master Karyawan TAD - Field Donggi Matindok</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 font-sans flex h-screen overflow-hidden">
 
-    <!-- Sidebar Navigasi Kiri -->
+    <!-- Sidebar Navigasi Kiri (Konsisten) -->
     <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between p-6">
         <div>
             <div class="mb-8">
@@ -36,67 +37,109 @@
         </div>
     </aside>
 
-    <!-- Konten Utama Master Karyawan -->
+    <!-- Konten Utama Halaman Master Karyawan -->
     <main class="flex-1 overflow-y-auto p-8">
+        
+        <!-- Header Atas -->
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold text-slate-800">Master Data Karyawan</h2>
-            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1.5 rounded-full">Database Terintegrasi</span>
+            <h2 class="text-2xl font-bold text-slate-800">Master Data Karyawan TAD</h2>
+            <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full">Zona 13 - Field</span>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-            <div class="flex justify-between items-center mb-4">
-                <p class="text-xs text-slate-500">Menampilkan seluruh data tenaga kerja aktif.</p>
-                <input type="text" id="searchMasterInput" placeholder="Cari nama atau jabatan..." class="px-3 py-1.5 text-xs border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
+        <!-- Kartu Statistik Atas -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                <p class="text-xs text-slate-500 font-medium mb-1">Total Karyawan (TAD)</p>
+                <p class="text-3xl font-extrabold text-slate-900">52 Orang</p>
             </div>
+            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                <p class="text-xs text-slate-500 font-medium mb-1">Komposisi Sistem Kerja</p>
+                <p class="text-lg font-bold text-slate-800">36 Shift | 16 Non Shift</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
+                <p class="text-xs text-slate-500 font-medium mb-1">Aksi Data Laporan</p>
+                <button onclick="alert('Menyiapkan file ekspor Excel...')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition flex items-center justify-center gap-2">
+                    <span>📥</span> Download / Export Excel
+                </button>
+            </div>
+        </div>
+
+        <!-- Bagian Tabel & Filter -->
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+                <h4 class="font-bold text-slate-800">Daftar Karyawan TAD (Lengkap 52 Orang)</h4>
+                <div class="flex flex-wrap gap-3 w-full md:w-auto">
+                    <select class="px-3 py-2 text-xs border rounded-xl bg-slate-50 text-slate-600 focus:outline-none">
+                        <option>Semua Sistem Kerja</option>
+                        <option>Shift</option>
+                        <option>Non Shift</option>
+                    </select>
+                    <select class="px-3 py-2 text-xs border rounded-xl bg-slate-50 text-slate-600 focus:outline-none">
+                        <option>Semua Divisi</option>
+                        <option>HSSE</option>
+                        <option>SCM</option>
+                        <option>Legal & Relation</option>
+                    </select>
+                    <input type="text" id="searchMaster" placeholder="Cari nama atau jabatan..." class="px-3 py-2 text-xs border rounded-xl focus:outline-none w-64">
+                </div>
+            </div>
+
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-sm">
                     <thead>
                         <tr class="bg-slate-50 text-slate-600 border-b text-xs uppercase">
                             <th class="p-3">No</th>
-                            <th class="p-3">Nama Karyawan</th>
-                            <th class="p-3">Job Title</th>
+                            <th class="p-3">Nama Pekerja</th>
+                            <th class="p-3">Jabatan</th>
                             <th class="p-3">Divisi / Fungsi</th>
-                            <th class="p-3">Lokasi</th>
-                            <th class="p-3">Status</th>
+                            <th class="p-3">Sistem Kerja</th>
+                            <th class="p-3">Sisa Kontrak</th>
+                            <th class="p-3 text-center">Aksi Profil</th>
                         </tr>
                     </thead>
                     <tbody id="masterTableBody" class="divide-y divide-slate-100 text-slate-700">
                         <tr>
-                            <td colspan="6" class="p-4 text-center text-slate-400 text-xs">Memuat database master karyawan...</td>
+                            <td colspan="7" class="p-6 text-center text-slate-400 text-xs">Memuat database master karyawan...</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+
     </main>
 
-    <!-- Skrip khusus Master Karyawan untuk membaca JSON -->
+    <!-- Skrip Pembacaan Data JSON ke Tabel -->
     <script>
-        async function loadMasterData() {
+        async function loadMasterKaryawan() {
             try {
                 const response = await fetch('employee_data.json');
                 const data = await response.json();
                 const tbody = document.getElementById('masterTableBody');
                 tbody.innerHTML = '';
                 
-                data.forEach(emp => {
+                data.forEach((emp, index) => {
                     const row = document.createElement('tr');
-                    row.className = "hover:bg-slate-50 border-b border-slate-100 text-xs";
+                    row.className = "hover:bg-slate-50 border-b border-slate-100 text-xs transition";
                     row.innerHTML = `
-                        <td class="p-3 text-slate-500">${emp["No"] || '-'}</td>
-                        <td class="p-3 font-semibold text-slate-800">${emp["Nama Karyawan"] || '-'}</td>
+                        <td class="p-3 text-slate-500">${emp["No"] || (index + 1)}</td>
+                        <td class="p-3 font-bold text-slate-800">${emp["Nama Karyawan"] || '-'}</td>
                         <td class="p-3 text-slate-600">${emp["Job Title"] || '-'}</td>
                         <td class="p-3 text-slate-600">${emp["Fungsi"] || '-'}</td>
-                        <td class="p-3 text-slate-600">${emp["Location"] || '-'}</td>
-                        <td class="p-3"><span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded font-medium">Aktif</span></td>
+                        <td class="p-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md font-semibold">Shift</span></td>
+                        <td class="p-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md font-semibold">120 Hari</span></td>
+                        <td class="p-3 text-center">
+                            <button onclick="alert('Membuka profil: ${emp["Nama Karyawan"]}')" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-semibold transition">
+                                👁️ Detail
+                            </button>
+                        </td>
                     `;
                     tbody.appendChild(row);
                 });
             } catch (err) {
-                console.error("Gagal memuat master data:", err);
+                console.error("Gagal memuat data:", err);
             }
         }
-        document.addEventListener('DOMContentLoaded', loadMasterData);
+        document.addEventListener('DOMContentLoaded', loadMasterKaryawan);
     </script>
 </body>
 </html>
