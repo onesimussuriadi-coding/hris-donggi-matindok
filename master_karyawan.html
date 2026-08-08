@@ -53,7 +53,7 @@
             </span>
         </div>
 
-        <!-- Kartu Statistik Atas & Tombol Dropdown Edit / Update + Download -->
+        <!-- Kartu Statistik Atas & Tombol Dropdown Proses/Edit + Download -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
                 <p class="text-xs text-slate-500 font-medium mb-1">Total Karyawan (TAD)</p>
@@ -64,40 +64,34 @@
                 <p class="text-lg font-bold text-slate-800">36 Shift | 16 Non Shift</p>
             </div>
             
-            <!-- Kotak Aksi: Dropdown Proses/Edit Google Sheet & Tombol Download -->
+            <!-- Kotak Aksi: Tombol Hijau Proses/Edit & Download -->
             <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between relative">
                 <p class="text-xs text-slate-500 font-medium mb-1">Aksi Dokumen Master</p>
                 <div class="grid grid-cols-2 gap-2">
                     
-                    <!-- 1. Dropdown Tombol Proses / Edit Google Sheet -->
+                    <!-- 1. Tombol Dropdown Proses / Edit Google Sheet (Warna Hijau) -->
                     <div class="relative">
-                        <button onclick="toggleDropdown(event)" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-2.5 rounded-xl transition flex items-center justify-center gap-1 shadow-sm text-center">
+                        <button onclick="toggleDropdown(event)" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm text-center">
                             <span>🗄️</span> Proses / Edit ▾
                         </button>
-                        <!-- Menu Daftar File yang Dapat Diedit -->
-                        <div id="editDropdownMenu" class="hidden absolute right-0 mt-2 w-64 bg-white border border-slate-200 rounded-xl shadow-xl z-50 p-2 space-y-1">
+                        <!-- Menu Daftar File Master (Hanya 1 File Utama di Atas) -->
+                        <div id="editDropdownMenu" class="hidden absolute right-0 mt-2 w-72 bg-white border border-slate-200 rounded-xl shadow-xl z-50 p-2 space-y-1">
                             <p class="text-[10px] text-slate-400 font-bold px-3 py-1 uppercase tracking-wider">Pilih File Master Edit:</p>
                             
-                            <a href="https://docs.google.com/spreadsheets/d/1Mu_POmiVk4A8ISsIhff5O0o4QH1grADjFCYHX7Vtx50/edit?gid=580855545" target="_blank" class="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition">
-                                <span class="text-emerald-600">📄</span> 7203250036 (Master TAD)
-                            </a>
-                            <a href="https://docs.google.com/spreadsheets/d/1Mu_POmiVk4A8ISsIhff5O0o4QH1grADjFCYHX7Vtx50/edit?gid=580855545" target="_blank" class="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition">
-                                <span class="text-emerald-600">📄</span> 7207250142 (Kontrak Shift)
-                            </a>
-                            <a href="https://docs.google.com/spreadsheets/d/1Mu_POmiVk4A8ISsIhff5O0o4QH1grADjFCYHX7Vtx50/edit?gid=580855545" target="_blank" class="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition">
-                                <span class="text-emerald-600">📄</span> 7201250141 (Non Shift)
+                            <a href="https://docs.google.com/spreadsheets/d/1Mu_POmiVk4A8ISsIhff5O0o4QH1grADjFCYHX7Vtx50/edit?gid=580855545" target="_blank" class="flex items-center gap-2.5 px-3 py-2.5 text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition">
+                                <span class="text-emerald-600 text-sm">📄</span> 7203250036 (Master TAD)
                             </a>
 
-                            <!-- Opsi tambahan untuk upload file lokal jika diperlukan -->
-                            <label class="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-blue-600 hover:bg-blue-50 rounded-lg transition cursor-pointer border-t border-slate-100 mt-1 pt-2">
-                                <span>📤</span> Upload File Baru...
+                            <!-- Opsi Upload File Baru di Bagian Bawah -->
+                            <label class="flex items-center gap-2.5 px-3 py-2.5 text-xs font-semibold text-blue-600 hover:bg-blue-50 rounded-lg transition cursor-pointer border-t border-slate-100 mt-1 pt-2">
+                                <span class="text-sm">📤</span> Upload File Baru...
                                 <input type="file" id="excelUploadInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="processUploadedFile(event)">
                             </label>
                         </div>
                     </div>
 
                     <!-- 2. Tombol Download untuk Pengguna Lain -->
-                    <a href="https://docs.google.com/spreadsheets/d/1Mu_POmiVk4A8ISsIhff5O0o4QH1grADjFCYHX7Vtx50/export?format=xlsx&gid=580855545" target="_blank" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-3 py-2.5 rounded-xl transition flex items-center justify-center gap-1 shadow-sm text-center" title="Unduh file master">
+                    <a href="https://docs.google.com/spreadsheets/d/1Mu_POmiVk4A8ISsIhff5O0o4QH1grADjFCYHX7Vtx50/export?format=xlsx&gid=580855545" target="_blank" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-3 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm text-center" title="Unduh file master">
                         <span>📥</span> Download
                     </a>
 
