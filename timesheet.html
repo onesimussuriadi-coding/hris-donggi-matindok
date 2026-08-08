@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Time Sheet & Absen - Field Donggi Matindok</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 font-sans flex h-screen overflow-hidden">
 
-    <!-- Sidebar Navigasi Kiri (Konsisten) -->
+    <!-- Sidebar Navigasi Kiri -->
     <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between p-6">
         <div>
             <div class="mb-8">
@@ -37,16 +36,13 @@
         </div>
     </aside>
 
-    <!-- Konten Utama Halaman Time Sheet & Absen -->
+    <!-- Konten Utama -->
     <main class="flex-1 overflow-y-auto p-8">
-        
-        <!-- Header Atas -->
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
             <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full">Zona 13 - Field</span>
         </div>
 
-        <!-- Kartu Utama Rekap Lembur & Man Hours -->
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-8">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                 <div>
@@ -67,7 +63,6 @@
                 </div>
             </div>
 
-            <!-- 4 Kartu Parameter dengan Aksen Garis Hijau -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="bg-slate-50/50 p-4 rounded-xl border-l-4 border-emerald-600 border border-slate-100">
                     <p class="text-[11px] text-slate-500 font-medium">Rentang Tanggal</p>
@@ -88,7 +83,6 @@
             </div>
         </div>
 
-        <!-- Tabel Rincian Kehadiran & Man Hours -->
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-sm">
@@ -111,14 +105,13 @@
                 </table>
             </div>
         </div>
-
     </main>
 
-    <!-- Skrip Pembacaan Data JSON ke Tabel Time Sheet -->
     <script>
         async function loadTimeSheet() {
             try {
                 const response = await fetch('employee_data.json');
+                if (!response.ok) throw new Error('File tidak ditemukan');
                 const data = await response.json();
                 const tbody = document.getElementById('timesheetTableBody');
                 tbody.innerHTML = '';
@@ -147,7 +140,8 @@
                     tbody.appendChild(row);
                 });
             } catch (err) {
-                console.error("Gagal memuat timesheet:", err);
+                console.error(err);
+                document.getElementById('timesheetTableBody').innerHTML = `<tr><td colspan="7" class="p-6 text-center text-rose-500 text-xs">Gagal memuat file database employee_data.json</td></tr>`;
             }
         }
         document.addEventListener('DOMContentLoaded', loadTimeSheet);
