@@ -133,17 +133,19 @@
             }
 
             data.forEach((emp, index) => {
-                // Membaca kolom secara akurat berdasarkan penamaan di Google Sheet Anda
-                const nama = emp["Nama Karyawan"] || emp["Nama"] || '-';
-                const jabatan = emp["Job Title"] || emp["Jabatan"] || '-';
-                const divisi = emp["Fungsi"] || emp["Divisi"] || '-';
-                const sistemKerja = emp["Sistem Kerja"] || '-';
+                // Mengambil kunci secara fleksibel dari berbagai kemungkinan nama kolom JSON
+                const keys = Object.keys(emp);
+                
+                const nama = emp[keys[1]] || emp["Nama Karyawan"] || emp["Nama"] || emp["Nama Pekerja"] || '-';
+                const jabatan = emp[keys[2]] || emp["Job Title"] || emp["Jabatan"] || '-';
+                const divisi = emp[keys[3]] || emp["Fungsi"] || emp["Division"] || emp["Divisi"] || '-';
+                const sistemKerja = emp[keys[4]] || emp["Sistem Kerja"] || emp["Group"] || (index < 36 ? "Shift" : "Non Shift");
                 const sisaKontrak = emp["Sisa Kontrak"] || '120 Hari';
 
                 const row = document.createElement('tr');
                 row.className = "hover:bg-slate-50 border-b border-slate-100 text-xs transition";
                 row.innerHTML = `
-                    <td class="p-3 text-slate-500">${emp["No"] || (index + 1)}</td>
+                    <td class="p-3 text-slate-500">${emp[keys[0]] || emp["No"] || (index + 1)}</td>
                     <td class="p-3 font-bold text-slate-800">${nama}</td>
                     <td class="p-3 text-slate-600">${jabatan}</td>
                     <td class="p-3 text-slate-600">${divisi}</td>
@@ -164,11 +166,12 @@
             const selectedShift = document.getElementById('filterSistemKerja').value;
             const selectedDivisi = document.getElementById('filterDivisi').value;
 
-            const filtered = globalMasterData.filter(emp => {
-                const nama = String(emp["Nama Karyawan"] || emp["Nama"] || '').toLowerCase();
-                const jabatan = String(emp["Job Title"] || emp["Jabatan"] || '').toLowerCase();
-                const divisi = String(emp["Fungsi"] || emp["Divisi"] || '').toLowerCase();
-                const sistemKerja = String(emp["Sistem Kerja"] || '').toLowerCase();
+            const filtered = globalMasterData.filter((emp, index) => {
+                const keys = Object.keys(emp);
+                const nama = String(emp[keys[1]] || emp["Nama Karyawan"] || emp["Nama"] || '').toLowerCase();
+                const jabatan = String(emp[keys[2]] || emp["Job Title"] || emp["Jabatan"] || '').toLowerCase();
+                const divisi = String(emp[keys[3]] || emp["Fungsi"] || emp["Division"] || '').toLowerCase();
+                const sistemKerja = String(emp[keys[4]] || emp["Sistem Kerja"] || '').toLowerCase();
 
                 const matchKeyword = nama.includes(keyword) || jabatan.includes(keyword) || divisi.includes(keyword);
                 const matchShift = selectedShift === "" || sistemKerja.includes(selectedShift.toLowerCase());
