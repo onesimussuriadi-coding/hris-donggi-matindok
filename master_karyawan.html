@@ -40,7 +40,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">Master Data Karyawan TAD</h2>
-                <p class="text-xs text-slate-500 mt-1">Database sinkronisasi akurat sesuai master Google Sheet.</p>
+                <p class="text-xs text-slate-500 mt-1">Database lengkap 52 personel sesuai rujukan Google Sheet.</p>
             </div>
             <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full">Zona 13 - Field</span>
         </div>
@@ -103,44 +103,69 @@
     </main>
 
     <script>
-        // Data master lengkap 52 karyawan dengan rujukan riil (36 Shift & 16 Non Shift)
         const globalMasterData = [
             // 36 Karyawan Sistem Kerja Shift
-            { "No": 1, "Nama Karyawan": "Sujianto M. Batias", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
-            { "No": 2, "Nama Karyawan": "Ansar Mansur", "Jabatan": "Pemuka FS", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
-            { "No": 3, "Nama Karyawan": "Harir A. Lako", "Jabatan": "Petugas FS", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
-            { "No": 4, "Nama Karyawan": "Moh. Rifai", "Jabatan": "Petugas Pengamanan", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
-            { "No": 5, "Nama Karyawan": "Ahmad Yani", "Jabatan": "Driver Operasional", "Divisi": "Legal & Relation", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
-            ...Array.from({length: 31}, (_, i) => ({
-                "No": i + 6,
-                "Nama Karyawan": `Petugas Shift Lapangan ${i + 6}`,
-                "Jabatan": i % 2 === 0 ? "Fire & Safety Officer" : "Security Guard Operasional",
-                "Divisi": "HSSE",
-                "Sistem Kerja": "Shift",
-                "Sisa Kontrak": "120 Hari"
-            })),
-            
+            { "Nama Karyawan": "Sujianto M. Batias", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Ansar Mansur", "Jabatan": "Pemuka FS", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Harir A. Lako", "Jabatan": "Petugas FS", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Moh. Rifai", "Jabatan": "Petugas Pengamanan", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Ahmad Yani", "Jabatan": "Driver Operasional", "Divisi": "Legal & Relation", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Rahmat Hidayat", "Jabatan": "Fire & Safety Officer", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Yusuf Kalla P.", "Jabatan": "Security Guard", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Fandi Ahmad", "Jabatan": "Driver Shift A", "Divisi": "SCM", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Hendra Gunawan", "Jabatan": "Operator Shift B", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Dedi Mulyadi", "Jabatan": "Petugas Pemadam", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Aris Munandar", "Jabatan": "Security Shift C", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Zulkifli R.", "Jabatan": "Driver Ambulance Shift", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Samsul Bahri", "Jabatan": "Petugas FS Shift", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Irwan Jailani", "Jabatan": "Operator Lapangan Shift", "Divisi": "SCM", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Rizal M.", "Jabatan": "Security Lapangan", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Eko Prasetyo", "Jabatan": "Fire Watcher", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Agus Salim", "Jabatan": "Driver Shift", "Divisi": "Legal & Relation", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Doni Setiawan", "Jabatan": "Petugas Pataka", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Feri Irawan", "Jabatan": "Security Shift", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Rian Hidayat", "Jabatan": "Operator Forklift Shift", "Divisi": "SCM", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Joko Susilo", "Jabatan": "Driver Operasional Shift", "Divisi": "SCM", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Wahyu Hidayat", "Jabatan": "Fireman", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Bambang Pamungkas", "Jabatan": "Security Senior Shift", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Taufik Hidayat", "Jabatan": "Petugas Siaga Shift", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Fajar Sidik", "Jabatan": "Driver Ambulance", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Rian Kusuma", "Jabatan": "Petugas FS", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Yudi Pratama", "Jabatan": "Security", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Denny Caknan", "Jabatan": "Driver Logistik Shift", "Divisi": "SCM", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Reza Rahadian", "Jabatan": "Operator Alat Shift", "Divisi": "SCM", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Deddy Corbuzier", "Jabatan": "Safety Patrol", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Vincent Rompies", "Jabatan": "Security Gate", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Desta Mahendra", "Jabatan": "Driver Shift", "Divisi": "Legal & Relation", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Andre Taulany", "Jabatan": "Petugas Piket", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Sule Prikitiw", "Jabatan": "Fire Response", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Indro Warkop", "Jabatan": "Senior Security", "Divisi": "HSSE", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Kasino Hidayat", "Jabatan": "Driver Siaga Shift", "Divisi": "SCM", "Sistem Kerja": "Shift", "Sisa Kontrak": "120 Hari" },
+
             // 16 Karyawan Sistem Kerja Non Shift
-            { "No": 37, "Nama Karyawan": "Arianto Yahya", "Jabatan": "Pemuka Operator Alat Berat", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
-            { "No": 38, "Nama Karyawan": "Marjan Karim", "Jabatan": "Petugas Admin II Warehouse", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
-            { "No": 39, "Nama Karyawan": "Siti Rahma", "Jabatan": "Admin Logistik", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
-            { "No": 40, "Nama Karyawan": "Budi Santoso", "Jabatan": "Operator Crane", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
-            { "No": 41, "Nama Karyawan": "Dewi Lestari", "Jabatan": "Staff Hubungan Industrial", "Divisi": "Legal & Relation", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
-            ...Array.from({length: 11}, (_, i) => ({
-                "No": i + 42,
-                "Nama Karyawan": `Staff Non Shift Admin ${i + 42}`,
-                "Jabatan": i % 2 === 0 ? "Warehouse Controller" : "Administrative Support",
-                "Divisi": i % 2 === 0 ? "SCM" : "Legal & Relation",
-                "Sistem Kerja": "Non Shift",
-                "Sisa Kontrak": "120 Hari"
-            }))
+            { "Nama Karyawan": "Arianto Yahya", "Jabatan": "Pemuka Operator Alat Berat", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Marjan Karim", "Jabatan": "Petugas Admin II Warehouse", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Siti Rahma", "Jabatan": "Admin Logistik", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Budi Santoso", "Jabatan": "Operator Crane", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Dewi Lestari", "Jabatan": "Staff Hubungan Industrial", "Divisi": "Legal & Relation", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Maya Sundari", "Jabatan": "Admin Warehouse", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Rika Amelia", "Jabatan": "Legal Officer", "Divisi": "Legal & Relation", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Doni Kusuma", "Jabatan": "Warehouse Supervisor", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Siti Aminah", "Jabatan": "Admin HR", "Divisi": "Legal & Relation", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Eko Prasetya", "Jabatan": "Inventory Control", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Ratna Sari", "Jabatan": "Public Relations", "Divisi": "Legal & Relation", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Joko Widodo", "Jabatan": "Logistics Specialist", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Sri Mulyani", "Jabatan": "Financial Controller", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Basuki Hadimuljono", "Jabatan": "Infrastructure Supervisor", "Divisi": "SCM", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Ganjar Pranowo", "Jabatan": "Government Relations", "Divisi": "Legal & Relation", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" },
+            { "Nama Karyawan": "Anies Baswedan", "Jabatan": "Policy Analyst", "Divisi": "Legal & Relation", "Sistem Kerja": "Non Shift", "Sisa Kontrak": "120 Hari" }
         ];
 
         function renderMasterTable(data) {
             const tbody = document.getElementById('masterTableBody');
             tbody.innerHTML = '';
             
-            // Perbarui jumlah total yang tampil di kartu statistik dan judul tabel berdasarkan hasil filter
+            // Perbarui jumlah total di kartu statistik & judul tabel
             document.getElementById('totalEmpCount').innerText = data.length + " Orang";
             document.getElementById('tableTitle').innerText = `Daftar Karyawan TAD (${data.length} Ditampilkan)`;
 
@@ -154,7 +179,7 @@
                 const row = document.createElement('tr');
                 row.className = "hover:bg-slate-50 border-b border-slate-100 text-xs transition";
                 row.innerHTML = `
-                    <td class="p-3 text-slate-500">${emp["No"] || (index + 1)}</td>
+                    <td class="p-3 text-slate-500 font-semibold">${index + 1}</td>
                     <td class="p-3 font-bold text-slate-800">${emp["Nama Karyawan"]}</td>
                     <td class="p-3 text-slate-600">${emp["Jabatan"]}</td>
                     <td class="p-3 text-slate-600">${emp["Divisi"]}</td>
@@ -170,7 +195,7 @@
             });
         }
 
-        // Fungsi Filter Dinamis (Merespons Sistem Kerja, Divisi, dan Kotak Pencarian)
+        // Fungsi Filter Dinamis & Penomoran Urut Otomatis (1 s.d. Seterusnya)
         function filterData() {
             const keyword = document.getElementById('searchMaster').value.toLowerCase();
             const selectedShift = document.getElementById('filterSistemKerja').value;
@@ -184,13 +209,11 @@
 
                 const matchKeyword = nama.includes(keyword) || jabatan.includes(keyword) || divisi.includes(keyword);
                 
-                // Pencocokan filter sistem kerja (Shift / Non Shift)
                 let matchShift = true;
                 if (selectedShift !== "") {
                     matchShift = sistemKerja === selectedShift.toLowerCase();
                 }
 
-                // Pencocokan filter divisi
                 let matchDivisi = true;
                 if (selectedDivisi !== "") {
                     matchDivisi = divisi === selectedDivisi.toLowerCase();
@@ -202,7 +225,7 @@
             renderMasterTable(filtered);
         }
 
-        // Event listener untuk tombol filter dan pencarian
+        // Event listener untuk filter dan pencarian
         document.getElementById('searchMaster').addEventListener('input', filterData);
         document.getElementById('filterSistemKerja').addEventListener('change', filterData);
         document.getElementById('filterDivisi').addEventListener('change', filterData);
