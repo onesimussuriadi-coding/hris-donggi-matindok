@@ -1,26 +1,58 @@
-<script>
-async function loadData() {
-    // ID Spreadsheet Anda
-    const id = "1DvRQrgT43ycmJ_h5cBCYy5Fijk3oFG9L18p-k42cdpo";
-    const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json`;
-    
-    const res = await fetch(url);
-    const data = await res.json();
-    const rows = data.table.rows;
-    
-    let html = "";
-    // Membaca baris 5 s.d 56 (indeks 4 s.d 55)
-    for(let i=4; i<56; i++) {
-        let r = rows[i].c;
-        if(r[1]) html += `<tr>
-            <td class="p-2 border">${r[1].v}</td>
-            <td class="p-2 border">${r[2].v}</td>
-            <td class="p-2 border">${r[19]?.v || 0}</td>
-            <td class="p-2 border">${r[32]?.v || 0}</td>
-        </tr>`;
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Time Sheet & Absen - Portal HRIS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 font-sans">
+    <div class="p-8">
+        <h2 class="text-2xl font-bold mb-4">Time Sheet & Absen - Live Data</h2>
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-slate-200 text-sm">
+                    <tr>
+                        <th class="p-3">No</th>
+                        <th class="p-3">Nama Karyawan</th>
+                        <th class="p-3">Hari Kerja (T)</th>
+                        <th class="p-3">Jam Lembur (AG)</th>
+                    </tr>
+                </thead>
+                <tbody id="tabel" class="text-sm">
+                    <tr><td colspan="4" class="p-4 text-center">Menghubungkan ke Google Sheet...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+    async function loadData() {
+        const id = "1DvRQrgT43ycmJ_h5cBCYy5Fijk3oFG9L18p-k42cdpo";
+        const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json`;
+        try {
+            const res = await fetch(url);
+            const text = await res.text();
+            const json = JSON.parse(text.substring(47, text.length - 2));
+            const rows = json.table.rows;
+            let html = "";
+            // Membaca baris 5-56 (indeks 4-55)
+            for(let i=4; i<=55; i++) {
+                if(rows[i] && rows[i].c) {
+                    let r = rows[i].c;
+                    html += `<tr>
+                        <td class="p-3 border-t">${r[1]?.v || ''}</td>
+                        <td class="p-3 border-t font-bold">${r[2]?.v || ''}</td>
+                        <td class="p-3 border-t">${r[19]?.v || 0}</td>
+                        <td class="p-3 border-t">${r[32]?.v || 0}</td>
+                    </tr>`;
+                }
+            }
+            document.getElementById("tabel").innerHTML = html;
+        } catch (e) {
+            document.getElementById("tabel").innerHTML = "<tr><td colspan='4' class='p-4 text-red-500'>Gagal load data. Pastikan Google Sheet di-Publish ke Web.</td></tr>";
+        }
     }
-    document.getElementById("tabel").innerHTML = html;
-}
-loadData();
-</script>
-<table id="tabel" class="w-full border"></table>
+    loadData();
+    </script>
+</body>
+</html>
