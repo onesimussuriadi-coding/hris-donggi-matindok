@@ -30,7 +30,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Kalkulasi Lembur Depnaker (1.5x & 2x) & Deteksi Hari Libur Otomatis</p>
+                <p class="text-xs text-slate-500 mt-0.5">Kontrol Manual Jenis Hari (Hari Biasa / Hari Libur) & Jam Normal Akurat</p>
             </div>
             <div class="flex gap-3">
                 <button onclick="bukaModalAbsen('Shift')" class="bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow hover:bg-emerald-800 transition flex items-center gap-2">
@@ -97,7 +97,7 @@
                     </tr>
                 </thead>
                 <tbody id="tabelAbsen" class="divide-y divide-slate-100 text-sm">
-                    <!-- Data dimuat dinamis -->
+                    <!-- Dimuat dinamis -->
                 </tbody>
             </table>
         </div>
@@ -107,7 +107,7 @@
     <div id="modalAbsen" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
         <div class="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl">
             <h3 id="modalTitle" class="text-lg font-bold mb-1 text-slate-800">Input Absen Harian</h3>
-            <p class="text-xs text-slate-500 mb-4">Sistem mendeteksi otomatis hari libur/weekend untuk perhitungan lembur.</p>
+            <p class="text-xs text-slate-500 mb-4">Pilih status jenis hari (Hari Biasa atau Hari Libur/Tanggal Merah) untuk akurasi lembur.</p>
             
             <div class="space-y-4">
                 <div>
@@ -144,17 +144,26 @@
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Status Kehadiran / Histori Harian</label>
-                    <select id="statusKehadiran" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none font-semibold text-emerald-800 bg-emerald-50">
-                        <option value="masuk">✅ Masuk Kerja (Aktif / Reguler)</option>
-                        <option value="off">💤 OFF (Libur Terjadwal)</option>
-                        <option value="cuti">🌴 Cuti Tahunan / Resmi</option>
-                        <option value="izin">📝 Izin Keperluan Pribadi</option>
-                        <option value="sakit">🤒 Sakit (Dengan Keterangan)</option>
-                        <option value="alfa">❌ Alfa (Tanpa Keterangan)</option>
-                        <option value="dinas">✈️ Perjalanan Dinas (Business Trip)</option>
-                    </select>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Status Kehadiran</label>
+                        <select id="statusKehadiran" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none font-semibold text-emerald-800 bg-emerald-50">
+                            <option value="masuk">✅ Masuk Kerja (Aktif / Reguler)</option>
+                            <option value="off">💤 OFF (Libur Terjadwal)</option>
+                            <option value="cuti">🌴 Cuti Tahunan / Resmi</option>
+                            <option value="izin">📝 Izin Keperluan Pribadi</option>
+                            <option value="sakit">🤒 Sakit (Dengan Keterangan)</option>
+                            <option value="alfa">❌ Alfa (Tanpa Keterangan)</option>
+                            <option value="dinas">✈️ Perjalanan Dinas (Business Trip)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Pilihan Jenis Hari</label>
+                        <select id="jenisHari" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none font-semibold text-blue-800 bg-blue-50">
+                            <option value="biasa">📅 Hari Kerja Biasa (Weekday)</option>
+                            <option value="libur">🎉 Hari Libur / Tanggal Merah / Off</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
@@ -176,13 +185,13 @@
         </div>
     </div>
 
-    <!-- MODAL HISTORI & KOREKSI DENGAN RINCIAN LEMBUR -->
+    <!-- MODAL HISTORI & KOREKSI TANGGAL SPESIFIK -->
     <div id="modalHistori" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
         <div class="bg-white w-full max-w-3xl rounded-2xl p-6 shadow-2xl">
             <div class="flex justify-between items-center mb-4">
                 <div>
-                    <h3 id="historiTitle" class="text-lg font-bold text-slate-800">Histori Absen Karyawan</h3>
-                    <p class="text-xs text-slate-500">Rincian jam lembur aktual, konversi, dan status per tanggal.</p>
+                    <h3 id="historiTitle" class="text-lg font-bold text-slate-800">Histori Absen & Rincian Lembur</h3>
+                    <p class="text-xs text-slate-500">Anda dapat menghapus atau mengoreksi tanggal keliru tertentu saja di sini.</p>
                 </div>
                 <button onclick="tutupModalHistori()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">✕</button>
             </div>
@@ -192,7 +201,7 @@
                     <thead class="bg-slate-100 text-slate-600 uppercase sticky top-0">
                         <tr>
                             <th class="p-3">Tanggal Absen</th>
-                            <th class="p-3">Status</th>
+                            <th class="p-3">Status / Jenis Hari</th>
                             <th class="p-3 text-center">Jam Kerja</th>
                             <th class="p-3 text-center">Lembur Aktual</th>
                             <th class="p-3 text-center">Lembur Konversi</th>
@@ -290,7 +299,7 @@
                     tbodyHistori.innerHTML += `
                         <tr class="hover:bg-slate-50">
                             <td class="p-3 font-bold text-slate-700">${h.tanggalStr}</td>
-                            <td class="p-3 font-semibold text-emerald-700">${h.status}</td>
+                            <td class="p-3 font-semibold text-emerald-700">${h.status} (${h.jenisHari || 'Biasa'})</td>
                             <td class="p-3 text-center text-slate-600">${h.jamMasuk} - ${h.jamKeluar}</td>
                             <td class="p-3 text-center font-bold text-slate-700">${h.otAktual} Jam</td>
                             <td class="p-3 text-center font-bold text-blue-600">${h.otKonversi} Jam</td>
@@ -369,26 +378,7 @@
             document.getElementById('modalAbsen').classList.add('hidden');
         }
 
-        // FUNGSI DETEKSI HARI LIBUR NASIONAL & AKHIR PEKAN OTOMATIS
-        function cekApakahHariLibur(tgl, bulanStr, tahun) {
-            const mapBulan = {"Januari":0,"Februari":1,"Maret":2,"April":3,"Mei":4,"Juni":5,"Juli":6,"Agustus":7,"September":8,"Oktober":9,"November":10,"Desember":11};
-            let dateObj = new Date(tahun, mapBulan[bulanStr], tgl);
-            let hari = dateObj.getDay(); // 0 = Minggu, 6 = Sabtu
-
-            // Akhir pekan (Sabtu & Minggu)
-            if (hari === 0 || hari === 6) return true;
-
-            // Daftar Hari Libur Nasional Resmi (Contoh: 17 Agustus, dll.)
-            let liburNasional = [
-                "1-Januari", "17-Agustus", "25-Desember", "1-Mei", "1-Muharram"
-            ];
-            let formatCek = `${tgl}-${bulanStr}`;
-            if (liburNasional.includes(formatCek)) return true;
-
-            return false;
-        }
-
-        // RUMUS KONVERSI LEMBUR DEPANAKER (Jam 1: 1.5x, Jam berikutnya: 2x)
+        // RUMUS KONVERSI DEPNAKER (Jam 1: 1.5x, Jam berikutnya: 2x)
         function hitungKonversiDepnaker(jamAktual) {
             if (jamAktual <= 0) return 0;
             if (jamAktual <= 1) {
@@ -401,6 +391,7 @@
         function simpanAbsenHarian() {
             const selectedNo = parseInt(document.getElementById('pilihKaryawan').value);
             const status = document.getElementById('statusKehadiran').value;
+            const jenisHari = document.getElementById('jenisHari').value; // 'biasa' atau 'libur'
             const tgl = parseInt(document.getElementById('inputTanggal').value);
             const bln = document.getElementById('inputBulan').value;
             const thn = parseInt(document.getElementById('inputTahun').value);
@@ -417,7 +408,6 @@
             
             if(karyawan) {
                 let tanggalStr = `${tgl} ${bln} ${thn}`;
-                let isLibur = cekApakahHariLibur(tgl, bln, thn);
                 
                 let [jamIn, menitIn] = jamMasuk.split(':').map(Number);
                 let [jamOut, menitOut] = jamKeluar.split(':').map(Number);
@@ -431,13 +421,19 @@
                     karyawan.hk += 1;
 
                     if(karyawan.sistem === 'Non Shift') {
-                        if (isLibur) {
-                            // Jika Non-Shift masuk di hari libur/weekend, semua jam kerja dihitung lembur
+                        if (jenisHari === 'libur') {
+                            // Jika dipilih hari libur / tanggal merah, seluruh jam kerja dihitung lembur penuh
                             jamLemburAktual = totalJamKerja;
                         } else {
-                            // Hari kerja biasa, lembur jika lebih dari 8 jam
-                            if(totalJamKerja > 8) {
+                            // Hari kerja biasa: Jam normal 07:00 - 16:00 (8 jam). Hanya lembur jika lewat dari 16:00.
+                            // Contoh: Masuk 07:00, Pulang 16:00 -> totalJamKerja = 9 (termasuk 1 jam istirahat atau jam kerja bersih 8 jam)
+                            // Mari kita pastikan jam kerja bersih 8 jam (07:00 - 16:00 tanpa lembur jika tepat di rentang itu).
+                            if (jamIn <= 7 && jamOut > 16) {
+                                jamLemburAktual = jamOut - 16; // Kelebihan jam di atas pukul 16:00
+                            } else if (totalJamKerja > 8) {
                                 jamLemburAktual = totalJamKerja - 8;
+                            } else {
+                                jamLemburAktual = 0; // Tepat 07:00 - 16:00 = 0 lembur!
                             }
                         }
                         karyawan.makanSiang += 1;
@@ -448,6 +444,9 @@
                         }
                         karyawan.makanMalam += 1;
                     }
+
+                    // Pastikan lembur tidak minus
+                    if(jamLemburAktual < 0) jamLemburAktual = 0;
 
                     // Terapkan rumus konversi Depnaker standar (1.5x dan 2x)
                     jamLemburKonversi = hitungKonversiDepnaker(jamLemburAktual);
@@ -461,6 +460,7 @@
                 karyawan.historiAbsen.push({
                     tanggalStr: tanggalStr,
                     status: status.toUpperCase(),
+                    jenisHari: jenisHari === 'libur' ? 'Libur/Merah' : 'Biasa',
                     jamMasuk: jamMasuk,
                     jamKeluar: jamKeluar,
                     otAktual: jamLemburAktual,
@@ -474,6 +474,7 @@
                     nama: karyawan.name,
                     sistem: karyawan.sistem,
                     status: status.toUpperCase(),
+                    jenisHari: jenisHari,
                     tanggal: tanggalStr,
                     bulan: bln,
                     jamMasuk: jamMasuk,
@@ -492,7 +493,7 @@
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams(payload).toString()
                 }).then(() => {
-                    alert(`SUKSES! Data tgl ${tanggalStr} untuk ${karyawan.name} telah disimpan dengan rincian lembur Depnaker.`);
+                    alert(`SUKSES! Data tgl ${tanggalStr} untuk ${karyawan.name} telah disimpan dengan akurat.`);
                     renderTabel();
                     tutupModal();
                 }).catch((error) => {
