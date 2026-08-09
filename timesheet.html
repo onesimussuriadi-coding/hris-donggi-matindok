@@ -30,7 +30,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Validasi Tanggal Cerdas & Bulan Baku Terhubung Google Cloud</p>
+                <p class="text-xs text-slate-500 mt-0.5">Otomatis Tanggal Hari Ini & Terhubung Google Cloud</p>
             </div>
             <div class="flex gap-3">
                 <button onclick="bukaModalAbsen('Shift')" class="bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow hover:bg-emerald-800 transition flex items-center gap-2">
@@ -53,8 +53,8 @@
                 <p class="text-xs font-bold text-emerald-700 mt-1">☁️ Google Cloud Terhubung</p>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Validasi Input</p>
-                <p class="text-xs font-bold text-emerald-700 mt-1">🛡️ Anti-Salah Ketik (1-31)</p>
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Default Tanggal</p>
+                <p class="text-xs font-bold text-emerald-700 mt-1">🕒 Otomatis Hari Ini (Today)</p>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
                 <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Status Sistem</p>
@@ -92,7 +92,7 @@
     <div id="modalAbsen" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
         <div class="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl">
             <h3 id="modalTitle" class="text-lg font-bold mb-1 text-slate-800">Input Absen Harian</h3>
-            <p class="text-xs text-slate-500 mb-4">Pilih bulan baku, ketik tanggal (1-31) dengan validasi otomatis.</p>
+            <p class="text-xs text-slate-500 mb-4">Tanggal otomatis menunjuk hari ini, dapat disesuaikan jika diperlukan.</p>
             
             <div class="space-y-4">
                 <div>
@@ -101,11 +101,11 @@
                     </select>
                 </div>
                 
-                <!-- INPUT WAKTU DENGAN BULAN BAKU & TANGGAL TERSARING -->
+                <!-- INPUT TANGGAL OTOMATIS HARI INI -->
                 <div class="grid grid-cols-3 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1">Tanggal (1 - 31)</label>
-                        <input type="number" id="inputTanggal" min="1" max="31" value="1" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-center font-bold" placeholder="1-31">
+                        <input type="number" id="inputTanggal" min="1" max="31" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-center font-bold">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1">Bulan (Baku)</label>
@@ -116,7 +116,7 @@
                             <option value="April">April</option>
                             <option value="Mei">Mei</option>
                             <option value="Juni">Juni</option>
-                            <option value="Juli" selected>Juli</option>
+                            <option value="Juli">Juli</option>
                             <option value="Agustus">Agustus</option>
                             <option value="September">September</option>
                             <option value="Oktober">Oktober</option>
@@ -126,7 +126,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1">Tahun</label>
-                        <input type="number" id="inputTahun" value="2026" min="2024" max="2030" class="w-full border rounded-lg p-2 text-sm text-center font-bold focus:ring-2 focus:ring-emerald-500 outline-none">
+                        <input type="number" id="inputTahun" min="2024" max="2030" class="w-full border rounded-lg p-2 text-sm text-center font-bold focus:ring-2 focus:ring-emerald-500 outline-none">
                     </div>
                 </div>
 
@@ -179,7 +179,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT LOGIKA KONEKSI & VALIDASI KETAT -->
+    <!-- SCRIPT LOGIKA KONEKSI & OTOMATIS TANGGAL HARI INI -->
     <script>
         const CLOUD_URL = "https://script.google.com/macros/s/AKfycby1fKpsDqdGhtMira6PqPGdkVFdYTMvr554Zs5OdagaO5bxzSK5trQWQtSAErXei2lX/exec";
 
@@ -238,8 +238,17 @@
 
         function bukaModalAbsen(sistemKerja) {
             document.getElementById('modalTitle').innerText = `Input Absen Harian (${sistemKerja})`;
-            const panelShift = document.getElementById('pilihanJenisShift');
             
+            // SET OTOMATIS TANGGAL HARI INI (TODAY)
+            const today = new Date();
+            document.getElementById('inputTanggal').value = today.getDate();
+            
+            const daftarBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            document.getElementById('inputBulan').value = daftarBulan[today.getMonth()];
+            
+            document.getElementById('inputTahun').value = today.getFullYear();
+
+            const panelShift = document.getElementById('pilihanJenisShift');
             if(sistemKerja === 'Shift') {
                 panelShift.classList.remove('hidden');
                 aturJamShift();
@@ -273,7 +282,7 @@
             const jamKeluar = document.getElementById('jamKeluar').value;
             const tipeShift = document.getElementById('tipeShift').value;
             
-            // VALIDASI KETAT: Mencegah input tanggal di luar 1-31 atau tahun tidak valid
+            // VALIDASI KETAT
             if (isNaN(tgl) || tgl < 1 || tgl > 31) {
                 alert('⚠️ Validasi Gagal: Tanggal harus di antara angka 1 sampai 31.');
                 document.getElementById('inputTanggal').focus();
