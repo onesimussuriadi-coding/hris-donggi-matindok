@@ -1,224 +1,26 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Sheet & Absen - Field Donggi Matindok</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- SheetJS untuk Ekspor Excel -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-</head>
-<body class="bg-slate-100 font-sans antialiased text-slate-800 flex h-screen overflow-hidden">
-
-    <!-- SIDEBAR NAVIGASI KIRI -->
-    <aside class="w-64 bg-[#0B132B] text-white flex flex-col justify-between shrink-0 select-none">
-        <div>
-            <div class="p-6 border-b border-slate-800">
-                <h1 class="text-lg font-bold tracking-wider">HRIS Portal</h1>
-                <p class="text-xs text-slate-400 mt-0.5">Field Donggi Matindok</p>
-            </div>
-            <nav class="p-4 space-y-1.5">
-                <a href="index.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800/60 hover:text-white transition">
-                    <span>📊</span> Dashboard Utama
-                </a>
-                <a href="master_karyawan.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800/60 hover:text-white transition">
-                    <span>👥</span> Master Karyawan
-                </a>
-                <a href="timesheet.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold bg-blue-600 text-white shadow-lg shadow-blue-600/30 transition">
-                    <span>📅</span> Time Sheet & Absen
-                </a>
-                <a href="engine_payroll.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800/60 hover:text-white transition">
-                    <span>💰</span> Engine Payroll
-                </a>
-            </nav>
-        </div>
-        <div class="p-4 border-t border-slate-800 bg-[#070D1F]">
-            <p class="text-sm font-bold text-white">Onesimus Suriadi</p>
-            <p class="text-xs text-slate-400 mt-0.5">President Director</p>
-        </div>
-    </aside>
-
-    <!-- KONTEN UTAMA KANAN -->
-    <div class="flex-1 flex flex-col h-screen overflow-y-auto">
-        <header class="bg-white border-b border-slate-200 px-8 py-4 flex justify-between items-center shrink-0">
-            <div>
-                <h2 class="text-xl font-bold text-slate-900">Time Sheet & Absen</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Periode Gaji: 16 Juni s.d. 15 Juli 2026</p>
-            </div>
-            <div class="flex items-center gap-3">
-                <button onclick="fetchLiveGoogleSheet()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow transition flex items-center gap-2">
-                    <span>🔄 Refresh Real-Time Online</span>
-                </button>
-                <button onclick="exportToExcel()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow transition flex items-center gap-2">
-                    <span>📥 Ekspor ke Excel</span>
-                </button>
-            </div>
-        </header>
-
-        <main class="p-8 max-w-7xl w-full mx-auto space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 border-l-4 border-l-blue-600">
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Karyawan Aktif</p>
-                    <p class="text-3xl font-extrabold text-slate-900 mt-2" id="statCount">0</p>
-                </div>
-                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 border-l-4 border-l-emerald-600">
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Hari Kerja (Col T)</p>
-                    <p class="text-3xl font-extrabold text-slate-900 mt-2" id="statDays">0.0</p>
-                </div>
-                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 border-l-4 border-l-indigo-600">
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Jam Lembur (Col AG)</p>
-                    <p class="text-3xl font-extrabold text-slate-900 mt-2" id="statOT">0.00 <span class="text-base font-semibold text-slate-500">Jam</span></p>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
-                <div class="px-6 py-4 bg-slate-50/50 border-b border-slate-200 flex justify-between items-center">
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-sm">Rekapitulasi Kehadiran & Lembur Pegawai</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Sumber Data Online &bull; Terhubung ke Google Spreadsheet</p>
-                    </div>
-                    <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Live Online Google Sheet Aktif
-                    </span>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-slate-100 text-slate-600 font-semibold text-xs uppercase tracking-wider">
-                                <th class="px-6 py-3.5 border-b border-slate-200 text-center w-16">No (B5:B56)</th>
-                                <th class="px-6 py-3.5 border-b border-slate-200">Nama Karyawan (C5:C56)</th>
-                                <th class="px-6 py-3.5 border-b border-slate-200">Jabatan (F5:F56)</th>
-                                <th class="px-6 py-3.5 border-b border-slate-200">Divisi (E5:E56)</th>
-                                <th class="px-6 py-3.5 border-b border-slate-200">Sistem Kerja (G5:G56)</th>
-                                <th class="px-6 py-3.5 border-b border-slate-200 text-center w-20">Grade</th>
-                                <th class="px-6 py-3.5 border-b border-slate-200 text-center w-28">Hari Kerja (T5:T56)</th>
-                                <th class="px-6 py-3.5 border-b border-slate-200 text-right w-44">Jam Lembur (AG5:AG56)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="employeeTableBody" class="divide-y divide-slate-200 text-sm">
-                            <tr><td colspan="8" class="px-6 py-8 text-center text-slate-400">Menghubungkan ke Google Spreadsheet secara online...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- Script Menggunakan Link Ekspor CSV Publik Google Sheets -->
-    <script>
-        let liveOnlineData = [];
-
-        async function fetchLiveGoogleSheet() {
-            // Menggunakan link publik CSV Google Sheets yang stabil dan tembus akses web
-            const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQja5eB7v4Fa1YYnobGqUkvPZfSSb0nGZ0zLi_8ttbtIPkfC2QTkcnlPkUMgl2y0OI6-Z5MkbBZaAwM/pub?gid=277496189&single=true&output=csv";
-
-            try {
-                const response = await fetch(csvUrl);
-                if (!response.ok) throw new Error("Gagal mengambil data dari Google Sheet");
-                const csvText = await response.text();
-                parseLiveCSV(csvText);
-            } catch (error) {
-                console.error("Koneksi gagal:", error);
-                document.getElementById('employeeTableBody').innerHTML = `<tr><td colspan="8" class="px-6 py-8 text-center text-red-500 font-semibold">Gagal memuat data online. Pastikan Google Sheet sudah di-Publish ke Web (File > Share > Publish to web).</td></tr>`;
-            }
-        }
-
-        function parseLiveCSV(csvText) {
-            const rows = [];
-            let row = [];
-            let inQuotes = false;
-            let val = '';
-            
-            for (let i = 0; i < csvText.length; i++) {
-                let c = csvText[i];
-                if (c === '"') {
-                    inQuotes = !inQuotes;
-                } else if (c === ',' && !inQuotes) {
-                    row.push(val.trim().replace(/^"|"$/g, ''));
-                    val = '';
-                } else if ((c === '\n' || c === '\r') && !inQuotes) {
-                    if (val !== '' || row.length > 0) {
-                        row.push(val.trim().replace(/^"|"$/g, ''));
-                        rows.push(row);
-                        row = [];
-                        val = '';
-                    }
-                } else {
-                    val += c;
-                }
-            }
-            if (val !== '' || row.length > 0) {
-                row.push(val.trim().replace(/^"|"$/g, ''));
-                rows.push(row);
-            }
-
-            liveOnlineData = [];
-            let totalDaysSum = 0;
-            let totalOTSum = 0;
-
-            // Membaca baris 5 sampai 56 secara mutlak sesuai instruksi Cell (Indeks array ke-4 hingga 55)
-            for (let i = 4; i <= 55 && i < rows.length; i++) {
-                let r = rows[i];
-                if (!r || !r[2]) continue; // Lewati baris kosong
-
-                let no = parseInt(r[1]) || (liveOnlineData.length + 1);
-                let name = r[2] || '';
-                let divisi = r[4] || '-';
-                let jabatan = r[5] || '-';
-                let sistem = r[6] || 'Shift';
-                let grade = r[7] || 'E';
-                let days = parseFloat(r[19]) || 0.0;
-                let ot = parseFloat(r[32]) || 0.0;
-
-                totalDaysSum += days;
-                totalOTSum += ot;
-
-                liveOnlineData.push({no, name, jabatan, divisi, sistem, grade, days, ot});
-            }
-
-            renderTableDOM(liveOnlineData, totalDaysSum, totalOT);
-        }
-
-        function renderTableDOM(data, tDays, tOT) {
-            const tbody = document.getElementById('employeeTableBody');
-            tbody.innerHTML = '';
-            
-            data.forEach(item => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition";
-                tr.innerHTML = `
-                    <td class="px-6 py-3.5 border-b border-slate-200 text-center font-semibold text-slate-600">${item.no}</td>
-                    <td class="px-6 py-3.5 border-b border-slate-200 font-bold text-slate-900">${item.name}</td>
-                    <td class="px-6 py-3.5 border-b border-slate-200 text-slate-700">${item.jabatan}</td>
-                    <td class="px-6 py-3.5 border-b border-slate-200"><span class="bg-slate-100 text-slate-700 text-xs font-medium px-2.5 py-1 rounded-md border border-slate-200">${item.divisi}</span></td>
-                    <td class="px-6 py-3.5 border-b border-slate-200 text-slate-700">${item.sistem}</td>
-                    <td class="px-6 py-3.5 border-b border-slate-200 text-center font-bold text-indigo-700">${item.grade}</td>
-                    <td class="px-6 py-3.5 border-b border-slate-200 text-center font-bold text-emerald-600">${item.days.toFixed(1)}</td>
-                    <td class="px-6 py-3.5 border-b border-slate-200 text-right font-extrabold text-slate-900">${item.ot.toFixed(2)}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            document.getElementById('statCount').innerText = data.length;
-            document.getElementById('statDays').innerText = tDays.toLocaleString('en-US', {minimumFractionDigits: 1, maximumFractionDigits: 1});
-            document.getElementById('statOT').innerHTML = tOT.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' <span class="text-base font-semibold text-slate-500">Jam</span>';
-        }
-
-        function exportToExcel() {
-            if (liveOnlineData.length === 0) return;
-            const ws = XLSX.utils.json_to_sheet(liveOnlineData.map(e => ({
-                "No": e.no, "Nama Karyawan": e.name, "Jabatan": e.jabatan, "Divisi": e.divisi,
-                "Sistem Kerja": e.sistem, "Grade": e.grade, "Hari Kerja (HK)": e.days, "Jam Lembur Konversi": e.ot
-            })));
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Database_Karyawan_RealTime");
-            XLSX.writeFile(wb, "Rekap_Timesheet_RealTime.xlsx");
-        }
-
-        // Muat data langsung secara online begitu halaman dibuka
-        window.onload = fetchLiveGoogleSheet;
-    </script>
-</body>
-</html>
+<script>
+async function loadData() {
+    // ID Spreadsheet Anda
+    const id = "1DvRQrgT43ycmJ_h5cBCYy5Fijk3oFG9L18p-k42cdpo";
+    const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json`;
+    
+    const res = await fetch(url);
+    const data = await res.json();
+    const rows = data.table.rows;
+    
+    let html = "";
+    // Membaca baris 5 s.d 56 (indeks 4 s.d 55)
+    for(let i=4; i<56; i++) {
+        let r = rows[i].c;
+        if(r[1]) html += `<tr>
+            <td class="p-2 border">${r[1].v}</td>
+            <td class="p-2 border">${r[2].v}</td>
+            <td class="p-2 border">${r[19]?.v || 0}</td>
+            <td class="p-2 border">${r[32]?.v || 0}</td>
+        </tr>`;
+    }
+    document.getElementById("tabel").innerHTML = html;
+}
+loadData();
+</script>
+<table id="tabel" class="w-full border"></table>
