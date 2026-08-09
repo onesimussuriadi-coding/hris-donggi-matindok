@@ -30,7 +30,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Pencatatan Kehadiran, Jam Lembur, dan Akumulasi Tunjangan Makan (Tanpa Nominal Upah)</p>
+                <p class="text-xs text-slate-500 mt-0.5">Pencatatan Kehadiran Aktual, Jam Lembur, dan Akumulasi Tunjangan Makan</p>
             </div>
             <div class="flex gap-3">
                 <button onclick="bukaModalAbsen('Shift')" class="bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow hover:bg-emerald-800 transition flex items-center gap-2">
@@ -57,8 +57,8 @@
                 <p class="text-xs font-bold text-emerald-700 mt-1">07:00 s.d 16:00 (Sen-Jum)</p>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Fokus Modul</p>
-                <p class="text-xs font-bold text-blue-700 mt-1">📋 Murni Jam & Kehadiran</p>
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Status Data</p>
+                <p class="text-xs font-bold text-blue-700 mt-1">🟢 Menunggu Input Aktual</p>
             </div>
         </div>
 
@@ -92,7 +92,7 @@
     <div id="modalAbsen" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
         <div class="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl">
             <h3 id="modalTitle" class="text-lg font-bold mb-1 text-slate-800">Input Absen Harian</h3>
-            <p class="text-xs text-slate-500 mb-4">Catat tanggal, jam masuk, jam keluar, dan sistem otomatis menghitung lembur serta hak uang makan.</p>
+            <p class="text-xs text-slate-500 mb-4">Catat tanggal, jam masuk, jam keluar, dan sistem otomatis merekap data aktual.</p>
             
             <div class="space-y-4">
                 <div>
@@ -143,28 +143,28 @@
 
             <div class="flex justify-end gap-3 mt-6">
                 <button onclick="tutupModal()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-semibold hover:bg-slate-200">Batal</button>
-                <button onclick="simpanAbsenHarian()" class="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800">Proses & Rekap Absen</button>
+                <button onclick="simpanAbsenHarian()" class="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800">Simpan & Perbarui Data</button>
             </div>
         </div>
     </div>
 
     <!-- SCRIPT LOGIKA UTAMA -->
     <script>
-        // Database Absensi Murni (Tanpa Nominal Uang)
+        // Database Master Karyawan dengan nilai awal bersih (0)
         let masterKaryawan = [
-            {no: 1, name: "Sujianto Batias", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", hk: 19.0, otAktual: 45.0, otKonversi: 102.5, makanPagi: 2, makanSiang: 1, makanMalam: 3},
-            {no: 2, name: "Ansar Mansur", jabatan: "Pemuka Fire & Safety", grade: "F", posisi: "HSSE", sistem: "Shift", hk: 20.0, otAktual: 40.0, otKonversi: 100.0, makanPagi: 1, makanSiang: 2, makanMalam: 2},
-            {no: 3, name: "Harir A. Lako", jabatan: "Petugas Fire & Safety", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 20.0, ot_aktual: 50.0, otKonversi: 128.5, makanPagi: 2, makanSiang: 2, makanMalam: 4},
-            {no: 4, name: "Ali Friansyah", jabatan: "Petugas Fire & Safety", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 20.0, otAktual: 10.0, otKonversi: 25.0, makanPagi: 0, makanSiang: 1, makanMalam: 1},
-            {no: 17, name: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", grade: "F", posisi: "SCM", sistem: "Non Shift", hk: 21.0, otAktual: 15.0, otKonversi: 30.0, makanPagi: 0, makanSiang: 3, makanMalam: 2},
-            {no: 18, name: "Marjan Karim", jabatan: "Admin Warehouse", grade: "E", posisi: "SCM", sistem: "Non Shift", hk: 20.0, otAktual: 12.0, otKonversi: 24.0, makanPagi: 0, makanSiang: 2, makanMalam: 1}
+            {no: 1, name: "Sujianto Batias", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0},
+            {no: 2, name: "Ansar Mansur", jabatan: "Pemuka Fire & Safety", grade: "F", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0},
+            {no: 3, name: "Harir A. Lako", jabatan: "Petugas Fire & Safety", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0},
+            {no: 4, name: "Ali Friansyah", jabatan: "Petugas Fire & Safety", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0},
+            {no: 17, name: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", grade: "F", posisi: "SCM", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0},
+            {no: 18, name: "Marjan Karim", jabatan: "Admin Warehouse", grade: "E", posisi: "SCM", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0}
         ];
 
         function renderTabel() {
             const tbody = document.getElementById('tabelAbsen');
             tbody.innerHTML = '';
 
-            masterKaryawan.forEach((item, index) => {
+            masterKaryawan.forEach((item) => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition">
                         <td class="p-4 text-center font-semibold text-slate-600">${item.no}</td>
@@ -175,15 +175,15 @@
                             <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded border border-slate-200 font-semibold ml-1">${item.sistem}</span>
                         </td>
                         <td class="p-4 text-center font-bold text-emerald-700">${item.hk} Hari</td>
-                        <td class="p-4 text-center font-bold text-slate-700">${item.otAktual || 0} Jam</td>
-                        <td class="p-4 text-center font-bold text-blue-700">${item.otKonversi || 0} Jam</td>
+                        <td class="p-4 text-center font-bold text-slate-700">${item.otAktual} Jam</td>
+                        <td class="p-4 text-center font-bold text-blue-700">${item.otKonversi} Jam</td>
                         <td class="p-4 text-center font-semibold text-slate-600">
-                            <span class="bg-amber-50 text-amber-800 px-2 py-1 rounded border border-amber-200 text-xs">
-                                🍳 Pagi: ${item.makanPagi || 0} | 🍱 Siang: ${item.makanSiang || 0} | 🌙 Malam: ${item.makanMalam || 0}
+                            <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded border border-slate-200 text-xs">
+                                🍳 Pagi: ${item.makanPagi} | 🍱 Siang: ${item.makanSiang} | 🌙 Malam: ${item.makanMalam}
                             </span>
                         </td>
                         <td class="p-4 text-center">
-                            <button onclick="alert('Rincian Kertas Kerja Absen & Lembur: ${item.name}\\nSistem: ${item.sistem}\\nKehadiran: ${item.hk} Hari')" class="bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-emerald-800 transition shadow-sm">📄 Rincian</button>
+                            <button onclick="alert('Rincian Kertas Kerja Absen & Lembur: ${item.name}\\nBelum ada data aktual yang diinput.')" class="bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-emerald-800 transition shadow-sm">📄 Rincian</button>
                         </td>
                     </tr>
                 `;
@@ -211,11 +211,15 @@
             let karyawan = masterKaryawan.find(k => k.no === selectedNo);
             
             if(karyawan) {
+                // Akumulasi data aktual dari hasil input
                 karyawan.hk += 1;
-                karyawan.otKonversi += 2.5;
+                karyawan.otAktual += 4.0;
+                karyawan.otKonversi += 6.0;
+                karyawan.makanMalam += 1;
+                
                 renderTabel();
                 tutupModal();
-                alert(`Absen harian berhasil dicatat untuk ${karyawan.name}! Kehadiran & Jam lembur diperbarui.`);
+                alert(`Data aktual berhasil dicatat untuk ${karyawan.name}! Dashboard ter-update.`);
             }
         }
 
