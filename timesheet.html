@@ -30,7 +30,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Input Tanggal Fleksibel (Bisa Diketik / Panah) & Terhubung Google Cloud</p>
+                <p class="text-xs text-slate-500 mt-0.5">Validasi Tanggal Cerdas & Bulan Baku Terhubung Google Cloud</p>
             </div>
             <div class="flex gap-3">
                 <button onclick="bukaModalAbsen('Shift')" class="bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow hover:bg-emerald-800 transition flex items-center gap-2">
@@ -53,8 +53,8 @@
                 <p class="text-xs font-bold text-emerald-700 mt-1">☁️ Google Cloud Terhubung</p>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Input Tanggal</p>
-                <p class="text-xs font-bold text-emerald-700 mt-1">⌨️ Fleksibel (Ketik / Atas-Bawah)</p>
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Validasi Input</p>
+                <p class="text-xs font-bold text-emerald-700 mt-1">🛡️ Anti-Salah Ketik (1-31)</p>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
                 <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Status Sistem</p>
@@ -92,7 +92,7 @@
     <div id="modalAbsen" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
         <div class="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl">
             <h3 id="modalTitle" class="text-lg font-bold mb-1 text-slate-800">Input Absen Harian</h3>
-            <p class="text-xs text-slate-500 mb-4">Ketik langsung tanggal yang diinginkan atau gunakan tombol panah.</p>
+            <p class="text-xs text-slate-500 mb-4">Pilih bulan baku, ketik tanggal (1-31) dengan validasi otomatis.</p>
             
             <div class="space-y-4">
                 <div>
@@ -101,19 +101,32 @@
                     </select>
                 </div>
                 
-                <!-- INPUT TANGGAL, BULAN, TAHUN FLEKSIBEL (BISA DIKETIK) -->
+                <!-- INPUT WAKTU DENGAN BULAN BAKU & TANGGAL TERSARING -->
                 <div class="grid grid-cols-3 gap-3">
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Tanggal (1-31)</label>
-                        <input type="number" id="inputTanggal" min="1" max="31" value="1" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-center font-bold">
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Tanggal (1 - 31)</label>
+                        <input type="number" id="inputTanggal" min="1" max="31" value="1" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-center font-bold" placeholder="1-31">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Bulan</label>
-                        <input type="text" id="inputBulan" value="Juli" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-center font-bold">
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Bulan (Baku)</label>
+                        <select id="inputBulan" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none font-bold bg-slate-50">
+                            <option value="Januari">Januari</option>
+                            <option value="Februari">Februari</option>
+                            <option value="Maret">Maret</option>
+                            <option value="April">April</option>
+                            <option value="Mei">Mei</option>
+                            <option value="Juni">Juni</option>
+                            <option value="Juli" selected>Juli</option>
+                            <option value="Agustus">Agustus</option>
+                            <option value="September">September</option>
+                            <option value="Oktober">Oktober</option>
+                            <option value="November">November</option>
+                            <option value="Desember">Desember</option>
+                        </select>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1">Tahun</label>
-                        <input type="number" id="inputTahun" value="2026" class="w-full bg-slate-50 border rounded-lg p-2 text-sm text-center font-bold">
+                        <input type="number" id="inputTahun" value="2026" min="2024" max="2030" class="w-full border rounded-lg p-2 text-sm text-center font-bold focus:ring-2 focus:ring-emerald-500 outline-none">
                     </div>
                 </div>
 
@@ -166,7 +179,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT LOGIKA KONEKSI GOOGLE CLOUD -->
+    <!-- SCRIPT LOGIKA KONEKSI & VALIDASI KETAT -->
     <script>
         const CLOUD_URL = "https://script.google.com/macros/s/AKfycbx11T6AbDvu61nJrvah4H0k_27pz-ASilL9KOd4gLWxQu6Xc8gzUpxtx2B6m4IZuq3q/exec";
 
@@ -253,15 +266,23 @@
         function simpanAbsenHarian() {
             const selectedNo = parseInt(document.getElementById('pilihKaryawan').value);
             const status = document.getElementById('statusKehadiran').value;
-            const tgl = document.getElementById('inputTanggal').value;
+            const tgl = parseInt(document.getElementById('inputTanggal').value);
             const bln = document.getElementById('inputBulan').value;
-            const thn = document.getElementById('inputTahun').value;
+            const thn = parseInt(document.getElementById('inputTahun').value);
             const jamMasuk = document.getElementById('jamMasuk').value;
             const jamKeluar = document.getElementById('jamKeluar').value;
             const tipeShift = document.getElementById('tipeShift').value;
             
-            if(!tgl || tgl < 1 || tgl > 31) {
-                alert('Silakan masukkan tanggal yang valid antara 1 sampai 31.');
+            // VALIDASI KETAT: Mencegah input tanggal di luar 1-31 atau tahun tidak valid
+            if (isNaN(tgl) || tgl < 1 || tgl > 31) {
+                alert('⚠️ Validasi Gagal: Tanggal harus di antara angka 1 sampai 31.');
+                document.getElementById('inputTanggal').focus();
+                return;
+            }
+
+            if (isNaN(thn) || thn < 2020 || thn > 2035) {
+                alert('⚠️ Validasi Gagal: Tahun tidak valid.');
+                document.getElementById('inputTahun').focus();
                 return;
             }
 
@@ -300,7 +321,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 }).then(() => {
-                    alert(`Data tgl ${tgl} ${bln} untuk ${karyawan.name} berhasil dicatat dan dikirim ke Google Cloud!`);
+                    alert(`Data tgl ${tgl} ${bln} ${thn} untuk ${karyawan.name} berhasil dicatat dan dikirim ke Google Cloud!`);
                 }).catch((error) => {
                     console.error('Gagal mengirim ke cloud:', error);
                 });
