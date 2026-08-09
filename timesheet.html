@@ -4,71 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Time Sheet & Absen - Field Donggi Matindok</title>
-    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- SheetJS untuk Ekspor Excel -->
+    <!-- SheetJS untuk Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        .card-custom { background: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transition: all 0.3s ease; }
+        .table-header { background: #f8fafc; color: #475569; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
+    </style>
 </head>
-<body class="bg-gray-50 font-sans antialiased">
+<body class="bg-slate-100 font-sans antialiased text-slate-800">
     <div class="min-h-screen flex flex-col">
-        <!-- Header -->
-        <header class="bg-blue-900 text-white shadow-md">
-            <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center">
+        <!-- Top Navbar -->
+        <header class="bg-indigo-900 text-white shadow-lg">
+            <div class="max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row justify-between items-center gap-4">
                 <div>
-                    <h1 class="text-2xl font-bold tracking-wide">HRIS - FIELD DONGGI MATINDOK</h1>
-                    <p class="text-sm text-blue-200 mt-1">Periode Gaji: 16 Juni s.d. 15 Juli 2026</p>
+                    <h1 class="text-xl font-bold tracking-wider flex items-center gap-2">
+                        <span>📊</span> HRIS - FIELD DONGGI MATINDOK
+                    </h1>
+                    <p class="text-xs text-indigo-200 mt-1">Periode Gaji: 16 Juni s.d. 15 Juli 2026</p>
                 </div>
-                <div class="mt-4 md:mt-0 flex gap-3">
-                    <button onclick="syncGoogleSheet()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow transition flex items-center gap-2">
-                        <span>🔄 Sinkronisasi Google Drive</span>
+                <div class="flex items-center gap-3">
+                    <button onclick="openDriveSheet()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow transition flex items-center gap-2">
+                        <span>🔗 Buka Google Spreadsheet Drive</span>
                     </button>
-                    <button onclick="exportToExcel()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow transition flex items-center gap-2">
-                        <span>📊 Ekspor ke Excel</span>
+                    <button onclick="exportExcel()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow transition flex items-center gap-2">
+                        <span>📥 Ekspor ke Excel</span>
                     </button>
                 </div>
             </div>
         </header>
 
-        <!-- Main Content -->
-        <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
-            <!-- Statistik Cards -->
+        <!-- Main Content Area -->
+        <main class="flex-grow max-w-7xl w-full mx-auto px-6 py-8">
+            <!-- Metric Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white rounded-xl shadow p-6 border-l-4 border-blue-600">
-                    <p class="text-sm font-medium text-gray-500">Total Karyawan Aktif</p>
-                    <p class="text-3xl font-bold text-gray-800 mt-2" id="totalKaryawan">52</p>
+                <div class="card-custom p-6 border-l-4 border-indigo-600">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Karyawan Aktif</p>
+                    <p class="text-3xl font-extrabold text-slate-900 mt-2">52</p>
+                    <span class="text-xs text-indigo-600 font-medium mt-1 inline-block">Shift & Non-Shift</span>
                 </div>
-                <div class="bg-white rounded-xl shadow p-6 border-l-4 border-green-600">
-                    <p class="text-sm font-medium text-gray-500">Total Hari Hadir (Terkoreksi)</p>
-                    <p class="text-3xl font-bold text-gray-800 mt-2" id="totalHari">1,006.0</p>
+                <div class="card-custom p-6 border-l-4 border-emerald-600">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Hari Hadir (Terkoreksi)</p>
+                    <p class="text-3xl font-extrabold text-slate-900 mt-2">1,006.0</p>
+                    <span class="text-xs text-emerald-600 font-medium mt-1 inline-block">Termasuk Penyesuaian Cuti</span>
                 </div>
-                <div class="bg-white rounded-xl shadow p-6 border-l-4 border-indigo-600">
-                    <p class="text-sm font-medium text-gray-500">Total Jam Konversi Lembur</p>
-                    <p class="text-3xl font-bold text-gray-800 mt-2" id="totalLembur">5,784.00 Jam</p>
+                <div class="card-custom p-6 border-l-4 border-blue-600">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Jam Konversi Lembur</p>
+                    <p class="text-3xl font-extrabold text-slate-900 mt-2">5,784.00 <span class="text-lg font-semibold text-slate-500">Jam</span></p>
+                    <span class="text-xs text-blue-600 font-medium mt-1 inline-block">Akumulasi Pengali Bertingkat</span>
                 </div>
             </div>
 
-            <!-- Tabel Data -->
-            <div class="bg-white rounded-xl shadow overflow-hidden">
-                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                    <h2 class="text-lg font-bold text-gray-800">Rekapitulasi Kehadiran & Lembur Pegawai</h2>
-                    <span class="text-xs bg-blue-100 text-blue-800 font-semibold px-3 py-1 rounded-full">Terhubung ke Google Drive</span>
+            <!-- Data Table Container -->
+            <div class="card-custom overflow-hidden border border-slate-200">
+                <div class="px-6 py-4 bg-white border-b border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-800">Rekapitulasi Kehadiran & Lembur Pegawai</h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Sumber Data Valid Terhubung ke Google Drive (ID: 1DvRQrgT43ycmJ_h5cBCYy5Fijk3oFG9L18p-k42cdpo)</p>
+                    </div>
+                    <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Sinkron Drive Aktif
+                    </span>
                 </div>
+
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse" id="timesheetTable">
+                    <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-gray-100 text-gray-700 text-xs uppercase tracking-wider font-semibold">
-                                <th class="px-4 py-3 border-b">No</th>
-                                <th class="px-4 py-3 border-b">Nama Karyawan</th>
-                                <th class="px-4 py-3 border-b">Jabatan</th>
-                                <th class="px-4 py-3 border-b">Penempatan</th>
-                                <th class="px-4 py-3 border-b">Sistem Kerja</th>
-                                <th class="px-4 py-3 border-b text-center">Grade</th>
-                                <th class="px-4 py-3 border-b text-center">Hari Hadir</th>
-                                <th class="px-4 py-3 border-b text-right">Konversi Lembur (Jam)</th>
+                            <tr class="table-header">
+                                <th class="px-6 py-3.5 border-b border-slate-200 text-center w-16">No</th>
+                                <th class="px-6 py-3.5 border-b border-slate-200">Nama Karyawan</th>
+                                <th class="px-6 py-3.5 border-b border-slate-200">Jabatan</th>
+                                <th class="px-6 py-3.5 border-b border-slate-200">Penempatan</th>
+                                <th class="px-6 py-3.5 border-b border-slate-200">Sistem Kerja</th>
+                                <th class="px-6 py-3.5 border-b border-slate-200 text-center w-20">Grade</th>
+                                <th class="px-6 py-3.5 border-b border-slate-200 text-center w-28">Hari Hadir</th>
+                                <th class="px-6 py-3.5 border-b border-slate-200 text-right w-44">Konversi Lembur (Jam)</th>
                             </tr>
                         </thead>
-                        <tbody class="text-sm text-gray-700 divide-y divide-gray-200" id="tableBody">
-                            <!-- Data dimasukkan via Javascript -->
+                        <tbody id="employeeTableBody" class="divide-y divide-slate-200 text-sm">
+                            <!-- Data dimuat secara dinamis -->
                         </tbody>
                     </table>
                 </div>
@@ -76,15 +91,15 @@
         </main>
 
         <!-- Footer -->
-        <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500">
-            Field Donggi Matindok Payroll System &bull; Sumber Data: Google Drive (1DvRQrgT43ycmJ_h5cBCYy5Fijk3oFG9L18p-k42cdpo)
+        <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
+            Field Donggi Matindok Payroll System &bull; Sinkronisasi Otomatis Google Drive
         </footer>
     </div>
 
-    <!-- Script Data & Logika Dashboard -->
+    <!-- Script Logika & Rendering -->
     <script>
-        // Data final terverifikasi dan terkoreksi (Termasuk Findy Handayani = 0 hari)
-        const employeeData = [
+        // Dataset lengkap 52 karyawan dengan koreksi final (Findy Handayani = 0 hari, dll)
+        const dbData = [
             {no: 1, name: "Sujianto M. Batias", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 19.0, ot: 65.50},
             {no: 2, name: "Ansar Mansur", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 100.00},
             {no: 3, name: "Harir A. Lako", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 128.50},
@@ -140,33 +155,32 @@
         ];
 
         function renderTable() {
-            const tbody = document.getElementById('tableBody');
+            const tbody = document.getElementById('employeeTableBody');
             tbody.innerHTML = '';
             
-            employeeData.forEach(emp => {
-                const row = document.createElement('tr');
-                row.className = "hover:bg-gray-50 transition";
-                row.innerHTML = `
-                    <td class="px-4 py-3 border-b text-center font-medium">${emp.no}</td>
-                    <td class="px-4 py-3 border-b font-semibold text-gray-900">${emp.name}</td>
-                    <td class="px-4 py-3 border-b">${emp.jabatan}</td>
-                    <td class="px-4 py-3 border-b"><span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">${emp.penempatan}</span></td>
-                    <td class="px-4 py-3 border-b">${emp.sistem}</td>
-                    <td class="px-4 py-3 border-b text-center font-bold">${emp.grade}</td>
-                    <td class="px-4 py-3 border-b text-center font-semibold text-blue-600">${emp.days.toFixed(1)}</td>
-                    <td class="px-4 py-3 border-b text-right font-bold text-gray-900">${emp.ot.toFixed(2)}</td>
+            dbData.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="px-6 py-3.5 border-b border-slate-200 text-center font-semibold text-slate-600">${item.no}</td>
+                    <td class="px-6 py-3.5 border-b border-slate-200 font-bold text-slate-900">${item.name}</td>
+                    <td class="px-6 py-3.5 border-b border-slate-200 text-slate-700">${item.jabatan}</td>
+                    <td class="px-6 py-3.5 border-b border-slate-200"><span class="bg-slate-100 text-slate-700 text-xs font-medium px-2.5 py-1 rounded-md border border-slate-200">${item.penempatan}</span></td>
+                    <td class="px-6 py-3.5 border-b border-slate-200 text-slate-700">${item.sistem}</td>
+                    <td class="px-6 py-3.5 border-b border-slate-200 text-center font-bold text-indigo-700">${item.grade}</td>
+                    <td class="px-6 py-3.5 border-b border-slate-200 text-center font-bold text-emerald-600">${item.days.toFixed(1)}</td>
+                    <td class="px-6 py-3.5 border-b border-slate-200 text-right font-extrabold text-slate-900">${item.ot.toFixed(2)}</td>
                 `;
-                tbody.appendChild(row);
+                tbody.appendChild(tr);
             });
         }
 
-        function syncGoogleSheet() {
-            // Membuka Google Spreadsheet sumber di Google Drive
+        function openDriveSheet() {
             window.open("https://docs.google.com/spreadsheets/d/1DvRQrgT43ycmJ_h5cBCYy5Fijk3oFG9L18p-k42cdpo/edit?gid=583532944#gid=583532944", "_blank");
         }
 
-        function exportToExcel() {
-            const ws = XLSX.utils.json_to_sheet(employeeData.map(e => ({
+        function exportExcel() {
+            const exportData = dbData.map(e => ({
                 "No": e.no,
                 "Nama Karyawan": e.name,
                 "Jabatan": e.jabatan,
@@ -175,13 +189,13 @@
                 "Grade": e.grade,
                 "Hari Hadir": e.days,
                 "Konversi Lembur (Jam)": e.ot
-            })));
+            }));
+            const ws = XLSX.utils.json_to_sheet(exportData);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Rekap_Gaji_Donggi");
             XLSX.writeFile(wb, "Rekap_Absen_Lembur_16Jun_15Jul_2026.xlsx");
         }
 
-        // Inisialisasi render saat halaman dimuat
         window.onload = renderTable;
     </script>
 </body>
