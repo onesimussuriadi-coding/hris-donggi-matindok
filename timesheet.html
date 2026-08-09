@@ -30,11 +30,11 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Pencatatan Kehadiran Aktual, Jam Lembur, dan Akumulasi Tunjangan Makan</p>
+                <p class="text-xs text-slate-500 mt-0.5">Pencatatan Shift Pagi/Malam, Lembur Hari Off, & Akumulasi Tunjangan Makan</p>
             </div>
             <div class="flex gap-3">
                 <button onclick="bukaModalAbsen('Shift')" class="bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow hover:bg-emerald-800 transition flex items-center gap-2">
-                    <span>⏱️ Input Absen Shift (36 Orang)</span>
+                    <span>⏱️ Input Absen Shift (Pagi / Malam)</span>
                 </button>
                 <button onclick="bukaModalAbsen('Non Shift')" class="bg-blue-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow hover:bg-blue-800 transition flex items-center gap-2">
                     <span>⏱️ Input Absen Non-Shift (16 Orang)</span>
@@ -49,12 +49,12 @@
                 <p class="text-2xl font-extrabold text-slate-900 mt-1">52 Orang</p>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Jam Kerja Shift</p>
-                <p class="text-xs font-bold text-emerald-700 mt-1">07:00 s.d 07:00 (12 Jam)</p>
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Ketentuan Shift</p>
+                <p class="text-xs font-bold text-emerald-700 mt-1">Pagi (07-19) | Malam (19-07)</p>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Jam Kerja Non-Shift</p>
-                <p class="text-xs font-bold text-emerald-700 mt-1">07:00 s.d 16:00 (Sen-Jum)</p>
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Lembur Hari Off</p>
+                <p class="text-xs font-bold text-emerald-700 mt-1">✅ Terakomodasi di Form Shift</p>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
                 <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Status Data</p>
@@ -92,7 +92,7 @@
     <div id="modalAbsen" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
         <div class="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl">
             <h3 id="modalTitle" class="text-lg font-bold mb-1 text-slate-800">Input Absen Harian</h3>
-            <p class="text-xs text-slate-500 mb-4">Catat tanggal, jam masuk, jam keluar, dan sistem otomatis merekap data aktual.</p>
+            <p class="text-xs text-slate-500 mb-4">Pilih jenis shift (pagi/malam), catat waktu, dan atur status lembur hari off.</p>
             
             <div class="space-y-4">
                 <div>
@@ -122,6 +122,23 @@
                         <input type="text" id="inputTahun" value="2026" readonly class="w-full bg-slate-100 border rounded-lg p-2 text-sm text-center">
                     </div>
                 </div>
+                <!-- PILIHAN KHUSUS SHIFT (PAGI / MALAM) -->
+                <div id="pilihanJenisShift" class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Tipe Shift</label>
+                        <select id="tipeShift" onchange="aturJamShift()" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                            <option value="pagi">Shift Pagi (07:00 - 19:00)</option>
+                            <option value="malam">Shift Malam (19:00 - 07:00)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Kondisi Kehadiran</label>
+                        <select id="statusKondisiShift" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                            <option value="reguler">Shift Reguler (Sesuai Jadwal)</option>
+                            <option value="lembur_off">Masuk di Hari OFF (Hitung Lembur Penuh)</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1">Jam Masuk (Clock In)</label>
@@ -131,13 +148,6 @@
                         <label class="block text-xs font-bold text-slate-600 mb-1">Jam Keluar (Clock Out)</label>
                         <input type="time" id="jamKeluar" value="19:00" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
                     </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Status Hari / Kondisi Kerja</label>
-                    <select id="statusHari" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
-                        <option value="normal">Hari Kerja Normal / Shift Reguler</option>
-                        <option value="libur">Hari Libur / Minggu / Hari Besar (Off Working)</option>
-                    </select>
                 </div>
             </div>
 
@@ -150,7 +160,6 @@
 
     <!-- SCRIPT LOGIKA UTAMA -->
     <script>
-        // Database Master Karyawan dengan nilai awal bersih (0)
         let masterKaryawan = [
             {no: 1, name: "Sujianto Batias", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0},
             {no: 2, name: "Ansar Mansur", jabatan: "Pemuka Fire & Safety", grade: "F", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0},
@@ -183,15 +192,38 @@
                             </span>
                         </td>
                         <td class="p-4 text-center">
-                            <button onclick="alert('Rincian Kertas Kerja Absen & Lembur: ${item.name}\\nBelum ada data aktual yang diinput.')" class="bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-emerald-800 transition shadow-sm">📄 Rincian</button>
+                            <button onclick="alert('Rincian Kertas Kerja Absen & Lembur: ${item.name}')" class="bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-emerald-800 transition shadow-sm">📄 Rincian</button>
                         </td>
                     </tr>
                 `;
             });
         }
 
+    function aturJamShift() {
+        let tipe = document.getElementById('tipeShift').value;
+        if(tipe === 'pagi') {
+            document.getElementById('jamMasuk').value = "07:00";
+            document.getElementById('jamKeluar').value = "19:00";
+        } else {
+            document.getElementById('jamMasuk').value = "19:00";
+            document.getElementById('jamKeluar').value = "07:00";
+        }
+    }
+
         function bukaModalAbsen(sistemKerja) {
             document.getElementById('modalTitle').innerText = `Input Absen Harian (${sistemKerja})`;
+            
+            // Sembunyikan atau tampilkan pilihan shift khusus jika yang diklik Shift vs Non-Shift
+            const panelShift = document.getElementById('pilihanJenisShift');
+            if(sistemKerja === 'Shift') {
+                panelShift.classList.remove('hidden');
+                aturJamShift();
+            } else {
+                panelShift.classList.add('hidden');
+                document.getElementById('jamMasuk').value = "07:00";
+                document.getElementById('jamKeluar').value = "16:00";
+            }
+
             const select = document.getElementById('pilihKaryawan');
             select.innerHTML = '';
             
@@ -211,15 +243,13 @@
             let karyawan = masterKaryawan.find(k => k.no === selectedNo);
             
             if(karyawan) {
-                // Akumulasi data aktual dari hasil input
                 karyawan.hk += 1;
-                karyawan.otAktual += 4.0;
-                karyawan.otKonversi += 6.0;
+                karyawan.otKonversi += 4.0;
                 karyawan.makanMalam += 1;
                 
                 renderTabel();
                 tutupModal();
-                alert(`Data aktual berhasil dicatat untuk ${karyawan.name}! Dashboard ter-update.`);
+                alert(`Absen berhasil dicatat untuk ${karyawan.name}! Data diperbarui.`);
             }
         }
 
