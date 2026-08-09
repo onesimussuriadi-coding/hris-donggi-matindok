@@ -2,12 +2,12 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>HRIS Portal - Time Sheet</title>
+    <title>Dashboard Time Sheet & Absen</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-50 font-sans text-slate-900 flex h-screen">
-    
-    <!-- Sidebar -->
+<body class="bg-slate-50 flex h-screen overflow-hidden">
+
+    <!-- SIDEBAR -->
     <aside class="w-64 bg-[#0B132B] text-white p-6 shrink-0">
         <h1 class="text-lg font-bold mb-8">HRIS Portal</h1>
         <nav class="space-y-4">
@@ -16,57 +16,82 @@
         </nav>
     </aside>
 
-    <!-- Konten -->
+    <!-- KONTEN -->
     <main class="flex-1 p-8 overflow-y-auto">
-        <h2 class="text-2xl font-bold mb-6">Dashboard Time Sheet & Absen</h2>
-        
-        <!-- Tabel Utama -->
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold">Dashboard Time Sheet & Absen</h2>
+            <button onclick="fetchData()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">🔄 Update Live Data</button>
+        </div>
+
+        <!-- STATISTIK -->
+        <div class="grid grid-cols-4 gap-4 mb-6">
+            <div class="bg-white p-4 rounded-xl border shadow-sm">
+                <p class="text-xs text-slate-500 uppercase">Rentang Tanggal</p>
+                <p class="font-bold">16 Jun - 15 Jul 2026</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl border shadow-sm">
+                <p class="text-xs text-slate-500 uppercase">Jam Kerja Shift</p>
+                <p class="font-bold text-emerald-700">07:00 s.d 07:00</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl border shadow-sm">
+                <p class="text-xs text-slate-500 uppercase">Jam Kerja Non Shift</p>
+                <p class="font-bold text-emerald-700">07:00 s.d 16:00</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl border shadow-sm">
+                <p class="text-xs text-slate-500 uppercase">Status Pengaturan</p>
+                <p class="font-bold text-emerald-700">✅ Akurat & Terpisah</p>
+            </div>
+        </div>
+
+        <!-- TABEL -->
+        <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
             <table class="w-full text-left">
                 <thead class="bg-emerald-800 text-white text-xs uppercase">
                     <tr>
                         <th class="p-4">No</th>
                         <th class="p-4">Nama Pekerja</th>
                         <th class="p-4">Jabatan & Sistem</th>
-                        <th class="p-4">Total Lembur</th>
+                        <th class="p-4">Kehadiran (T)</th>
+                        <th class="p-4">Lembur (AG)</th>
                         <th class="p-4">Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="tabelData" class="divide-y divide-slate-100">
-                    <tr><td colspan="5" class="p-8 text-center">Memuat data real-time...</td></tr>
+                    <tr><td colspan="6" class="p-8 text-center text-slate-500">Memuat data dari Google Sheet...</td></tr>
                 </tbody>
             </table>
         </div>
     </main>
 
-    <!-- Script Integrasi Real-Time -->
     <script>
-    async function loadData() {
+    async function fetchData() {
         const id = "1DvRQrgT43ycmJ_h5cBCYy5Fijk3oFG9L18p-k42cdpo";
         const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json`;
         try {
             const res = await fetch(url);
-            const json = JSON.parse((await res.text()).substring(47, 47 + (await res.text()).length - 51));
+            const text = await res.text();
+            const json = JSON.parse(text.substring(47, text.length - 2));
             const rows = json.table.rows;
             let html = "";
-            for(let i=4; i<rows.length; i++) {
+            for(let i = 4; i < rows.length; i++) {
                 let r = rows[i].c;
-                if(r && r[2]) {
-                    html += `<tr>
+                if(r && r[1]) {
+                    html += `<tr class="hover:bg-slate-50">
                         <td class="p-4">${r[1]?.v || ''}</td>
                         <td class="p-4 font-bold">${r[2]?.v || ''}</td>
                         <td class="p-4">${r[5]?.v || ''} <span class="text-xs bg-slate-100 px-2 py-1 rounded">${r[6]?.v || ''}</span></td>
-                        <td class="p-4 font-bold text-blue-700">${r[32]?.v || 0} Jam</td>
+                        <td class="p-4 text-emerald-700 font-bold">${r[19]?.v || 0} Hari</td>
+                        <td class="p-4 text-blue-700 font-bold">${r[32]?.v || 0} Jam</td>
                         <td class="p-4"><button class="bg-emerald-700 text-white px-3 py-1 rounded text-xs">Rekap & Rincian</button></td>
                     </tr>`;
                 }
             }
             document.getElementById("tabelData").innerHTML = html;
-        } catch (e) {
-            document.getElementById("tabelData").innerHTML = "<tr><td colspan='5' class='p-8 text-center text-red-500'>Gagal sinkron. Pastikan Publish to Web aktif.</td></tr>";
+        } catch(e) {
+            document.getElementById("tabelData").innerHTML = "<tr><td colspan='6' class='p-8 text-center text-red-600 font-bold'>Gagal Sinkronisasi. Pastikan Google Sheet sudah di-Publish ke Web.</td></tr>";
         }
     }
-    window.onload = loadData;
+    fetchData();
     </script>
 </body>
 </html>
