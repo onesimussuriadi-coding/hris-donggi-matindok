@@ -87,7 +87,7 @@
             </div>
             <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
                 <p class="text-xs text-slate-500 font-medium mb-1">Status Pengaturan</p>
-                <p class="text-sm font-bold text-emerald-600">✓ Presisi 100% Terkoreksi</p>
+                <p class="text-sm font-bold text-emerald-600">✓ Urutan Blok 100% Akurat</p>
             </div>
         </div>
 
@@ -153,9 +153,10 @@
         </div>
     </div>
 
-    <!-- Skrip Data 52 Karyawan Terkoreksi Persis 1:1 -->
+    <!-- Skrip Data 52 Karyawan Sesuai Urutan Blok Perusahaan -->
     <script>
         let timesheetData = [
+            // Blok 1: No 1 s.d 16 (Shift)
             { no: 1, nama: "Sujianto M. Batias", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiranDays: 19, lemburKonversi: 65.50 },
             { no: 2, nama: "Ansar Mansur", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiranDays: 20, lemburKonversi: 100.00 },
             { no: 3, nama: "Harir A. Lako", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburKonversi: 128.50 },
@@ -172,6 +173,8 @@
             { no: 14, nama: "Mustamar Dg Magangka", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 18, lemburKonversi: 44.50 },
             { no: 15, nama: "Akmal (B)", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiranDays: 20, lemburKonversi: 200.00 },
             { no: 16, nama: "Rizal Tamoreka", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiranDays: 20, lemburKonversi: 82.00 },
+            
+            // Blok 2: No 17 s.d 26 (Non Shift)
             { no: 17, nama: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 20, lemburKonversi: 0.00 },
             { no: 18, nama: "Marjan Karim", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "E", kehadiranDays: 17, lemburKonversi: 0.00 },
             { no: 19, nama: "Kasman", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "E", kehadiranDays: 19, lemburKonversi: 60.00 },
@@ -182,6 +185,8 @@
             { no: 24, nama: "Sunita Ayu P.", jabatan: "Petugas Admin II", penempatan: "Legal & Relation", sistem_kerja: "Non Shift", grade: "E", kehadiranDays: 19, lemburKonversi: 125.00 },
             { no: 25, nama: "Dewi Setiawati M Dg M", jabatan: "Petugas Admin III", penempatan: "RAM", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 20, lemburKonversi: 50.00 },
             { no: 26, nama: "Marini Astari", jabatan: "Petugas Admin III", penempatan: "HR - GS", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 19, lemburKonversi: 91.50 },
+            
+            // Blok 3: No 27 s.d 46 (Shift)
             { no: 27, nama: "Ali Muhtar M. Amin", jabatan: "Supir Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiranDays: 20, lemburKonversi: 174.00 },
             { no: 28, nama: "Agus Rudiyanto", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiranDays: 20, lemburKonversi: 0.00 },
             { no: 29, nama: "I Gede Ariana", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburKonversi: 101.00 },
@@ -202,6 +207,8 @@
             { no: 44, nama: "Jumalik H. Latungka", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 21, lemburKonversi: 162.00 },
             { no: 45, nama: "Randianto", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 21, lemburKonversi: 162.50 },
             { no: 46, nama: "Saiful M. Zakar", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 21, lemburKonversi: 262.00 },
+            
+            // Blok 4: No 47 s.d 52 (Non Shift)
             { no: 47, nama: "I Nyoman Suwitra", jabatan: "Petugas Gudang (BBM)", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "D", kehadiranDays: 21, lemburKonversi: 121.00 },
             { no: 48, nama: "I Putu Muryanto", jabatan: "Petugas Admin III", penempatan: "Operation", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 21, lemburKonversi: 382.50 },
             { no: 49, nama: "Siti Aisyah Dg Masese", jabatan: "Sekretaris FM", penempatan: "Field Manager", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 18, lemburKonversi: 343.50 },
@@ -321,7 +328,7 @@
         }
 
         function filterTimesheet() {
-            const keyword = document.getElementById('searchTimesheet').value.toLowerCase();
+            const keyword = document.getElementById('searchTimesheet'].value.toLowerCase();
             const shiftVal = document.getElementById('filterSistemKerja').value;
 
             const filtered = timesheetData.filter(emp => {
