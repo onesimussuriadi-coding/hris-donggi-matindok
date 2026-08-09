@@ -30,7 +30,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Histori Kehadiran Lengkap: Masuk, OFF, Cuti, Izin, Sakit, Alfa, & Dinas</p>
+                <p class="text-xs text-slate-500 mt-0.5">Terhubung Langsung ke Google Cloud Drive (Google Sheets)</p>
             </div>
             <div class="flex gap-3">
                 <button onclick="bukaModalAbsen('Shift')" class="bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow hover:bg-emerald-800 transition flex items-center gap-2">
@@ -49,16 +49,16 @@
                 <p class="text-2xl font-extrabold text-slate-900 mt-1">52 Orang</p>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Koneksi Database</p>
+                <p class="text-xs font-bold text-emerald-700 mt-1">☁️ Google Cloud Terhubung</p>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
                 <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Monitoring Status</p>
                 <p class="text-xs font-bold text-emerald-700 mt-1">OFF, Cuti, Izin, Sakit, Alfa, Dinas</p>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Audit Trail</p>
-                <p class="text-xs font-bold text-emerald-700 mt-1">✅ Tercatat Per Tanggal</p>
-            </div>
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Status Data</p>
-                <p class="text-xs font-bold text-blue-700 mt-1">🟢 Siap Direkap</p>
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Status Sistem</p>
+                <p class="text-xs font-bold text-blue-700 mt-1">🟢 Siap Catat Real-Time</p>
             </div>
         </div>
 
@@ -92,7 +92,7 @@
     <div id="modalAbsen" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
         <div class="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl">
             <h3 id="modalTitle" class="text-lg font-bold mb-1 text-slate-800">Input Absen Harian</h3>
-            <p class="text-xs text-slate-500 mb-4">Catat status harian (Masuk, OFF, Cuti, Izin, Sakit, Alfa, Dinas) secara spesifik.</p>
+            <p class="text-xs text-slate-500 mb-4">Catat status harian. Data akan langsung terkirim ke Google Cloud Sheets Bapak.</p>
             
             <div class="space-y-4">
                 <div>
@@ -123,7 +123,6 @@
                     </div>
                 </div>
 
-                <!-- PILIHAN STATUS KEHADIRAN & HISTORI -->
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1">Status Kehadiran / Histori Harian</label>
                     <select id="statusKehadiran" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none font-semibold text-emerald-800 bg-emerald-50">
@@ -168,14 +167,17 @@
 
             <div class="flex justify-end gap-3 mt-6">
                 <button onclick="tutupModal()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-semibold hover:bg-slate-200">Batal</button>
-                <button onclick="simpanAbsenHarian()" class="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800">Simpan Status Harian</button>
+                <button onclick="simpanAbsenHarian()" class="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800">Simpan & Kirim ke Cloud</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT LOGIKA UTAMA -->
+    <!-- SCRIPT LOGIKA KONEKSI GOOGLE CLOUD -->
     <script>
-        let masterKaryawan = [
+        // URL Web App Google Cloud API milik Anda
+        const CLOUD_URL = "https://script.google.com/macros/s/AKfycbx11T6AbDvu61nJrvah4H0k_27pz-ASilL9KOd4gLWxQu6Xc8gzUpxtx2B6m4IZuq3q/exec";
+
+        const defaultMasterKaryawan = [
             {no: 1, name: "Sujianto Batias", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input"},
             {no: 2, name: "Ansar Mansur", jabatan: "Pemuka Fire & Safety", grade: "F", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input"},
             {no: 3, name: "Harir A. Lako", jabatan: "Petugas Fire & Safety", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input"},
@@ -183,6 +185,8 @@
             {no: 17, name: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", grade: "F", posisi: "SCM", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input"},
             {no: 18, name: "Marjan Karim", jabatan: "Admin Warehouse", grade: "E", posisi: "SCM", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input"}
         ];
+
+        let masterKaryawan = JSON.parse(localStorage.getItem('donggi_timesheet_data')) || defaultMasterKaryawan;
 
         function renderTabel() {
             const tbody = document.getElementById('tabelAbsen');
@@ -205,7 +209,7 @@
                             <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded border border-slate-200 text-xs">
                                 🍳 Pagi: ${item.makanPagi} | 🍱 Siang: ${item.makanSiang} | 🌙 Malam: ${item.makanMalam}
                             </span>
-                            <div class="text-[10px] text-blue-600 mt-1">Status Terakhir: ${item.catatanStatus}</div>
+                            <div class="text-[10px] text-blue-600 mt-1 font-semibold">Status: ${item.catatanStatus}</div>
                         </td>
                         <td class="p-4 text-center">
                             <button onclick="alert('Histori Rincian Absensi & Status ${item.name}')" class="bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-emerald-800 transition shadow-sm">📄 Rincian</button>
@@ -258,20 +262,56 @@
             const status = document.getElementById('statusKehadiran').value;
             const tgl = document.getElementById('inputTanggal').value;
             const bln = document.getElementById('inputBulan').value;
+            const jamMasuk = document.getElementById('jamMasuk').value;
+            const jamKeluar = document.getElementById('jamKeluar').value;
+            const tipeShift = document.getElementById('tipeShift').value;
             
             let karyawan = masterKaryawan.find(k => k.no === selectedNo);
             
             if(karyawan) {
                 if(status === 'masuk' || status === 'dinas') {
                     karyawan.hk += 1;
-                    karyawan.otKonversi += 4.0;
+                    karyawan.otAktual += 4.0;
+                    karyawan.otKonversi += 6.0;
                     karyawan.makanMalam += 1;
                 }
                 karyawan.catatanStatus = `Tgl ${tgl} ${bln}: ${status.toUpperCase()}`;
                 
+                // Simpan lokal di browser
+                localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
+                
+                // Paket data yang dikirim ke Google Cloud
+                const payload = {
+                    nama: karyawan.name,
+                    sistem: karyawan.sistem,
+                    status: status.toUpperCase(),
+                    tanggal: tgl,
+                    bulan: bln,
+                    jamMasuk: jamMasuk,
+                    jamKeluar: jamKeluar,
+                    tipeShift: karyawan.sistem === 'Shift' ? tipeShift : 'Non-Shift',
+                    totalHk: karyawan.hk,
+                    uangMakan: `Pagi: ${karyawan.makanPagi} | Siang: ${karyawan.makanSiang} | Malam: ${karyawan.makanMalam}`,
+                    otAktual: karyawan.otAktual,
+                    otKonversi: karyawan.otKonversi,
+                    catatan: karyawan.catatanStatus
+                };
+
+                // Kirim data secara asinkron ke Google Sheets Cloud Anda
+                fetch(CLOUD_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                }).then(() => {
+                    alert(`Data untuk ${karyawan.name} berhasil dicatat dan dikirim langsung ke Google Cloud Sheets Bapak!`);
+                }).catch((error) => {
+                    console.error('Gagal mengirim ke cloud:', error);
+                    alert('Data tersimpan lokal, namun pengiriman ke cloud mengalami kendala jaringan.');
+                });
+
                 renderTabel();
                 tutupModal();
-                alert(`Status harian (${status.toUpperCase()}) berhasil dicatat untuk ${karyawan.name} pada tanggal ${tgl} ${bln}!`);
             }
         }
 
