@@ -30,7 +30,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Dilengkapi Tombol Koreksi Data & Perhitungan Lembur Otomatis</p>
+                <p class="text-xs text-slate-500 mt-0.5">Dilengkapi Histori & Koreksi Tanggal Spesifik Per Karyawan</p>
             </div>
             <div class="flex gap-3">
                 <button onclick="bukaModalAbsen('Shift')" class="bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow hover:bg-emerald-800 transition flex items-center gap-2">
@@ -93,7 +93,7 @@
                         <th class="p-4 text-center">Jam Lembur Aktual</th>
                         <th class="p-4 text-center">Jam Lembur Konversi</th>
                         <th class="p-4 text-center">Tunjangan Makan (Pagi / Siang / Malam)</th>
-                        <th class="p-4 text-center">Aksi / Koreksi</th>
+                        <th class="p-4 text-center">Aksi / Histori</th>
                     </tr>
                 </thead>
                 <tbody id="tabelAbsen" class="divide-y divide-slate-100 text-sm">
@@ -176,20 +176,57 @@
         </div>
     </div>
 
-    <!-- SCRIPT LOGIKA DENGAN FITUR EDIT/RESET KOREKSI -->
+    <!-- MODAL HISTORI & KOREKSI TANGGAL SPESIFIK -->
+    <div id="modalHistori" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+        <div class="bg-white w-full max-w-2xl rounded-2xl p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h3 id="historiTitle" class="text-lg font-bold text-slate-800">Histori Absen Karyawan</h3>
+                    <p class="text-xs text-slate-500">Daftar tanggal yang pernah diinput. Anda dapat menghapus tanggal keliru tertentu saja.</p>
+                </div>
+                <button onclick="tutupModalHistori()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">✕</button>
+            </div>
+            
+            <div class="max-h-80 overflow-y-auto border rounded-xl mb-4">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead class="bg-slate-100 text-slate-600 uppercase sticky top-0">
+                        <tr>
+                            <th class="p-3">Tanggal Absen</th>
+                            <th class="p-3">Status</th>
+                            <th class="p-3 text-center">Jam Kerja</th>
+                            <th class="p-3 text-center">Aksi Hapus</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelHistoriItem" class="divide-y divide-slate-100">
+                        <!-- Data histori per tanggal dimuat dinamis -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex justify-end">
+                <button onclick="tutupModalHistori()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-semibold hover:bg-slate-200">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT LOGIKA DENGAN PENCATATAN HISTORI TANGGAL SPESIFIK -->
     <script>
         const CLOUD_URL = "https://script.google.com/macros/s/AKfycby1fKpsDqdGhtMira6PqPGdkVFdYTMvr554Zs5OdagaO5bxzSK5trQWQtSAErXei2lX/exec";
 
         const defaultMasterKaryawan = [
-            {no: 1, name: "Sujianto Batias", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input"},
-            {no: 2, name: "Ansar Mansur", jabatan: "Pemuka Fire & Safety", grade: "F", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input"},
-            {no: 3, name: "Harir A. Lako", jabatan: "Petugas Fire & Safety", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input"},
-            {no: 4, name: "Ali Friansyah", jabatan: "Petugas Fire & Safety", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input"},
-            {no: 17, name: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", grade: "F", posisi: "SCM", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input"},
-            {no: 18, name: "Marjan Karim", jabatan: "Admin Warehouse", grade: "E", posisi: "SCM", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input"}
+            {no: 1, name: "Sujianto Batias", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+            {no: 2, name: "Ansar Mansur", jabatan: "Pemuka Fire & Safety", grade: "F", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+            {no: 3, name: "Harir A. Lako", jabatan: "Petugas Fire & Safety", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+            {no: 4, name: "Ali Friansyah", jabatan: "Petugas Fire & Safety", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+            {no: 17, name: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", grade: "F", posisi: "SCM", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+            {no: 18, name: "Marjan Karim", jabatan: "Admin Warehouse", grade: "E", posisi: "SCM", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []}
         ];
 
         let masterKaryawan = JSON.parse(localStorage.getItem('donggi_timesheet_data')) || defaultMasterKaryawan;
+        
+        // Memastikan setiap objek karyawan memiliki array historiAbsen
+        masterKaryawan.forEach(k => { if(!k.historiAbsen) k.historiAbsen = []; });
+
         let filterAktif = 'Semua';
 
         function setFilter(sistem) {
@@ -230,29 +267,75 @@
                             </span>
                             <div class="text-[10px] text-blue-600 mt-1 font-semibold">Status: ${item.catatanStatus}</div>
                         </td>
-                        <td class="p-4 text-center flex justify-center gap-1.5">
-                            <button onclick="resetKaryawan(${item.no})" class="bg-amber-600 text-white px-2.5 py-1.5 rounded-lg text-xs font-semibold hover:bg-amber-700 transition shadow-sm" title="Reset data karyawan ini ke 0">🔄 Reset</button>
+                        <td class="p-4 text-center">
+                            <button onclick="bukaModalHistori(${item.no})" class="bg-indigo-600 text-white px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-indigo-700 transition shadow-sm">📄 Histori & Koreksi</button>
                         </td>
                     </tr>
                 `;
             });
         }
 
-        // FUNGSI RESET / KOREKSI DATA KARYAWAN TERTENTU
-        function resetKaryawan(noKaryawan) {
+        // BUKA MODAL HISTORI TANGGAL PER KARYAWAN
+        function bukaModalHistori(noKaryawan) {
             let karyawan = masterKaryawan.find(k => k.no === noKaryawan);
-            if(karyawan && confirm(`Apakah Anda yakin ingin mereset ulang rekapitulasi absensi untuk ${karyawan.name} kembali ke 0?`)) {
-                karyawan.hk = 0;
-                karyawan.otAktual = 0;
-                karyawan.otKonversi = 0;
-                karyawan.makanPagi = 0;
-                karyawan.makanSiang = 0;
-                karyawan.makanMalam = 0;
-                karyawan.catatanStatus = "Telah di-reset ke 0";
-                
+            if(!karyawan) return;
+
+            document.getElementById('historiTitle').innerText = `Histori Absen: ${karyawan.name}`;
+            const tbodyHistori = document.getElementById('tabelHistoriItem');
+            tbodyHistori.innerHTML = '';
+
+            if(karyawan.historiAbsen.length === 0) {
+                tbodyHistori.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">Belum ada catatan histori absen yang diinput.</td></tr>`;
+            } else {
+                karyawan.historiAbsen.forEach((h, index) => {
+                    tbodyHistori.innerHTML += `
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 font-bold text-slate-700">${h.tanggalStr}</td>
+                            <td class="p-3 font-semibold text-emerald-700">${h.status}</td>
+                            <td class="p-3 text-center text-slate-600">${h.jamMasuk} - ${h.jamKeluar}</td>
+                            <td class="p-3 text-center">
+                                <button onclick="hapusHistoriTanggal(${karyawan.no}, ${index})" class="bg-rose-600 text-white px-2.5 py-1 rounded text-[11px] font-semibold hover:bg-rose-700 shadow-sm">🗑️ Hapus Tanggal Ini</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+
+            document.getElementById('modalHistori').classList.remove('hidden');
+        }
+
+        function tutupModalHistori() {
+            document.getElementById('modalHistori').classList.add('hidden');
+        }
+
+        // HAPUS TANGGAL TERTENTU SAJA TANPA MENGGANGGU TANGGAL LAIN
+        function hapusHistoriTanggal(noKaryawan, indexHistori) {
+            let karyawan = masterKaryawan.find(k => k.no === noKaryawan);
+            if(!karyawan) return;
+
+            let itemDihapus = karyawan.historiAbsen[indexHistori];
+
+            if(confirm(`Apakah Anda yakin ingin menghapus catatan tanggal ${itemDihapus.tanggalStr} untuk ${karyawan.name}? Akumulasi HK dan lembur akan dikurangkan otomatis.`)) {
+                // Kurangi akumulasi jika sebelumnya berstatus masuk/dinas
+                if(itemDihapus.status === 'MASUK' || itemDihapus.status === 'DINAS') {
+                    karyawan.hk = Math.max(0, karyawan.hk - 1);
+                    karyawan.otAktual = Math.max(0, karyawan.otAktual - itemDihapus.otAktual);
+                    karyawan.otKonversi = Math.max(0, karyawan.otKonversi - itemDihapus.otKonversi);
+                    if(karyawan.sistem === 'Non Shift') {
+                        karyawan.makanSiang = Math.max(0, karyawan.makanSiang - 1);
+                    } else {
+                        karyawan.makanMalam = Math.max(0, karyawan.makanMalam - 1);
+                    }
+                }
+
+                // Hapus dari array histori
+                karyawan.historiAbsen.splice(indexHistori, 1);
+                karyawan.catatanStatus = karyawan.historiAbsen.length > 0 ? karyawan.historiAbsen[karyawan.historiAbsen.length - 1].catatanRingkas : "Belum ada input";
+
                 localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
                 renderTabel();
-                alert(`Data ${karyawan.name} berhasil di-reset kembali dari awal.`);
+                bukaModalHistori(noKaryawan); // Refresh modal histori
+                alert('Catatan tanggal tersebut berhasil dihapus dan akumulasi diperbarui!');
             }
         }
 
@@ -278,7 +361,7 @@
                 document.getElementById('jamKeluar').value = "19:00";
             } else {
                 document.getElementById('jamMasuk').value = "07:00";
-                document.getElementById('jamKeluar').value = "16:00"; // Standar Non-Shift 8 jam kerja (07:00 - 16:00)
+                document.getElementById('jamKeluar').value = "16:00";
             }
 
             document.getElementById('modalAbsen').classList.remove('hidden');
@@ -306,46 +389,56 @@
             let karyawan = masterKaryawan.find(k => k.no === selectedNo);
             
             if(karyawan) {
+                let tanggalStr = `${tgl} ${bln} ${thn}`;
+                
+                // Hitung jam lembur aktual & konversi
+                let [jamIn, menitIn] = jamMasuk.split(':').map(Number);
+                let [jamOut, menitOut] = jamKeluar.split(':').map(Number);
+                let totalJamKerja = (jamOut + menitOut/60) - (jamIn + menitIn/60);
+                if(totalJamKerja < 0) totalJamKerja += 24;
+
+                let jamLemburAktual = 0;
+                let jamLemburKonversi = 0;
+
                 if(status === 'masuk' || status === 'dinas') {
                     karyawan.hk += 1;
-                    
-                    // PERHITUNGAN CERDAS BERDASARKAN JAM AKTUAL (MASUK & KELUAR)
-                    let [jamIn, menitIn] = jamMasuk.split(':').map(Number);
-                    let [jamOut, menitOut] = jamKeluar.split(':').map(Number);
-                    let totalJamKerja = (jamOut + menitOut/60) - (jamIn + menitIn/60);
-                    if(totalJamKerja < 0) totalJamKerja += 24; // Lewat tengah malam
-
-                    let jamLemburAktual = 0;
-                    let jamLemburKonversi = 0;
-
                     if(karyawan.sistem === 'Non Shift') {
-                        // Non-Shift normal 8 jam (07:00 - 16:00). Kelebihan di atas 8 jam dihitung lembur.
                         if(totalJamKerja > 8) {
                             jamLemburAktual = totalJamKerja - 8;
-                            jamLemburKonversi = jamLemburAktual * 1.5; // Faktor pengali konversi standar
+                            jamLemburKonversi = jamLemburAktual * 1.5;
                         }
                         karyawan.makanSiang += 1;
                     } else {
-                        // Shift normal 12 jam (07:00-19:00 atau 19:00-07:00)
                         if(totalJamKerja > 12) {
                             jamLemburAktual = totalJamKerja - 12;
                             jamLemburKonversi = jamLemburAktual * 1.5;
                         }
                         karyawan.makanMalam += 1;
                     }
-
                     karyawan.otAktual += jamLemburAktual;
                     karyawan.otKonversi += jamLemburKonversi;
                 }
 
-                karyawan.catatanStatus = `Tgl ${tgl} ${bln} ${thn}: ${status.toUpperCase()}`;
+                karyawan.catatanStatus = `${tanggalStr}: ${status.toUpperCase()}`;
+                
+                // Simpan ke dalam riwayat histori absen per tanggal
+                karyawan.historiAbsen.push({
+                    tanggalStr: tanggalStr,
+                    status: status.toUpperCase(),
+                    jamMasuk: jamMasuk,
+                    jamKeluar: jamKeluar,
+                    otAktual: jamLemburAktual,
+                    otKonversi: jamLemburKonversi,
+                    catatanRingkas: karyawan.catatanStatus
+                });
+
                 localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
                 
                 const payload = {
                     nama: karyawan.name,
                     sistem: karyawan.sistem,
                     status: status.toUpperCase(),
-                    tanggal: `${tgl} ${bln} ${thn}`,
+                    tanggal: tanggalStr,
                     bulan: bln,
                     jamMasuk: jamMasuk,
                     jamKeluar: jamKeluar,
@@ -363,7 +456,7 @@
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams(payload).toString()
                 }).then(() => {
-                    alert(`SUKSES! Data tgl ${tgl} ${bln} ${thn} untuk ${karyawan.name} telah disimpan.`);
+                    alert(`SUKSES! Data tgl ${tanggalStr} untuk ${karyawan.name} telah disimpan.`);
                     renderTabel();
                     tutupModal();
                 }).catch((error) => {
