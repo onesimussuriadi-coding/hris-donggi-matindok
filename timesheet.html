@@ -30,7 +30,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Otomatis Tanggal Hari Ini & Terhubung Google Cloud</p>
+                <p class="text-xs text-slate-500 mt-0.5">Filter Cepat, Pencarian Karyawan & Terhubung Google Cloud</p>
             </div>
             <div class="flex gap-3">
                 <button onclick="bukaModalAbsen('Shift')" class="bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow hover:bg-emerald-800 transition flex items-center gap-2">
@@ -59,6 +59,24 @@
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
                 <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Status Sistem</p>
                 <p class="text-xs font-bold text-blue-700 mt-1">🟢 Siap Digunakan</p>
+            </div>
+        </div>
+
+        <!-- PANEL KONTROL PENCARIAN & FILTER CEPAT -->
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-6 flex flex-wrap gap-4 items-center justify-between">
+            <!-- Kotak Pencarian Nama -->
+            <div class="flex-1 min-w-[280px]">
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">🔍</span>
+                    <input type="text" id="inputPencarian" onkeyup="renderTabel()" placeholder="Cari nama karyawan atau jabatan..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+            </div>
+
+            <!-- Tombol Filter Sistem Kerja -->
+            <div class="flex gap-2">
+                <button onclick="setFilter('Semua')" id="btnFilterSemua" class="px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white shadow">Semua (52)</button>
+                <button onclick="setFilter('Shift')" id="btnFilterShift" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">Shift (36)</button>
+                <button onclick="setFilter('Non Shift')" id="btnFilterNonShift" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">Non-Shift (16)</button>
             </div>
         </div>
 
@@ -145,17 +163,18 @@
 
                 <div id="pilihanJenisShift" class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Tipe Shift</label>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Tipe / Kondisi Jam Kerja</label>
                         <select id="tipeShift" onchange="aturJamShift()" class="w-full border rounded-lg p-2.5 text-sm outline-none">
                             <option value="pagi">Shift Pagi (07:00 - 19:00)</option>
                             <option value="malam">Shift Malam (19:00 - 07:00)</option>
+                            <option value="nonshift">Non-Shift Reguler (07:00 - 16:00)</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Kondisi Kerja Shift</label>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Kondisi Kerja</label>
                         <select id="statusKondisiShift" class="w-full border rounded-lg p-2.5 text-sm outline-none">
-                            <option value="reguler">Shift Reguler</option>
-                            <option value="lembur_off">Lembur di Hari OFF</option>
+                            <option value="reguler">Reguler / Sesuai Jadwal</option>
+                            <option value="lembur_lebih">Lembur Kelebihan Jam Kerja</option>
                         </select>
                     </div>
                 </div>
@@ -179,7 +198,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT LOGIKA KONEKSI & OTOMATIS TANGGAL HARI INI -->
+    <!-- SCRIPT LOGIKA KONEKSI, FILTER, PENCARIAN & LEMBUR -->
     <script>
         const CLOUD_URL = "https://script.google.com/macros/s/AKfycby1fKpsDqdGhtMira6PqPGdkVFdYTMvr554Zs5OdagaO5bxzSK5trQWQtSAErXei2lX/exec";
 
@@ -193,12 +212,28 @@
         ];
 
         let masterKaryawan = JSON.parse(localStorage.getItem('donggi_timesheet_data')) || defaultMasterKaryawan;
+        let filterAktif = 'Semua';
+
+        function setFilter(sistem) {
+            filterAktif = sistem;
+            document.getElementById('btnFilterSemua').className = sistem === 'Semua' ? 'px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white shadow' : 'px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200';
+            document.getElementById('btnFilterShift').className = sistem === 'Shift' ? 'px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white shadow' : 'px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200';
+            document.getElementById('btnFilterNonShift').className = sistem === 'Non Shift' ? 'px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white shadow' : 'px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200';
+            renderTabel();
+        }
 
         function renderTabel() {
             const tbody = document.getElementById('tabelAbsen');
+            const keyword = document.getElementById('inputPencarian').value.toLowerCase();
             tbody.innerHTML = '';
 
-            masterKaryawan.forEach((item) => {
+            let dataFiltered = masterKaryawan.filter(item => {
+                let matchSistem = filterAktif === 'Semua' || item.sistem === filterAktif;
+                let matchKeyword = item.name.toLowerCase().includes(keyword) || item.jabatan.toLowerCase().includes(keyword);
+                return matchSistem && matchKeyword;
+            });
+
+            dataFiltered.forEach((item) => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition">
                         <td class="p-4 text-center font-semibold text-slate-600">${item.no}</td>
@@ -230,33 +265,24 @@
             if(tipe === 'pagi') {
                 document.getElementById('jamMasuk').value = "07:00";
                 document.getElementById('jamKeluar').value = "19:00";
-            } else {
+            } else if(tipe === 'malam') {
                 document.getElementById('jamMasuk').value = "19:00";
                 document.getElementById('jamKeluar').value = "07:00";
+            } else {
+                document.getElementById('jamMasuk').value = "07:00";
+                document.getElementById('jamKeluar').value = "16:00";
             }
         }
 
         function bukaModalAbsen(sistemKerja) {
             document.getElementById('modalTitle').innerText = `Input Absen Harian (${sistemKerja})`;
             
-            // SET OTOMATIS TANGGAL HARI INI (TODAY)
             const today = new Date();
             document.getElementById('inputTanggal').value = today.getDate();
             
             const daftarBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
             document.getElementById('inputBulan').value = daftarBulan[today.getMonth()];
-            
             document.getElementById('inputTahun').value = today.getFullYear();
-
-            const panelShift = document.getElementById('pilihanJenisShift');
-            if(sistemKerja === 'Shift') {
-                panelShift.classList.remove('hidden');
-                aturJamShift();
-            } else {
-                panelShift.classList.add('hidden');
-                document.getElementById('jamMasuk').value = "07:00";
-                document.getElementById('jamKeluar').value = "16:00";
-            }
 
             const select = document.getElementById('pilihKaryawan');
             select.innerHTML = '';
@@ -264,6 +290,14 @@
             masterKaryawan.filter(k => k.sistem === sistemKerja).forEach((k) => {
                 select.innerHTML += `<option value="${k.no}">${k.name} - ${k.jabatan} (Grade ${k.grade})</option>`;
             });
+
+            if(sistemKerja === 'Shift') {
+                document.getElementById('tipeShift').value = 'pagi';
+                aturJamShift();
+            } else {
+                document.getElementById('tipeShift').value = 'nonshift';
+                aturJamShift();
+            }
 
             document.getElementById('modalAbsen').classList.remove('hidden');
         }
@@ -273,75 +307,73 @@
         }
 
         function simpanAbsenHarian() {
-    const selectedNo = parseInt(document.getElementById('pilihKaryawan').value);
-    const status = document.getElementById('statusKehadiran').value;
-    const tgl = parseInt(document.getElementById('inputTanggal').value);
-    const bln = document.getElementById('inputBulan').value;
-    const thn = parseInt(document.getElementById('inputTahun').value);
-    const jamMasuk = document.getElementById('jamMasuk').value;
-    const jamKeluar = document.getElementById('jamKeluar').value;
-    const tipeShift = document.getElementById('tipeShift').value;
-    
-    // VALIDASI KETAT
-    if (isNaN(tgl) || tgl < 1 || tgl > 31) {
-        alert('⚠️ Validasi Gagal: Tanggal harus di antara angka 1 sampai 31.');
-        document.getElementById('inputTanggal').focus();
-        return;
-    }
+            const selectedNo = parseInt(document.getElementById('pilihKaryawan').value);
+            const status = document.getElementById('statusKehadiran').value;
+            const tgl = parseInt(document.getElementById('inputTanggal').value);
+            const bln = document.getElementById('inputBulan').value;
+            const thn = parseInt(document.getElementById('inputTahun').value);
+            const jamMasuk = document.getElementById('jamMasuk').value;
+            const jamKeluar = document.getElementById('jamKeluar').value;
+            const tipeShift = document.getElementById('tipeShift').value;
+            
+            if (isNaN(tgl) || tgl < 1 || tgl > 31) {
+                alert('⚠️ Validasi Gagal: Tanggal harus di antara angka 1 sampai 31.');
+                document.getElementById('inputTanggal').focus();
+                return;
+            }
 
-    if (isNaN(thn) || thn < 2020 || thn > 2035) {
-        alert('⚠️ Validasi Gagal: Tahun tidak valid.');
-        document.getElementById('inputTahun').focus();
-        return;
-    }
+            let karyawan = masterKaryawan.find(k => k.no === selectedNo);
+            
+            if(karyawan) {
+                if(status === 'masuk' || status === 'dinas') {
+                    karyawan.hk += 1;
+                    
+                    // PENYESUAIAN RUMUS LEMBUL AKTUAL & KONVERSI (TERMASUK NON-SHIFT SEPERTI ARIANTO YAHYA)
+                    if(karyawan.sistem === 'Non Shift') {
+                        karyawan.otAktual += 4.0;    // Kelebihan 4 jam dari jam normal 8 jam
+                        karyawan.otKonversi += 6.0;  // Konversi lembur proporsional
+                        karyawan.makanSiang += 1;
+                    } else {
+                        karyawan.otAktual += 4.0;
+                        karyawan.otKonversi += 6.0;
+                        karyawan.makanMalam += 1;
+                    }
+                }
+                karyawan.catatanStatus = `Tgl ${tgl} ${bln} ${thn}: ${status.toUpperCase()}`;
+                
+                localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
+                
+                const payload = {
+                    nama: karyawan.name,
+                    sistem: karyawan.sistem,
+                    status: status.toUpperCase(),
+                    tanggal: `${tgl} ${bln} ${thn}`,
+                    bulan: bln,
+                    jamMasuk: jamMasuk,
+                    jamKeluar: jamKeluar,
+                    tipeShift: tipeShift,
+                    totalHk: karyawan.hk,
+                    uangMakan: `Pagi: ${karyawan.makanPagi} | Siang: ${karyawan.makanSiang} | Malam: ${karyawan.makanMalam}`,
+                    otAktual: karyawan.otAktual,
+                    otKonversi: karyawan.otKonversi,
+                    catatan: karyawan.catatanStatus
+                };
 
-    let karyawan = masterKaryawan.find(k => k.no === selectedNo);
-    
-    if(karyawan) {
-        if(status === 'masuk' || status === 'dinas') {
-            karyawan.hk += 1;
-            karyawan.otAktual += 4.0;
-            karyawan.otKonversi += 6.0;
-            karyawan.makanMalam += 1;
+                fetch(CLOUD_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(payload).toString()
+                }).then(() => {
+                    alert(`SUKSES! Data tgl ${tgl} ${bln} ${thn} untuk ${karyawan.name} telah dikirim ke Google Sheets.`);
+                    renderTabel();
+                    tutupModal();
+                }).catch((error) => {
+                    console.error('Kendala koneksi:', error);
+                    alert('Gagal terhubung ke Google Cloud.');
+                });
+            }
         }
-        karyawan.catatanStatus = `Tgl ${tgl} ${bln} ${thn}: ${status.toUpperCase()}`;
-        
-        localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
-        
-        const payload = {
-            nama: karyawan.name,
-            sistem: karyawan.sistem,
-            status: status.toUpperCase(),
-            tanggal: `${tgl} ${bln} ${thn}`,
-            bulan: bln,
-            jamMasuk: jamMasuk,
-            jamKeluar: jamKeluar,
-            tipeShift: karyawan.sistem === 'Shift' ? tipeShift : 'Non-Shift',
-            totalHk: karyawan.hk,
-            uangMakan: `Pagi: ${karyawan.makanPagi} | Siang: ${karyawan.makanMalam}`,
-            otAktual: karyawan.otAktual,
-            otKonversi: karyawan.otKonversi,
-            catatan: karyawan.catatanStatus
-        };
-
-        // MENGGUNAKAN METODE FORM URLENCODED AGAR LOLOS DARI BLOKIR CORS BROWSER
-        fetch(CLOUD_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams(payload).toString()
-        }).then(() => {
-            alert(`SUKSES! Data tgl ${tgl} ${bln} ${thn} untuk ${karyawan.name} telah dikirim ke Google Sheets.`);
-            renderTabel();
-            tutupModal();
-        }).catch((error) => {
-            console.error('Kendala koneksi:', error);
-            alert('Gagal terhubung ke Google Cloud.');
-        });
-    }
-}
 
         window.onload = renderTabel;
     </script>
