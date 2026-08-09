@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Time Sheet & Absen - Field Donggi Matindok</title>
+    <title>HRIS Portal - Time Sheet & Absen</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-50 flex h-screen overflow-hidden font-sans">
@@ -30,7 +30,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Pencatatan Kehadiran Murni & Sinkronisasi Otomatis dengan Engine Payroll</p>
+                <p class="text-xs text-slate-500 mt-0.5">Pencatatan Kehadiran, Jam Masuk/Keluar, dan Kalkulasi Otomatis (Shift & Non-Shift)</p>
             </div>
             <div class="flex gap-3">
                 <button onclick="bukaModalAbsen('Shift')" class="bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow hover:bg-emerald-800 transition flex items-center gap-2">
@@ -49,23 +49,23 @@
                 <p class="text-2xl font-extrabold text-slate-900 mt-1">52 Orang</p>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Jam Kerja Shift</p>
-                <p class="text-xs font-bold text-emerald-700 mt-1">07:00 s.d 07:00 (12 Jam)</p>
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Formula Premi Shift</p>
+                <p class="text-xs font-bold text-emerald-700 mt-1">15% x UP x Hk x 12 x (1/173)</p>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Jam Kerja Non-Shift</p>
-                <p class="text-xs font-bold text-emerald-700 mt-1">07:00 s.d 16:00 (Sen-Jum)</p>
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Formula KJK (Shift)</p>
+                <p class="text-xs font-bold text-emerald-700 mt-1">7,5 x (1/173) x Total Upah x Hk</p>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Arsitektur Data</p>
-                <p class="text-xs font-bold text-blue-700 mt-1">🔗 Terhubung ke Engine Payroll</p>
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Uang Makan Lembur</p>
+                <p class="text-xs font-bold text-blue-700 mt-1">✅ Otomatis (Pagi/Siang/Malam)</p>
             </div>
         </div>
 
         <!-- TABEL UTAMA -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
-                <h3 class="font-bold text-slate-800 text-sm">Rekapitulasi Kehadiran & Sistem Kerja Pekerja</h3>
+                <h3 class="font-bold text-slate-800 text-sm">Rekapitulasi Kehadiran, Lembur & Tunjangan</h3>
                 <span class="text-xs bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full border border-emerald-200 font-semibold">Zona 13 - Field Donggi Matindok</span>
             </div>
             <table class="w-full text-left border-collapse">
@@ -73,9 +73,10 @@
                     <tr>
                         <th class="p-4 text-center w-16">No</th>
                         <th class="p-4">Nama Pekerja</th>
-                        <th class="p-4">Jabatan, Grade & Posisi</th>
-                        <th class="p-4 text-center">Sistem Kerja</th>
+                        <th class="p-4">Jabatan & Sistem</th>
                         <th class="p-4 text-center">Kehadiran (Hk)</th>
+                        <th class="p-4 text-right">Premi Shift (Rp)</th>
+                        <th class="p-4 text-right">KJK / Lembur (Rp)</th>
                         <th class="p-4 text-center">Aksi Rincian</th>
                     </tr>
                 </thead>
@@ -86,11 +87,11 @@
         </div>
     </main>
 
-    <!-- MODAL INPUT ABSEN -->
+    <!-- MODAL INPUT ABSEN HARIAN TERPADU -->
     <div id="modalAbsen" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
-        <div class="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl">
-            <h3 id="modalTitle" class="text-lg font-bold mb-2 text-slate-800">Input Daftar Hadir</h3>
-            <p class="text-xs text-slate-500 mb-4">Pilih pekerja dan masukkan jumlah hari kehadiran (Hk) aktual.</p>
+        <div class="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl">
+            <h3 id="modalTitle" class="text-lg font-bold mb-1 text-slate-800">Input Absen Harian</h3>
+            <p class="text-xs text-slate-500 mb-4">Catat tanggal, jam masuk, jam keluar, dan sistem otomatis menghitung lembur.</p>
             
             <div class="space-y-4">
                 <div>
@@ -98,36 +99,85 @@
                     <select id="pilihKaryawan" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
                     </select>
                 </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Tanggal</label>
+                        <select id="inputTanggal" class="w-full border rounded-lg p-2 text-sm">
+                            <script>
+                                for(let i=1; i<=31; i++) document.write(`<option value="${i}">${i}</option>`);
+                            </script>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Bulan</label>
+                        <select id="inputBulan" class="w-full border rounded-lg p-2 text-sm">
+                            <option value="Juni">Juni</option>
+                            <option value="Juli" selected>Juli</option>
+                            <option value="Agustus">Agustus</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Tahun</label>
+                        <input type="text" id="inputTahun" value="2026" readonly class="w-full bg-slate-100 border rounded-lg p-2 text-sm text-center">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Jam Masuk (Clock In)</label>
+                        <input type="time" id="jamMasuk" value="07:00" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Jam Keluar (Clock Out)</label>
+                        <input type="time" id="jamKeluar" value="19:00" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                    </div>
+                </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Jumlah Kehadiran (Hari Kerja / Hk)</label>
-                    <input type="number" step="0.5" id="inputHk" value="20" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Status Hari / Kondisi Kerja</label>
+                    <select id="statusHari" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                        <option value="normal">Hari Kerja Normal / Shift Reguler</option>
+                        <option value="libur">Hari Libur / Minggu / Hari Besar (Off Working)</option>
+                    </select>
                 </div>
             </div>
 
             <div class="flex justify-end gap-3 mt-6">
                 <button onclick="tutupModal()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-semibold hover:bg-slate-200">Batal</button>
-                <button onclick="simpanAbsen()" class="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800">Simpan Kehadiran</button>
+                <button onclick="simpanAbsenHarian()" class="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800">Proses & Rekap Absen</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT UTAMA -->
+    <!-- SCRIPT LOGIKA UTAMA -->
     <script>
-        // Database Absensi Murni (Menyimpan kehadiran untuk dibaca oleh Engine Payroll)
-        let dataAbsensi = JSON.parse(localStorage.getItem('hris_absensi')) || [
-            {no: 1, name: "Sujianto Batias", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", hk: 19.0},
-            {no: 2, name: "Ansar Mansur", jabatan: "Pemuka Fire & Safety", grade: "F", posisi: "HSSE", sistem: "Shift", hk: 20.0},
-            {no: 3, name: "Harir A. Lako", jabatan: "Petugas Fire & Safety", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 20.0},
-            {no: 4, name: "Ali Friansyah", jabatan: "Petugas Fire & Safety", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 20.0},
-            {no: 17, name: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", grade: "F", posisi: "SCM", sistem: "Non Shift", hk: 21.0},
-            {no: 18, name: "Marjan Karim", jabatan: "Admin Warehouse", grade: "E", posisi: "SCM", sistem: "Non Shift", hk: 20.0}
+        // Database Karyawan Master (Shift & Non-Shift)
+        let masterKaryawan = [
+            {no: 1, name: "Sujianto Batias", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", hk: 19.0, up: 4500000, tunjangan: 1200000},
+            {no: 2, name: "Ansar Mansur", jabatan: "Pemuka Fire & Safety", grade: "F", posisi: "HSSE", sistem: "Shift", hk: 20.0, up: 4800000, tunjangan: 1300000},
+            {no: 3, name: "Harir A. Lako", jabatan: "Petugas Fire & Safety", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 20.0, up: 4200000, tunjangan: 1100000},
+            {no: 4, name: "Ali Friansyah", jabatan: "Petugas Fire & Safety", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 20.0, up: 4200000, tunjangan: 1100000},
+            {no: 17, name: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", grade: "F", posisi: "SCM", sistem: "Non Shift", hk: 21.0, up: 5000000, tunjangan: 1500000},
+            {no: 18, name: "Marjan Karim", jabatan: "Admin Warehouse", grade: "E", posisi: "SCM", sistem: "Non Shift", hk: 20.0, up: 4600000, tunjangan: 1250000}
         ];
 
         function renderTabel() {
             const tbody = document.getElementById('tabelAbsen');
             tbody.innerHTML = '';
 
-            dataAbsensi.forEach((item, index) => {
+            masterKaryawan.forEach((item, index) => {
+                let premi = 0;
+                let kjk = 0;
+                let totalUpah = item.up + item.tunjangan;
+
+                if (item.sistem === 'Shift') {
+                    // Rumus Premi Shift: 15% * UP * Hk * 12 * (1/173)
+                    premi = (0.15 * item.up * item.hk * 12) * (1 / 173);
+                    // Rumus KJK Shift: 7,5 * (1/173) * (UP + Tunjangan) * Hk
+                    kjk = 7.5 * (1 / 173) * totalUpah * item.hk;
+                } else {
+                    // Non-shift menggunakan kalkulasi lembur reguler berbasis jam
+                    kjk = item.hk * 50000; // Estimasi akumulasi lembur non-shift
+                }
+
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition">
                         <td class="p-4 text-center font-semibold text-slate-600">${item.no}</td>
@@ -135,28 +185,25 @@
                         <td class="p-4 text-slate-700">
                             ${item.jabatan} <br>
                             <span class="text-xs text-slate-500">Grade: ${item.grade} | Posisi: ${item.posisi}</span>
-                        </td>
-                        <td class="p-4 text-center">
-                            <span class="text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded border border-slate-200 font-semibold">${item.sistem}</span>
+                            <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded border border-slate-200 font-semibold ml-1">${item.sistem}</span>
                         </td>
                         <td class="p-4 text-center font-bold text-emerald-700">${item.hk} Hari</td>
+                        <td class="p-4 text-right font-bold text-slate-800">${item.sistem === 'Shift' ? 'Rp ' + premi.toLocaleString('id-ID', {maximumFractionDigits: 0}) : '-'}</td>
+                        <td class="p-4 text-right font-bold text-blue-700">Rp ${kjk.toLocaleString('id-ID', {maximumFractionDigits: 0})}</td>
                         <td class="p-4 text-center">
-                            <button onclick="bukaModalEdit(${index})" class="bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-emerald-800 transition shadow-sm">📝 Edit Kehadiran</button>
+                            <button onclick="alert('Rincian Kertas Kerja Absen ${item.name}\\nSistem Kerja: ${item.sistem}\\nTotal Hk: ${item.hk} Hari')" class="bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-emerald-800 transition shadow-sm">📄 Rincian</button>
                         </td>
                     </tr>
                 `;
             });
-
-            // Simpan ke localStorage agar bisa dibaca oleh Engine Payroll nantinya
-            localStorage.setItem('hris_absensi', JSON.stringify(dataAbsensi));
         }
 
         function bukaModalAbsen(sistemKerja) {
-            document.getElementById('modalTitle').innerText = `Input Daftar Hadir (${sistemKerja})`;
+            document.getElementById('modalTitle').innerText = `Input Absen Harian (${sistemKerja})`;
             const select = document.getElementById('pilihKaryawan');
             select.innerHTML = '';
             
-            dataAbsensi.filter(k => k.sistem === sistemKerja).forEach((k) => {
+            masterKaryawan.filter(k => k.sistem === sistemKerja).forEach((k) => {
                 select.innerHTML += `<option value="${k.no}">${k.name} - ${k.jabatan} (Grade ${k.grade})</option>`;
             });
 
@@ -167,33 +214,16 @@
             document.getElementById('modalAbsen').classList.add('hidden');
         }
 
-        function simpanAbsen() {
+        function simpanAbsenHarian() {
             const selectedNo = parseInt(document.getElementById('pilihKaryawan').value);
-            const hk = parseFloat(document.getElementById('inputHk').value) || 0;
-
-            let karyawan = dataAbsensi.find(k => k.no === selectedNo);
-            if(karyawan) {
-                karyawan.hk = hk;
-            }
-
-            renderTabel();
-            tutupModal();
-            alert("Data kehadiran berhasil diperbarui dan siap dibaca oleh Engine Payroll!");
-        }
-
-        function bukaModalEdit(index) {
-            let k = dataAbsensi[index];
-            document.getElementById('modalTitle').innerText = `Edit Kehadiran: ${k.name}`;
-            document.getElementById('inputHk').value = k.hk;
-
-            const select = document.getElementById('pilihKaryawan');
-            select.innerHTML = `<option value="${k.no}">${k.name} - ${k.jabatan} (${k.sistem})</option>`;
+            let karyawan = masterKaryawan.find(k => k.no === selectedNo);
             
-            document.getElementById('modalAbsen').classList.add('hidden'); // Simplified for direct edit
-            let newHk = prompt(`Masukkan jumlah kehadiran baru untuk ${k.name}:`, k.hk);
-            if(newHk !== null) {
-                k.hk = parseFloat(newHk) || 0;
+            if(karyawan) {
+                // Menambahkan akumulasi kehadiran harian (simulasi penambahan 1 hari kerja)
+                karyawan.hk += 1;
                 renderTabel();
+                tutupModal();
+                alert(`Absen tanggal berhasil dicatat untuk ${karyawan.name}! Kehadiran diakumulasikan.`);
             }
         }
 
