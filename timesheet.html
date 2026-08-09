@@ -153,7 +153,7 @@
         </div>
     </div>
 
-    <!-- Skrip Data 52 Karyawan Sesuai Urutan Blok Perusahaan -->
+    <!-- Skrip Data 52 Karyawan (Sintaks Diperbaiki) -->
     <script>
         let timesheetData = [
             // Blok 1: No 1 s.d 16 (Shift)
@@ -328,7 +328,7 @@
         }
 
         function filterTimesheet() {
-            const keyword = document.getElementById('searchTimesheet'].value.toLowerCase();
+            const keyword = document.getElementById('searchTimesheet').value.toLowerCase();
             const shiftVal = document.getElementById('filterSistemKerja').value;
 
             const filtered = timesheetData.filter(emp => {
