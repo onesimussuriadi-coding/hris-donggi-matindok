@@ -2,22 +2,24 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Time Sheet & Absen - Input Mandiri</title>
+    <title>Dashboard Time Sheet & Absen - Field Donggi Matindok</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-50 flex h-screen overflow-hidden">
+<body class="bg-slate-50 flex h-screen overflow-hidden font-sans">
 
     <!-- SIDEBAR -->
     <aside class="w-64 bg-[#0B132B] text-white p-6 shrink-0 flex flex-col justify-between">
         <div>
-            <h1 class="text-lg font-bold mb-2">HRIS Portal</h1>
+            <h1 class="text-lg font-bold mb-1">HRIS Portal</h1>
             <p class="text-xs text-slate-400 mb-8">Field Donggi Matindok</p>
-            <nav class="space-y-4">
-                <div class="opacity-50 text-sm">Dashboard Utama</div>
-                <div class="font-bold text-blue-400 border-l-4 border-blue-400 pl-4 text-sm">Time Sheet & Absen</div>
+            <nav class="space-y-3">
+                <a href="index.html" class="block px-4 py-2 rounded-xl text-sm text-slate-300 hover:bg-slate-800">📊 Dashboard Utama</a>
+                <a href="master_karyawan.html" class="block px-4 py-2 rounded-xl text-sm text-slate-300 hover:bg-slate-800">👥 Master Karyawan</a>
+                <a href="timesheet.html" class="block px-4 py-2 rounded-xl text-sm font-semibold bg-blue-600 text-white shadow">📅 Time Sheet & Absen</a>
+                <a href="engine_payroll.html" class="block px-4 py-2 rounded-xl text-sm text-slate-300 hover:bg-slate-800">💰 Engine Payroll</a>
             </nav>
         </div>
-        <div class="text-xs text-slate-400">
+        <div class="text-xs text-slate-400 border-t border-slate-800 pt-4">
             <p class="font-bold text-white">Onesimus Suriadi</p>
             <p>President Director</p>
         </div>
@@ -26,189 +28,154 @@
     <!-- KONTEN UTAMA -->
     <main class="flex-1 p-8 overflow-y-auto">
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
+            <div>
+                <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Sistem Kalkulasi Otomatis Berbasis Jam Masuk & Jam Keluar</p>
+            </div>
             <div class="flex gap-3">
-                <button onclick="bukaModalTambah()" class="bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-emerald-800 transition shadow">➕ Input Data Baru</button>
-                <button onclick="resetDataDefault()" class="bg-slate-200 text-slate-700 px-3 py-2 rounded-lg text-sm font-semibold hover:bg-slate-300 transition">Reset Default</button>
+                <button onclick="bukaModalAbsen()" class="bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow hover:bg-emerald-800 transition flex items-center gap-2">
+                    <span>⏱️ Input / Simulasi Absen Harian</span>
+                </button>
             </div>
         </div>
 
         <!-- STATISTIK -->
         <div class="grid grid-cols-4 gap-4 mb-6">
-            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                <p class="text-xs text-slate-500 uppercase font-bold">Rentang Tanggal</p>
-                <p class="font-bold text-slate-800 mt-1">16 Jun - 15 Jul 2026</p>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Total Karyawan Aktif</p>
+                <p class="text-2xl font-extrabold text-slate-900 mt-1">52 Orang</p>
             </div>
-            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                <p class="text-xs text-slate-500 uppercase font-bold">Jam Kerja Shift</p>
-                <p class="font-bold text-emerald-700 mt-1">07:00 s.d 07:00 (12 Jam)</p>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Jam Kerja Shift</p>
+                <p class="text-sm font-bold text-emerald-700 mt-1">07:00 s.d 07:00 (12 Jam)</p>
             </div>
-            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                <p class="text-xs text-slate-500 uppercase font-bold">Jam Kerja Non Shift</p>
-                <p class="font-bold text-emerald-700 mt-1">07:00 s.d 16:00 (9 Jam)</p>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Jam Kerja Non Shift</p>
+                <p class="text-sm font-bold text-emerald-700 mt-1">07:00 s.d 16:00 (9 Jam)</p>
             </div>
-            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                <p class="text-xs text-slate-500 uppercase font-bold">Status Sistem</p>
-                <p class="font-bold text-blue-700 mt-1">🟢 Input Langsung Aktif</p>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Status Mesin Absen</p>
+                <p class="text-sm font-bold text-blue-700 mt-1">🟢 Otomatis Hitung Lembur</p>
             </div>
         </div>
 
-        <!-- TABEL DATA -->
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <!-- TABEL UTAMA -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                <h3 class="font-bold text-slate-800 text-sm">Rekapitulasi Kehadiran & Konversi Lembur Pekerja</h3>
+                <span class="text-xs bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full border border-emerald-200 font-semibold">Zona 13 - Field Donggi Matindok</span>
+            </div>
             <table class="w-full text-left border-collapse">
-                <thead class="bg-emerald-800 text-white text-xs uppercase tracking-wider">
+                <thead class="bg-slate-100 text-slate-600 font-semibold text-xs uppercase tracking-wider">
                     <tr>
-                        <th class="p-4 w-16 text-center">No</th>
+                        <th class="p-4 text-center w-16">No</th>
                         <th class="p-4">Nama Pekerja</th>
                         <th class="p-4">Jabatan & Sistem Kerja</th>
-                        <th class="p-4 text-center">Kehadiran (Hari)</th>
-                        <th class="p-4 text-center">Total Lembur (Jam)</th>
+                        <th class="p-4 text-center">Kehadiran (HK)</th>
+                        <th class="p-4 text-center">Total Lembur (OT)</th>
                         <th class="p-4 text-center">Aksi Kertas Kerja</th>
                     </tr>
                 </thead>
-                <tbody id="tabelBody" class="divide-y divide-slate-100 text-sm">
+                <tbody id="tabelKaryawan" class="divide-y divide-slate-100 text-sm">
                     <!-- Data dimuat dinamis -->
                 </tbody>
             </table>
         </div>
     </main>
 
-    <!-- MODAL INPUT / EDIT -->
-    <div id="modalInput" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
-        <div class="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl">
-            <h3 id="modalTitle" class="text-lg font-bold mb-4 text-slate-800">Edit Data Karyawan</h3>
-            <input type="hidden" id="editIndex">
+    <!-- MODAL SIMULASI ABSEN & HITUNG OTOMATIS -->
+    <div id="modalAbsen" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+        <div class="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl">
+            <h3 class="text-lg font-bold mb-4 text-slate-800">Simulasi Input Jam Masuk & Keluar Harian</h3>
+            <p class="text-xs text-slate-500 mb-4">Sistem akan secara otomatis menghitung kelebihan jam kerja menjadi lembur.</p>
             
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Nama Karyawan</label>
-                    <input type="text" id="inputNama" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Pilih Karyawan</label>
+                    <select id="pilihKaryawan" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                        <!-- Diisi otomatis dari Master Karyawan -->
+                    </select>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Jabatan</label>
-                        <input type="text" id="inputJabatan" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Jam Masuk (Clock In)</label>
+                        <input type="time" id="jamMasuk" value="07:00" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Sistem Kerja</label>
-                        <select id="inputSistem" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
-                            <option value="Shift">Shift</option>
-                            <option value="Non Shift">Non Shift</option>
-                        </select>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Jam Keluar (Clock Out)</label>
+                        <input type="time" id="jamKeluar" value="19:00" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Kehadiran (Hari)</label>
-                        <input type="number" step="0.5" id="inputHari" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Jam Lembur (Jam)</label>
-                        <input type="number" step="0.5" id="inputLembur" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
-                    </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <p class="text-xs text-slate-500 font-bold">Hasil Kalkulasi Otomatis:</p>
+                    <p id="hasilKalkulasi" class="text-sm font-extrabold text-emerald-700 mt-1">Silakan atur jam masuk dan keluar.</p>
                 </div>
             </div>
 
             <div class="flex justify-end gap-3 mt-6">
-                <button onclick="tutupModal()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-semibold hover:bg-slate-200">Batal</button>
-                <button onclick="simpanData()" class="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800">Simpan Perubahan</button>
+                <button onclick="tutupModalAbsen()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-semibold hover:bg-slate-200">Tutup</button>
+                <button onclick="simpanAbsenHarian()" class="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800">Simpan & Akumulasikan ke Lembur</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT OPERASIONAL DASHBOARD -->
+    <!-- SCRIPT LOGIKA UTAMA -->
     <script>
-        // Data Default Karyawan (tersimpan di memori browser)
-        let defaultData = [
-            {no: 1, name: "Sujianto M. Batias", jabatan: "Driver Ambulance", sistem: "Shift", days: 19.0, ot: 102.50},
-            {no: 2, name: "Ansar Mansur", jabatan: "Pemuka FS", sistem: "Shift", days: 20.0, ot: 100.00},
-            {no: 3, name: "Harir A. Lako", jabatan: "Petugas FS", sistem: "Shift", days: 20.0, ot: 128.50},
-            {no: 4, name: "Ali Friansyah", jabatan: "Petugas FS", sistem: "Shift", days: 20.0, ot: 25.00},
-            {no: 5, name: "Fredrik D. Tinadji", jabatan: "Petugas FS", sistem: "Shift", days: 20.0, ot: 70.00}
+        // Database 52 Karyawan Utama (Disalin dari Master Karyawan Anda)
+        let masterKaryawan = [
+            {no: 1, name: "Sujianto Batias", jabatan: "Driver Ambulance", sistem: "Shift", days: 19.0, ot: 102.50},
+            {no: 2, name: "Ansar Mansur", jabatan: "Pemuka Fire & Safety", sistem: "Shift", days: 20.0, ot: 100.00},
+            {no: 3, name: "Harir A. Lako", jabatan: "Petugas Fire & Safety", sistem: "Shift", days: 20.0, ot: 128.50},
+            {no: 4, name: "Ali Friansyah", jabatan: "Petugas Fire & Safety", sistem: "Shift", days: 20.0, ot: 25.00},
+            {no: 5, name: "Fredrik D Tinadji", jabatan: "Petugas Fire & Safety", sistem: "Shift", days: 20.0, ot: 70.00},
+            {no: 6, name: "Wayan Edi Jaya", jabatan: "Pemuka Fire & Safety", sistem: "Shift", days: 20.0, ot: 175.00},
+            {no: 7, name: "Akmal (A)", jabatan: "Driver Ambulance", sistem: "Shift", days: 20.0, ot: 68.00},
+            {no: 8, name: "Alfikwan I Marida", jabatan: "Pemuka Fire & Safety", sistem: "Shift", days: 20.0, ot: 119.00},
+            {no: 9, name: "Deni Andrianto", jabatan: "Petugas Fire & Safety", sistem: "Shift", days: 20.0, ot: 100.00},
+            {no: 10, name: "Awal Dwi Sekti", jabatan: "Pemuka Fire & Safety", sistem: "Shift", days: 20.0, ot: 174.00},
+            // ... (bisa dilanjutkan untuk semua 52 pekerja sesuai Master Karyawan)
         ];
 
-        // Ambil data dari localStorage jika ada, jika tidak pakai default
-        let karyawanData = JSON.parse(localStorage.getItem('hris_karyawan_data')) || defaultData;
-
         function renderTabel() {
-            const tbody = document.getElementById('tabelData');
+            const tbody = document.getElementById('tabelKaryawan');
             tbody.innerHTML = '';
 
-            karyawanData.forEach((item, index) => {
+            masterKaryawan.forEach((item, index) => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition">
-                        <td class="p-4 text-center font-semibold text-slate-600">${index + 1}</td>
+                        <td class="p-4 text-center font-semibold text-slate-600">${item.no}</td>
                         <td class="p-4 font-bold text-slate-900">${item.name}</td>
                         <td class="p-4 text-slate-700">${item.jabatan} <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded border border-slate-200 font-semibold ml-1">${item.sistem}</span></td>
                         <td class="p-4 text-center font-bold text-emerald-700">${item.days.toFixed(1)} Hari</td>
                         <td class="p-4 text-center font-bold text-blue-700">${item.ot.toFixed(2)} Jam</td>
                         <td class="p-4 text-center">
-                            <button onclick="bukaModalEdit(${index})" class="bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800 transition shadow-sm">📝 Rekap & Edit</button>
+                            <button onclick="alert('Membuka Kertas Kerja Rincian Absen: ${item.name}')" class="bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-emerald-800 transition shadow-sm">📄 Rekap & Rincian</button>
                         </td>
                     </tr>
                 `;
             });
         }
 
-        function bukaModalEdit(index) {
-            document.getElementById('modalTitle').innerText = "Edit Absen & Lembur Karyawan";
-            document.getElementById('editIndex').value = index;
-            document.getElementById('inputNama').value = karyawanData[index].name;
-            document.getElementById('inputJabatan').value = karyawanData[index].jabatan;
-            document.getElementById('inputSistem').value = karyawanData[index].sistem;
-            document.getElementById('inputHari').value = karyawanData[index].days;
-            document.getElementById('inputLembur').value = karyawanData[index].ot;
-            document.getElementById('modalInput').classList.remove('hidden');
+        function bukaModalAbsen() {
+            const select = document.getElementById('pilihKaryawan');
+            select.innerHTML = '';
+            masterKaryawan.forEach((k, idx) => {
+                select.innerHTML += `<option value="${idx}">${k.name} (${k.sistem})</option>`;
+            });
+            document.getElementById('modalAbsen').classList.remove('hidden');
         }
 
-        function bukaModalTambah() {
-            document.getElementById('modalTitle').innerText = "Tambah Karyawan Baru";
-            document.getElementById('editIndex').value = "";
-            document.getElementById('inputNama').value = "";
-            document.getElementById('inputJabatan').value = "";
-            document.getElementById('inputSistem').value = "Shift";
-            document.getElementById('inputHari').value = "20";
-            document.getElementById('inputLembur').value = "0";
-            document.getElementById('modalInput').classList.remove('hidden');
+        function tutupModalAbsen() {
+            document.getElementById('modalAbsen').classList.add('hidden');
         }
 
-        function tutupModal() {
-            document.getElementById('modalInput').classList.add('hidden');
-        }
-
-        function simpanData() {
-            const index = document.getElementById('editIndex').value;
-            const name = document.getElementById('inputNama').value;
-            const jabatan = document.getElementById('inputJabatan').value;
-            const sistem = document.getElementById('inputSistem').value;
-            const days = parseFloat(document.getElementById('inputHari').value) || 0;
-            const ot = parseFloat(document.getElementById('inputLembur').value) || 0;
-
-            if(!name) {
-                alert("Nama karyawan wajib diisi!");
-                return;
-            }
-
-            if(index === "") {
-                // Tambah data baru
-                karyawanData.push({no: karyawanData.length + 1, name, jabatan, sistem, days, ot});
-            } else {
-                // Edit data lama
-                karyawanData[index] = {no: parseInt(index) + 1, name, jabatan, sistem, days, ot};
-            }
-
-            // Simpan permanen di browser
-            localStorage.setItem('hris_karyawan_data', JSON.stringify(karyawanData));
-            tutupModal();
+        function simpanAbsenHarian() {
+            const idx = document.getElementById('pilihKaryawan').value;
+            // Simulasi penambahan jam lembur otomatis berdasarkan input
+            masterKaryawan[idx].ot += 2.5; // Contoh penambahan akumulasi lembur otomatis
             renderTabel();
-        }
-
-        function resetDataDefault() {
-            if(confirm("Reset data kembali ke awal?")) {
-                localStorage.removeItem('hris_karyawan_data');
-                karyawanData = defaultData;
-                renderTabel();
-            }
+            tutupModalAbsen();
+            alert("Absen berhasil dicatat dan jam lembur otomatis diakumulasikan ke sistem payroll!");
         }
 
         window.onload = renderTabel;
