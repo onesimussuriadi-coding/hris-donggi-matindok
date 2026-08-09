@@ -30,7 +30,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Kontrol Manual Jenis Hari (Hari Biasa / Hari Libur) & Jam Normal Akurat</p>
+                <p class="text-xs text-slate-500 mt-0.5">Kontrol Manual Jenis Hari & Rumus Depnaker Sesuai Standar Perusahaan</p>
             </div>
             <div class="flex gap-3">
                 <button onclick="bukaModalAbsen('Shift')" class="bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow hover:bg-emerald-800 transition flex items-center gap-2">
@@ -191,9 +191,14 @@
             <div class="flex justify-between items-center mb-4">
                 <div>
                     <h3 id="historiTitle" class="text-lg font-bold text-slate-800">Histori Absen & Rincian Lembur</h3>
-                    <p class="text-xs text-slate-500">Anda dapat menghapus atau mengoreksi tanggal keliru tertentu saja di sini.</p>
+                    <p class="text-xs text-slate-500">Anda dapat menghapus tanggal keliru tertentu atau menggunakan tombol Hapus Semua untuk reset masa uji coba.</p>
                 </div>
                 <button onclick="tutupModalHistori()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">✕</button>
+            </div>
+
+            <!-- TOMBOL HAPUS SEMUA KHUSUS UJI COBA -->
+            <div class="mb-4">
+                <button onclick="hapusSemuaHistori()" class="bg-rose-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-rose-700 transition shadow-sm">🗑️ Hapus Semua Histori Karyawan Ini</button>
             </div>
             
             <div class="max-h-80 overflow-y-auto border rounded-xl mb-4">
@@ -237,6 +242,7 @@
         masterKaryawan.forEach(k => { if(!k.historiAbsen) k.historiAbsen = []; });
 
         let filterAktif = 'Semua';
+        let activeKaryawanNo = null; // Menyimpan ID karyawan yang sedang dibuka modal historinya
 
         function setFilter(sistem) {
             filterAktif = sistem;
@@ -285,6 +291,7 @@
         }
 
         function bukaModalHistori(noKaryawan) {
+            activeKaryawanNo = noKaryawan;
             let karyawan = masterKaryawan.find(k => k.no === noKaryawan);
             if(!karyawan) return;
 
@@ -316,6 +323,28 @@
 
         function tutupModalHistori() {
             document.getElementById('modalHistori').classList.add('hidden');
+        }
+
+        // FUNGSI HAPUS SEMUA HISTORI KARYAWAN TERTENTU (UNTUK UJI COBA)
+        function hapusSemuaHistori() {
+            let karyawan = masterKaryawan.find(k => k.no === activeKaryawanNo);
+            if(!karyawan) return;
+
+            if(confirm(`⚠️ Yakin ingin menghapus SELURUH histori absen untuk ${karyawan.name}? Akumulasi akan kembali ke 0.`)) {
+                karyawan.hk = 0;
+                karyawan.otAktual = 0;
+                karyawan.otKonversi = 0;
+                karyawan.makanPagi = 0;
+                karyawan.makanSiang = 0;
+                karyawan.makanMalam = 0;
+                karyawan.historiAbsen = [];
+                karyawan.catatanStatus = "Telah di-reset total";
+
+                localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
+                renderTabel();
+                bukaModalHistori(activeKaryawanNo);
+                alert('Semua histori berhasil dibersihkan!');
+            }
         }
 
         function hapusHistoriTanggal(noKaryawan, indexHistori) {
@@ -378,13 +407,26 @@
             document.getElementById('modalAbsen').classList.add('hidden');
         }
 
-        // RUMUS KONVERSI DEPNAKER (Jam 1: 1.5x, Jam berikutnya: 2x)
-        function hitungKonversiDepnaker(jamAktual) {
+        // RUMUS KONVERSI LEMBUR DEPNAKER (SESUAI TABEL SCREENSHOT BAPAK)
+        function hitungKonversiDepnaker(jamAktual, jenisHari) {
             if (jamAktual <= 0) return 0;
-            if (jamAktual <= 1) {
-                return jamAktual * 1.5;
+            
+            if (jenisHari === 'biasa') {
+                // Hari Biasa: Jam 1 dikali 1.5, jam berikutnya dikali 2.0
+                if (jamAktual <= 1) {
+                    return jamAktual * 1.5;
+                } else {
+                    return 1.5 + ((jamAktual - 1) * 2.0);
+                }
             } else {
-                return 1.5 + ((jamAktual - 1) * 2.0);
+                // Hari Libur / Tanggal Merah: Jam 1 s/d 7 dikali 2.0, jam ke-8 dikali 3.0, jam ke-9 dst dikali 4.0
+                if (jamAktual <= 7) {
+                    return jamAktual * 2.0;
+                } else if (jamAktual <= 8) {
+                    return (7 * 2.0) + ((jamAktual - 7) * 3.0);
+                } else {
+                    return (7 * 2.0) + (1 * 3.0) + ((jamAktual - 8) * 4.0);
+                }
             }
         }
 
@@ -425,15 +467,13 @@
                             // Jika dipilih hari libur / tanggal merah, seluruh jam kerja dihitung lembur penuh
                             jamLemburAktual = totalJamKerja;
                         } else {
-                            // Hari kerja biasa: Jam normal 07:00 - 16:00 (8 jam). Hanya lembur jika lewat dari 16:00.
-                            // Contoh: Masuk 07:00, Pulang 16:00 -> totalJamKerja = 9 (termasuk 1 jam istirahat atau jam kerja bersih 8 jam)
-                            // Mari kita pastikan jam kerja bersih 8 jam (07:00 - 16:00 tanpa lembur jika tepat di rentang itu).
+                            // Hari kerja biasa: Jam normal 07:00 - 16:00 (8 jam). Tepat di rentang itu = 0 lembur.
                             if (jamIn <= 7 && jamOut > 16) {
-                                jamLemburAktual = jamOut - 16; // Kelebihan jam di atas pukul 16:00
+                                jamLemburAktual = jamOut - 16;
                             } else if (totalJamKerja > 8) {
                                 jamLemburAktual = totalJamKerja - 8;
                             } else {
-                                jamLemburAktual = 0; // Tepat 07:00 - 16:00 = 0 lembur!
+                                jamLemburAktual = 0;
                             }
                         }
                         karyawan.makanSiang += 1;
@@ -445,11 +485,10 @@
                         karyawan.makanMalam += 1;
                     }
 
-                    // Pastikan lembur tidak minus
                     if(jamLemburAktual < 0) jamLemburAktual = 0;
 
-                    // Terapkan rumus konversi Depnaker standar (1.5x dan 2x)
-                    jamLemburKonversi = hitungKonversiDepnaker(jamLemburAktual);
+                    // Terapkan rumus konversi Depnaker sesuai jenis hari
+                    jamLemburKonversi = hitungKonversiDepnaker(jamLemburAktual, jenisHari);
 
                     karyawan.otAktual += jamLemburAktual;
                     karyawan.otKonversi += jamLemburKonversi;
@@ -493,7 +532,7 @@
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams(payload).toString()
                 }).then(() => {
-                    alert(`SUKSES! Data tgl ${tanggalStr} untuk ${karyawan.name} telah disimpan dengan akurat.`);
+                    alert(`SUKSES! Data tgl ${tanggalStr} untuk ${karyawan.name} telah disimpan dengan aturan Depnaker.`);
                     renderTabel();
                     tutupModal();
                 }).catch((error) => {
