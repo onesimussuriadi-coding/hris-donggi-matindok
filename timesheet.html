@@ -47,8 +47,8 @@
                 <p class="text-xs text-slate-500 mt-0.5">Periode Gaji: 16 Juni s.d. 15 Juli 2026</p>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="fetchLiveGoogleSheet()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow transition flex items-center gap-2">
-                    <span>🔄 Refresh Real-Time Online</span>
+                <button onclick="fetchMappedGoogleSheet()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow transition flex items-center gap-2">
+                    <span>🔄 Refresh Sesuai Mapping Sel (B5:AG56)</span>
                 </button>
                 <button onclick="exportToExcel()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow transition flex items-center gap-2">
                     <span>📥 Ekspor ke Excel</span>
@@ -63,11 +63,11 @@
                     <p class="text-3xl font-extrabold text-slate-900 mt-2" id="statCount">0</p>
                 </div>
                 <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 border-l-4 border-l-emerald-600">
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Hari Hadir (Col T)</p>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Hari Kerja (Col T5:T56)</p>
                     <p class="text-3xl font-extrabold text-slate-900 mt-2" id="statDays">0.0</p>
                 </div>
                 <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 border-l-4 border-l-indigo-600">
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Jam Lembur (Col AG)</p>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Jam Lembur (Col AG5:AG56)</p>
                     <p class="text-3xl font-extrabold text-slate-900 mt-2" id="statOT">0.00 <span class="text-base font-semibold text-slate-500">Jam</span></p>
                 </div>
             </div>
@@ -76,10 +76,10 @@
                 <div class="px-6 py-4 bg-slate-50/50 border-b border-slate-200 flex justify-between items-center">
                     <div>
                         <h3 class="font-bold text-slate-800 text-sm">Rekapitulasi Kehadiran & Lembur Pegawai</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Sumber Data Murni Online &bull; Tab: <strong>Database Karyawan</strong></p>
+                        <p class="text-xs text-slate-500 mt-0.5">Sumber Data Murni Online &bull; Sesuai Instruksi Pemetaan Sel (B5:AG56)</p>
                     </div>
                     <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Sinkronisasi Real-Time Aktif
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Sinkronisasi Rule Berjalan
                     </span>
                 </div>
 
@@ -87,18 +87,18 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-slate-100 text-slate-600 font-semibold text-xs uppercase tracking-wider">
-                                <th class="px-6 py-3.5 border-b border-slate-200 text-center w-16">No (Col B)</th>
-                                <th class="px-6 py-3.5 border-b border-slate-200">Nama Karyawan (Col C)</th>
-                                <th class="px-6 py-3.5 border-b border-slate-200">Jabatan (Col F)</th>
-                                <th class="px-6 py-3.5 border-b border-slate-200">Penempatan (Col E)</th>
-                                <th class="px-6 py-3.5 border-b border-slate-200">Sistem Kerja (Col G)</th>
+                                <th class="px-6 py-3.5 border-b border-slate-200 text-center w-16">No (B5:B56)</th>
+                                <th class="px-6 py-3.5 border-b border-slate-200">Nama Karyawan (C5:C56)</th>
+                                <th class="px-6 py-3.5 border-b border-slate-200">Jabatan (F5:F56)</th>
+                                <th class="px-6 py-3.5 border-b border-slate-200">Divisi (E5:E56)</th>
+                                <th class="px-6 py-3.5 border-b border-slate-200">Sistem Kerja (G5:G56)</th>
                                 <th class="px-6 py-3.5 border-b border-slate-200 text-center w-20">Grade</th>
-                                <th class="px-6 py-3.5 border-b border-slate-200 text-center w-28">Hari Hadir (Col T)</th>
-                                <th class="px-6 py-3.5 border-b border-slate-200 text-right w-44">Jam Lembur (Col AG)</th>
+                                <th class="px-6 py-3.5 border-b border-slate-200 text-center w-28">Hari Kerja (T5:T56)</th>
+                                <th class="px-6 py-3.5 border-b border-slate-200 text-right w-44">Jam Lembur (AG5:AG56)</th>
                             </tr>
                         </thead>
                         <tbody id="employeeTableBody" class="divide-y divide-slate-200 text-sm">
-                            <tr><td colspan="8" class="px-6 py-8 text-center text-slate-400">Menghubungkan ke Google Spreadsheet secara real-time...</td></tr>
+                            <tr><td colspan="8" class="px-6 py-8 text-center text-slate-400">Menarik data real-time sesuai pemetaan sel...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -106,11 +106,11 @@
         </main>
     </div>
 
-    <!-- Script Pemetaan Kolom Presisi Real-Time CSV Google Sheet -->
+    <!-- Script Pemetaan Mutlak Sesuai Gambar Instruksi Cell -->
     <script>
-        let onlineDatabase = [];
+        let mappedDatabase = [];
 
-        async function fetchLiveGoogleSheet() {
+        async function fetchMappedGoogleSheet() {
             const spreadsheetId = "1DvRQrgT43ycmJ_h5cBCYy5Fijk3oFG9L18p-k42cdpo";
             const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv`;
 
@@ -118,14 +118,14 @@
                 const response = await fetch(csvUrl);
                 if (!response.ok) throw new Error("Gagal mengambil data dari Google Drive");
                 const csvText = await response.text();
-                parseOnlineCSV(csvText);
+                parseMappedCSV(csvText);
             } catch (error) {
                 console.error("Koneksi gagal:", error);
                 document.getElementById('employeeTableBody').innerHTML = `<tr><td colspan="8" class="px-6 py-8 text-center text-red-500 font-semibold">Gagal memuat data online. Pastikan Google Sheet sudah di-Publish ke Web (File > Share > Publish to web).</td></tr>`;
             }
         }
 
-        function parseOnlineCSV(csvText) {
+        function parseMappedCSV(csvText) {
             const rows = [];
             let row = [];
             let inQuotes = false;
@@ -154,44 +154,43 @@
                 rows.push(row);
             }
 
-            onlineDatabase = [];
+            mappedDatabase = [];
             let sumDays = 0;
             let sumOT = 0;
 
-            // Membaca baris data karyawan secara tepat mulai baris ke-7 sampai 58 (Indeks baris ke-6 hingga 57 dalam array 0-based)
-            // Sesuai pemetaan kolom Anda:
+            // Sesuai instruksi gambar: Cell B5 sampai B56 (artinya index baris ke-4 hingga 55 dalam array 0-based)
+            // Pemetaan Kolom Mutlak:
             // Col B (Index 1) = No
-            // Col C (Index 2) = Nama Karyawan
-            // Col E (Index 4) = Penempatan
+            // Col C (Index 2) = Nama Lengkap Karyawan
+            // Col E (Index 4) = Divisi
             // Col F (Index 5) = Jabatan
             // Col G (Index 6) = Sistem Kerja
-            // Col H (Index 7) = Grade
+            // Col H (Index 7) = Grade (asumsi di kolom H sebelah sistem kerja)
             // Col T (Index 19) = Hari Kerja (HK)
             // Col AG (Index 32) = Jam Lembur Konversi
-            for (let i = 6; i < rows.length; i++) {
+            for (let i = 4; i <= 55 && i < rows.length; i++) {
                 let r = rows[i];
-                if (!r || !r[2]) continue; // Lewati baris kosong
+                if (!r) continue;
 
-                let nameTest = r[2].toString().toLowerCase();
-                if (nameTest.includes("nama") || nameTest.includes("total") || nameTest.includes("no")) continue;
+                let nameVal = r[2]; // Kolom C
+                if (!nameVal || nameVal === '') continue;
 
-                let no = parseInt(r[1]) || (onlineDatabase.length + 1);
-                let name = r[2] || '';
-                let penempatan = r[4] || 'HSSE';
-                let jabatan = r[5] || '-';
-                let sistem = r[6] || 'Shift';
-                let grade = r[7] || 'E';
-                let days = parseFloat(r[19]) || 0.0;
-                let ot = parseFloat(r[32]) || 0.0;
+                let no = parseInt(r[1]) || (mappedDatabase.length + 1);
+                let name = nameVal;
+                let divisi = r[4] || '-'; // Kolom E
+                let jabatan = r[5] || '-'; // Kolom F
+                let sistem = r[6] || 'Shift'; // Kolom G
+                let grade = r[7] || 'E'; // Kolom H
+                let days = parseFloat(r[19]) || 0.0; // Kolom T
+                let ot = parseFloat(r[32]) || 0.0; // Kolom AG
 
                 sumDays += days;
                 sumOT += ot;
 
-                onlineDatabase.push({no, name, jabatan, penempatan, sistem, grade, days, ot});
-                if (onlineDatabase.length >= 52) break; // Batasi pas 52 karyawan
+                mappedDatabase.push({no, name, jabatan, divisi, sistem, grade, days, ot});
             }
 
-            renderTableDOM(onlineDatabase, sumDays, sumOT);
+            renderTableDOM(mappedDatabase, sumDays, sumOT);
         }
 
         function renderTableDOM(data, tDays, tOT) {
@@ -205,7 +204,7 @@
                     <td class="px-6 py-3.5 border-b border-slate-200 text-center font-semibold text-slate-600">${item.no}</td>
                     <td class="px-6 py-3.5 border-b border-slate-200 font-bold text-slate-900">${item.name}</td>
                     <td class="px-6 py-3.5 border-b border-slate-200 text-slate-700">${item.jabatan}</td>
-                    <td class="px-6 py-3.5 border-b border-slate-200"><span class="bg-slate-100 text-slate-700 text-xs font-medium px-2.5 py-1 rounded-md border border-slate-200">${item.penempatan}</span></td>
+                    <td class="px-6 py-3.5 border-b border-slate-200"><span class="bg-slate-100 text-slate-700 text-xs font-medium px-2.5 py-1 rounded-md border border-slate-200">${item.divisi}</span></td>
                     <td class="px-6 py-3.5 border-b border-slate-200 text-slate-700">${item.sistem}</td>
                     <td class="px-6 py-3.5 border-b border-slate-200 text-center font-bold text-indigo-700">${item.grade}</td>
                     <td class="px-6 py-3.5 border-b border-slate-200 text-center font-bold text-emerald-600">${item.days.toFixed(1)}</td>
@@ -220,18 +219,18 @@
         }
 
         function exportToExcel() {
-            if (onlineDatabase.length === 0) return;
-            const ws = XLSX.utils.json_to_sheet(onlineDatabase.map(e => ({
-                "No": e.no, "Nama Karyawan": e.name, "Jabatan": e.jabatan, "Penempatan": e.penempatan,
-                "Sistem Kerja": e.sistem, "Grade": e.grade, "Hari Hadir": e.days, "Konversi Lembur (Jam)": e.ot
+            if (mappedDatabase.length === 0) return;
+            const ws = XLSX.utils.json_to_sheet(mappedDatabase.map(e => ({
+                "No": e.no, "Nama Karyawan": e.name, "Jabatan": e.jabatan, "Divisi": e.divisi,
+                "Sistem Kerja": e.sistem, "Grade": e.grade, "Hari Kerja (HK)": e.days, "Jam Lembur Konversi": e.ot
             })));
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Database_Karyawan_RealTime");
-            XLSX.writeFile(wb, "Rekap_Timesheet_RealTime.xlsx");
+            XLSX.utils.book_append_sheet(wb, ws, "Database_Karyawan_Mapped");
+            XLSX.writeFile(wb, "Rekap_Timesheet_Mapped_B5_AG56.xlsx");
         }
 
-        // Muat data langsung secara online saat halaman dibuka
-        window.onload = fetchLiveGoogleSheet;
+        // Muat data langsung secara online berdasarkan mapping cell saat halaman dibuka
+        window.onload = fetchMappedGoogleSheet;
     </script>
 </body>
 </html>
