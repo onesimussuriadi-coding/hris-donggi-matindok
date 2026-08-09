@@ -2,84 +2,71 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Time Sheet & Absen - Portal HRIS</title>
+    <title>HRIS Portal - Time Sheet</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-100 font-sans antialiased text-slate-800 flex h-screen overflow-hidden">
-
-    <!-- SIDEBAR NAVIGASI (Sama seperti dashboard Bapak) -->
-    <aside class="w-64 bg-[#0B132B] text-white flex flex-col justify-between shrink-0">
-        <div class="p-6 border-b border-slate-800">
-            <h1 class="text-lg font-bold">HRIS Portal</h1>
-            <p class="text-xs text-slate-400">Field Donggi Matindok</p>
-        </div>
-        <nav class="p-4 space-y-1.5">
-            <a href="index.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800">📊 Dashboard Utama</a>
-            <a href="timesheet.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold bg-blue-600 text-white">📅 Time Sheet & Absen</a>
+<body class="bg-slate-50 font-sans text-slate-900 flex h-screen">
+    
+    <!-- Sidebar -->
+    <aside class="w-64 bg-[#0B132B] text-white p-6 shrink-0">
+        <h1 class="text-lg font-bold mb-8">HRIS Portal</h1>
+        <nav class="space-y-4">
+            <div class="opacity-50">Dashboard Utama</div>
+            <div class="font-bold text-blue-400 border-l-4 border-blue-400 pl-4">Time Sheet & Absen</div>
         </nav>
     </aside>
 
-    <!-- KONTEN UTAMA -->
-    <div class="flex-1 flex flex-col h-screen overflow-y-auto">
-        <header class="bg-white border-b border-slate-200 px-8 py-4 flex justify-between items-center">
-            <h2 class="text-xl font-bold text-slate-900">Time Sheet & Absen</h2>
-            <button onclick="loadData()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow hover:bg-blue-700">🔄 Update Live Data</button>
-        </header>
+    <!-- Konten -->
+    <main class="flex-1 p-8 overflow-y-auto">
+        <h2 class="text-2xl font-bold mb-6">Dashboard Time Sheet & Absen</h2>
+        
+        <!-- Tabel Utama -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200">
+            <table class="w-full text-left">
+                <thead class="bg-emerald-800 text-white text-xs uppercase">
+                    <tr>
+                        <th class="p-4">No</th>
+                        <th class="p-4">Nama Pekerja</th>
+                        <th class="p-4">Jabatan & Sistem</th>
+                        <th class="p-4">Total Lembur</th>
+                        <th class="p-4">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelData" class="divide-y divide-slate-100">
+                    <tr><td colspan="5" class="p-8 text-center">Memuat data real-time...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
 
-        <main class="p-8">
-            <div class="bg-white rounded-2xl shadow border border-slate-200 overflow-hidden">
-                <table class="w-full text-left border-collapse">
-                    <thead class="bg-slate-800 text-white text-xs uppercase">
-                        <tr>
-                            <th class="px-6 py-4">No</th>
-                            <th class="px-6 py-4">Nama Karyawan</th>
-                            <th class="px-6 py-4">Jabatan</th>
-                            <th class="px-6 py-4">Sistem Kerja</th>
-                            <th class="px-6 py-4 text-center">Grade</th>
-                            <th class="px-6 py-4 text-center">Hari Kerja (T)</th>
-                            <th class="px-6 py-4 text-center">Jam Lembur (AG)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabel" class="divide-y divide-slate-100 text-sm bg-white">
-                        <tr><td colspan="7" class="p-8 text-center text-slate-500 italic">Menghubungkan ke Google Sheet...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </main>
-    </div>
-
+    <!-- Script Integrasi Real-Time -->
     <script>
     async function loadData() {
-        // Link CSV Publik Google Sheet (Pastikan sudah Publish to Web)
-        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQja5eB7v4Fa1YYnobGqUkvPZfSSb0nGZ0zLi_8ttbtIPkfC2QTkcnlPkUMgl2y0OI6-Z5MkbBZaAwM/pub?gid=277496189&single=true&output=csv";
-        
+        const id = "1DvRQrgT43ycmJ_h5cBCYy5Fijk3oFG9L18p-k42cdpo";
+        const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json`;
         try {
             const res = await fetch(url);
-            const csvText = await res.text();
-            const rows = csvText.split('\n').map(row => row.split(','));
-            
+            const json = JSON.parse((await res.text()).substring(47, 47 + (await res.text()).length - 51));
+            const rows = json.table.rows;
             let html = "";
-            // Mapping Baris 5-56 (indeks array 4-55)
-            for(let i = 4; i <= 55 && i < rows.length; i++) {
-                let r = rows[i];
-                if(r && r[1]) { // Pastikan kolom No (B) ada
-                    html += `<tr class="hover:bg-slate-50">
-                        <td class="px-6 py-3">${r[1].replace(/"/g, '')}</td>
-                        <td class="px-6 py-3 font-bold">${r[2].replace(/"/g, '')}</td>
-                        <td class="px-6 py-3">${r[5].replace(/"/g, '')}</td>
-                        <td class="px-6 py-3">${r[6].replace(/"/g, '')}</td>
-                        <td class="px-6 py-3 text-center font-bold text-indigo-600">${r[7].replace(/"/g, '')}</td>
-                        <td class="px-6 py-3 text-center font-bold text-emerald-600">${parseFloat(r[19]) || 0}</td>
-                        <td class="px-6 py-3 text-center font-bold text-blue-600">${parseFloat(r[32]) || 0}</td>
+            for(let i=4; i<rows.length; i++) {
+                let r = rows[i].c;
+                if(r && r[2]) {
+                    html += `<tr>
+                        <td class="p-4">${r[1]?.v || ''}</td>
+                        <td class="p-4 font-bold">${r[2]?.v || ''}</td>
+                        <td class="p-4">${r[5]?.v || ''} <span class="text-xs bg-slate-100 px-2 py-1 rounded">${r[6]?.v || ''}</span></td>
+                        <td class="p-4 font-bold text-blue-700">${r[32]?.v || 0} Jam</td>
+                        <td class="p-4"><button class="bg-emerald-700 text-white px-3 py-1 rounded text-xs">Rekap & Rincian</button></td>
                     </tr>`;
                 }
             }
-            document.getElementById("tabel").innerHTML = html;
+            document.getElementById("tabelData").innerHTML = html;
         } catch (e) {
-            document.getElementById("tabel").innerHTML = "<tr><td colspan='7' class='p-8 text-center text-red-500 font-bold'>Gagal Sinkronisasi. Pastikan Google Sheet sudah di-Publish ke Web.</td></tr>";
+            document.getElementById("tabelData").innerHTML = "<tr><td colspan='5' class='p-8 text-center text-red-500'>Gagal sinkron. Pastikan Publish to Web aktif.</td></tr>";
         }
     }
-    loadData();
+    window.onload = loadData;
     </script>
 </body>
 </html>
