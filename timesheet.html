@@ -30,7 +30,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Terhubung Langsung ke Google Cloud Drive (Google Sheets)</p>
+                <p class="text-xs text-slate-500 mt-0.5">Input Tanggal Fleksibel (Bisa Diketik / Panah) & Terhubung Google Cloud</p>
             </div>
             <div class="flex gap-3">
                 <button onclick="bukaModalAbsen('Shift')" class="bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow hover:bg-emerald-800 transition flex items-center gap-2">
@@ -53,12 +53,12 @@
                 <p class="text-xs font-bold text-emerald-700 mt-1">☁️ Google Cloud Terhubung</p>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Monitoring Status</p>
-                <p class="text-xs font-bold text-emerald-700 mt-1">OFF, Cuti, Izin, Sakit, Alfa, Dinas</p>
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Input Tanggal</p>
+                <p class="text-xs font-bold text-emerald-700 mt-1">⌨️ Fleksibel (Ketik / Atas-Bawah)</p>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
                 <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Status Sistem</p>
-                <p class="text-xs font-bold text-blue-700 mt-1">🟢 Siap Catat Real-Time</p>
+                <p class="text-xs font-bold text-blue-700 mt-1">🟢 Siap Digunakan</p>
             </div>
         </div>
 
@@ -92,7 +92,7 @@
     <div id="modalAbsen" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
         <div class="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl">
             <h3 id="modalTitle" class="text-lg font-bold mb-1 text-slate-800">Input Absen Harian</h3>
-            <p class="text-xs text-slate-500 mb-4">Catat status harian. Data akan langsung terkirim ke Google Cloud Sheets Bapak.</p>
+            <p class="text-xs text-slate-500 mb-4">Ketik langsung tanggal yang diinginkan atau gunakan tombol panah.</p>
             
             <div class="space-y-4">
                 <div>
@@ -100,26 +100,20 @@
                     <select id="pilihKaryawan" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
                     </select>
                 </div>
+                
+                <!-- INPUT TANGGAL, BULAN, TAHUN FLEKSIBEL (BISA DIKETIK) -->
                 <div class="grid grid-cols-3 gap-3">
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Tanggal</label>
-                        <select id="inputTanggal" class="w-full border rounded-lg p-2 text-sm">
-                            <script>
-                                for(let i=1; i<=31; i++) document.write(`<option value="${i}">${i}</option>`);
-                            </script>
-                        </select>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Tanggal (1-31)</label>
+                        <input type="number" id="inputTanggal" min="1" max="31" value="1" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-center font-bold">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1">Bulan</label>
-                        <select id="inputBulan" class="w-full border rounded-lg p-2 text-sm">
-                            <option value="Juni">Juni</option>
-                            <option value="Juli" selected>Juli</option>
-                            <option value="Agustus">Agustus</option>
-                        </select>
+                        <input type="text" id="inputBulan" value="Juli" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-center font-bold">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1">Tahun</label>
-                        <input type="text" id="inputTahun" value="2026" readonly class="w-full bg-slate-100 border rounded-lg p-2 text-sm text-center">
+                        <input type="number" id="inputTahun" value="2026" class="w-full bg-slate-50 border rounded-lg p-2 text-sm text-center font-bold">
                     </div>
                 </div>
 
@@ -174,7 +168,6 @@
 
     <!-- SCRIPT LOGIKA KONEKSI GOOGLE CLOUD -->
     <script>
-        // URL Web App Google Cloud API milik Anda
         const CLOUD_URL = "https://script.google.com/macros/s/AKfycbx11T6AbDvu61nJrvah4H0k_27pz-ASilL9KOd4gLWxQu6Xc8gzUpxtx2B6m4IZuq3q/exec";
 
         const defaultMasterKaryawan = [
@@ -262,10 +255,16 @@
             const status = document.getElementById('statusKehadiran').value;
             const tgl = document.getElementById('inputTanggal').value;
             const bln = document.getElementById('inputBulan').value;
+            const thn = document.getElementById('inputTahun').value;
             const jamMasuk = document.getElementById('jamMasuk').value;
             const jamKeluar = document.getElementById('jamKeluar').value;
             const tipeShift = document.getElementById('tipeShift').value;
             
+            if(!tgl || tgl < 1 || tgl > 31) {
+                alert('Silakan masukkan tanggal yang valid antara 1 sampai 31.');
+                return;
+            }
+
             let karyawan = masterKaryawan.find(k => k.no === selectedNo);
             
             if(karyawan) {
@@ -275,17 +274,15 @@
                     karyawan.otKonversi += 6.0;
                     karyawan.makanMalam += 1;
                 }
-                karyawan.catatanStatus = `Tgl ${tgl} ${bln}: ${status.toUpperCase()}`;
+                karyawan.catatanStatus = `Tgl ${tgl} ${bln} ${thn}: ${status.toUpperCase()}`;
                 
-                // Simpan lokal di browser
                 localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
                 
-                // Paket data yang dikirim ke Google Cloud
                 const payload = {
                     nama: karyawan.name,
                     sistem: karyawan.sistem,
                     status: status.toUpperCase(),
-                    tanggal: tgl,
+                    tanggal: `${tgl} ${bln} ${thn}`,
                     bulan: bln,
                     jamMasuk: jamMasuk,
                     jamKeluar: jamKeluar,
@@ -297,17 +294,15 @@
                     catatan: karyawan.catatanStatus
                 };
 
-                // Kirim data secara asinkron ke Google Sheets Cloud Anda
                 fetch(CLOUD_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 }).then(() => {
-                    alert(`Data untuk ${karyawan.name} berhasil dicatat dan dikirim langsung ke Google Cloud Sheets Bapak!`);
+                    alert(`Data tgl ${tgl} ${bln} untuk ${karyawan.name} berhasil dicatat dan dikirim ke Google Cloud!`);
                 }).catch((error) => {
                     console.error('Gagal mengirim ke cloud:', error);
-                    alert('Data tersimpan lokal, namun pengiriman ke cloud mengalami kendala jaringan.');
                 });
 
                 renderTabel();
