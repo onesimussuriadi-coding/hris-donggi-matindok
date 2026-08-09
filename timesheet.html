@@ -30,10 +30,10 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Sistem Kalkulasi Otomatis Berbasis Aturan Depnaker (Shift & Non-Shift)</p>
+                <p class="text-xs text-slate-500 mt-0.5">Kalkulasi Otomatis Premi Shift & Kelebihan Jam Kerja (KJK) Berbasis Rumus Resmi</p>
             </div>
-            <button onclick="bukaModalAbsen()" class="bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow hover:bg-emerald-800 transition flex items-center gap-2">
-                <span>⏱️ Input / Simulasi Absen & Kalkulasi Lembur</span>
+            <button onclick="bukaModalKalkulasi()" class="bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow hover:bg-emerald-800 transition flex items-center gap-2">
+                <span>⚡ Jalankan Kalkulasi Otomatis Shift & KJK</span>
             </button>
         </div>
 
@@ -44,23 +44,23 @@
                 <p class="text-2xl font-extrabold text-slate-900 mt-1">52 Orang</p>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Jam Kerja Shift (36 Orang)</p>
-                <p class="text-xs font-bold text-emerald-700 mt-1">07:00 s.d 07:00 (12 Jam)</p>
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Formula Premi Shift</p>
+                <p class="text-xs font-bold text-emerald-700 mt-1">15% x UP x Hk x 12 x (1/173)</p>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Jam Kerja Non Shift (16 Orang)</p>
-                <p class="text-xs font-bold text-emerald-700 mt-1">07:00 s.d 16:00 (9 Jam, Sen-Jum)</p>
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Formula KJK (Lembur Shift)</p>
+                <p class="text-xs font-bold text-emerald-700 mt-1">7,5 x (1/173) x UP x Hari Masuk</p>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Status Mesin Absen</p>
-                <p class="text-xs font-bold text-blue-700 mt-1">🟢 Formula Depnaker Aktif</p>
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Status Mesin</p>
+                <p class="text-xs font-bold text-blue-700 mt-1">🟢 Siap Integrasi Payroll</p>
             </div>
         </div>
 
         <!-- TABEL UTAMA -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
-                <h3 class="font-bold text-slate-800 text-sm">Rekapitulasi Kehadiran & Konversi Lembur Pekerja</h3>
+                <h3 class="font-bold text-slate-800 text-sm">Rekapitulasi Shift, Premi, & Kelebihan Jam Kerja (KJK)</h3>
                 <span class="text-xs bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full border border-emerald-200 font-semibold">Zona 13 - Field Donggi Matindok</span>
             </div>
             <table class="w-full text-left border-collapse">
@@ -68,10 +68,11 @@
                     <tr>
                         <th class="p-4 text-center w-16">No</th>
                         <th class="p-4">Nama Pekerja</th>
-                        <th class="p-4">Jabatan & Sistem Kerja</th>
-                        <th class="p-4 text-center">Kehadiran (HK)</th>
-                        <th class="p-4 text-center">Total Lembur (OT)</th>
-                        <th class="p-4 text-center">Aksi Kertas Kerja</th>
+                        <th class="p-4">Jabatan & Sistem</th>
+                        <th class="p-4 text-center">Kehadiran (Hk)</th>
+                        <th class="p-4 text-right">Premi Shift (Rp)</th>
+                        <th class="p-4 text-right">Kelebihan Jam Kerja (Rp)</th>
+                        <th class="p-4 text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="tabelKaryawan" class="divide-y divide-slate-100 text-sm">
@@ -81,132 +82,96 @@
         </div>
     </main>
 
-    <!-- MODAL SIMULASI ABSEN & KALKULASI DEPNAKER -->
-    <div id="modalAbsen" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
-        <div class="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl">
-            <h3 class="text-lg font-bold mb-2 text-slate-800">Simulasi Absen & Hitung Lembur Otomatis</h3>
-            <p class="text-xs text-slate-500 mb-4">Sistem menghitung kelebihan jam kerja berdasarkan aturan Depnaker (Hari Biasa vs Libur/Sabtu-Minggu).</p>
+    <!-- MODAL PARAMETER UPAH POKOK UNTUK SIMULASI RUMUS -->
+    <div id="modalKalkulasi" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+        <div class="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl">
+            <h3 class="text-lg font-bold mb-2 text-slate-800">Kalkulator Otomatis Premi Shift & KJK</h3>
+            <p class="text-xs text-slate-500 mb-4">Masukkan Upah Pokok (UP) sampel untuk menguji ketepatan rumus screenshot.</p>
             
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Pilih Karyawan</label>
-                    <select id="pilihKaryawan" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
-                    </select>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Jam Masuk (Clock In)</label>
-                        <input type="time" id="jamMasuk" value="07:00" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Jam Keluar (Clock Out)</label>
-                        <input type="time" id="jamKeluar" value="18:00" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
-                    </div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Contoh Upah Pokok (UP) Pekerja Shift</label>
+                    <input type="number" id="inputUP" value="5000000" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Jenis Hari / Status Kerja</label>
-                    <select id="jenisHari" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
-                        <option value="biasa">Hari Kerja Biasa (Senin - Jumat)</option>
-                        <option value="libur">Hari Libur / Sabtu / Minggu / Hari Besar</option>
-                    </select>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Jumlah Hari Kerja (Hk) Aktual</label>
+                    <input type="number" id="inputHk" value="20" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
                 </div>
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                    <p class="text-xs text-slate-500 font-bold">Hasil Kalkulasi Depnaker:</p>
-                    <p id="infoKalkulasi" class="text-sm font-extrabold text-emerald-700 mt-1">Masukkan jam keluar lebih dari jam kerja normal untuk simulasi lembur.</p>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                    <p class="text-xs font-bold text-slate-700">Hasil Simulasi Perhitungan:</p>
+                    <p id="resPremi" class="text-xs text-slate-600">Premi Shift: Rp 0</p>
+                    <p id="resKJK" class="text-xs text-slate-600">Kelebihan Jam Kerja (KJK): Rp 0</p>
                 </div>
             </div>
 
             <div class="flex justify-end gap-3 mt-6">
-                <button onclick="tutupModalAbsen()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-semibold hover:bg-slate-200">Tutup</button>
-                <button onclick="prosesAbsen()" class="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800">Proses & Akumulasi ke Time Sheet</button>
+                <button onclick="tutupModal()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-semibold hover:bg-slate-200">Tutup</button>
+                <button onclick="hitungSimulasiRumus()" class="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800">Hitung & Terapkan</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT MESIN KALKULASI OTOMATIS -->
+    <!-- SCRIPT LOGIKA FORMULA -->
     <script>
-        // Master 52 Karyawan (Tersinkron sesuai data master perusahaan)
-        let masterKaryawan = [
-            {no: 1, name: "Sujianto Batias", jabatan: "Driver Ambulance", sistem: "Shift", days: 19.0, ot: 102.50},
-            {no: 2, name: "Ansar Mansur", jabatan: "Pemuka Fire & Safety", sistem: "Shift", days: 20.0, ot: 100.00},
-            {no: 3, name: "Harir A. Lako", jabatan: "Petugas Fire & Safety", sistem: "Shift", days: 20.0, ot: 128.50},
-            {no: 4, name: "Ali Friansyah", jabatan: "Petugas Fire & Safety", sistem: "Shift", days: 20.0, ot: 25.00},
-            {no: 5, name: "Fredrik D Tinadji", jabatan: "Petugas Fire & Safety", sistem: "Shift", days: 20.0, ot: 70.00},
-            {no: 6, name: "Wayan Edi Jaya", jabatan: "Pemuka Fire & Safety", sistem: "Shift", days: 20.0, ot: 175.00},
-            {no: 7, name: "Akmal (A)", jabatan: "Driver Ambulance", sistem: "Shift", days: 20.0, ot: 68.00},
-            {no: 8, name: "Alfikwan I Marida", jabatan: "Pemuka Fire & Safety", sistem: "Shift", days: 20.0, ot: 119.00},
-            {no: 9, name: "Deni Andrianto", jabatan: "Petugas Fire & Safety", sistem: "Shift", days: 20.0, ot: 100.00},
-            {no: 10, name: "Awal Dwi Sekti", jabatan: "Pemuka Fire & Safety", sistem: "Shift", days: 20.0, ot: 174.00}
-            // Seterusnya hingga 52 orang
+        // Data Karyawan Shift & Non-Shift
+        let dataPekerja = [
+            {no: 1, name: "Sujianto Batias", jabatan: "Driver Ambulance", sistem: "Shift", hk: 19, up: 4500000},
+            {no: 2, name: "Ansar Mansur", jabatan: "Pemuka Fire & Safety", sistem: "Shift", hk: 20, up: 4800000},
+            {no: 3, name: "Harir A. Lako", jabatan: "Petugas Fire & Safety", sistem: "Shift", hk: 20, up: 4200000},
+            {no: 4, name: "Ali Friansyah", jabatan: "Petugas Fire & Safety", sistem: "Shift", hk: 20, up: 4200000},
+            {no: 5, name: "Fredrik D Tinadji", jabatan: "Petugas Fire & Safety", sistem: "Shift", hk: 20, up: 4200000},
+            {no: 6, name: "Marjan Karim", jabatan: "Admin Warehouse", sistem: "Non Shift", hk: 20, up: 4600000}
         ];
 
         function renderTabel() {
             const tbody = document.getElementById('tabelKaryawan');
             tbody.innerHTML = '';
 
-            masterKaryawan.forEach((item, index) => {
+            dataPekerja.forEach((item) => {
+                let premi = 0;
+                let kjk = 0;
+
+                if (item.sistem === 'Shift') {
+                    // Rumus Premi Shift: 15% * UP * Hk * 12 * (1/173)
+                    premi = (0.15 * item.up * item.hk * 12) * (1 / 173);
+                    // Rumus KJK: 7,5 * (1/173) * UP * Hari Masuk (Hk)
+                    kjk = 7.5 * (1 / 173) * item.up * item.hk;
+                }
+
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition">
                         <td class="p-4 text-center font-semibold text-slate-600">${item.no}</td>
                         <td class="p-4 font-bold text-slate-900">${item.name}</td>
                         <td class="p-4 text-slate-700">${item.jabatan} <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded border border-slate-200 font-semibold ml-1">${item.sistem}</span></td>
-                        <td class="p-4 text-center font-bold text-emerald-700">${item.days.toFixed(1)} Hari</td>
-                        <td class="p-4 text-center font-bold text-blue-700">${item.ot.toFixed(2)} Jam</td>
+                        <td class="p-4 text-center font-bold text-emerald-700">${item.hk} Hari</td>
+                        <td class="p-4 text-right font-bold text-slate-800">${premi > 0 ? 'Rp ' + premi.toLocaleString('id-ID', {maximumFractionDigits: 0}) : '-'}</td>
+                        <td class="p-4 text-right font-bold text-blue-700">${kjk > 0 ? 'Rp ' + kjk.toLocaleString('id-ID', {maximumFractionDigits: 0}) : '-'}</td>
                         <td class="p-4 text-center">
-                            <button onclick="alert('Membuka Kertas Kerja Rincian Absen: ${item.name}')" class="bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-emerald-800 transition shadow-sm">📄 Rekap & Rincian</button>
+                            <button onclick="alert('Rincian Kertas Kerja ${item.name}\\nSistem: ${item.sistem}\\nPremi: Rp ${premi.toFixed(0)}\\nKJK: Rp ${kjk.toFixed(0)}') " class="bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-emerald-800 transition shadow-sm">📄 Rincian</button>
                         </td>
                     </tr>
                 `;
             });
         }
 
-        function bukaModalAbsen() {
-            const select = document.getElementById('pilihKaryawan');
-            select.innerHTML = '';
-            masterKaryawan.forEach((k, idx) => {
-                select.innerHTML += `<option value="${idx}">${k.name} (${k.sistem})</option>`;
-            });
-            document.getElementById('modalAbsen').classList.remove('hidden');
+        function bukaModalKalkulasi() {
+            document.getElementById('modalKalkulasi').classList.remove('hidden');
+            hitungSimulasiRumus();
         }
 
-        function tutupModalAbsen() {
-            document.getElementById('modalAbsen').classList.add('hidden');
+        function tutupModal() {
+            document.getElementById('modalKalkulasi').classList.add('hidden');
         }
 
-        function prosesAbsen() {
-            const idx = document.getElementById('pilihKaryawan').value;
-            const karyawan = masterKaryawan[idx];
-            const jamKeluar = document.getElementById('jamKeluar').value;
-            const jenisHari = document.getElementById('jenisHari').value;
+        function hitungSimulasiRumus() {
+            let up = parseFloat(document.getElementById('inputUP').value) || 0;
+            let hk = parseFloat(document.getElementById('inputHk').value) || 0;
 
-            // Simulasi perhitungan jam lembur sederhana berbasis aturan Depnaker
-            let jamLemburTambah = 0;
-            if(karyawan.sistem === 'Non Shift') {
-                // Non Shift normal pulang 16:00
-                if(jamKeluar > "16:00") {
-                    let [jam, menit] = jamKeluar.split(':').map(Number);
-                    let selisihJam = (jam + menit/60) - 16;
-                    // Rumus Depnaker: Jam pertama dikali 1.5, berikutnya dikali 2
-                    if(selisihJam <= 1) {
-                        jamLemburTambah = selisihJam * 1.5;
-                    } else {
-                        jamLemburTambah = (1 * 1.5) + ((selisihJam - 1) * 2.0);
-                    }
-                }
-            } else {
-                // Shift normal 12 jam (pulang 07:00 pagi berikutnya)
-                jamLemburTambah = 2.0; // Contoh kelebihan jam shift
-            }
+            let simulasiPremi = (0.15 * up * hk * 12) * (1 / 173);
+            let simulasiKJK = 7.5 * (1 / 173) * up * hk;
 
-            if(jenisHari === 'libur') {
-                // Hari libur dihitung penuh dari jam pertama (multiplier khusus libur Depnaker)
-                jamLemburTambah *= 1.5; 
-            }
-
-            masterKaryawan[idx].ot += jamLemburTambah;
-            renderTabel();
-            tutupModalAbsen();
-            alert(`Absen ${karyawan.name} berhasil diproses! Lembur bertambah ${jamLemburTambah.toFixed(2)} Jam sesuai aturan Depnaker.`);
+            document.getElementById('resPremi').innerText = `Premi Shift: Rp ${simulasiPremi.toLocaleString('id-ID', {maximumFractionDigits: 0})}`;
+            document.getElementById('resKJK').innerText = `Kelebihan Jam Kerja (KJK): Rp ${simulasiKJK.toLocaleString('id-ID', {maximumFractionDigits: 0})}`;
         }
 
         window.onload = renderTabel;
