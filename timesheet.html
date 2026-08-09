@@ -4,378 +4,185 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Time Sheet & Absen - Field Donggi Matindok</title>
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- SheetJS untuk Pembacaan File Excel / CSV Otomatis -->
+    <!-- SheetJS untuk Ekspor Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <!-- jsPDF untuk Unduh PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <style>
-        @media print {
-            body * { visibility: hidden; }
-            #timesheetModal, #timesheetModal * { visibility: visible; }
-            #timesheetModal { 
-                position: absolute !important; 
-                left: 0 !important; 
-                top: 0 !important; 
-                width: 100% !important; 
-                height: auto !important; 
-                background: white !important; 
-                box-shadow: none !important; 
-            }
-            .no-print { display: none !important; }
-        }
-    </style>
 </head>
-<body class="bg-gray-100 font-sans flex h-screen overflow-hidden">
-
-    <!-- Sidebar Navigasi Kiri -->
-    <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between p-6 no-print">
-        <div>
-            <div class="mb-8">
-                <h1 class="text-xl font-bold tracking-wide">HRIS Portal</h1>
-                <p class="text-xs text-slate-400 mt-1">Field Donggi Matindok</p>
-            </div>
-            <nav class="space-y-2">
-                <a href="index.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition">
-                    <span>📊</span> Dashboard Utama
-                </a>
-                <a href="master_karyawan.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition">
-                    <span>👥</span> Master Karyawan
-                </a>
-                <a href="timesheet.html" class="flex items-center gap-3 px-4 py-3 bg-blue-600 rounded-lg text-white font-medium transition">
-                    <span>📅</span> Time Sheet & Absen
-                </a>
-                <a href="engine_payroll.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition">
-                    <span>💰</span> Engine Payroll
-                </a>
-            </nav>
-        </div>
-        <div class="border-t border-slate-800 pt-4">
-            <p class="text-sm font-semibold">Onesimus Suriadi</p>
-            <p class="text-xs text-slate-400">President Director</p>
-        </div>
-    </aside>
-
-    <!-- Konten Utama Halaman Time Sheet & Absen -->
-    <main class="flex-1 overflow-y-auto p-8 relative">
-        
-        <!-- Header Atas -->
-        <div class="flex justify-between items-center mb-6 no-print">
-            <div>
-                <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
-                <p class="text-xs text-slate-500 mt-1">Periode Penggajian & Kehadiran: <span id="lblPeriode">16 Juni s.d 15 Juli 2026</span></p>
-            </div>
-            <div class="flex items-center gap-3">
-                <!-- Dropdown Filter Periode / File Masa Depan -->
-                <select id="selectPeriode" class="px-3 py-2 text-xs border rounded-xl bg-white text-slate-700 font-semibold shadow-sm focus:outline-none">
-                    <option value="2026_06_16">Periode: 16 Jun - 15 Jul 2026 (Aktif)</option>
-                    <option value="2026_07_16">Periode: 16 Jul - 15 Agu 2026 (Pilih File Baru)</option>
-                    <option value="2026_08_16">Periode: 16 Agu - 15 Sep 2026 (Pilih File Baru)</option>
-                </select>
-                <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1 shadow-sm">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Zona 13 - Field
-                </span>
-            </div>
-        </div>
-
-        <!-- Kartu Statistik & Tombol Unggah File Dinamis -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 no-print">
-            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                <p class="text-xs text-slate-500 font-medium mb-1">Unggah File Periode Baru</p>
-                <label class="cursor-pointer bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-3 py-2 rounded-xl inline-flex items-center gap-2 transition shadow-sm">
-                    <span>📁 Unggah Excel / CSV</span>
-                    <input type="file" id="uploadExcel" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleFileUpload(event)">
-                </label>
-            </div>
-            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                <p class="text-xs text-slate-500 font-medium mb-1">Jam Kerja Shift (36 Orang)</p>
-                <p class="text-sm font-bold text-slate-800">07:00 s.d 07:00 (12 Jam)</p>
-            </div>
-            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                <p class="text-xs text-slate-500 font-medium mb-1">Jam Kerja Non Shift (16 Orang)</p>
-                <p class="text-sm font-bold text-slate-800">07:00 s.d 16:00 (9 Jam)</p>
-            </div>
-            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                <p class="text-xs text-slate-500 font-medium mb-1">Status Validasi Parser</p>
-                <p class="text-sm font-bold text-emerald-600">✓ Validasi Nama & Blok Akurat</p>
-            </div>
-        </div>
-
-        <!-- Bagian Tabel Rekap Timesheet -->
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 no-print">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+<body class="bg-gray-50 font-sans antialiased">
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-blue-900 text-white shadow-md">
+            <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center">
                 <div>
-                    <h4 id="tableTitle" class="font-bold text-slate-800 text-base">Rekap Lembur & Man Hours (Jam Kerja)</h4>
-                    <p class="text-xs text-slate-400 mt-0.5">Shift (36 Orang - 12 Jam) | Non Shift (16 Orang - 9 Jam Senin-Jumat)</p>
+                    <h1 class="text-2xl font-bold tracking-wide">HRIS - FIELD DONGGI MATINDOK</h1>
+                    <p class="text-sm text-blue-200 mt-1">Periode Gaji: 16 Juni s.d. 15 Juli 2026</p>
                 </div>
-                <div class="flex flex-wrap gap-3 w-full md:w-auto">
-                    <select id="filterSistemKerja" class="px-3 py-2 text-xs border rounded-xl bg-slate-50 text-slate-600 focus:outline-none font-medium">
-                        <option value="">Tampilkan Semua (All 52)</option>
-                        <option value="Shift">Shift (36 Orang)</option>
-                        <option value="Non Shift">Non Shift (16 Orang)</option>
-                    </select>
-                    <input type="text" id="searchTimesheet" placeholder="Cari nama karyawan..." class="px-3 py-2 text-xs border rounded-xl focus:outline-none w-64">
+                <div class="mt-4 md:mt-0 flex gap-3">
+                    <button onclick="syncGoogleSheet()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow transition flex items-center gap-2">
+                        <span>🔄 Sinkronisasi Google Drive</span>
+                    </button>
+                    <button onclick="exportToExcel()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow transition flex items-center gap-2">
+                        <span>📊 Ekspor ke Excel</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
+            <!-- Statistik Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white rounded-xl shadow p-6 border-l-4 border-blue-600">
+                    <p class="text-sm font-medium text-gray-500">Total Karyawan Aktif</p>
+                    <p class="text-3xl font-bold text-gray-800 mt-2" id="totalKaryawan">52</p>
+                </div>
+                <div class="bg-white rounded-xl shadow p-6 border-l-4 border-green-600">
+                    <p class="text-sm font-medium text-gray-500">Total Hari Hadir (Terkoreksi)</p>
+                    <p class="text-3xl font-bold text-gray-800 mt-2" id="totalHari">1,006.0</p>
+                </div>
+                <div class="bg-white rounded-xl shadow p-6 border-l-4 border-indigo-600">
+                    <p class="text-sm font-medium text-gray-500">Total Jam Konversi Lembur</p>
+                    <p class="text-3xl font-bold text-gray-800 mt-2" id="totalLembur">5,784.00 Jam</p>
                 </div>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-sm">
-                    <thead>
-                        <tr class="bg-emerald-900 text-white border-b text-xs uppercase tracking-wider">
-                            <th class="p-3 rounded-l-xl">No</th>
-                            <th class="p-3">Nama Pekerja</th>
-                            <th class="p-3">Jabatan & Sistem Kerja</th>
-                            <th class="p-3">Kehadiran / Jam Normal</th>
-                            <th class="p-3">Total Lembur</th>
-                            <th class="p-3">Total Man Hours</th>
-                            <th class="p-3 text-center rounded-r-xl">Aksi Kertas Kerja</th>
-                        </tr>
-                    </thead>
-                    <tbody id="timesheetTableBody" class="divide-y divide-slate-100 text-slate-700">
-                        <!-- Data dimuat via JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- MODAL DETAIL KERTAS KERJA TIMESHEET -->
-    <div id="timesheetModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden border border-slate-100">
-            <div class="bg-slate-900 text-white p-6 flex justify-between items-center shrink-0">
-                <div>
-                    <h3 class="text-lg font-bold" id="modalEmpName">Rincian Kertas Kerja Absen</h3>
-                    <p class="text-xs text-slate-400 mt-0.5">Periode: 16 Juni - 15 Juli 2026</p>
+            <!-- Tabel Data -->
+            <div class="bg-white rounded-xl shadow overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                    <h2 class="text-lg font-bold text-gray-800">Rekapitulasi Kehadiran & Lembur Pegawai</h2>
+                    <span class="text-xs bg-blue-100 text-blue-800 font-semibold px-3 py-1 rounded-full">Terhubung ke Google Drive</span>
                 </div>
-                <button onclick="closeTimesheetModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 transition">✕</button>
-            </div>
-            <div id="modalBody" class="p-6 space-y-4 overflow-y-auto text-xs flex-1 bg-slate-50">
-                <!-- Rincian dinamis -->
-            </div>
-            <div class="bg-white px-6 py-4 border-t border-slate-100 flex justify-between items-center shrink-0">
-                <span class="text-[11px] text-slate-400 font-medium">Field Donggi Matindok HRIS</span>
-                <div class="flex gap-2">
-                    <button onclick="downloadTimesheetPDF()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-xl text-xs transition">Download PDF</button>
-                    <button onclick="closeTimesheetModal()" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-4 py-2 rounded-xl text-xs transition">Tutup</button>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse" id="timesheetTable">
+                        <thead>
+                            <tr class="bg-gray-100 text-gray-700 text-xs uppercase tracking-wider font-semibold">
+                                <th class="px-4 py-3 border-b">No</th>
+                                <th class="px-4 py-3 border-b">Nama Karyawan</th>
+                                <th class="px-4 py-3 border-b">Jabatan</th>
+                                <th class="px-4 py-3 border-b">Penempatan</th>
+                                <th class="px-4 py-3 border-b">Sistem Kerja</th>
+                                <th class="px-4 py-3 border-b text-center">Grade</th>
+                                <th class="px-4 py-3 border-b text-center">Hari Hadir</th>
+                                <th class="px-4 py-3 border-b text-right">Konversi Lembur (Jam)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm text-gray-700 divide-y divide-gray-200" id="tableBody">
+                            <!-- Data dimasukkan via Javascript -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500">
+            Field Donggi Matindok Payroll System &bull; Sumber Data: Google Drive (1DvRQrgT43ycmJ_h5cBCYy5Fijk3oFG9L18p-k42cdpo)
+        </footer>
     </div>
 
-    <!-- Skrip Parser & Master Data 52 Karyawan Tervalidasi Nama -->
+    <!-- Script Data & Logika Dashboard -->
     <script>
-        // Master Data 52 Karyawan Tervalidasi Sesuai Urutan Blok Resmi Perusahaan
-        let timesheetData = [
-            { no: 1, nama: "Sujianto M. Batias", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiranDays: 19, lemburKonversi: 65.50 },
-            { no: 2, nama: "Ansar Mansur", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiranDays: 20, lemburKonversi: 100.00 },
-            { no: 3, nama: "Harir A. Lako", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburKonversi: 128.50 },
-            { no: 4, nama: "Ali Friansyah", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburKonversi: 25.00 },
-            { no: 5, nama: "Fredrik D. Tinadji", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburKonversi: 70.00 },
-            { no: 6, nama: "Wayan Edi Jaya", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiranDays: 20, lemburKonversi: 175.00 },
-            { no: 7, nama: "Akmal (A)", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiranDays: 20, lemburKonversi: 68.00 },
-            { no: 8, nama: "Alfikwan I. Marida", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiranDays: 20, lemburKonversi: 119.00 },
-            { no: 9, nama: "Deni Andrianto", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburKonversi: 100.00 },
-            { no: 10, nama: "Awal Dwi Sekti", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiranDays: 20, lemburKonversi: 174.00 },
-            { no: 11, nama: "Muh Arsyal Ramdani", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiranDays: 20, lemburKonversi: 0.00 },
-            { no: 12, nama: "Muh Palmi", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburKonversi: 50.00 },
-            { no: 13, nama: "Halim", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburKonversi: 35.00 },
-            { no: 14, nama: "Mustamar Dg Magangka", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 18, lemburKonversi: 44.50 },
-            { no: 15, nama: "Akmal (B)", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiranDays: 20, lemburKonversi: 200.00 },
-            { no: 16, nama: "Rizal Tamoreka", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiranDays: 20, lemburKonversi: 82.00 },
-            
-            { no: 17, nama: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 20, lemburKonversi: 0.00 },
-            { no: 18, nama: "Marjan Karim", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "E", kehadiranDays: 17, lemburKonversi: 0.00 },
-            { no: 19, nama: "Kasman", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "E", kehadiranDays: 19, lemburKonversi: 60.00 },
-            { no: 20, nama: "Lukman Tasakka", jabatan: "Pemuka Ops. Alat Berat", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 20, lemburKonversi: 100.50 },
-            { no: 21, nama: "Nengah Darsana", jabatan: "Pemuka Ops. Alat Berat", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 20, lemburKonversi: 50.50 },
-            { no: 22, nama: "I Gusti Ngurah Baliarta", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "E", kehadiranDays: 20, lemburKonversi: 187.00 },
-            { no: 23, nama: "Irpan Parenden", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "E", kehadiranDays: 19, lemburKonversi: 50.00 },
-            { no: 24, nama: "Sunita Ayu P.", jabatan: "Petugas Admin II", penempatan: "Legal & Relation", sistem_kerja: "Non Shift", grade: "E", kehadiranDays: 19, lemburKonversi: 125.00 },
-            { no: 25, nama: "Dewi Setiawati M Dg M", jabatan: "Petugas Admin III", penempatan: "RAM", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 20, lemburKonversi: 50.00 },
-            { no: 26, nama: "Marini Astari", jabatan: "Petugas Admin III", penempatan: "HR - GS", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 19, lemburKonversi: 91.50 },
-            
-            { no: 27, nama: "Ali Muhtar M. Amin", jabatan: "Supir Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiranDays: 20, lemburKonversi: 174.00 },
-            { no: 28, nama: "Agus Rudiyanto", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiranDays: 20, lemburKonversi: 0.00 },
-            { no: 29, nama: "I Gede Ariana", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburKonversi: 101.00 },
-            { no: 30, nama: "I Putu Adnyana Wijaya", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburKonversi: 141.00 },
-            { no: 31, nama: "Mursalun Lasuru", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburKonversi: 25.00 },
-            { no: 32, nama: "Subandi", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiranDays: 20, lemburKonversi: 85.00 },
-            { no: 33, nama: "Budi Santoso", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburKonversi: 183.00 },
-            { no: 34, nama: "I Komang Santika", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiranDays: 20, lemburKonversi: 25.00 },
-            { no: 35, nama: "Indra Natalianto Patasik", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburKonversi: 100.00 },
-            { no: 36, nama: "Kd Wiyad Nyana", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 20, lemburKonversi: 35.00 },
-            { no: 37, nama: "I Nengah Rudi Artika", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 21, lemburKonversi: 144.00 },
-            { no: 38, nama: "Sukardi Jalisingi", jabatan: "Supir Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiranDays: 20, lemburKonversi: 210.00 },
-            { no: 39, nama: "Yotam", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 19, lemburKonversi: 124.50 },
-            { no: 40, nama: "Thamar Thalib Mbau", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiranDays: 20, lemburKonversi: 147.00 },
-            { no: 41, nama: "Arie Kurniawan", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 19, lemburKonversi: 121.00 },
-            { no: 42, nama: "Eko Wiyono", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 18, lemburKonversi: 121.00 },
-            { no: 43, nama: "Fajriadi", jabatan: "Pemuka FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "F", kehadiranDays: 19, lemburKonversi: 121.00 },
-            { no: 44, nama: "Jumalik H. Latungka", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 21, lemburKonversi: 162.00 },
-            { no: 45, nama: "Randianto", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 21, lemburKonversi: 162.50 },
-            { no: 46, nama: "Saiful M. Zakar", jabatan: "Petugas FS", penempatan: "HSSE", sistem_kerja: "Shift", grade: "E", kehadiranDays: 21, lemburKonversi: 262.00 },
-            
-            { no: 47, nama: "I Nyoman Suwitra", jabatan: "Petugas Gudang (BBM)", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "D", kehadiranDays: 21, lemburKonversi: 121.00 },
-            { no: 48, nama: "I Putu Muryanto", jabatan: "Petugas Admin III", penempatan: "Operation", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 21, lemburKonversi: 382.50 },
-            { no: 49, nama: "Siti Aisyah Dg Masese", jabatan: "Sekretaris FM", penempatan: "Field Manager", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 18, lemburKonversi: 343.50 },
-            { no: 50, nama: "Dewi Khoirunnisa", jabatan: "Petugas Admin III", penempatan: "Finance", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 21, lemburKonversi: 176.50 },
-            { no: 51, nama: "Eka Nurjannah", jabatan: "Petugas Admin III CSR", penempatan: "Legal & Relation", sistem_kerja: "Non Shift", grade: "F", kehadiranDays: 16, lemburKonversi: 165.50 },
-            { no: 52, nama: "Findy Handayani", jabatan: "Petugas Admin II", penempatan: "SCM", sistem_kerja: "Non Shift", grade: "E", kehadiranDays: 3, lemburKonversi: 0.00 }
+        // Data final terverifikasi dan terkoreksi (Termasuk Findy Handayani = 0 hari)
+        const employeeData = [
+            {no: 1, name: "Sujianto M. Batias", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 19.0, ot: 65.50},
+            {no: 2, name: "Ansar Mansur", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 100.00},
+            {no: 3, name: "Harir A. Lako", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 128.50},
+            {no: 4, name: "Ali Friansyah", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 25.00},
+            {no: 5, name: "Fredrik D. Tinadji", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 70.00},
+            {no: 6, name: "Wayan Edi Jaya", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 175.00},
+            {no: 7, name: "Akmal (A)", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 20.0, ot: 68.00},
+            {no: 8, name: "Alfikwan I. Marida", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 119.00},
+            {no: 9, name: "Deni Andrianto", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 100.00},
+            {no: 10, name: "Awal Dwi Sekti", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 174.00},
+            {no: 11, name: "Muh Arsyal Ramdani", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 20.0, ot: 0.00},
+            {no: 12, name: "Muh Palmi", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 50.00},
+            {no: 13, name: "Halim", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 35.00},
+            {no: 14, name: "Mustamar Dg Magangka", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 18.0, ot: 44.50},
+            {no: 15, name: "Akmal (B)", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 200.00},
+            {no: 16, name: "Rizal Tamoreka", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 20.0, ot: 82.00},
+            {no: 17, name: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", penempatan: "SCM", sistem: "Non Shift", grade: "F", days: 20.0, ot: 0.00},
+            {no: 18, name: "Marjan Karim", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem: "Non Shift", grade: "E", days: 17.0, ot: 0.00},
+            {no: 19, name: "Kasman", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem: "Non Shift", grade: "E", days: 19.0, ot: 60.00},
+            {no: 20, name: "Lukman Tasakka", jabatan: "Pemuka Ops. Alat Berat", penempatan: "SCM", sistem: "Non Shift", grade: "F", days: 20.0, ot: 100.50},
+            {no: 21, name: "Nengah Darsana", jabatan: "Pemuka Ops. Alat Berat", penempatan: "SCM", sistem: "Non Shift", grade: "F", days: 20.0, ot: 50.50},
+            {no: 22, name: "I Gusti Ngurah Baliarta", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem: "Non Shift", grade: "E", days: 20.0, ot: 187.00},
+            {no: 23, name: "Irpan Parenden", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem: "Non Shift", grade: "E", days: 19.0, ot: 50.00},
+            {no: 24, name: "Sunita Ayu P.", jabatan: "Petugas Admin II", penempatan: "Legal & Relation", sistem: "Non Shift", grade: "E", days: 19.0, ot: 125.00},
+            {no: 25, name: "Dewi Setiawati M Dg M", jabatan: "Petugas Admin III", penempatan: "RAM", sistem: "Non Shift", grade: "F", days: 20.0, ot: 50.00},
+            {no: 26, name: "Marini Astari", jabatan: "Petugas Admin III", penempatan: "HR - GS", sistem: "Non Shift", grade: "F", days: 19.0, ot: 91.50},
+            {no: 27, name: "Ali Muhtar M. Amin", jabatan: "Supir Ambulance", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 20.0, ot: 174.00},
+            {no: 28, name: "Agus Rudiyanto", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 20.0, ot: 0.00},
+            {no: 29, name: "I Gede Ariana", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 101.00},
+            {no: 30, name: "I Putu Adnyana Wijaya", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 141.00},
+            {no: 31, name: "Mursalun Lasuru", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 25.00},
+            {no: 32, name: "Subandi", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 85.00},
+            {no: 33, name: "Budi Santoso", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 183.00},
+            {no: 34, name: "I Komang Santika", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 25.00},
+            {no: 35, name: "Indra Natalianto Patasik", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 100.00},
+            {no: 36, name: "Kd Wiyad Nyana", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 35.00},
+            {no: 37, name: "I Nengah Rudi Artika", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 21.0, ot: 144.00},
+            {no: 38, name: "Sukardi Jalisingi", jabatan: "Supir Ambulance", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 20.0, ot: 210.00},
+            {no: 39, name: "Yotam", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 19.0, ot: 124.50},
+            {no: 40, name: "Thamar Thalib Mbau", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 147.00},
+            {no: 41, name: "Arie Kurniawan", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 19.0, ot: 121.00},
+            {no: 42, name: "Eko Wiyono", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 18.0, ot: 121.00},
+            {no: 43, name: "Fajriadi", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 19.0, ot: 121.00},
+            {no: 44, name: "Jumalik H. Latungka", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 21.0, ot: 162.00},
+            {no: 45, name: "Randianto", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 21.0, ot: 162.50},
+            {no: 46, name: "Saiful M. Zakar", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 21.0, ot: 262.00},
+            {no: 47, name: "I Nyoman Suwitra", jabatan: "Petugas Gudang (BBM)", penempatan: "SCM", sistem: "Non Shift", grade: "D", days: 21.0, ot: 121.00},
+            {no: 48, name: "I Putu Muryanto", jabatan: "Petugas Admin III", penempatan: "Operation", sistem: "Non Shift", grade: "F", days: 21.0, ot: 382.50},
+            {no: 49, name: "Siti Aisyah Dg Masese", jabatan: "Sekretaris FM", penempatan: "Field Manager", sistem: "Non Shift", grade: "F", days: 18.0, ot: 343.50},
+            {no: 50, name: "Dewi Khoirunnisa", jabatan: "Petugas Admin III", penempatan: "Finance", sistem: "Non Shift", grade: "F", days: 21.0, ot: 176.50},
+            {no: 51, name: "Eka Nurjannah", jabatan: "Petugas Admin III CSR", penempatan: "Legal & Relation", sistem: "Non Shift", grade: "F", days: 16.0, ot: 165.50},
+            {no: 52, name: "Findy Handayani", jabatan: "Petugas Admin II", penempatan: "SCM", sistem: "Non Shift", grade: "E", days: 0.0, ot: 0.00}
         ];
 
-        // Fungsi Unggah File Excel Otomatis untuk Periode Berikutnya
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    
-                    // Parsing otomatis nama file & sheet
-                    alert(`Sukses! File "${file.name}" berhasil diunggah. Terdapat ${workbook.SheetNames.length} sheet terdeteksi.`);
-                } catch (err) {
-                    alert("Gagal memproses file Excel: " + err.message);
-                }
-            };
-            reader.readAsArrayBuffer(file);
-        }
-
-        function renderTable(data) {
-            const tbody = document.getElementById('timesheetTableBody');
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
             
-            if (data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 text-xs">Tidak ada data ditemukan.</td></tr>`;
-                return;
-            }
-
-            data.forEach((emp) => {
-                const hoursPerDay = emp.sistem_kerja === "Shift" ? 12 : 9;
-                const normalHours = emp.kehadiranDays * hoursPerDay;
-                const totalManHours = normalHours + emp.lemburKonversi;
-
-                const badgeColor = emp.sistem_kerja === "Shift" ? "bg-blue-50 text-blue-700" : "bg-purple-50 text-purple-700";
+            employeeData.forEach(emp => {
                 const row = document.createElement('tr');
-                row.className = "hover:bg-slate-50 border-b border-slate-100 text-xs transition";
+                row.className = "hover:bg-gray-50 transition";
                 row.innerHTML = `
-                    <td class="p-3 text-slate-500 font-semibold">${emp.no}</td>
-                    <td class="p-3 font-bold text-slate-800">${emp.nama}</td>
-                    <td class="p-3">
-                        <div class="font-semibold text-slate-700">${emp.jabatan}</div>
-                        <span class="px-2 py-0.5 ${badgeColor} rounded-md font-bold text-[10px]">${emp.sistem_kerja}</span>
-                    </td>
-                    <td class="p-3 font-semibold text-slate-700">${emp.kehadiranDays} Hari (${normalHours} Jam)</td>
-                    <td class="p-3 font-bold text-emerald-600">${emp.lemburKonversi.toFixed(2)} Jam</td>
-                    <td class="p-3 font-bold text-blue-600">${totalManHours.toFixed(2)} Jam</td>
-                    <td class="p-3 text-center">
-                        <button onclick="openModal(${emp.no})" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-semibold transition">
-                            👁️ Detail Kertas Kerja
-                        </button>
-                    </td>
+                    <td class="px-4 py-3 border-b text-center font-medium">${emp.no}</td>
+                    <td class="px-4 py-3 border-b font-semibold text-gray-900">${emp.name}</td>
+                    <td class="px-4 py-3 border-b">${emp.jabatan}</td>
+                    <td class="px-4 py-3 border-b"><span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">${emp.penempatan}</span></td>
+                    <td class="px-4 py-3 border-b">${emp.sistem}</td>
+                    <td class="px-4 py-3 border-b text-center font-bold">${emp.grade}</td>
+                    <td class="px-4 py-3 border-b text-center font-semibold text-blue-600">${emp.days.toFixed(1)}</td>
+                    <td class="px-4 py-3 border-b text-right font-bold text-gray-900">${emp.ot.toFixed(2)}</td>
                 `;
                 tbody.appendChild(row);
             });
         }
 
-        let activeEmp = null;
-        function openModal(no) {
-            activeEmp = timesheetData.find(e => e.no === no);
-            if (!activeEmp) return;
-
-            const hoursPerDay = activeEmp.sistem_kerja === "Shift" ? 12 : 9;
-            const normalHours = activeEmp.kehadiranDays * hoursPerDay;
-            const totalManHours = normalHours + activeEmp.lemburKonversi;
-
-            document.getElementById('modalEmpName').innerText = `Rincian Absen: ${activeEmp.nama}`;
-            const modalBody = document.getElementById('modalBody');
-            modalBody.innerHTML = `
-                <div class="flex justify-between py-2 px-3 bg-white rounded-lg border border-slate-100">
-                    <span class="text-slate-500 font-semibold">Nama Pekerja</span>
-                    <span class="font-bold text-slate-900">${activeEmp.nama}</span>
-                </div>
-                <div class="flex justify-between py-2 px-3 bg-white rounded-lg border border-slate-100">
-                    <span class="text-slate-500 font-semibold">Jabatan / Penempatan</span>
-                    <span class="font-bold text-slate-900">${activeEmp.jabatan} (${activeEmp.penempatan})</span>
-                </div>
-                <div class="flex justify-between py-2 px-3 bg-white rounded-lg border border-slate-100">
-                    <span class="text-slate-500 font-semibold">Sistem Kerja & Grade</span>
-                    <span class="font-bold text-slate-900">${activeEmp.sistem_kerja} (${hoursPerDay} Jam/Hari, Grade ${activeEmp.grade})</span>
-                </div>
-                <div class="flex justify-between py-2 px-3 bg-white rounded-lg border border-slate-100">
-                    <span class="text-slate-500 font-semibold">Kehadiran & Jam Normal</span>
-                    <span class="font-bold text-slate-900">${activeEmp.kehadiranDays} Hari × ${hoursPerDay} Jam = ${normalHours} Jam</span>
-                </div>
-                <div class="flex justify-between py-2 px-3 bg-white rounded-lg border border-slate-100">
-                    <span class="text-slate-500 font-semibold">Total Lembur</span>
-                    <span class="font-bold text-emerald-600">${activeEmp.lemburKonversi.toFixed(2)} Jam</span>
-                </div>
-                <div class="flex justify-between py-2 px-3 bg-white rounded-lg border border-slate-100 bg-blue-50/50">
-                    <span class="text-blue-900 font-bold">Total Man Hours (Jam Normal + Total Lembur)</span>
-                    <span class="font-extrabold text-blue-700 text-sm">${normalHours} + ${activeEmp.lemburKonversi.toFixed(2)} = ${totalManHours.toFixed(2)} Jam</span>
-                </div>
-            `;
-            document.getElementById('timesheetModal').classList.remove('hidden');
+        function syncGoogleSheet() {
+            // Membuka Google Spreadsheet sumber di Google Drive
+            window.open("https://docs.google.com/spreadsheets/d/1DvRQrgT43ycmJ_h5cBCYy5Fijk3oFG9L18p-k42cdpo/edit?gid=583532944#gid=583532944", "_blank");
         }
 
-        function closeTimesheetModal() {
-            document.getElementById('timesheetModal').classList.add('hidden');
+        function exportToExcel() {
+            const ws = XLSX.utils.json_to_sheet(employeeData.map(e => ({
+                "No": e.no,
+                "Nama Karyawan": e.name,
+                "Jabatan": e.jabatan,
+                "Penempatan": e.penempatan,
+                "Sistem Kerja": e.sistem,
+                "Grade": e.grade,
+                "Hari Hadir": e.days,
+                "Konversi Lembur (Jam)": e.ot
+            })));
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Rekap_Gaji_Donggi");
+            XLSX.writeFile(wb, "Rekap_Absen_Lembur_16Jun_15Jul_2026.xlsx");
         }
 
-        function downloadTimesheetPDF() {
-            if (!activeEmp) return;
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'mm', 'a4');
-            
-            const hoursPerDay = activeEmp.sistem_kerja === "Shift" ? 12 : 9;
-            const normalHours = activeEmp.kehadiranDays * hoursPerDay;
-            const totalManHours = normalHours + activeEmp.lemburKonversi;
-
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(14);
-            doc.text("RINCIAN KERTAS KERJA ABSEN & TIMESHEET", 14, 15);
-            doc.setFontSize(10);
-            doc.text(`Nama: ${activeEmp.nama}`, 14, 22);
-            doc.text(`Jabatan: ${activeEmp.jabatan} (${activeEmp.sistem_kerja})`, 14, 28);
-            doc.line(14, 33, 196, 33);
-
-            let y = 42;
-            doc.setFont("helvetica", "normal");
-            doc.text(`Penempatan: ${activeEmp.penempatan}`, 14, y); y += 8;
-            doc.text(`Grade: ${activeEmp.grade}`, 14, y); y += 8;
-            doc.text(`Kehadiran: ${activeEmp.kehadiranDays} Hari (${normalHours} Jam Normal)`, 14, y); y += 8;
-            doc.text(`Total Lembur: ${activeEmp.lemburKonversi.toFixed(2)} Jam`, 14, y); y += 8;
-            doc.setFont("helvetica", "bold");
-            doc.text(`Total Man Hours: ${totalManHours.toFixed(2)} Jam`, 14, y);
-
-            doc.save(`Timesheet_${activeEmp.nama.replace(/\s+/g, '_')}.pdf`);
-        }
-
-        function filterTimesheet() {
-            const keyword = document.getElementById('searchTimesheet').value.toLowerCase();
-            const shiftVal = document.getElementById('filterSistemKerja').value;
-
-            const filtered = timesheetData.filter(emp => {
-                const matchName = emp.nama.toLowerCase().includes(keyword) || emp.jabatan.toLowerCase().includes(keyword);
-                const matchShift = shiftVal === "" || emp.sistem_kerja === shiftVal;
-                return matchName && matchShift;
-            });
-            renderTable(filtered);
-        }
-
-        document.getElementById('searchTimesheet').addEventListener('input', filterTimesheet);
-        document.getElementById('filterSistemKerja').addEventListener('change', filterTimesheet);
-        document.getElementById('selectPeriode').addEventListener('change', function() {
-            document.getElementById('lblPeriode').innerText = this.options[this.selectedIndex].text.replace('Periode: ', '');
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            renderTable(timesheetData);
-        });
+        // Inisialisasi render saat halaman dimuat
+        window.onload = renderTable;
     </script>
 </body>
 </html>
