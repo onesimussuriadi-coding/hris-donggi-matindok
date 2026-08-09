@@ -116,7 +116,7 @@
                             <th class="p-3">Nama Pekerja</th>
                             <th class="p-3">Jabatan & Sistem Kerja</th>
                             <th class="p-3">Kehadiran / Jam Normal</th>
-                            <th class="p-3">Total Lembur (Konversi Blok Kolom)</th>
+                            <th class="p-3">Total Lembur (Konversi R11-R41)</th>
                             <th class="p-3">Total Man Hours</th>
                             <th class="p-3 text-center rounded-r-xl">Aksi Kertas Kerja</th>
                         </tr>
@@ -153,7 +153,7 @@
         </div>
     </div>
 
-    <!-- Skrip Proses Data 52 Karyawan Sesuai Acuan Blok Kolom Lembar Kerja Excel -->
+    <!-- Skrip Proses Data 52 Karyawan Sesuai Pemetaan Rujukan R11-R41 -->
     <script>
         let timesheetData = [
             { no: 1, nama: "Sujianto M. Batias", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiranDays: 19, lemburKonversi: 65.50 },
@@ -277,7 +277,7 @@
                     <span class="font-bold text-slate-900">${activeEmp.kehadiranDays} Hari × ${hoursPerDay} Jam = ${normalHours} Jam</span>
                 </div>
                 <div class="flex justify-between py-2 px-3 bg-white rounded-lg border border-slate-100">
-                    <span class="text-slate-500 font-semibold">Total Lembur (Jam Konversi Blok Kolom)</span>
+                    <span class="text-slate-500 font-semibold">Total Lembur (Jam Konversi R11-R41)</span>
                     <span class="font-bold text-emerald-600">${activeEmp.lemburKonversi.toFixed(2)} Jam</span>
                 </div>
                 <div class="flex justify-between py-2 px-3 bg-white rounded-lg border border-slate-100 bg-blue-50/50">
@@ -314,7 +314,7 @@
             doc.text(`Penempatan: ${activeEmp.penempatan}`, 14, y); y += 8;
             doc.text(`Grade: ${activeEmp.grade}`, 14, y); y += 8;
             doc.text(`Kehadiran: ${activeEmp.kehadiranDays} Hari (${normalHours} Jam Normal)`, 14, y); y += 8;
-            doc.text(`Total Lembur (Konversi): ${activeEmp.lemburKonversi.toFixed(2)} Jam`, 14, y); y += 8;
+            doc.text(`Total Lembur (Konversi R11-R41): ${activeEmp.lemburKonversi.toFixed(2)} Jam`, 14, y); y += 8;
             doc.setFont("helvetica", "bold");
             doc.text(`Total Man Hours: ${totalManHours.toFixed(2)} Jam`, 14, y);
 
