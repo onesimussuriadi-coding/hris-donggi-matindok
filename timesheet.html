@@ -30,7 +30,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Pencatatan Kehadiran, Jam Masuk/Keluar, dan Kalkulasi Otomatis (Shift & Non-Shift)</p>
+                <p class="text-xs text-slate-500 mt-0.5">Pencatatan Kehadiran, Jam Lembur, dan Akumulasi Tunjangan Makan (Tanpa Nominal Upah)</p>
             </div>
             <div class="flex gap-3">
                 <button onclick="bukaModalAbsen('Shift')" class="bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow hover:bg-emerald-800 transition flex items-center gap-2">
@@ -49,35 +49,36 @@
                 <p class="text-2xl font-extrabold text-slate-900 mt-1">52 Orang</p>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Formula Premi Shift</p>
-                <p class="text-xs font-bold text-emerald-700 mt-1">15% x UP x Hk x 12 x (1/173)</p>
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Jam Kerja Shift</p>
+                <p class="text-xs font-bold text-emerald-700 mt-1">07:00 s.d 07:00 (12 Jam)</p>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Formula KJK (Shift)</p>
-                <p class="text-xs font-bold text-emerald-700 mt-1">7,5 x (1/173) x Total Upah x Hk</p>
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Jam Kerja Non-Shift</p>
+                <p class="text-xs font-bold text-emerald-700 mt-1">07:00 s.d 16:00 (Sen-Jum)</p>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Uang Makan Lembur</p>
-                <p class="text-xs font-bold text-blue-700 mt-1">✅ Otomatis (Pagi/Siang/Malam)</p>
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Fokus Modul</p>
+                <p class="text-xs font-bold text-blue-700 mt-1">📋 Murni Jam & Kehadiran</p>
             </div>
         </div>
 
         <!-- TABEL UTAMA -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
-                <h3 class="font-bold text-slate-800 text-sm">Rekapitulasi Kehadiran, Lembur & Tunjangan</h3>
+                <h3 class="font-bold text-slate-800 text-sm">Rekapitulasi Kehadiran, Jam Lembur & Tunjangan Makan</h3>
                 <span class="text-xs bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full border border-emerald-200 font-semibold">Zona 13 - Field Donggi Matindok</span>
             </div>
             <table class="w-full text-left border-collapse">
                 <thead class="bg-slate-100 text-slate-600 font-semibold text-xs uppercase tracking-wider">
                     <tr>
-                        <th class="p-4 text-center w-16">No</th>
+                        <th class="p-4 text-center w-12">No</th>
                         <th class="p-4">Nama Pekerja</th>
                         <th class="p-4">Jabatan & Sistem</th>
                         <th class="p-4 text-center">Kehadiran (Hk)</th>
-                        <th class="p-4 text-right">Premi Shift (Rp)</th>
-                        <th class="p-4 text-right">KJK / Lembur (Rp)</th>
-                        <th class="p-4 text-center">Aksi Rincian</th>
+                        <th class="p-4 text-center">Jam Lembur Aktual</th>
+                        <th class="p-4 text-center">Jam Lembur Konversi</th>
+                        <th class="p-4 text-center">Tunjangan Makan (Pagi / Siang / Malam)</th>
+                        <th class="p-4 text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="tabelAbsen" class="divide-y divide-slate-100 text-sm">
@@ -91,7 +92,7 @@
     <div id="modalAbsen" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
         <div class="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl">
             <h3 id="modalTitle" class="text-lg font-bold mb-1 text-slate-800">Input Absen Harian</h3>
-            <p class="text-xs text-slate-500 mb-4">Catat tanggal, jam masuk, jam keluar, dan sistem otomatis menghitung lembur.</p>
+            <p class="text-xs text-slate-500 mb-4">Catat tanggal, jam masuk, jam keluar, dan sistem otomatis menghitung lembur serta hak uang makan.</p>
             
             <div class="space-y-4">
                 <div>
@@ -149,14 +150,14 @@
 
     <!-- SCRIPT LOGIKA UTAMA -->
     <script>
-        // Database Karyawan Master (Shift & Non-Shift)
+        // Database Absensi Murni (Tanpa Nominal Uang)
         let masterKaryawan = [
-            {no: 1, name: "Sujianto Batias", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", hk: 19.0, up: 4500000, tunjangan: 1200000},
-            {no: 2, name: "Ansar Mansur", jabatan: "Pemuka Fire & Safety", grade: "F", posisi: "HSSE", sistem: "Shift", hk: 20.0, up: 4800000, tunjangan: 1300000},
-            {no: 3, name: "Harir A. Lako", jabatan: "Petugas Fire & Safety", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 20.0, up: 4200000, tunjangan: 1100000},
-            {no: 4, name: "Ali Friansyah", jabatan: "Petugas Fire & Safety", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 20.0, up: 4200000, tunjangan: 1100000},
-            {no: 17, name: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", grade: "F", posisi: "SCM", sistem: "Non Shift", hk: 21.0, up: 5000000, tunjangan: 1500000},
-            {no: 18, name: "Marjan Karim", jabatan: "Admin Warehouse", grade: "E", posisi: "SCM", sistem: "Non Shift", hk: 20.0, up: 4600000, tunjangan: 1250000}
+            {no: 1, name: "Sujianto Batias", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", hk: 19.0, otAktual: 45.0, otKonversi: 102.5, makanPagi: 2, makanSiang: 1, makanMalam: 3},
+            {no: 2, name: "Ansar Mansur", jabatan: "Pemuka Fire & Safety", grade: "F", posisi: "HSSE", sistem: "Shift", hk: 20.0, otAktual: 40.0, otKonversi: 100.0, makanPagi: 1, makanSiang: 2, makanMalam: 2},
+            {no: 3, name: "Harir A. Lako", jabatan: "Petugas Fire & Safety", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 20.0, ot_aktual: 50.0, otKonversi: 128.5, makanPagi: 2, makanSiang: 2, makanMalam: 4},
+            {no: 4, name: "Ali Friansyah", jabatan: "Petugas Fire & Safety", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 20.0, otAktual: 10.0, otKonversi: 25.0, makanPagi: 0, makanSiang: 1, makanMalam: 1},
+            {no: 17, name: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", grade: "F", posisi: "SCM", sistem: "Non Shift", hk: 21.0, otAktual: 15.0, otKonversi: 30.0, makanPagi: 0, makanSiang: 3, makanMalam: 2},
+            {no: 18, name: "Marjan Karim", jabatan: "Admin Warehouse", grade: "E", posisi: "SCM", sistem: "Non Shift", hk: 20.0, otAktual: 12.0, otKonversi: 24.0, makanPagi: 0, makanSiang: 2, makanMalam: 1}
         ];
 
         function renderTabel() {
@@ -164,20 +165,6 @@
             tbody.innerHTML = '';
 
             masterKaryawan.forEach((item, index) => {
-                let premi = 0;
-                let kjk = 0;
-                let totalUpah = item.up + item.tunjangan;
-
-                if (item.sistem === 'Shift') {
-                    // Rumus Premi Shift: 15% * UP * Hk * 12 * (1/173)
-                    premi = (0.15 * item.up * item.hk * 12) * (1 / 173);
-                    // Rumus KJK Shift: 7,5 * (1/173) * (UP + Tunjangan) * Hk
-                    kjk = 7.5 * (1 / 173) * totalUpah * item.hk;
-                } else {
-                    // Non-shift menggunakan kalkulasi lembur reguler berbasis jam
-                    kjk = item.hk * 50000; // Estimasi akumulasi lembur non-shift
-                }
-
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition">
                         <td class="p-4 text-center font-semibold text-slate-600">${item.no}</td>
@@ -188,10 +175,15 @@
                             <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded border border-slate-200 font-semibold ml-1">${item.sistem}</span>
                         </td>
                         <td class="p-4 text-center font-bold text-emerald-700">${item.hk} Hari</td>
-                        <td class="p-4 text-right font-bold text-slate-800">${item.sistem === 'Shift' ? 'Rp ' + premi.toLocaleString('id-ID', {maximumFractionDigits: 0}) : '-'}</td>
-                        <td class="p-4 text-right font-bold text-blue-700">Rp ${kjk.toLocaleString('id-ID', {maximumFractionDigits: 0})}</td>
+                        <td class="p-4 text-center font-bold text-slate-700">${item.otAktual || 0} Jam</td>
+                        <td class="p-4 text-center font-bold text-blue-700">${item.otKonversi || 0} Jam</td>
+                        <td class="p-4 text-center font-semibold text-slate-600">
+                            <span class="bg-amber-50 text-amber-800 px-2 py-1 rounded border border-amber-200 text-xs">
+                                🍳 Pagi: ${item.makanPagi || 0} | 🍱 Siang: ${item.makanSiang || 0} | 🌙 Malam: ${item.makanMalam || 0}
+                            </span>
+                        </td>
                         <td class="p-4 text-center">
-                            <button onclick="alert('Rincian Kertas Kerja Absen ${item.name}\\nSistem Kerja: ${item.sistem}\\nTotal Hk: ${item.hk} Hari')" class="bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-emerald-800 transition shadow-sm">📄 Rincian</button>
+                            <button onclick="alert('Rincian Kertas Kerja Absen & Lembur: ${item.name}\\nSistem: ${item.sistem}\\nKehadiran: ${item.hk} Hari')" class="bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-emerald-800 transition shadow-sm">📄 Rincian</button>
                         </td>
                     </tr>
                 `;
@@ -219,11 +211,11 @@
             let karyawan = masterKaryawan.find(k => k.no === selectedNo);
             
             if(karyawan) {
-                // Menambahkan akumulasi kehadiran harian (simulasi penambahan 1 hari kerja)
                 karyawan.hk += 1;
+                karyawan.otKonversi += 2.5;
                 renderTabel();
                 tutupModal();
-                alert(`Absen tanggal berhasil dicatat untuk ${karyawan.name}! Kehadiran diakumulasikan.`);
+                alert(`Absen harian berhasil dicatat untuk ${karyawan.name}! Kehadiran & Jam lembur diperbarui.`);
             }
         }
 
