@@ -5,21 +5,27 @@
     <title>Time Sheet & Absen - Portal HRIS</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-100 font-sans">
-    <div class="p-8">
-        <h2 class="text-2xl font-bold mb-4">Time Sheet & Absen - Live Data</h2>
-        <div class="bg-white shadow rounded-lg overflow-hidden">
+<body class="bg-slate-100 min-h-screen p-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header & Stats -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-slate-800">Time Sheet & Absen - Live Data</h1>
+            <button onclick="loadData()" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">🔄 Update Data</button>
+        </div>
+
+        <!-- Tabel Profesional -->
+        <div class="bg-white shadow rounded-2xl overflow-hidden border border-slate-200">
             <table class="w-full text-left">
-                <thead class="bg-slate-200 text-sm">
+                <thead class="bg-slate-800 text-white text-xs uppercase">
                     <tr>
-                        <th class="p-3">No</th>
-                        <th class="p-3">Nama Karyawan</th>
-                        <th class="p-3">Hari Kerja (T)</th>
-                        <th class="p-3">Jam Lembur (AG)</th>
+                        <th class="px-6 py-4">No</th>
+                        <th class="px-6 py-4">Nama Karyawan</th>
+                        <th class="px-6 py-4 text-center">Hari Kerja (T)</th>
+                        <th class="px-6 py-4 text-center">Jam Lembur (AG)</th>
                     </tr>
                 </thead>
-                <tbody id="tabel" class="text-sm">
-                    <tr><td colspan="4" class="p-4 text-center">Menghubungkan ke Google Sheet...</td></tr>
+                <tbody id="tabel" class="divide-y divide-slate-100 text-sm">
+                    <tr><td colspan="4" class="p-8 text-center text-slate-500 italic">Menghubungkan ke Google Sheet...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -27,29 +33,32 @@
 
     <script>
     async function loadData() {
+        // ID Google Sheet yang sudah di-Publish
         const id = "1DvRQrgT43ycmJ_h5cBCYy5Fijk3oFG9L18p-k42cdpo";
         const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json`;
+        
         try {
             const res = await fetch(url);
             const text = await res.text();
             const json = JSON.parse(text.substring(47, text.length - 2));
             const rows = json.table.rows;
+            
             let html = "";
-            // Membaca baris 5-56 (indeks 4-55)
-            for(let i=4; i<=55; i++) {
-                if(rows[i] && rows[i].c) {
-                    let r = rows[i].c;
-                    html += `<tr>
-                        <td class="p-3 border-t">${r[1]?.v || ''}</td>
-                        <td class="p-3 border-t font-bold">${r[2]?.v || ''}</td>
-                        <td class="p-3 border-t">${r[19]?.v || 0}</td>
-                        <td class="p-3 border-t">${r[32]?.v || 0}</td>
+            // Mapping yang benar: baris 5 ke bawah adalah data (indeks 4)
+            for(let i = 4; i < rows.length; i++) {
+                let r = rows[i].c;
+                if(r && r[1]) { // Pastikan kolom No (B) ada
+                    html += `<tr class="hover:bg-slate-50">
+                        <td class="px-6 py-3">${r[1]?.v || ''}</td>
+                        <td class="px-6 py-3 font-semibold">${r[2]?.v || ''}</td>
+                        <td class="px-6 py-3 text-center text-emerald-600 font-bold">${r[19]?.v || 0}</td>
+                        <td class="px-6 py-3 text-center text-blue-600 font-bold">${r[32]?.v || 0}</td>
                     </tr>`;
                 }
             }
             document.getElementById("tabel").innerHTML = html;
         } catch (e) {
-            document.getElementById("tabel").innerHTML = "<tr><td colspan='4' class='p-4 text-red-500'>Gagal load data. Pastikan Google Sheet di-Publish ke Web.</td></tr>";
+            document.getElementById("tabel").innerHTML = "<tr><td colspan='4' class='p-8 text-center text-red-500'>Gagal sinkron. Pastikan sheet di-Publish ke Web.</td></tr>";
         }
     }
     loadData();
