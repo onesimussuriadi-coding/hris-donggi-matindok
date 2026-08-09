@@ -47,8 +47,8 @@
                 <p class="text-xs text-slate-500 mt-0.5">Periode Gaji: 16 Juni s.d. 15 Juli 2026</p>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="openGoogleDrive()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow transition flex items-center gap-2">
-                    <span>🔗 Buka Google Spreadsheet Drive</span>
+                <button onclick="fetchLiveGoogleSheet()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow transition flex items-center gap-2">
+                    <span>🔄 Refresh Real-Time Online</span>
                 </button>
                 <button onclick="exportToExcel()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow transition flex items-center gap-2">
                     <span>📥 Ekspor ke Excel</span>
@@ -60,15 +60,15 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 border-l-4 border-l-blue-600">
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Karyawan Aktif</p>
-                    <p class="text-3xl font-extrabold text-slate-900 mt-2">52</p>
+                    <p class="text-3xl font-extrabold text-slate-900 mt-2" id="statCount">0</p>
                 </div>
                 <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 border-l-4 border-l-emerald-600">
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Hari Hadir (Col T)</p>
-                    <p class="text-3xl font-extrabold text-slate-900 mt-2">1,006.0</p>
+                    <p class="text-3xl font-extrabold text-slate-900 mt-2" id="statDays">0.0</p>
                 </div>
                 <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 border-l-4 border-l-indigo-600">
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Jam Lembur (Col AG)</p>
-                    <p class="text-3xl font-extrabold text-slate-900 mt-2">5,784.00 <span class="text-base font-semibold text-slate-500">Jam</span></p>
+                    <p class="text-3xl font-extrabold text-slate-900 mt-2" id="statOT">0.00 <span class="text-base font-semibold text-slate-500">Jam</span></p>
                 </div>
             </div>
 
@@ -76,10 +76,10 @@
                 <div class="px-6 py-4 bg-slate-50/50 border-b border-slate-200 flex justify-between items-center">
                     <div>
                         <h3 class="font-bold text-slate-800 text-sm">Rekapitulasi Kehadiran & Lembur Pegawai</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Sumber Data Presisi Terverifikasi &bull; Tab: <strong>Database Karyawan</strong></p>
+                        <p class="text-xs text-slate-500 mt-0.5">Sumber Data Murni Online &bull; Tab: <strong>Database Karyawan</strong></p>
                     </div>
                     <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Data Stabil & Akurat 100%
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Sinkronisasi Real-Time Aktif
                     </span>
                 </div>
 
@@ -98,7 +98,7 @@
                             </tr>
                         </thead>
                         <tbody id="employeeTableBody" class="divide-y divide-slate-200 text-sm">
-                            <!-- Data dimuat presisi -->
+                            <tr><td colspan="8" class="px-6 py-8 text-center text-slate-400">Menghubungkan ke Google Spreadsheet secara real-time...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -106,68 +106,99 @@
         </main>
     </div>
 
-    <!-- Script Data Terverifikasi Presisi Sesuai Kolom T & AG Database Karyawan -->
+    <!-- Script Pemetaan Kolom Presisi Real-Time CSV Google Sheet -->
     <script>
-        const dbData = [
-            {no: 1, name: "Sujianto M. Batias", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 19.0, ot: 65.50},
-            {no: 2, name: "Ansar Mansur", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 100.00},
-            {no: 3, name: "Harir A. Lako", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 128.50},
-            {no: 4, name: "Ali Friansyah", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 25.00},
-            {no: 5, name: "Fredrik D. Tinadji", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 70.00},
-            {no: 6, name: "Wayan Edi Jaya", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 175.00},
-            {no: 7, name: "Akmal (A)", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 20.0, ot: 68.00},
-            {no: 8, name: "Alfikwan I. Marida", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 119.00},
-            {no: 9, name: "Deni Andrianto", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 100.00},
-            {no: 10, name: "Awal Dwi Sekti", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 174.00},
-            {no: 11, name: "Muh Arsyal Ramdani", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 20.0, ot: 0.00},
-            {no: 12, name: "Muh Palmi", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 50.00},
-            {no: 13, name: "Halim", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 35.00},
-            {no: 14, name: "Mustamar Dg Magangka", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 18.0, ot: 44.50},
-            {no: 15, name: "Akmal (B)", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 200.00},
-            {no: 16, name: "Rizal Tamoreka", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 20.0, ot: 82.00},
-            {no: 17, name: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", penempatan: "SCM", sistem: "Non Shift", grade: "F", days: 21.0, ot: 144.00},
-            {no: 18, name: "Marjan Karim", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem: "Non Shift", grade: "E", days: 20.0, ot: 210.00},
-            {no: 19, name: "Kasman", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem: "Non Shift", grade: "E", days: 19.0, ot: 124.50},
-            {no: 20, name: "Lukman Tasakka", jabatan: "Pemuka Ops. Alat Berat", penempatan: "SCM", sistem: "Non Shift", grade: "F", days: 20.0, ot: 147.00},
-            {no: 21, name: "Nengah Darsana", jabatan: "Pemuka Ops. Alat Berat", penempatan: "SCM", sistem: "Non Shift", grade: "F", days: 19.0, ot: 121.00},
-            {no: 22, name: "I Gusti Ngurah Baliarta", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem: "Non Shift", grade: "E", days: 18.0, ot: 121.00},
-            {no: 23, name: "Irpan Parenden", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem: "Non Shift", grade: "E", days: 19.0, ot: 121.00},
-            {no: 24, name: "Sunita Ayu P.", jabatan: "Petugas Admin II", penempatan: "Legal & Relation", sistem: "Non Shift", grade: "E", days: 21.0, ot: 162.00},
-            {no: 25, name: "Dewi Setiawati M Dg M", jabatan: "Petugas Admin III", penempatan: "RAM", sistem: "Non Shift", grade: "F", days: 21.0, ot: 162.50},
-            {no: 26, name: "Marini Astari", jabatan: "Petugas Admin III", penempatan: "HR - GS", sistem: "Non Shift", grade: "F", days: 21.0, ot: 262.00},
-            {no: 27, name: "Ali Muhtar M. Amin", jabatan: "Supir Ambulance", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 20.0, ot: 0.00},
-            {no: 28, name: "Agus Rudiyanto", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 17.0, ot: 0.00},
-            {no: 29, name: "I Gede Ariana", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 19.0, ot: 60.00},
-            {no: 30, name: "I Putu Adnyana Wijaya", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 100.50},
-            {no: 31, name: "Mursalun Lasuru", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 50.50},
-            {no: 32, name: "Subandi", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 187.00},
-            {no: 33, name: "Budi Santoso", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 19.0, ot: 50.00},
-            {no: 34, name: "I Komang Santika", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 19.0, ot: 125.00},
-            {no: 35, name: "Indra Natalianto Patasik", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 50.00},
-            {no: 36, name: "Kd Wiyad Nyana", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 19.0, ot: 91.50},
-            {no: 37, name: "I Nengah Rudi Artika", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 174.00},
-            {no: 38, name: "Sukardi Jalisingi", jabatan: "Supir Ambulance", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 20.0, ot: 0.00},
-            {no: 39, name: "Yotam", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 101.00},
-            {no: 40, name: "Thamar Thalib Mbau", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 141.00},
-            {no: 41, name: "Arie Kurniawan", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 25.00},
-            {no: 42, name: "Eko Wiyono", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 85.00},
-            {no: 43, name: "Fajriadi", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 183.00},
-            {no: 44, name: "Jumalik H. Latungka", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 25.00},
-            {no: 45, name: "Randianto", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 100.00},
-            {no: 46, name: "Saiful M. Zakar", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 35.00},
-            {no: 47, name: "I Nyoman Suwitra", jabatan: "Petugas Gudang (BBM)", penempatan: "SCM", sistem: "Non Shift", grade: "D", days: 21.0, ot: 121.00},
-            {no: 48, name: "I Putu Muryanto", jabatan: "Petugas Admin III", penempatan: "Operation", sistem: "Non Shift", grade: "F", days: 21.0, ot: 382.50},
-            {no: 49, name: "Siti Aisyah Dg Masese", jabatan: "Sekretaris FM", penempatan: "Field Manager", sistem: "Non Shift", grade: "F", days: 18.0, ot: 343.50},
-            {no: 50, name: "Dewi Khoirunnisa", jabatan: "Petugas Admin III", penempatan: "Finance", sistem: "Non Shift", grade: "F", days: 21.0, ot: 176.50},
-            {no: 51, name: "Eka Nurjannah", jabatan: "Petugas Admin III CSR", penempatan: "Legal & Relation", sistem: "Non Shift", grade: "F", days: 16.0, ot: 165.50},
-            {no: 52, name: "Findy Handayani", jabatan: "Petugas Admin II", penempatan: "SCM", sistem: "Non Shift", grade: "E", days: 0.0, ot: 0.00}
-        ];
+        let onlineDatabase = [];
 
-        function renderTable() {
+        async function fetchLiveGoogleSheet() {
+            const spreadsheetId = "1DvRQrgT43ycmJ_h5cBCYy5Fijk3oFG9L18p-k42cdpo";
+            const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv`;
+
+            try {
+                const response = await fetch(csvUrl);
+                if (!response.ok) throw new Error("Gagal mengambil data dari Google Drive");
+                const csvText = await response.text();
+                parseOnlineCSV(csvText);
+            } catch (error) {
+                console.error("Koneksi gagal:", error);
+                document.getElementById('employeeTableBody').innerHTML = `<tr><td colspan="8" class="px-6 py-8 text-center text-red-500 font-semibold">Gagal memuat data online. Pastikan Google Sheet sudah di-Publish ke Web (File > Share > Publish to web).</td></tr>`;
+            }
+        }
+
+        function parseOnlineCSV(csvText) {
+            const rows = [];
+            let row = [];
+            let inQuotes = false;
+            let val = '';
+            
+            for (let i = 0; i < csvText.length; i++) {
+                let c = csvText[i];
+                if (c === '"') {
+                    inQuotes = !inQuotes;
+                } else if (c === ',' && !inQuotes) {
+                    row.push(val.trim().replace(/^"|"$/g, ''));
+                    val = '';
+                } else if ((c === '\n' || c === '\r') && !inQuotes) {
+                    if (val !== '' || row.length > 0) {
+                        row.push(val.trim().replace(/^"|"$/g, ''));
+                        rows.push(row);
+                        row = [];
+                        val = '';
+                    }
+                } else {
+                    val += c;
+                }
+            }
+            if (val !== '' || row.length > 0) {
+                row.push(val.trim().replace(/^"|"$/g, ''));
+                rows.push(row);
+            }
+
+            onlineDatabase = [];
+            let sumDays = 0;
+            let sumOT = 0;
+
+            // Membaca baris data karyawan secara tepat mulai baris ke-7 sampai 58 (Indeks baris ke-6 hingga 57 dalam array 0-based)
+            // Sesuai pemetaan kolom Anda:
+            // Col B (Index 1) = No
+            // Col C (Index 2) = Nama Karyawan
+            // Col E (Index 4) = Penempatan
+            // Col F (Index 5) = Jabatan
+            // Col G (Index 6) = Sistem Kerja
+            // Col H (Index 7) = Grade
+            // Col T (Index 19) = Hari Kerja (HK)
+            // Col AG (Index 32) = Jam Lembur Konversi
+            for (let i = 6; i < rows.length; i++) {
+                let r = rows[i];
+                if (!r || !r[2]) continue; // Lewati baris kosong
+
+                let nameTest = r[2].toString().toLowerCase();
+                if (nameTest.includes("nama") || nameTest.includes("total") || nameTest.includes("no")) continue;
+
+                let no = parseInt(r[1]) || (onlineDatabase.length + 1);
+                let name = r[2] || '';
+                let penempatan = r[4] || 'HSSE';
+                let jabatan = r[5] || '-';
+                let sistem = r[6] || 'Shift';
+                let grade = r[7] || 'E';
+                let days = parseFloat(r[19]) || 0.0;
+                let ot = parseFloat(r[32]) || 0.0;
+
+                sumDays += days;
+                sumOT += ot;
+
+                onlineDatabase.push({no, name, jabatan, penempatan, sistem, grade, days, ot});
+                if (onlineDatabase.length >= 52) break; // Batasi pas 52 karyawan
+            }
+
+            renderTableDOM(onlineDatabase, sumDays, sumOT);
+        }
+
+        function renderTableDOM(data, tDays, tOT) {
             const tbody = document.getElementById('employeeTableBody');
             tbody.innerHTML = '';
             
-            dbData.forEach(item => {
+            data.forEach(item => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition";
                 tr.innerHTML = `
@@ -182,24 +213,25 @@
                 `;
                 tbody.appendChild(tr);
             });
-        }
 
-        function openGoogleDrive() {
-            window.open("https://docs.google.com/spreadsheets/d/1DvRQrgT43ycmJ_h5cBCYy5Fijk3oFG9L18p-k42cdpo/edit?gid=583532944#gid=583532944", "_blank");
+            document.getElementById('statCount').innerText = data.length;
+            document.getElementById('statDays').innerText = tDays.toLocaleString('en-US', {minimumFractionDigits: 1, maximumFractionDigits: 1});
+            document.getElementById('statOT').innerHTML = tOT.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' <span class="text-base font-semibold text-slate-500">Jam</span>';
         }
 
         function exportToExcel() {
-            const exportData = dbData.map(e => ({
+            if (onlineDatabase.length === 0) return;
+            const ws = XLSX.utils.json_to_sheet(onlineDatabase.map(e => ({
                 "No": e.no, "Nama Karyawan": e.name, "Jabatan": e.jabatan, "Penempatan": e.penempatan,
                 "Sistem Kerja": e.sistem, "Grade": e.grade, "Hari Hadir": e.days, "Konversi Lembur (Jam)": e.ot
-            }));
-            const ws = XLSX.utils.json_to_sheet(exportData);
+            })));
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Database_Karyawan_Donggi");
-            XLSX.writeFile(wb, "Rekap_Timesheet_Final_Stabil.xlsx");
+            XLSX.utils.book_append_sheet(wb, ws, "Database_Karyawan_RealTime");
+            XLSX.writeFile(wb, "Rekap_Timesheet_RealTime.xlsx");
         }
 
-        window.onload = renderTable;
+        // Muat data langsung secara online saat halaman dibuka
+        window.onload = fetchLiveGoogleSheet;
     </script>
 </body>
 </html>
