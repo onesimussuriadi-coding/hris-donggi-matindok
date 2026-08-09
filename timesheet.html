@@ -2,96 +2,216 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Time Sheet & Absen</title>
+    <title>Dashboard Time Sheet & Absen - Input Mandiri</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-50 flex h-screen overflow-hidden">
 
     <!-- SIDEBAR -->
-    <aside class="w-64 bg-[#0B132B] text-white p-6 shrink-0">
-        <h1 class="text-lg font-bold mb-8">HRIS Portal</h1>
-        <nav class="space-y-4">
-            <div class="opacity-50">Dashboard Utama</div>
-            <div class="font-bold text-blue-400 border-l-4 border-blue-400 pl-4">Time Sheet & Absen</div>
-        </nav>
+    <aside class="w-64 bg-[#0B132B] text-white p-6 shrink-0 flex flex-col justify-between">
+        <div>
+            <h1 class="text-lg font-bold mb-2">HRIS Portal</h1>
+            <p class="text-xs text-slate-400 mb-8">Field Donggi Matindok</p>
+            <nav class="space-y-4">
+                <div class="opacity-50 text-sm">Dashboard Utama</div>
+                <div class="font-bold text-blue-400 border-l-4 border-blue-400 pl-4 text-sm">Time Sheet & Absen</div>
+            </nav>
+        </div>
+        <div class="text-xs text-slate-400">
+            <p class="font-bold text-white">Onesimus Suriadi</p>
+            <p>President Director</p>
+        </div>
     </aside>
 
-    <!-- KONTEN -->
+    <!-- KONTEN UTAMA -->
     <main class="flex-1 p-8 overflow-y-auto">
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold">Dashboard Time Sheet & Absen</h2>
-            <button onclick="fetchData()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">🔄 Update Live Data</button>
+            <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
+            <div class="flex gap-3">
+                <button onclick="bukaModalTambah()" class="bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-emerald-800 transition shadow">➕ Input Data Baru</button>
+                <button onclick="resetDataDefault()" class="bg-slate-200 text-slate-700 px-3 py-2 rounded-lg text-sm font-semibold hover:bg-slate-300 transition">Reset Default</button>
+            </div>
         </div>
 
         <!-- STATISTIK -->
         <div class="grid grid-cols-4 gap-4 mb-6">
-            <div class="bg-white p-4 rounded-xl border shadow-sm">
-                <p class="text-xs text-slate-500 uppercase">Rentang Tanggal</p>
-                <p class="font-bold">16 Jun - 15 Jul 2026</p>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-500 uppercase font-bold">Rentang Tanggal</p>
+                <p class="font-bold text-slate-800 mt-1">16 Jun - 15 Jul 2026</p>
             </div>
-            <div class="bg-white p-4 rounded-xl border shadow-sm">
-                <p class="text-xs text-slate-500 uppercase">Jam Kerja Shift</p>
-                <p class="font-bold text-emerald-700">07:00 s.d 07:00</p>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-500 uppercase font-bold">Jam Kerja Shift</p>
+                <p class="font-bold text-emerald-700 mt-1">07:00 s.d 07:00 (12 Jam)</p>
             </div>
-            <div class="bg-white p-4 rounded-xl border shadow-sm">
-                <p class="text-xs text-slate-500 uppercase">Jam Kerja Non Shift</p>
-                <p class="font-bold text-emerald-700">07:00 s.d 16:00</p>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-500 uppercase font-bold">Jam Kerja Non Shift</p>
+                <p class="font-bold text-emerald-700 mt-1">07:00 s.d 16:00 (9 Jam)</p>
             </div>
-            <div class="bg-white p-4 rounded-xl border shadow-sm">
-                <p class="text-xs text-slate-500 uppercase">Status Pengaturan</p>
-                <p class="font-bold text-emerald-700">✅ Akurat & Terpisah</p>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-500 uppercase font-bold">Status Sistem</p>
+                <p class="font-bold text-blue-700 mt-1">🟢 Input Langsung Aktif</p>
             </div>
         </div>
 
-        <!-- TABEL -->
-        <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
-            <table class="w-full text-left">
-                <thead class="bg-emerald-800 text-white text-xs uppercase">
+        <!-- TABEL DATA -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-emerald-800 text-white text-xs uppercase tracking-wider">
                     <tr>
-                        <th class="p-4">No</th>
+                        <th class="p-4 w-16 text-center">No</th>
                         <th class="p-4">Nama Pekerja</th>
-                        <th class="p-4">Jabatan & Sistem</th>
-                        <th class="p-4">Kehadiran (T)</th>
-                        <th class="p-4">Lembur (AG)</th>
-                        <th class="p-4">Aksi</th>
+                        <th class="p-4">Jabatan & Sistem Kerja</th>
+                        <th class="p-4 text-center">Kehadiran (Hari)</th>
+                        <th class="p-4 text-center">Total Lembur (Jam)</th>
+                        <th class="p-4 text-center">Aksi Kertas Kerja</th>
                     </tr>
                 </thead>
-                <tbody id="tabelData" class="divide-y divide-slate-100">
-                    <tr><td colspan="6" class="p-8 text-center text-slate-500">Memuat data dari Google Sheet...</td></tr>
+                <tbody id="tabelBody" class="divide-y divide-slate-100 text-sm">
+                    <!-- Data dimuat dinamis -->
                 </tbody>
             </table>
         </div>
     </main>
 
+    <!-- MODAL INPUT / EDIT -->
+    <div id="modalInput" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+        <div class="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl">
+            <h3 id="modalTitle" class="text-lg font-bold mb-4 text-slate-800">Edit Data Karyawan</h3>
+            <input type="hidden" id="editIndex">
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Nama Karyawan</label>
+                    <input type="text" id="inputNama" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Jabatan</label>
+                        <input type="text" id="inputJabatan" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Sistem Kerja</label>
+                        <select id="inputSistem" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                            <option value="Shift">Shift</option>
+                            <option value="Non Shift">Non Shift</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Kehadiran (Hari)</label>
+                        <input type="number" step="0.5" id="inputHari" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Jam Lembur (Jam)</label>
+                        <input type="number" step="0.5" id="inputLembur" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 mt-6">
+                <button onclick="tutupModal()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-semibold hover:bg-slate-200">Batal</button>
+                <button onclick="simpanData()" class="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800">Simpan Perubahan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT OPERASIONAL DASHBOARD -->
     <script>
-    async function fetchData() {
-        const id = "1DvRQrgT43ycmJ_h5cBCYy5Fijk3oFG9L18p-k42cdpo";
-        const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json`;
-        try {
-            const res = await fetch(url);
-            const text = await res.text();
-            const json = JSON.parse(text.substring(47, text.length - 2));
-            const rows = json.table.rows;
-            let html = "";
-            for(let i = 4; i < rows.length; i++) {
-                let r = rows[i].c;
-                if(r && r[1]) {
-                    html += `<tr class="hover:bg-slate-50">
-                        <td class="p-4">${r[1]?.v || ''}</td>
-                        <td class="p-4 font-bold">${r[2]?.v || ''}</td>
-                        <td class="p-4">${r[5]?.v || ''} <span class="text-xs bg-slate-100 px-2 py-1 rounded">${r[6]?.v || ''}</span></td>
-                        <td class="p-4 text-emerald-700 font-bold">${r[19]?.v || 0} Hari</td>
-                        <td class="p-4 text-blue-700 font-bold">${r[32]?.v || 0} Jam</td>
-                        <td class="p-4"><button class="bg-emerald-700 text-white px-3 py-1 rounded text-xs">Rekap & Rincian</button></td>
-                    </tr>`;
-                }
-            }
-            document.getElementById("tabelData").innerHTML = html;
-        } catch(e) {
-            document.getElementById("tabelData").innerHTML = "<tr><td colspan='6' class='p-8 text-center text-red-600 font-bold'>Gagal Sinkronisasi. Pastikan Google Sheet sudah di-Publish ke Web.</td></tr>";
+        // Data Default Karyawan (tersimpan di memori browser)
+        let defaultData = [
+            {no: 1, name: "Sujianto M. Batias", jabatan: "Driver Ambulance", sistem: "Shift", days: 19.0, ot: 102.50},
+            {no: 2, name: "Ansar Mansur", jabatan: "Pemuka FS", sistem: "Shift", days: 20.0, ot: 100.00},
+            {no: 3, name: "Harir A. Lako", jabatan: "Petugas FS", sistem: "Shift", days: 20.0, ot: 128.50},
+            {no: 4, name: "Ali Friansyah", jabatan: "Petugas FS", sistem: "Shift", days: 20.0, ot: 25.00},
+            {no: 5, name: "Fredrik D. Tinadji", jabatan: "Petugas FS", sistem: "Shift", days: 20.0, ot: 70.00}
+        ];
+
+        // Ambil data dari localStorage jika ada, jika tidak pakai default
+        let karyawanData = JSON.parse(localStorage.getItem('hris_karyawan_data')) || defaultData;
+
+        function renderTabel() {
+            const tbody = document.getElementById('tabelData');
+            tbody.innerHTML = '';
+
+            karyawanData.forEach((item, index) => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="p-4 text-center font-semibold text-slate-600">${index + 1}</td>
+                        <td class="p-4 font-bold text-slate-900">${item.name}</td>
+                        <td class="p-4 text-slate-700">${item.jabatan} <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded border border-slate-200 font-semibold ml-1">${item.sistem}</span></td>
+                        <td class="p-4 text-center font-bold text-emerald-700">${item.days.toFixed(1)} Hari</td>
+                        <td class="p-4 text-center font-bold text-blue-700">${item.ot.toFixed(2)} Jam</td>
+                        <td class="p-4 text-center">
+                            <button onclick="bukaModalEdit(${index})" class="bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800 transition shadow-sm">📝 Rekap & Edit</button>
+                        </td>
+                    </tr>
+                `;
+            });
         }
-    }
-    fetchData();
+
+        function bukaModalEdit(index) {
+            document.getElementById('modalTitle').innerText = "Edit Absen & Lembur Karyawan";
+            document.getElementById('editIndex').value = index;
+            document.getElementById('inputNama').value = karyawanData[index].name;
+            document.getElementById('inputJabatan').value = karyawanData[index].jabatan;
+            document.getElementById('inputSistem').value = karyawanData[index].sistem;
+            document.getElementById('inputHari').value = karyawanData[index].days;
+            document.getElementById('inputLembur').value = karyawanData[index].ot;
+            document.getElementById('modalInput').classList.remove('hidden');
+        }
+
+        function bukaModalTambah() {
+            document.getElementById('modalTitle').innerText = "Tambah Karyawan Baru";
+            document.getElementById('editIndex').value = "";
+            document.getElementById('inputNama').value = "";
+            document.getElementById('inputJabatan').value = "";
+            document.getElementById('inputSistem').value = "Shift";
+            document.getElementById('inputHari').value = "20";
+            document.getElementById('inputLembur').value = "0";
+            document.getElementById('modalInput').classList.remove('hidden');
+        }
+
+        function tutupModal() {
+            document.getElementById('modalInput').classList.add('hidden');
+        }
+
+        function simpanData() {
+            const index = document.getElementById('editIndex').value;
+            const name = document.getElementById('inputNama').value;
+            const jabatan = document.getElementById('inputJabatan').value;
+            const sistem = document.getElementById('inputSistem').value;
+            const days = parseFloat(document.getElementById('inputHari').value) || 0;
+            const ot = parseFloat(document.getElementById('inputLembur').value) || 0;
+
+            if(!name) {
+                alert("Nama karyawan wajib diisi!");
+                return;
+            }
+
+            if(index === "") {
+                // Tambah data baru
+                karyawanData.push({no: karyawanData.length + 1, name, jabatan, sistem, days, ot});
+            } else {
+                // Edit data lama
+                karyawanData[index] = {no: parseInt(index) + 1, name, jabatan, sistem, days, ot};
+            }
+
+            // Simpan permanen di browser
+            localStorage.setItem('hris_karyawan_data', JSON.stringify(karyawanData));
+            tutupModal();
+            renderTabel();
+        }
+
+        function resetDataDefault() {
+            if(confirm("Reset data kembali ke awal?")) {
+                localStorage.removeItem('hris_karyawan_data');
+                karyawanData = defaultData;
+                renderTabel();
+            }
+        }
+
+        window.onload = renderTabel;
     </script>
 </body>
 </html>
