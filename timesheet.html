@@ -76,10 +76,10 @@
                 <div class="px-6 py-4 bg-slate-50/50 border-b border-slate-200 flex justify-between items-center">
                     <div>
                         <h3 class="font-bold text-slate-800 text-sm">Rekapitulasi Kehadiran & Lembur Pegawai</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Sumber Data 100% Online &bull; Terhubung ke Google Spreadsheet</p>
+                        <p class="text-xs text-slate-500 mt-0.5">Sumber Data Online &bull; Terhubung ke Google Spreadsheet</p>
                     </div>
                     <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Live Online Google Sheet
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Live Online Google Sheet Aktif
                     </span>
                 </div>
 
@@ -98,7 +98,7 @@
                             </tr>
                         </thead>
                         <tbody id="employeeTableBody" class="divide-y divide-slate-200 text-sm">
-                            <tr><td colspan="8" class="px-6 py-8 text-center text-slate-400">Menghubungkan ke Google Spreadsheet secara real-time...</td></tr>
+                            <tr><td colspan="8" class="px-6 py-8 text-center text-slate-400">Menghubungkan ke Google Spreadsheet secara online...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -106,17 +106,17 @@
         </main>
     </div>
 
-    <!-- Script Pure Online Real-Time Fetch (B5 s.d. B56) -->
+    <!-- Script Menggunakan Link Ekspor CSV Publik Google Sheets -->
     <script>
         let liveOnlineData = [];
 
         async function fetchLiveGoogleSheet() {
-            const spreadsheetId = "1DvRQrgT43ycmJ_h5cBCYy5Fijk3oFG9L18p-k42cdpo";
-            const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv`;
+            // Menggunakan link publik CSV Google Sheets yang stabil dan tembus akses web
+            const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQja5eB7v4Fa1YYnobGqUkvPZfSSb0nGZ0zLi_8ttbtIPkfC2QTkcnlPkUMgl2y0OI6-Z5MkbBZaAwM/pub?gid=277496189&single=true&output=csv";
 
             try {
                 const response = await fetch(csvUrl);
-                if (!response.ok) throw new Error("Gagal mengambil data online");
+                if (!response.ok) throw new Error("Gagal mengambil data dari Google Sheet");
                 const csvText = await response.text();
                 parseLiveCSV(csvText);
             } catch (error) {
@@ -158,19 +158,10 @@
             let totalDaysSum = 0;
             let totalOTSum = 0;
 
-            // Membaca baris 5 sampai 56 secara mutlak (Indeks array 4 sampai 55)
-            // Sesuai pemetaan cell:
-            // Col B (Index 1) = No
-            // Col C (Index 2) = Nama Karyawan
-            // Col E (Index 4) = Divisi
-            // Col F (Index 5) = Jabatan
-            // Col G (Index 6) = Sistem Kerja
-            // Col H (Index 7) = Grade
-            // Col T (Index 19) = Hari Kerja (HK)
-            // Col AG (Index 32) = Jam Lembur Konversi
+            // Membaca baris 5 sampai 56 secara mutlak sesuai instruksi Cell (Indeks array ke-4 hingga 55)
             for (let i = 4; i <= 55 && i < rows.length; i++) {
                 let r = rows[i];
-                if (!r || !r[2]) continue; // Lewati jika baris kosong atau tidak ada nama
+                if (!r || !r[2]) continue; // Lewati baris kosong
 
                 let no = parseInt(r[1]) || (liveOnlineData.length + 1);
                 let name = r[2] || '';
