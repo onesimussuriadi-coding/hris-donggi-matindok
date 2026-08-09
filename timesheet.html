@@ -30,7 +30,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Kontrol Manual Jenis Hari & Rumus Depnaker Sesuai Standar Perusahaan</p>
+                <p class="text-xs text-slate-500 mt-0.5">Kontrol Manual Jenis Hari (Hari Biasa / Hari Libur) & Jam Normal Akurat</p>
             </div>
             <div class="flex gap-3">
                 <button onclick="bukaModalAbsen('Shift')" class="bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow hover:bg-emerald-800 transition flex items-center gap-2">
@@ -467,13 +467,12 @@
                             // Jika dipilih hari libur / tanggal merah, seluruh jam kerja dihitung lembur penuh
                             jamLemburAktual = totalJamKerja;
                         } else {
-                            // Hari kerja biasa: Jam normal 07:00 - 16:00 (8 jam). Tepat di rentang itu = 0 lembur.
-                            if (jamIn <= 7 && jamOut > 16) {
-                                jamLemburAktual = jamOut - 16;
-                            } else if (totalJamKerja > 8) {
-                                jamLemburAktual = totalJamKerja - 8;
+                            // KOREKSI RUMUS: Kurangi 1 jam istirahat untuk Non Shift (07:00 - 16:00 = 9 jam total, dikurangi 1 jam istirahat = 8 jam kerja bersih)
+                            let durasiKerjaBersih = totalJamKerja - 1;
+                            if (durasiKerjaBersih > 8) {
+                                jamLemburAktual = durasiKerjaBersih - 8;
                             } else {
-                                jamLemburAktual = 0;
+                                jamLemburAktual = 0; // Tepat 8 jam atau kurang = 0 lembur
                             }
                         }
                         karyawan.makanSiang += 1;
