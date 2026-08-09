@@ -323,6 +323,28 @@
             otKonversi: karyawan.otKonversi,
             catatan: karyawan.catatanStatus
         };
+<<<<<<< HEAD
+
+        // MENGGUNAKAN METODE FORM URLENCODED AGAR LOLOS DARI BLOKIR CORS BROWSER
+        fetch(CLOUD_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(payload).toString()
+        }).then(() => {
+            alert(`SUKSES! Data tgl ${tgl} ${bln} ${thn} untuk ${karyawan.name} telah dikirim ke Google Sheets.`);
+            renderTabel();
+            tutupModal();
+        }).catch((error) => {
+            console.error('Kendala konksi:', error);
+            alert('Gagal terhubung ke Google Cloud.');
+        });
+    }
+}
+=======
+>>>>>>> b53541767253ee0e931b25cce7ec1d7be45b7699
 
         // MENGGUNAKAN METODE FORM URLENCODED AGAR LOLOS DARI BLOKIR CORS BROWSER
         fetch(CLOUD_URL, {
@@ -342,7 +364,6 @@
         });
     }
 }
-
         window.onload = renderTabel;
     </script>
 </body>
