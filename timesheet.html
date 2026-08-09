@@ -90,10 +90,10 @@
                 <div class="px-6 py-4 bg-slate-50/50 border-b border-slate-200 flex justify-between items-center">
                     <div>
                         <h3 class="font-bold text-slate-800 text-sm">Rekapitulasi Kehadiran & Lembur Pegawai</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Sumber Data: Google Drive &bull; Tab: <strong>Database Karyawan</strong> (No: Col B, Nama: Col C, Divisi: Col E, Jabatan: Col F, Sistem: Col G, HK: Col T, Lembur: Col AG)</p>
+                        <p class="text-xs text-slate-500 mt-0.5">Sumber Data: Google Drive &bull; Tab: <strong>Database Karyawan</strong> (No: Col B, Nama: Col C, Jabatan: Col F, Divisi: Col E, Sistem: Col G, HK: Col T, Lembur: Col AG)</p>
                     </div>
                     <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Pemetaan Kolom Presisi Aktif
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Sinkronisasi Sempurna Kolom AG
                     </span>
                 </div>
 
@@ -120,7 +120,7 @@
         </main>
     </div>
 
-    <!-- Script Pemetaan Cell Persis Sesuai Instruksi Screenshot -->
+    <!-- Script Data Penuh (No 1 s.d 52 Sesuai Cell T dan AG Spreadsheet) -->
     <script>
         const dbData = [
             {no: 1, name: "Sujianto M. Batias", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 19.0, ot: 65.50},
@@ -139,37 +139,36 @@
             {no: 14, name: "Mustamar Dg Magangka", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 18.0, ot: 44.50},
             {no: 15, name: "Akmal (B)", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 200.00},
             {no: 16, name: "Rizal Tamoreka", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 20.0, ot: 82.00},
-            // Pemetaan spesifik sel Cell B5:B56, C, F, E, G, T, AG
-            {no: 17, name: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", penempatan: "SCM", sistem: "Non Shift", grade: "F", days: 20.0, ot: 0.00},
-            {no: 18, name: "Marjan Karim", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem: "Non Shift", grade: "E", days: 17.0, ot: 0.00},
-            {no: 19, name: "Kasman", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem: "Non Shift", grade: "E", days: 19.0, ot: 60.00},
-            {no: 20, name: "Lukman Tasakka", jabatan: "Pemuka Ops. Alat Berat", penempatan: "SCM", sistem: "Non Shift", grade: "F", days: 20.0, ot: 100.50},
-            {no: 21, name: "Nengah Darsana", jabatan: "Pemuka Ops. Alat Berat", penempatan: "SCM", sistem: "Non Shift", grade: "F", days: 20.0, ot: 50.50},
-            {no: 22, name: "I Gusti Ngurah Baliarta", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem: "Non Shift", grade: "E", days: 20.0, ot: 187.00},
-            {no: 23, name: "Irpan Parenden", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem: "Non Shift", grade: "E", days: 19.0, ot: 50.00},
-            {no: 24, name: "Sunita Ayu P.", jabatan: "Petugas Admin II", penempatan: "Legal & Relation", sistem: "Non Shift", grade: "E", days: 19.0, ot: 125.00},
-            {no: 25, name: "Dewi Setiawati M Dg M", jabatan: "Petugas Admin III", penempatan: "RAM", sistem: "Non Shift", grade: "F", days: 20.0, ot: 50.00},
-            {no: 26, name: "Marini Astari", jabatan: "Petugas Admin III", penempatan: "HR - GS", sistem: "Non Shift", grade: "F", days: 19.0, ot: 91.50},
-            {no: 27, name: "Ali Muhtar M. Amin", jabatan: "Supir Ambulance", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 20.0, ot: 174.00},
-            {no: 28, name: "Agus Rudiyanto", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 20.0, ot: 0.00},
-            {no: 29, name: "I Gede Ariana", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 101.00},
-            {no: 30, name: "I Putu Adnyana Wijaya", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 141.00},
-            {no: 31, name: "Mursalun Lasuru", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 25.00},
-            {no: 32, name: "Subandi", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 85.00},
-            {no: 33, name: "Budi Santoso", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 183.00},
-            {no: 34, name: "I Komang Santika", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 25.00},
-            {no: 35, name: "Indra Natalianto Patasik", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 100.00},
-            {no: 36, name: "Kd Wiyad Nyana", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 35.00},
-            {no: 37, name: "I Nengah Rudi Artika", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 21.0, ot: 144.00},
-            {no: 38, name: "Sukardi Jalisingi", jabatan: "Supir Ambulance", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 20.0, ot: 210.00},
-            {no: 39, name: "Yotam", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 19.0, ot: 124.50},
-            {no: 40, name: "Thamar Thalib Mbau", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 147.00},
-            {no: 41, name: "Arie Kurniawan", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 19.0, ot: 121.00},
-            {no: 42, name: "Eko Wiyono", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 18.0, ot: 121.00},
-            {no: 43, name: "Fajriadi", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 19.0, ot: 121.00},
-            {no: 44, name: "Jumalik H. Latungka", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 21.0, ot: 162.00},
-            {no: 45, name: "Randianto", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 21.0, ot: 162.50},
-            {no: 46, name: "Saiful M. Zakar", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 21.0, ot: 262.00},
+            {no: 17, name: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", penempatan: "SCM", sistem: "Non Shift", grade: "F", days: 21.0, ot: 144.00},
+            {no: 18, name: "Marjan Karim", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem: "Non Shift", grade: "E", days: 20.0, ot: 210.00},
+            {no: 19, name: "Kasman", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem: "Non Shift", grade: "E", days: 19.0, ot: 124.50},
+            {no: 20, name: "Lukman Tasakka", jabatan: "Pemuka Ops. Alat Berat", penempatan: "SCM", sistem: "Non Shift", grade: "F", days: 20.0, ot: 147.00},
+            {no: 21, name: "Nengah Darsana", jabatan: "Pemuka Ops. Alat Berat", penempatan: "SCM", sistem: "Non Shift", grade: "F", days: 19.0, ot: 121.00},
+            {no: 22, name: "I Gusti Ngurah Baliarta", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem: "Non Shift", grade: "E", days: 18.0, ot: 121.00},
+            {no: 23, name: "Irpan Parenden", jabatan: "Petugas Admin II Warehouse", penempatan: "SCM", sistem: "Non Shift", grade: "E", days: 19.0, ot: 121.00},
+            {no: 24, name: "Sunita Ayu P.", jabatan: "Petugas Admin II", penempatan: "Legal & Relation", sistem: "Non Shift", grade: "E", days: 21.0, ot: 162.00},
+            {no: 25, name: "Dewi Setiawati M Dg M", jabatan: "Petugas Admin III", penempatan: "RAM", sistem: "Non Shift", grade: "F", days: 21.0, ot: 162.50},
+            {no: 26, name: "Marini Astari", jabatan: "Petugas Admin III", penempatan: "HR - GS", sistem: "Non Shift", grade: "F", days: 21.0, ot: 262.00},
+            {no: 27, name: "Ali Muhtar M. Amin", jabatan: "Supir Ambulance", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 20.0, ot: 0.00},
+            {no: 28, name: "Agus Rudiyanto", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 17.0, ot: 0.00},
+            {no: 29, name: "I Gede Ariana", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 19.0, ot: 60.00},
+            {no: 30, name: "I Putu Adnyana Wijaya", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 100.50},
+            {no: 31, name: "Mursalun Lasuru", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 50.50},
+            {no: 32, name: "Subandi", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 187.00},
+            {no: 33, name: "Budi Santoso", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 19.0, ot: 50.00},
+            {no: 34, name: "I Komang Santika", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 19.0, ot: 125.00},
+            {no: 35, name: "Indra Natalianto Patasik", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 50.00},
+            {no: 36, name: "Kd Wiyad Nyana", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 19.0, ot: 91.50},
+            {no: 37, name: "I Nengah Rudi Artika", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 174.00},
+            {no: 38, name: "Sukardi Jalisingi", jabatan: "Supir Ambulance", penempatan: "HSSE", sistem: "Shift", grade: "D", days: 20.0, ot: 0.00},
+            {no: 39, name: "Yotam", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 101.00},
+            {no: 40, name: "Thamar Thalib Mbau", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 141.00},
+            {no: 41, name: "Arie Kurniawan", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 25.00},
+            {no: 42, name: "Eko Wiyono", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 85.00},
+            {no: 43, name: "Fajriadi", jabatan: "Pemuka FS", penempatan: "HSSE", sistem: "Shift", grade: "F", days: 20.0, ot: 183.00},
+            {no: 44, name: "Jumalik H. Latungka", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 25.00},
+            {no: 45, name: "Randianto", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 100.00},
+            {no: 46, name: "Saiful M. Zakar", jabatan: "Petugas FS", penempatan: "HSSE", sistem: "Shift", grade: "E", days: 20.0, ot: 35.00},
             {no: 47, name: "I Nyoman Suwitra", jabatan: "Petugas Gudang (BBM)", penempatan: "SCM", sistem: "Non Shift", grade: "D", days: 21.0, ot: 121.00},
             {no: 48, name: "I Putu Muryanto", jabatan: "Petugas Admin III", penempatan: "Operation", sistem: "Non Shift", grade: "F", days: 21.0, ot: 382.50},
             {no: 49, name: "Siti Aisyah Dg Masese", jabatan: "Sekretaris FM", penempatan: "Field Manager", sistem: "Non Shift", grade: "F", days: 18.0, ot: 343.50},
