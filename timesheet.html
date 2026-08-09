@@ -27,7 +27,7 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 font-sans flex h-screen overflow-hidden" onclick="closeAllDropdowns(event)">
+<body class="bg-gray-100 font-sans flex h-screen overflow-hidden">
 
     <!-- Sidebar Navigasi Kiri -->
     <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between p-6 no-print">
@@ -153,7 +153,7 @@
         </div>
     </div>
 
-    <!-- Skrip Proses Data 52 Karyawan Sesuai Acuan Blok Kolom Masing-Masing -->
+    <!-- Skrip Proses Data 52 Karyawan -->
     <script>
         let timesheetData = [
             { no: 1, nama: "Sujianto M. Batias", jabatan: "Driver Ambulance", penempatan: "HSSE", sistem_kerja: "Shift", grade: "D", kehadiranDays: 19, lemburKonversi: 65.50 },
@@ -289,7 +289,7 @@
         }
 
         function closeTimesheetModal() {
-            document.getElementById('timesheetModal'].classList.add('hidden');
+            document.getElementById('timesheetModal').classList.add('hidden');
         }
 
         function downloadTimesheetPDF() {
