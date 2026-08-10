@@ -471,7 +471,6 @@ function simpanAbsenHarian() {
                 }
                 karyawan.makanSiang += 1; // Makan siang rutin hanya untuk Non-Shift
             } else {
-                // Untuk pekerja SHIFT: Hanya hitung lembur jika > 12 jam
                 if(totalJamKerja > 12) {
                     jamLemburAktual = totalJamKerja - 12;
                 }
@@ -491,16 +490,24 @@ function simpanAbsenHarian() {
 
         if(jamLemburAktual < 0) jamLemburAktual = 0;
 
-        // --- VALIDASI TUNJANGAN MAKAN LEMBUR (HANYA JIKA ADA LEMBUR) ---
+        // --- RUMUS UNIVERSAL TUNJANGAN MAKAN LEMBUR (BERLAKU SHIFT & NON-SHIFT) ---
         let tambahMakanPagi = 0;
         let tambahMakanSiang = 0;
         let tambahMakanMalam = 0;
 
-        // Tunjangan makan lembur HANYA diberikan jika lembur aktual > 0 atau status off_masuk
-        if (jamLemburAktual > 0 || status === 'off_masuk') {
-            if (jamIn < 5 && status !== 'off_murni') { tambahMakanPagi = 1; }
-            if (jenisHari === 'libur' && jamLemburAktual >= 5 && jamIn < 11 && (jamOut > 13 || jamOut < jamIn)) { tambahMakanSiang = 1; }
-            if (jamLemburAktual >= 5 && (jamOut > 21 || (jamIn <= 19 && jamOut >= 21) || jamOut < jamIn)) { tambahMakanMalam = 1; }
+        // 1. MAKAN PAGI: Masuk 2 jam sebelum jam kerja / sebelum pukul 05:00
+        if (jamIn < 5 && status !== 'off_murni') {
+            tambahMakanPagi = 1;
+        }
+
+        // 2. MAKAN SIANG: Hari libur/minggu, lembur > 5 jam, masuk sebelum 11:00 & pulang sesudah 13:00
+        if (jenisHari === 'libur' && jamLemburAktual > 5 && jamIn < 11 && (jamOut > 13 || jamOut < jamIn)) {
+            tambahMakanSiang = 1;
+        }
+
+        // 3. MAKAN MALAM: Lembur > 5 jam dan melewati/mencakup rentang pukul 19:00 s.d 21:00
+        if (jamLemburAktual > 5 && (jamOut > 21 || (jamIn <= 19 && jamOut >= 21) || jamOut < jamIn)) {
+            tambahMakanMalam = 1;
         }
 
         karyawan.makanPagi += tambahMakanPagi;
