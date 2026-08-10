@@ -469,12 +469,12 @@ function simpanAbsenHarian() {
                     let durasiKerjaBersih = totalJamKerja - 1;
                     jamLemburAktual = (durasiKerjaBersih > 8) ? (durasiKerjaBersih - 8) : 0;
                 }
-                karyawan.makanSiang += 1;
+                karyawan.makanSiang += 1; // Makan siang rutin hanya untuk Non-Shift
             } else {
+                // Untuk pekerja SHIFT: Hanya hitung lembur jika > 12 jam
                 if(totalJamKerja > 12) {
                     jamLemburAktual = totalJamKerja - 12;
                 }
-                karyawan.makanMalam += 1;
             }
         } else if(status === 'off_masuk') {
             if(karyawan.sistem === 'Non Shift') {
@@ -491,24 +491,16 @@ function simpanAbsenHarian() {
 
         if(jamLemburAktual < 0) jamLemburAktual = 0;
 
-        // --- VALIDASI KETAT TUNJANGAN MAKAN LEMBUR (SESUAI KLAUSUL RIIL) ---
+        // --- VALIDASI TUNJANGAN MAKAN LEMBUR (HANYA JIKA ADA LEMBUR) ---
         let tambahMakanPagi = 0;
         let tambahMakanSiang = 0;
         let tambahMakanMalam = 0;
 
-        // 1. Makan Pagi: Masuk sebelum jam 05:00 pagi (jamIn < 5)
-        if (jamIn < 5 && status !== 'off_murni') {
-            tambahMakanPagi = 1;
-        }
-
-        // 2. Makan Siang: Hari libur/minggu, lembur > 5 jam, mulai sebelum 11:00 (jamIn < 11) & selesai sesudah 13:00 (jamOut > 13 atau lintas malam)
-        if (jenisHari === 'libur' && totalJamKerja > 5 && jamIn < 11 && (jamOut > 13 || jamOut < jamIn)) {
-            tambahMakanSiang = 1;
-        }
-
-        // 3. Makan Malam: Lembur > 5 jam dan tidak ada kesempatan makan antara 19:00 - 21:00 (melewati/mencakup rentang tersebut)
-        if (totalJamKerja > 5 && (jamOut > 21 || (jamIn <= 19 && jamOut >= 21) || jamOut < jamIn)) {
-            tambahMakanMalam = 1;
+        // Tunjangan makan lembur HANYA diberikan jika lembur aktual > 0 atau status off_masuk
+        if (jamLemburAktual > 0 || status === 'off_masuk') {
+            if (jamIn < 5 && status !== 'off_murni') { tambahMakanPagi = 1; }
+            if (jenisHari === 'libur' && jamLemburAktual >= 5 && jamIn < 11 && (jamOut > 13 || jamOut < jamIn)) { tambahMakanSiang = 1; }
+            if (jamLemburAktual >= 5 && (jamOut > 21 || (jamIn <= 19 && jamOut >= 21) || jamOut < jamIn)) { tambahMakanMalam = 1; }
         }
 
         karyawan.makanPagi += tambahMakanPagi;
