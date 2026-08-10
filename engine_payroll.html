@@ -48,8 +48,8 @@
                 <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
                     <select id="filterShift" onchange="renderPayrollTable()" class="px-3 py-2.5 text-xs border rounded-xl bg-slate-50 text-slate-600 focus:outline-none">
                         <option value="">Semua Sistem (52 Karyawan)</option>
-                        <option value="Shift">Shift (Sujianto dkk)</option>
-                        <option value="Non Shift">Non Shift (Arianto dkk)</option>
+                        <option value="Shift">Shift</option>
+                        <option value="Non Shift">Non Shift</option>
                     </select>
                     <input type="text" id="searchPayroll" placeholder="Cari nama karyawan..." class="px-3 py-2.5 text-xs border rounded-xl focus:outline-none w-56">
                 </div>
@@ -84,7 +84,7 @@
                             <th class="p-3 text-center">Gaji Bruto (I+II)</th>
                             <th class="p-3 text-center">Potongan Resmi (III)</th>
                             <th class="p-3 text-center">Netto (THP)</th>
-                            <th class="p-3 text-center">Aksi Slip</th>
+                            <th class="p-3 text-center">Aksi / Pengaturan</th>
                         </tr>
                     </thead>
                     <tbody id="payrollTableBody" class="divide-y divide-slate-100 text-slate-700 text-xs">
@@ -96,6 +96,45 @@
         </div>
 
     </main>
+
+    <!-- MODAL INPUT / EDIT GAJI & TUNJANGAN -->
+    <div id="modalEditGaji" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+        <div class="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl">
+            <h3 id="modalEditTitle" class="text-lg font-bold mb-1 text-slate-800">Atur Komponen Gaji</h3>
+            <p class="text-xs text-slate-500 mb-4">Sesuaikan Upah Pokok, TAUP, dan Tunjangan khusus untuk karyawan ini.</p>
+            
+            <input type="hidden" id="editKaryawanNo">
+
+            <div class="space-y-3">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Upah Pokok (IDR)</label>
+                        <input type="number" id="inputUpahPokok" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">TAUP / Tunjangan Tetap (IDR)</label>
+                        <input type="number" id="inputTaup" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none font-bold">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Nominal Tunjangan Kehadiran / Hari</label>
+                        <input type="number" id="inputTunjanganHadirNominal" value="30000" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Tunjangan Uang Makan / Ekstra</label>
+                        <input type="number" id="inputUangMakan" value="25000" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 mt-6">
+                <button onclick="tutupModalEdit()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-semibold hover:bg-slate-200">Batal</button>
+                <button onclick="simpanPengaturanGaji()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700">Simpan Perubahan</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         function muatDataPayroll() {
@@ -126,30 +165,33 @@
             let sumNetto = 0;
 
             filtered.forEach((emp) => {
-                // Simulasi nilai berdasarkan standar slip gaji PT Sentral Sari Jaya
-                let upahPokok = 2458160;
-                let taup = 819387;
-                let upahTetap = upahPokok + taup; // Rp 3.277.547
+                // Ambil nilai kustom jika sudah pernah diatur, atau gunakan default standar
+                let upahPokok = emp.customUpahPokok !== undefined ? emp.customUpahPokok : 2458160;
+                let taup = emp.customTaup !== undefined ? emp.customTaup : 819387;
+                let upahTetap = upahPokok + taup; 
 
                 let upahTidakTetap = 0;
+                let hkVal = emp.hk || (emp.sistem === 'Shift' ? 19 : 20);
+                let tKehadiranNominal = emp.customTunjanganHadir || 30000;
+
                 if (emp.sistem === 'Shift') {
-                    let tunjanganHadir = (emp.hk || 19) * 30000;
+                    let tunjanganHadir = hkVal * tKehadiranNominal;
                     let premiShift = 485948;
                     let kjk = 2699714;
                     let makanLembur = 75000;
                     let upahLembur = (emp.otKonversi || 65.5) * 18945;
                     let extraFood = 250000;
-                    upahTidakTetap = tunjanganHadir + premiShift + kjk + makanLembur + upahLembur + extraFood; // ± Rp 5.321.583
+                    upahTidakTetap = tunjanganHadir + premiShift + kjk + makanLembur + upahLembur + extraFood;
                 } else {
-                    let tunjanganHadir = (emp.hk || 20) * 30000;
+                    let tunjanganHadir = hkVal * tKehadiranNominal;
                     let lemburWeekend = 2500000;
-                    upahTidakTetap = tunjanganHadir + lemburWeekend; // Rp 3.100.000
+                    upahTidakTetap = tunjanganHadir + lemburWeekend;
                 }
 
                 let gajiBruto = upahTetap + upahTidakTetap;
 
                 // Potongan Resmi
-                let jht = upahTetap * 0.02; // Rp 63.952
+                let jht = upahTetappot = upahTetap * 0.02; // JHT 2%
                 let jp = 31976;
                 let bpjsKes = 31976;
                 let pph21 = emp.sistem === 'Shift' ? 89745 : 95000;
@@ -174,10 +216,9 @@
                     <td class="p-3 text-center font-bold text-slate-900">Rp ${Math.round(gajiBruto).toLocaleString('id-ID')}</td>
                     <td class="p-3 text-center font-semibold text-rose-600">Rp ${Math.round(totalPotongan).toLocaleString('id-ID')}</td>
                     <td class="p-3 text-center font-extrabold text-blue-900 bg-slate-50/50">Rp ${Math.round(netto).toLocaleString('id-ID')}</td>
-                    <td class="p-3 text-center">
-                        <button onclick="bukaSlipGaji('${emp.name}', '${emp.sistem}', ${gajiBruto}, ${totalPotongan}, ${netto})" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold transition flex items-center justify-center gap-1 mx-auto shadow-sm">
-                            <span>📄</span> Slip Gaji
-                        </button>
+                    <td class="p-3 text-center space-x-1">
+                        <button onclick="bukaModalEdit(${emp.no})" class="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow-sm">⚙️ Atur Gaji</button>
+                        <button onclick="bukaSlipGaji('${emp.name}', '${emp.sistem}', ${gajiBruto}, ${totalPotongan}, ${netto})" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold shadow-sm">📄 Slip</button>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -185,6 +226,44 @@
 
             document.getElementById('statTotalBruto').innerText = `Rp ${Math.round(sumBruto).toLocaleString('id-ID')}`;
             document.getElementById('statTotalNetto').innerText = `Rp ${Math.round(sumNetto).toLocaleString('id-ID')}`;
+        }
+
+        function bukaModalEdit(noKaryawan) {
+            let data = muatDataPayroll();
+            let emp = data.find(k => k.no === noKaryawan);
+            if (!emp) return;
+
+            document.getElementById('editKaryawanNo').value = emp.no;
+            document.getElementById('modalEditTitle').innerText = `Atur Gaji: ${emp.name}`;
+            document.getElementById('inputUpahPokok').value = emp.customUpahPokok !== undefined ? emp.customUpahPokok : 2458160;
+            document.getElementById('inputTaup').value = emp.customTaup !== undefined ? emp.customTaup : 819387;
+            document.getElementById('inputTunjanganHadirNominal').value = emp.customTunjanganHadir || 30000;
+
+            document.getElementById('modalEditGaji').classList.remove('hidden');
+        }
+
+        function tutupModalEdit() {
+            document.getElementById('modalEditGaji').classList.add('hidden');
+        }
+
+        function simpanPengaturanGaji() {
+            let noKaryawan = parseInt(document.getElementById('editKaryawanNo').value);
+            let p_pokok = parseFloat(document.getElementById('inputUpahPokok').value) || 0;
+            let p_taup = parseFloat(document.getElementById('inputTaup').value) || 0;
+            let p_tunj_hadir = parseFloat(document.getElementById('inputTunjanganHadirNominal').value) || 30000;
+
+            let data = muatDataPayroll();
+            let emp = data.find(k => k.no === noKaryawan);
+            if (emp) {
+                emp.customUpahPokok = p_pokok;
+                emp.customTaup = p_taup;
+                emp.customTunjanganHadir = p_tunj_hadir;
+
+                localStorage.setItem('donggi_timesheet_data', JSON.stringify(data));
+                tutupModalEdit();
+                renderPayrollTable();
+                alert(`Pengaturan Gaji untuk ${emp.name} berhasil disimpan dan diperbarui!`);
+            }
         }
 
         function bukaSlipGaji(nama, sistem, bruto, potongan, netto) {
