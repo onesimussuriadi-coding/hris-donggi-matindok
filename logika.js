@@ -241,6 +241,11 @@ function printHistori() {
     setTimeout(() => { jendelaCetak.print(); jendelaCetak.close(); }, 500);
 }
 
+// --- TAMBAHAN FITUR: DOWNLOAD PDF LANGSUNG DARI MODAL HISTORI ---
+function downloadPDFHistori() {
+    printHistori();
+}
+
 function downloadCSVHistori() {
     let karyawan = masterKaryawan.find(k => k.no === activeKaryawanNo);
     if(!karyawan || karyawan.historiAbsen.length === 0) {
@@ -337,8 +342,12 @@ function bukaModalAbsen(sistemKerja) {
 
     document.getElementById('modalTitle').innerText = `Input Absen Harian (${sistemKerja})`;
     
-    const today = new Date();
-    document.getElementById('inputTanggal').value = today.getDate();
+    // Jika belum ada nilai tanggal tersimpan, gunakan hari ini
+    if (!window.currentInputTanggal) {
+        const today = new Date();
+        window.currentInputTanggal = today.getDate();
+    }
+    document.getElementById('inputTanggal').value = window.currentInputTanggal;
     
     const daftarBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
     document.getElementById('inputBulan').value = lastSelectedBulan || daftarBulan[today.getMonth()];
@@ -405,10 +414,13 @@ function tutupModal() {
 }
 
 function hitungKonversiDepnaker(jamAktual, jenisHari) {
-    if (jamAktual <= 1) {
-        return jamAktual * 1.5;
-    } else if (jenisHari === 'biasa') {
-        return 1.5 + ((jamAktual - 1) * 2.0);
+    if (jamAktual <= 0) return 0;
+    if (jenisHari === 'biasa') {
+        if (jamAktual <= 1) {
+            return jamAktual * 1.5;
+        } else {
+            return 1.5 + ((jamAktual - 1) * 2.0);
+        }
     } else {
         if (jamAktual <= 7) {
             return jamAktual * 2.0;
@@ -491,22 +503,17 @@ function simpanAbsenHarian() {
 
         if(jamLemburAktual < 0) jamLemburAktual = 0;
 
-        // --- VALIDASI KETAT TUNJANGAN MAKAN LEMBUR (SESUAI KLAUSUL RIIL) ---
+        // --- ATURAN KETAT TUNJANGAN MAKAN LEMBUR ---
         let tambahMakanPagi = 0;
         let tambahMakanSiang = 0;
         let tambahMakanMalam = 0;
 
-        // 1. Makan Pagi: Masuk sebelum jam 05:00 pagi (jamIn < 5)
         if (jamIn < 5 && status !== 'off_murni') {
             tambahMakanPagi = 1;
         }
-
-        // 2. Makan Siang: Hari libur/minggu, lembur > 5 jam, mulai sebelum 11:00 (jamIn < 11) & selesai sesudah 13:00 (jamOut > 13 atau lintas malam)
         if (jenisHari === 'libur' && totalJamKerja > 5 && jamIn < 11 && (jamOut > 13 || jamOut < jamIn)) {
             tambahMakanSiang = 1;
         }
-
-        // 3. Makan Malam: Lembur > 5 jam dan tidak ada kesempatan makan antara 19:00 - 21:00 (melewati/mencakup rentang tersebut)
         if (totalJamKerja > 5 && (jamOut > 21 || (jamIn <= 19 && jamOut >= 21) || jamOut < jamIn)) {
             tambahMakanMalam = 1;
         }
@@ -514,7 +521,7 @@ function simpanAbsenHarian() {
         karyawan.makanPagi += tambahMakanPagi;
         karyawan.makanSiang += tambahMakanSiang;
         karyawan.makanMalam += tambahMakanMalam;
-        // -----------------------------------------------------------------
+        // ------------------------------------------
 
         let jenisHariSimpan = (status === 'off_murni') ? 'NON' : (jenisHari === 'libur' ? 'Libur/Merah' : 'Biasa');
         if (status !== 'off_murni') {
@@ -562,8 +569,13 @@ function simpanAbsenHarian() {
             body: new URLSearchParams(payload).toString()
         }).then(() => {
             alert(`SUKSES! Data tgl ${tanggalStr} untuk ${karyawan.name} telah disimpan.`);
+            
+            // FITUR AUTO-INCREMENT TANGGAL (+1 OTOMATIS)
+            window.currentInputTanggal = tgl + 1;
+            if(window.currentInputTanggal > 31) window.currentInputTanggal = 31;
+            document.getElementById('inputTanggal').value = window.currentInputTanggal;
+
             renderTabel();
-            tutupModal();
         }).catch((error) => {
             console.error('Koneksi:', error);
             alert('Gagal terhubung ke Cloud.');
@@ -573,8 +585,7 @@ function simpanAbsenHarian() {
 
 window.onload = renderTabel;
 
-// --- TAMBAHAN FITUR REKAPITULASI GABUNGAN (PDF & EXCEL RAPI) ---
-
+// --- REKAPITULASI GABUNGAN (PDF & EXCEL RAPI) ---
 function cetakRekapitulasiGabunganPDF() {
     let jendelaCetak = window.open('', '', 'height=700,width=1000');
     jendelaCetak.document.write('<html><head><title>Rekapitulasi Absensi & Lembur Gabungan - Field Donggi Matindok</title>');
