@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>HRIS Portal - Engine Payroll</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-50 flex h-screen overflow-hidden font-sans">
+
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-[#0B132B] text-white p-6 shrink-0 flex flex-col justify-between">
+        <div>
+            <h1 class="text-lg font-bold mb-1">HRIS Portal</h1>
+            <p class="text-xs text-slate-400 mb-8">Field Donggi Matindok</p>
+            <nav class="space-y-3">
+                <a href="index.html" class="block px-4 py-2 rounded-xl text-sm text-slate-300 hover:bg-slate-800 transition">📊 Dashboard Utama</a>
+                <a href="master_karyawan.html" class="block px-4 py-2 rounded-xl text-sm text-slate-300 hover:bg-slate-800 transition">👥 Master Karyawan</a>
+                <a href="timesheet.html" class="block px-4 py-2 rounded-xl text-sm text-slate-300 hover:bg-slate-800 transition">📅 Time Sheet & Absen</a>
+                <a href="payroll.html" class="block px-4 py-2 rounded-xl text-sm font-semibold bg-blue-600 text-white shadow">💰 Engine Payroll</a>
+            </nav>
+        </div>
+        <div class="text-xs text-slate-400 border-t border-slate-800 pt-4">
+            <p class="font-bold text-white">Onesimus Suriadi</p>
+            <p>President Director</p>
+        </div>
+    </aside>
+
+    <!-- KONTEN UTAMA -->
+    <main class="flex-1 p-8 overflow-y-auto">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h2 class="text-2xl font-bold text-slate-800">Engine Payroll & Kalkulasi Upah</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Integrasi Otomatis Data Kehadiran, Lembur Depnaker & Tunjangan</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="hitungKalkulasiPayroll()" class="bg-indigo-700 text-white px-5 py-3 rounded-2xl text-sm font-bold shadow hover:bg-indigo-800 transition flex items-center gap-2">
+                    <span>⚡ Hitung Kalkulasi Gaji Bulanan</span>
+                </button>
+                <button onclick="cetakSlipGajiMassalPDF()" class="bg-slate-700 text-white px-4 py-3 rounded-2xl text-sm font-bold shadow hover:bg-slate-800 transition">
+                    🖨️ Cetak Slip Gaji (PDF)
+                </button>
+            </div>
+        </div>
+
+        <!-- STATISTIK PAYROLL -->
+        <div class="grid grid-cols-3 gap-4 mb-6">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Total Komponen Gaji</p>
+                <p class="text-2xl font-extrabold text-slate-900 mt-1">52 Karyawan</p>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Status Sinkronisasi</p>
+                <p class="text-xs font-bold text-emerald-700 mt-1">🔗 Terhubung ke Data Timesheet</p>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Standar Perhitungan</p>
+                <p class="text-xs font-bold text-blue-700 mt-1">⚖️ UU Ketenagakerjaan & Depnaker</p>
+            </div>
+        </div>
+
+        <!-- TABEL PAYROLL -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                <h3 class="font-bold text-slate-800 text-sm">Rekapitulasi Gaji & Take Home Pay (THP) Karyawan</h3>
+                <span class="text-xs bg-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-200 font-semibold">Periode Bulanan</span>
+            </div>
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-slate-100 text-slate-600 font-semibold text-xs uppercase tracking-wider">
+                    <tr>
+                        <th class="p-4 text-center w-12">No</th>
+                        <th class="p-4">Nama Karyawan</th>
+                        <th class="p-4">Jabatan & Sistem</th>
+                        <th class="p-4 text-center">Gaji Pokok (IDR)</th>
+                        <th class="p-4 text-center">Lembur Konversi</th>
+                        <th class="p-4 text-center">Upah Lembur (IDR)</th>
+                        <th class="p-4 text-center">Take Home Pay (THP)</th>
+                        <th class="p-4 text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelPayroll" class="divide-y divide-slate-100 text-sm">
+                    <!-- Dimuat dinamis oleh payroll_engine.js -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Panggil file logika payroll terpisah -->
+    <script src="js/payroll_engine.js"></script>
+</body>
+</html>

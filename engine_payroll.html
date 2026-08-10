@@ -6,11 +6,12 @@
     <title>Engine Payroll - Field Donggi Matindok</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-gray-100 font-sans flex h-screen overflow-hidden">
 
     <!-- Sidebar Navigasi Kiri -->
-    <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between p-6">
+    <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between p-6 shrink-0">
         <div>
             <div class="mb-8">
                 <h1 class="text-xl font-bold tracking-wide">HRIS Portal</h1>
@@ -42,8 +43,8 @@
         
         <!-- Header Atas -->
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold text-slate-800">Engine Payroll</h2>
-            <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full">Zona 13 - Field</span>
+            <h2 class="text-2xl font-bold text-slate-800">Engine Payroll & Kalkulasi Upah</h2>
+            <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full">Zona 13 - Field Donggi Matindok</span>
         </div>
 
         <!-- Kartu Kontainer Utama Payroll -->
@@ -52,18 +53,18 @@
             <!-- Judul Bagian & Tombol Tindakan Atas -->
             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
                 <div>
-                    <h3 class="text-lg font-bold text-slate-900">Engine Payroll & Dashboard Upah Bulanan</h3>
-                    <p class="text-xs text-slate-500 mt-0.5">PT Pertamina EP Regional 4 Zona 13 - Donggi Matindok Field</p>
+                    <h3 class="text-lg font-bold text-slate-900">Dashboard Upah Bulanan Terpadu</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Kalkulasi Otomatis Berdasarkan Kehadiran, Lembur Depnaker & Grade Karyawan</p>
                 </div>
                 
                 <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-                    <button onclick="alert('Membuka modul rekening & transfer bank...')" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-sm">
-                        <span>🏦</span> Rekening & Transfer Bank
+                    <button onclick="hitungKalkulasiPayroll()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-sm">
+                        <span>⚡ Sinkronisasi Data Timesheet</span>
                     </button>
-                    <select id="filterShift" class="px-3 py-2.5 text-xs border rounded-xl bg-slate-50 text-slate-600 focus:outline-none">
-                        <option value="">Tampilkan Semua (All 52)</option>
-                        <option value="Shift">Shift Saja</option>
-                        <option value="Non Shift">Non Shift Saja</option>
+                    <select id="filterShift" onchange="renderPayrollTable()" class="px-3 py-2.5 text-xs border rounded-xl bg-slate-50 text-slate-600 focus:outline-none">
+                        <option value="">Tampilkan Semua (52 Orang)</option>
+                        <option value="Shift">Shift Saja (36)</option>
+                        <option value="Non Shift">Non Shift Saja (16)</option>
                     </select>
                     <input type="text" id="searchPayroll" placeholder="Cari nama karyawan..." class="px-3 py-2.5 text-xs border rounded-xl focus:outline-none w-56">
                 </div>
@@ -73,19 +74,19 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 <div class="bg-white p-5 rounded-xl border-l-4 border-blue-600 border border-slate-100 shadow-sm">
                     <p class="text-xs text-slate-500 font-medium">Total Tenaga Kerja</p>
-                    <p class="text-xl font-extrabold text-blue-900 mt-1">52 Orang (36 Shift, 16 Non Shift)</p>
+                    <p class="text-xl font-extrabold text-blue-900 mt-1">52 Orang</p>
                 </div>
-                <div class="bg-white p-5 rounded-xl border-l-4 border-blue-600 border border-slate-100 shadow-sm">
-                    <p class="text-xs text-slate-500 font-medium">Total Upah Tetap</p>
-                    <p class="text-xl font-extrabold text-slate-900 mt-1">Rp 171.993.333.80</p>
+                <div class="bg-white p-5 rounded-xl border-l-4 border-emerald-600 border border-slate-100 shadow-sm">
+                    <p class="text-xs text-slate-500 font-medium">Total Gaji Pokok</p>
+                    <p class="text-xl font-extrabold text-slate-900 mt-1" id="statTotalPokok">Rp 0</p>
                 </div>
-                <div class="bg-white p-5 rounded-xl border-l-4 border-blue-600 border border-slate-100 shadow-sm">
-                    <p class="text-xs text-slate-500 font-medium">Total Gaji Bruto</p>
-                    <p class="text-xl font-extrabold text-slate-900 mt-1">Rp 448.483.663.00</p>
+                <div class="bg-white p-5 rounded-xl border-l-4 border-amber-600 border border-slate-100 shadow-sm">
+                    <p class="text-xs text-slate-500 font-medium">Total Upah Lembur</p>
+                    <p class="text-xl font-extrabold text-slate-900 mt-1" id="statTotalLembur">Rp 0</p>
                 </div>
-                <div class="bg-white p-5 rounded-xl border-l-4 border-blue-600 border border-slate-100 shadow-sm">
-                    <p class="text-xs text-slate-500 font-medium">Total Gaji Netto</p>
-                    <p class="text-xl font-extrabold text-blue-900 mt-1">Rp 434.474.629.13</p>
+                <div class="bg-white p-5 rounded-xl border-l-4 border-indigo-600 border border-slate-100 shadow-sm">
+                    <p class="text-xs text-slate-500 font-medium">Total Take Home Pay (THP)</p>
+                    <p class="text-xl font-extrabold text-indigo-900 mt-1" id="statTotalTHP">Rp 0</p>
                 </div>
             </div>
 
@@ -94,20 +95,18 @@
                 <table class="w-full text-left border-collapse text-sm">
                     <thead>
                         <tr class="bg-blue-900 text-white border-b text-xs uppercase">
-                            <th class="p-3">No</th>
+                            <th class="p-3 text-center w-12">No</th>
                             <th class="p-3">Nama Karyawan</th>
-                            <th class="p-3">Jabatan & Sistem Kerja</th>
-                            <th class="p-3">Divisi</th>
-                            <th class="p-3">Gaji Bruto</th>
-                            <th class="p-3">Potongan</th>
-                            <th class="p-3">Gaji Netto</th>
+                            <th class="p-3">Jabatan & Sistem</th>
+                            <th class="p-3 text-center">Gaji Pokok</th>
+                            <th class="p-3 text-center">Lembur Konversi</th>
+                            <th class="p-3 text-center">Upah Lembur</th>
+                            <th class="p-3 text-center">Take Home Pay (THP)</th>
                             <th class="p-3 text-center">Aksi Slip</th>
                         </tr>
                     </thead>
-                    <tbody id="payrollTableBody" class="divide-y divide-slate-100 text-slate-700">
-                        <tr>
-                            <td colspan="8" class="p-6 text-center text-slate-400 text-xs">Memuat data rincian upah bulanan dari database...</td>
-                        </tr>
+                    <tbody id="payrollTableBody" class="divide-y divide-slate-100 text-slate-700 text-xs">
+                        <!-- Dimuat secara dinamis -->
                     </tbody>
                 </table>
             </div>
@@ -116,66 +115,107 @@
 
     </main>
 
-    <!-- Skrip Sinkronisasi Data JSON Otomatis -->
+    <!-- Skrip Engine Payroll Terintegrasi -->
     <script>
-        let globalPayrollData = [];
-
-        async function loadPayrollData() {
-            try {
-                const response = await fetch('employee_data.json');
-                globalPayrollData = await response.json();
-                renderPayrollTable(globalPayrollData);
-            } catch (err) {
-                console.error("Gagal memuat data payroll:", err);
-                document.getElementById('payrollTableBody').innerHTML = `<tr><td colspan="8" class="p-6 text-center text-rose-500 text-xs">Gagal memuat file database employee_data.json</td></tr>`;
+        // Mengambil data master dan timesheet dari localStorage penampung utama
+        function muatDataPayroll() {
+            let savedData = JSON.parse(localStorage.getItem('donggi_timesheet_data')) || [];
+            
+            // Jika data localStorage kosong, gunakan default master yang sama dengan timesheet
+            if (savedData.length === 0) {
+                // Fallback aman jika data timesheet belum diinisialisasi
+                savedData = [
+                    {no: 1, name: "Sujianto M. Batias", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0},
+                    {no: 2, name: "Ansar Mansur", jabatan: "Pemuka FS", grade: "F", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0},
+                    {no: 17, name: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", grade: "F", posisi: "SCM", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0}
+                ];
             }
+            return savedData;
         }
 
-        function renderPayrollTable(data) {
+        function renderPayrollTable() {
+            const data = muatDataPayroll();
             const tbody = document.getElementById('payrollTableBody');
-            tbody.innerHTML = '';
+            const filterSistem = document.getElementById('filterShift').value;
+            const keyword = document.getElementById('searchPayroll').value.toLowerCase();
             
-            if (!data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400 text-xs">Data tidak ditemukan.</td></tr>`;
+            tbody.innerHTML = '';
+
+            let filtered = data.filter(emp => {
+                let matchSistem = filterSistem === "" || emp.sistem === filterSistem;
+                let matchKeyword = emp.name.toLowerCase().includes(keyword) || emp.jabatan.toLowerCase().includes(keyword);
+                return matchSistem && matchKeyword;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400 text-xs">Tidak ada data karyawan yang cocok dengan filter.</td></tr>`;
                 return;
             }
 
-            data.forEach((emp, index) => {
+            let sumPokok = 0;
+            let sumLembur = 0;
+            let sumTHP = 0;
+
+            filtered.forEach((emp) => {
+                // Penentuan Gaji Pokok berdasarkan Grade
+                let gajiPokok = 4500000; // Default Grade D
+                if (emp.grade === 'C') gajiPokok = 3800000;
+                if (emp.grade === 'E') gajiPokok = 5500000;
+                if (emp.grade === 'F') gajiPokok = 6800000;
+                if (emp.grade === 'G') gajiPokok = 8500000;
+
+                // Hitung Upah Lembur Berdasarkan Standar Depnaker (Gaji Pokok / 173 * Jam Konversi)
+                let upahPerJam = gajiPokok / 173;
+                let totalUpahLembur = (emp.otKonversi || 0) * upahPerJam;
+                let takeHomePay = gajiPokok + totalUpahLembur;
+
+                sumPokok += gajiPokok;
+                sumLembur += totalUpahLembur;
+                sumTHP += takeHomePay;
+
                 const row = document.createElement('tr');
-                row.className = "hover:bg-slate-50 border-b border-slate-100 text-xs transition";
+                row.className = "hover:bg-slate-50 border-b border-slate-100 transition";
                 row.innerHTML = `
-                    <td class="p-3 text-slate-500">${emp["No"] || (index + 1)}</td>
-                    <td class="p-3 font-bold text-slate-800">${emp["Nama Karyawan"] || '-'}</td>
+                    <td class="p-3 text-center text-slate-500 font-semibold">${emp.no}</td>
+                    <td class="p-3 font-bold text-slate-800">${emp.name}</td>
                     <td class="p-3 text-slate-600">
-                        ${emp["Job Title"] || '-'} 
-                        <span class="ml-1 px-1.5 py-0.5 bg-blue-50 text-blue-700 rounded text-[10px] font-semibold">Shift</span>
+                        ${emp.jabatan} <br>
+                        <span class="text-[10px] text-slate-400">Grade: ${emp.grade} | </span>
+                        <span class="px-1.5 py-0.5 bg-blue-50 text-blue-700 rounded text-[10px] font-semibold">${emp.sistem}</span>
                     </td>
-                    <td class="p-3 text-slate-600">${emp["Fungsi"] || '-'}</td>
-                    <td class="p-3 font-semibold text-slate-800">Rp 8.599.130.00</td>
-                    <td class="p-3 text-slate-600">Rp 217.648.98</td>
-                    <td class="p-3 font-bold text-emerald-700">Rp 8.381.481.00</td>
+                    <td class="p-3 text-center font-semibold text-slate-700">Rp ${gajiPokok.toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-center font-bold text-blue-700">${(emp.otKonversi || 0).toFixed(1)} Jam</td>
+                    <td class="p-3 text-center font-semibold text-emerald-700">Rp ${Math.round(totalUpahLembur).toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-center font-extrabold text-slate-900 bg-slate-50/50">Rp ${Math.round(takeHomePay).toLocaleString('id-ID')}</td>
                     <td class="p-3 text-center">
-                        <button onclick="alert('Membuka Slip Gaji: ${emp["Nama Karyawan"]}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold transition flex items-center justify-center gap-1 mx-auto shadow-sm">
-                            <span>📄</span> Buka Slip
+                        <button onclick="bukaSlipGaji('${emp.name}', ${gajiPokok}, ${totalUpahLembur}, ${takeHomePay}, ${(emp.otKonversi || 0).toFixed(1)})" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold transition flex items-center justify-center gap-1 mx-auto shadow-sm">
+                            <span>📄</span> Slip Gaji
                         </button>
                     </td>
                 `;
                 tbody.appendChild(row);
             });
+
+            // Update Kartu Statistik Atas
+            document.getElementById('statTotalPokok').innerText = `Rp ${Math.round(sumPokok).toLocaleString('id-ID')}`;
+            document.getElementById('statTotalLembur').innerText = `Rp ${Math.round(sumLembur).toLocaleString('id-ID')}`;
+            document.getElementById('statTotalTHP').innerText = `Rp ${Math.round(sumTHP).toLocaleString('id-ID')}`;
         }
 
-        // Fitur Pencarian Real-Time
-        document.getElementById('searchPayroll').addEventListener('input', function(e) {
-            const keyword = e.target.value.toLowerCase();
-            const filtered = globalPayrollData.filter(emp => 
-                (emp["Nama Karyawan"] && emp["Nama Karyawan"].toLowerCase().includes(keyword)) ||
-                (emp["Job Title"] && emp["Job Title"].toLowerCase().includes(keyword)) ||
-                (emp["Fungsi"] && emp["Fungsi"].toLowerCase().includes(keyword))
-            );
-            renderPayrollTable(filtered);
-        });
+        function hitungKalkulasiPayroll() {
+            renderPayrollTable();
+            alert('Sukses! Data Engine Payroll telah disinkronkan secara real-time dengan modul Timesheet & Absen.');
+        }
 
-        document.addEventListener('DOMContentLoaded', loadPayrollData);
+        function bukaSlipGaji(nama, pokok, lembur, thp, jamKonversi) {
+            alert(`--- SLIP GAJI RESMI ---\nNama: ${nama}\nGaji Pokok: Rp ${Math.round(pokok).toLocaleString('id-ID')}\nJam Lembur Konversi: ${jamKonversi} Jam\nUpah Lembur: Rp ${Math.round(lembur).toLocaleString('id-ID')}\n-----------------------------------\nTOTAL TAKE HOME PAY (THP): Rp ${Math.round(thp).toLocaleString('id-ID')}`);
+        }
+
+        // Event listener untuk pencarian real-time
+        document.getElementById('searchPayroll').addEventListener('input', renderPayrollTable);
+
+        // Jalankan saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', renderPayrollTable);
     </script>
 </body>
 </html>
