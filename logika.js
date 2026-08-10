@@ -52,7 +52,7 @@ const defaultMasterKaryawan = [
     {no: 47, name: "Budi Gunadi", jabatan: "Medical Doctor", grade: "G", posisi: "Medical", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
     {no: 48, name: "Najwa Shihab", jabatan: "Corporate Communications", grade: "E", posisi: "PR", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
     {no: 49, name: "Raditya Dika", jabatan: "IT Administrator", grade: "E", posisi: "IT", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 50, name: "Deddy Corbuzier",agati = "HSSE Superintendent", jabatan: "HSSE Superintendent", grade: "G", posisi: "HSSE", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 50, name: "Deddy Corbuzier", jabatan: "HSSE Superintendent", grade: "G", posisi: "HSSE", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
     {no: 51, name: "Atiqah Hasiholan", jabatan: "Admin HR", grade: "D", posisi: "HR", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
     {no: 52, name: "Rio Dewanto", jabatan: "Production Supervisor", grade: "F", posisi: "Operations", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []}
 ];
@@ -80,11 +80,18 @@ function renderTabel() {
     const keyword = document.getElementById('inputPencarian').value.toLowerCase();
     tbody.innerHTML = '';
 
+    // FILTER UTAMA: Hanya tampilkan karyawan yang sudah memiliki histori absen (sudah diabsen)
     let dataFiltered = masterKaryawan.filter(item => {
+        let sudahAbsen = item.historiAbsen && item.historiAbsen.length > 0;
         let matchSistem = filterAktif === 'Semua' || item.sistem === filterAktif;
         let matchKeyword = item.name.toLowerCase().includes(keyword) || item.jabatan.toLowerCase().includes(keyword);
-        return matchSistem && matchKeyword;
+        return sudahAbsen && matchSistem && matchKeyword;
     });
+
+    if (dataFiltered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-slate-400">Belum ada data absensi yang diinput. Silakan klik tombol "Input Absen Karyawan" di atas.</td></tr>`;
+        return;
+    }
 
     dataFiltered.forEach((item) => {
         tbody.innerHTML += `
@@ -227,7 +234,7 @@ function hapusSemuaHistori() {
     let karyawan = masterKaryawan.find(k => k.no === activeKaryawanNo);
     if(!karyawan) return;
 
-    if(confirm(`⚠️ Yakin ingin menghapus SELURUH histori absen untuk ${karyawan.name}? Akumulasi akan kembali ke 0.`)) {
+    if(confirm(`⚠️ Yakin ingin menghapus SELURUH histori absen untuk ${karyawan.name}? Akumulasi akan kembali ke 0 dan karyawan akan hilang dari tabel utama jika belum ada absen lain.`)) {
         karyawan.hk = 0;
         karyawan.otAktual = 0;
         karyawan.otKonversi = 0;
