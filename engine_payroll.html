@@ -42,16 +42,20 @@
             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
                 <div>
                     <h3 class="text-lg font-bold text-slate-900">Slip Upah Tenaga Kerja Terpadu</h3>
-                    <p class="text-xs text-slate-500 mt-0.5">Periode: 16 Juni 2026 s/d 15 Juli 2026</p>
+                    <p class="text-xs text-slate-500 mt-0.5">Periode Berjalan Berdasarkan Input Riil Admin</p>
                 </div>
                 
                 <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+                    <!-- Tombol Utama Input Gaji (Seperti Form Absen) -->
+                    <button onclick="bukaModalInputGaji()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-sm">
+                        <span>⚡ Input / Edit Data Gaji Karyawan</span>
+                    </button>
                     <select id="filterShift" onchange="renderPayrollTable()" class="px-3 py-2.5 text-xs border rounded-xl bg-slate-50 text-slate-600 focus:outline-none">
                         <option value="">Semua Sistem (52 Karyawan)</option>
                         <option value="Shift">Shift</option>
                         <option value="Non Shift">Non Shift</option>
                     </select>
-                    <input type="text" id="searchPayroll" placeholder="Cari nama karyawan..." class="px-3 py-2.5 text-xs border rounded-xl focus:outline-none w-56">
+                    <input type="text" id="searchPayroll" placeholder="Cari nama karyawan..." class="px-3 py-2.5 text-xs border rounded-xl focus:outline-none w-48">
                 </div>
             </div>
 
@@ -84,11 +88,11 @@
                             <th class="p-3 text-center">Gaji Bruto (I+II)</th>
                             <th class="p-3 text-center">Potongan Resmi (III)</th>
                             <th class="p-3 text-center">Netto (THP)</th>
-                            <th class="p-3 text-center">Aksi / Pengaturan</th>
+                            <th class="p-3 text-center">Aksi / Slip</th>
                         </tr>
                     </thead>
                     <tbody id="payrollTableBody" class="divide-y divide-slate-100 text-slate-700 text-xs">
-                        <!-- Dinamis -->
+                        <!-- Dinamis berdasarkan input -->
                     </tbody>
                 </table>
             </div>
@@ -97,41 +101,46 @@
 
     </main>
 
-    <!-- MODAL INPUT / EDIT GAJI & TUNJANGAN -->
-    <div id="modalEditGaji" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+    <!-- MODAL FORM INPUT/EDIT GAJI (BERBASIS PILIH KARYAWAN) -->
+    <div id="modalInputGaji" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
         <div class="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl">
-            <h3 id="modalEditTitle" class="text-lg font-bold mb-1 text-slate-800">Atur Komponen Gaji</h3>
-            <p class="text-xs text-slate-500 mb-4">Sesuaikan Upah Pokok, TAUP, dan Tunjangan khusus untuk karyawan ini.</p>
+            <h3 class="text-lg font-bold mb-1 text-slate-800">Form Input Data Upah & Tunjangan</h3>
+            <p class="text-xs text-slate-500 mb-4">Pilih karyawan dan masukkan komponen upah secara mandiri dan akurat.</p>
             
-            <input type="hidden" id="editKaryawanNo">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Pilih Karyawan</label>
+                    <select id="pilihKaryawanGaji" onchange="muatDataGajiKaryawanTerpilih()" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none font-semibold">
+                        <!-- Dimuat dari data master -->
+                    </select>
+                </div>
 
-            <div class="space-y-3">
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1">Upah Pokok (IDR)</label>
-                        <input type="number" id="inputUpahPokok" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none font-bold">
+                        <input type="number" id="inputUpahPokok" placeholder="0" class="w-full border rounded-lg p-2.5 text-sm outline-none font-bold text-slate-700">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1">TAUP / Tunjangan Tetap (IDR)</label>
-                        <input type="number" id="inputTaup" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none font-bold">
+                        <input type="number" id="inputTaup" placeholder="0" class="w-full border rounded-lg p-2.5 text-sm outline-none font-bold text-slate-700">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Nominal Tunjangan Kehadiran / Hari</label>
-                        <input type="number" id="inputTunjanganHadirNominal" value="30000" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Tunjangan Kehadiran (Total IDR)</label>
+                        <input type="number" id="inputTunjanganHadir" placeholder="0" class="w-full border rounded-lg p-2.5 text-sm outline-none font-bold text-slate-700">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Tunjangan Uang Makan / Ekstra</label>
-                        <input type="number" id="inputUangMakan" value="25000" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Uang Makan / Lembur / Lainnya</label>
+                        <input type="number" id="inputUangMakanLain" placeholder="0" class="w-full border rounded-lg p-2.5 text-sm outline-none font-bold text-slate-700">
                     </div>
                 </div>
             </div>
 
             <div class="flex justify-end gap-3 mt-6">
-                <button onclick="tutupModalEdit()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-semibold hover:bg-slate-200">Batal</button>
-                <button onclick="simpanPengaturanGaji()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700">Simpan Perubahan</button>
+                <button onclick="tutupModalInputGaji()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-semibold hover:bg-slate-200">Batal</button>
+                <button onclick="simpanDataGajiInputan()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-xs font-semibold hover:bg-indigo-700">Simpan Data Gaji</button>
             </div>
         </div>
     </div>
@@ -157,7 +166,7 @@
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-slate-400 text-xs">Belum ada data absensi/karyawan. Silakan input di modul Timesheet.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-slate-400 text-xs">Belum ada data karyawan. Silakan input terlebih dahulu di modul Timesheet.</td></tr>`;
                 return;
             }
 
@@ -165,36 +174,25 @@
             let sumNetto = 0;
 
             filtered.forEach((emp) => {
-                // Ambil nilai kustom jika sudah pernah diatur, atau gunakan default standar
-                let upahPokok = emp.customUpahPokok !== undefined ? emp.customUpahPokok : 2458160;
-                let taup = emp.customTaup !== undefined ? emp.customTaup : 819387;
+                // Jika belum diinput admin, nilainya 0 (tidak ada template ngawur)
+                let upahPokok = emp.customUpahPokok !== undefined ? emp.customUpahPokok : 0;
+                let taup = emp.customTaup !== undefined ? emp.customTaup : 0;
                 let upahTetap = upahPokok + taup; 
 
-                let upahTidakTetap = 0;
-                let hkVal = emp.hk || (emp.sistem === 'Shift' ? 19 : 20);
-                let tKehadiranNominal = emp.customTunjanganHadir || 30000;
-
-                if (emp.sistem === 'Shift') {
-                    let tunjanganHadir = hkVal * tKehadiranNominal;
-                    let premiShift = 485948;
-                    let kjk = 2699714;
-                    let makanLembur = 75000;
-                    let upahLembur = (emp.otKonversi || 65.5) * 18945;
-                    let extraFood = 250000;
-                    upahTidakTetap = tunjanganHadir + premiShift + kjk + makanLembur + upahLembur + extraFood;
-                } else {
-                    let tunjanganHadir = hkVal * tKehadiranNominal;
-                    let lemburWeekend = 2500000;
-                    upahTidakTetap = tunjanganHadir + lemburWeekend;
-                }
-
+                let tunjanganHadir = emp.customTunjanganHadir !== undefined ? emp.customTunjanganHadir : 0;
+                let uangMakanLain = emp.customUangMakan !== undefined ? emp.customUangMakan : 0;
+                
+                // Lembur dihitung dari timesheet jika ada, jika tidak 0
+                let upahLembur = (emp.otKonversi || 0) * (upahTetap > 0 ? (upahTetap / 173) : 0);
+                
+                let upahTidakTetap = tunjanganHadir + uangMakanLain + upahLembur;
                 let gajiBruto = upahTetap + upahTidakTetap;
 
-                // Potongan Resmi
-                let jht = upahTetappot = upahTetap * 0.02; // JHT 2%
-                let jp = 31976;
-                let bpjsKes = 31976;
-                let pph21 = emp.sistem === 'Shift' ? 89745 : 95000;
+                // Potongan Resmi (Dihitung proporsional dari upah tetap jika sudah diinput)
+                let jht = upahTetap * 0.02;
+                let jp = upahTetap > 0 ? 31976 : 0;
+                let bpjsKes = upahTetap > 0 ? 31976 : 0;
+                let pph21 = upahBruto > 0 ? (emp.sistem === 'Shift' ? 89745 : 95000) : 0;
                 let totalPotongan = jht + jp + bpjsKes + pph21;
 
                 let netto = gajiBruto - totalPotongan;
@@ -216,9 +214,8 @@
                     <td class="p-3 text-center font-bold text-slate-900">Rp ${Math.round(gajiBruto).toLocaleString('id-ID')}</td>
                     <td class="p-3 text-center font-semibold text-rose-600">Rp ${Math.round(totalPotongan).toLocaleString('id-ID')}</td>
                     <td class="p-3 text-center font-extrabold text-blue-900 bg-slate-50/50">Rp ${Math.round(netto).toLocaleString('id-ID')}</td>
-                    <td class="p-3 text-center space-x-1">
-                        <button onclick="bukaModalEdit(${emp.no})" class="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow-sm">⚙️ Atur Gaji</button>
-                        <button onclick="bukaSlipGaji('${emp.name}', '${emp.sistem}', ${gajiBruto}, ${totalPotongan}, ${netto})" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold shadow-sm">📄 Slip</button>
+                    <td class="p-3 text-center">
+                        <button onclick="bukaModalEditSpesifik(${emp.no})" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold shadow-sm text-xs">⚙️ Input Gaji</button>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -228,29 +225,55 @@
             document.getElementById('statTotalNetto').innerText = `Rp ${Math.round(sumNetto).toLocaleString('id-ID')}`;
         }
 
-        function bukaModalEdit(noKaryawan) {
+        function bukaModalInputGaji() {
             let data = muatDataPayroll();
-            let emp = data.find(k => k.no === noKaryawan);
-            if (!emp) return;
-
-            document.getElementById('editKaryawanNo').value = emp.no;
-            document.getElementById('modalEditTitle').innerText = `Atur Gaji: ${emp.name}`;
-            document.getElementById('inputUpahPokok').value = emp.customUpahPokok !== undefined ? emp.customUpahPokok : 2458160;
-            document.getElementById('inputTaup').value = emp.customTaup !== undefined ? emp.customTaup : 819387;
-            document.getElementById('inputTunjanganHadirNominal').value = emp.customTunjanganHadir || 30000;
-
-            document.getElementById('modalEditGaji').classList.remove('hidden');
+            const select = document.getElementById('pilihKaryawanGaji');
+            select.innerHTML = '';
+            data.forEach(k => {
+                select.innerHTML += `<option value="${k.no}">${k.name} - ${k.jabatan} (${k.sistem})</option>`;
+            });
+            bukaulDataKaryawanPertama();
+            document.getElementById('modalInputGaji').classList.remove('hidden');
         }
 
-        function tutupModalEdit() {
-            document.getElementById('modalEditGaji').classList.add('hidden');
+        function bukaulDataKaryawanPertama() {
+            let selectNo = parseInt(document.getElementById('pilihKaryawanGaji').value);
+            let data = muatDataPayroll();
+            let emp = data.find(k => k.no === selectNo);
+            if (emp) {
+                document.getElementById('inputUpahPokok').value = emp.customUpahPokok !== undefined ? emp.customUpahPokok : '';
+                document.getElementById('inputTaup').value = emp.customTaup !== undefined ? emp.customTaup : '';
+                document.getElementById('inputTunjanganHadir').value = emp.customTunjanganHadir !== undefined ? emp.customTunjanganHadir : '';
+                document.getElementById('inputUangMakanLain').value = emp.customUangMakan !== undefined ? emp.customUangMakan : '';
+            }
         }
 
-        function simpanPengaturanGaji() {
-            let noKaryawan = parseInt(document.getElementById('editKaryawanNo').value);
+        function muatDataGajiKaryawanTerpilih() {
+            bukaulDataKaryawanPertama();
+        }
+
+        function bukaModalEditSpesifik(noKaryawan) {
+            let data = muatDataPayroll();
+            const select = document.getElementById('pilihKaryawanGaji');
+            select.innerHTML = '';
+            data.forEach(k => {
+                let selected = k.no === noKaryawan ? 'selected' : '';
+                select.innerHTML += `<option value="${k.no}" ${selected}>${k.name} - ${k.jabatan} (${k.sistem})</option>`;
+            });
+            bukaulDataKaryawanPertama();
+            document.getElementById('modalInputGaji').classList.remove('hidden');
+        }
+
+        function tutupModalInputGaji() {
+            document.getElementById('modalInputGaji').classList.add('hidden');
+        }
+
+        function simpanDataGajiInputan() {
+            let noKaryawan = parseInt(document.getElementById('pilihKaryawanGaji').value);
             let p_pokok = parseFloat(document.getElementById('inputUpahPokok').value) || 0;
             let p_taup = parseFloat(document.getElementById('inputTaup').value) || 0;
-            let p_tunj_hadir = parseFloat(document.getElementById('inputTunjanganHadirNominal').value) || 30000;
+            let p_tunj_hadir = parseFloat(document.getElementById('inputTunjanganHadir').value) || 0;
+            let p_uang_makan = parseFloat(document.getElementById('inputUangMakanLain').value) || 0;
 
             let data = muatDataPayroll();
             let emp = data.find(k => k.no === noKaryawan);
@@ -258,16 +281,13 @@
                 emp.customUpahPokok = p_pokok;
                 emp.customTaup = p_taup;
                 emp.customTunjanganHadir = p_tunj_hadir;
+                emp.customUangMakan = p_uang_makan;
 
                 localStorage.setItem('donggi_timesheet_data', JSON.stringify(data));
-                tutupModalEdit();
+                tutupModalInputGaji();
                 renderPayrollTable();
-                alert(`Pengaturan Gaji untuk ${emp.name} berhasil disimpan dan diperbarui!`);
+                alert(`Data upah untuk ${emp.name} berhasil disimpan!`);
             }
-        }
-
-        function bukaSlipGaji(nama, sistem, bruto, potongan, netto) {
-            alert(`--- SLIP UPAH TENAGA KERJA (${sistem.toUpperCase()}) ---\nNama Pekerja: ${nama}\n\nGAJI BRUTO (I + II): Rp ${Math.round(bruto).toLocaleString('id-ID')}\nPOTONGAN RESMI (III): Rp ${Math.round(potongan).toLocaleString('id-ID')}\n----------------------------------------------------\nUPAH DITERIMA BERSIH (NETTO): Rp ${Math.round(netto).toLocaleString('id-ID')}`);
         }
 
         document.getElementById('searchPayroll').addEventListener('input', renderPayrollTable);
