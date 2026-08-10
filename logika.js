@@ -56,7 +56,6 @@ const defaultMasterKaryawan = [
 
 const CLOUD_URL = "https://script.google.com/macros/s/AKfycby1fKpsDqdGhtMira6PqPGdkVFdYTMvr554Zs5OdagaO5bxzSK5trQWQtSAErXei2lX/exec";
 
-// Sinkronisasi localStorage agar memuat ke-52 data resmi secara aman
 let savedData = JSON.parse(localStorage.getItem('donggi_timesheet_data')) || [];
 let masterKaryawan = defaultMasterKaryawan.map(defaultItem => {
     let existing = savedData.find(s => s.no === defaultItem.no);
@@ -83,7 +82,6 @@ function renderTabel() {
     const keyword = document.getElementById('inputPencarian').value.toLowerCase();
     tbody.innerHTML = '';
 
-    // Dashboard depan: HANYA tampilkan karyawan yang sudah memiliki histori absen
     let dataFiltered = masterKaryawan.filter(item => {
         let sudahAbsen = item.historiAbsen && item.historiAbsen.length > 0;
         let matchSistem = filterAktif === 'Semua' || item.sistem === filterAktif;
@@ -295,8 +293,8 @@ function bukaModalKategori() {
                 <h3 class="text-lg font-bold mb-2 text-slate-800">Pilih Sistem Kerja</h3>
                 <p class="text-xs text-slate-500 mb-4">Proteksi berjenjang untuk mencegah salah input data.</p>
                 <div class="space-y-3">
-                    <button onclick="bukaModalAbsen('Shift')" class="w-full bg-emerald-600 text-white p-3.5 rounded-xl font-bold hover:bg-emerald-700 transition shadow">Pekerja SHIFT (46)</button>
-                    <button onclick="bukaModalAbsen('Non Shift')" class="w-full bg-blue-600 text-white p-3.5 rounded-xl font-bold hover:bg-blue-700 transition shadow">Pekerja NON-SHIFT (6)</button>
+                    <button onclick="bukaModalAbsen('Shift')" class="w-full bg-emerald-600 text-white p-3.5 rounded-xl font-bold hover:bg-emerald-700 transition shadow">Pekerja SHIFT</button>
+                    <button onclick="bukaModalAbsen('Non Shift')" class="w-full bg-blue-600 text-white p-3.5 rounded-xl font-bold hover:bg-blue-700 transition shadow">Pekerja NON-SHIFT</button>
                     <button onclick="document.getElementById('modalKategori').classList.add('hidden')" class="w-full bg-slate-100 text-slate-600 p-2.5 rounded-xl font-bold hover:bg-slate-200 transition">Batal</button>
                 </div>
             </div>
@@ -322,7 +320,6 @@ function bukaModalAbsen(sistemKerja) {
     const select = document.getElementById('pilihKaryawan');
     select.innerHTML = '';
     
-    // INPUT ABSEN: Menampilkan KESELURUHAN karyawan resmi sesuai kategori
     masterKaryawan.filter(k => k.sistem === sistemKerja).forEach((k) => {
         select.innerHTML += `<option value="${k.no}">${k.name} - ${k.jabatan} (Grade ${k.grade})</option>`;
     });
