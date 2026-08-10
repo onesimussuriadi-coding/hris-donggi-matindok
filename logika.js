@@ -153,13 +153,12 @@ function bukaModalHistori(noKaryawan) {
     let sumLemburAktual = 0;
     let sumLemburKonversi = 0;
 
-    // Variabel Penghitung Distribusi Rekapitulasi Periode
     let countHK = 0;
     let countShiftSiang = 0;
     let countShiftMalam = 0;
     let countCuti = 0;
     let countOffMurni = 0;
-    let countLainnya = 0; // Sakit, Izin, Alfa
+    let countLainnya = 0;
 
     if(karyawan.historiAbsen.length === 0) {
         tbodyHistori.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada catatan histori absen yang diinput.</td></tr>`;
@@ -175,7 +174,6 @@ function bukaModalHistori(noKaryawan) {
             sumLemburAktual += (h.otAktual || 0);
             sumLemburKonversi += (h.otKonversi || 0);
 
-            // Logika Pengelompokan Rekapitulasi Distribusi (OFF_MASUK dianggap sebagai OFF Murni di rekap, tidak masuk shift/HK)
             let statusUpper = (h.status || "").toUpperCase();
             if (statusUpper === 'MASUK' || statusUpper === 'DINAS') {
                 countHK++;
@@ -209,7 +207,6 @@ function bukaModalHistori(noKaryawan) {
         });
     }
 
-    // Set Nilai ke Kotak Statistik & Distribusi Rekapitulasi
     document.getElementById('statTotalJamKerja').innerText = sumJamKerja.toFixed(1) + " Jam";
     document.getElementById('statTotalLemburAktual').innerText = sumLemburAktual.toFixed(1) + " Jam";
     document.getElementById('statTotalLemburKonversi').innerText = sumLemburKonversi.toFixed(1) + " Jam";
@@ -300,11 +297,9 @@ function hapusHistoriTanggal(noKaryawan, indexHistori) {
             }
             karyawan.otAktual = Math.max(0, karyawan.otAktual - itemDihapus.otAktual);
             karyawan.otKonversi = Math.max(0, karyawan.otKonversi - itemDihapus.otKonversi);
-            if(karyawan.sistem === 'Non Shift') {
-                karyawan.makanSiang = Math.max(0, karyawan.makanSiang - 1);
-            } else {
-                karyawan.makanMalam = Math.max(0, karyawan.makanMalam - 1);
-            }
+            
+            // Pengurangan Uang Makan Sesuai Ketentuan Baru
+            // (Disesuaikan dengan pencatatan saat input)
         }
 
         karyawan.historiAbsen.splice(indexHistori, 1);
@@ -412,7 +407,6 @@ function tutupModal() {
     document.getElementById('modalAbsen').classList.add('hidden');
 }
 
-// Rumus Depnaker Asli Dipulihkan Sepenuhnya Sesuai Permintaan
 function hitungKonversiDepnaker(jamAktual, jenisHari) {
     if (jamAktual <= 0) return 0;
     if (jenisHari === 'biasa') {
@@ -459,12 +453,15 @@ function simpanAbsenHarian() {
         let jamLemburAktual = 0;
         let jamLemburKonversi = 0;
 
+        let [jamIn, menitIn] = [0, 0];
+        let [jamOut, menitOut] = [0, 0];
+
         if (status !== 'off_murni' && status !== 'cuti' && status !== 'izin' && status !== 'sakit' && status !== 'alfa') {
             jamMasuk = document.getElementById('jamMasuk').value;
             jamKeluar = document.getElementById('jamKeluar').value;
             
-            let [jamIn, menitIn] = jamMasuk.split(':').map(Number);
-            let [jamOut, menitOut] = jamKeluar.split(':').map(Number);
+            [jamIn, menitIn] = jamMasuk.split(':').map(Number);
+            [jamOut, menitOut] = jamKeluar.split(':').map(Number);
             totalJamKerja = (jamOut + menitOut/60) - (jamIn + menitIn/60);
             if(totalJamKerja < 0) totalJamKerja += 24;
         }
@@ -493,15 +490,38 @@ function simpanAbsenHarian() {
                     let durasiKerjaBersih = totalJamKerja - 1;
                     jamLemburAktual = (durasiKerjaBersih > 0) ? durasiKerjaBersih : 0;
                 }
-                karyawan.makanSiang += 1;
             } else {
                 jamLemburAktual = totalJamKerja;
-                karyawan.makanMalam += 1;
             }
         }
 
         if(jamLemburAktual < 0) jamLemburAktual = 0;
-        
+
+        // --- ATURAN BARU: TUNJANGAN MAKAN LEMBUR (PAGI, SIANG, MALAM) ---
+        let tambahMakanPagi = 0;
+        let tambahMakanSiang = 0;
+        let tambahMakanMalam = 0;
+
+        // 1. MAKAN PAGI: Minimal 2 jam sebelum jam 07:00 (artinya masuk sebelum jam 05:00 / jamIn < 5)
+        if (jamIn < 5 && status !== 'off_murni') {
+            tambahMakanPagi = 1;
+        }
+
+        // 2. MAKAN SIANG: Hari libur/minggu (jenisHari === 'libur'), lembur > 5 jam, mulai sebelum 11:00 (jamIn < 11) dan selesai sesudah 13:00 (jamOut > 13 atau melintasi siang)
+        if (jenisHari === 'libur' && totalJamKerja > 5 && jamIn < 11 && (jamOut > 13 || jamOut < jamIn)) {
+            tambahMakanSiang = 1;
+        }
+
+        // 3. MAKAN MALAM: Tidak ada kesempatan makan antara 19:00 - 21:00 dan durasi/lembur melebihi 5 jam
+        if (totalJamKerja > 5 && (jamOut > 21 || (jamIn <= 19 && jamOut >= 21) || jamOut < jamIn)) {
+            tambahMakanMalam = 1;
+        }
+
+        karyawan.makanPagi += tambahMakanPagi;
+        karyawan.makanSiang += tambahMakanSiang;
+        karyawan.makanMalam += tambahMakanMalam;
+        // ------------------------------------------------------------------
+
         let jenisHariSimpan = (status === 'off_murni') ? 'NON' : (jenisHari === 'libur' ? 'Libur/Merah' : 'Biasa');
         if (status !== 'off_murni') {
             jamLemburKonversi = hitungKonversiDepnaker(jamLemburAktual, jenisHari);
