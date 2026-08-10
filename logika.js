@@ -469,7 +469,7 @@ function simpanAbsenHarian() {
                     let durasiKerjaBersih = totalJamKerja - 1;
                     jamLemburAktual = (durasiKerjaBersih > 8) ? (durasiKerjaBersih - 8) : 0;
                 }
-                // HAPUS penambahan makan siang rutin dobel di sini agar murni dihitung dari aturan lembur/ketentuan spesifik
+                // DIHAPUS: Baris `karyawan.makanSiang += 1;` otomatis untuk Non-Shift telah dibersihkan sepenuhnya.
             } else {
                 if(totalJamKerja > 12) {
                     jamLemburAktual = totalJamKerja - 12;
@@ -490,7 +490,7 @@ function simpanAbsenHarian() {
 
         if(jamLemburAktual < 0) jamLemburAktual = 0;
 
-        // --- RUMUS UNIVERSAL TUNJANGAN MAKAN LEMBUR (BERLAKU SHIFT & NON-SHIFT) ---
+        // --- RUMUS UNIVERSAL TUNJANGAN MAKAN LEMBUR (MURNI BERDASARKAN ATURAN LEMBUR KETAT) ---
         let tambahMakanPagi = 0;
         let tambahMakanSiang = 0;
         let tambahMakanMalam = 0;
