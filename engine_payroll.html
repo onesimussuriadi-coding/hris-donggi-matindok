@@ -49,12 +49,16 @@
                     <button onclick="bukaModalInputGaji()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-sm">
                         <span>⚡ Input / Edit Data Gaji Karyawan</span>
                     </button>
+                    <!-- Tombol Rekapitulasi Utuh -->
+                    <button onclick="cetakRekapitulasiPayrollPDF()" class="bg-slate-700 hover:bg-slate-800 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-sm">
+                        <span>🖨️ Cetak Rekap Gaji Utuh (PDF)</span>
+                    </button>
                     <select id="filterShift" onchange="renderPayrollTable()" class="px-3 py-2.5 text-xs border rounded-xl bg-slate-50 text-slate-600 focus:outline-none">
                         <option value="">Semua Sistem (52 Karyawan)</option>
                         <option value="Shift">Shift</option>
                         <option value="Non Shift">Non Shift</option>
                     </select>
-                    <input type="text" id="searchPayroll" placeholder="Cari nama karyawan..." class="px-3 py-2.5 text-xs border rounded-xl focus:outline-none w-48">
+                    <input type="text" id="searchPayroll" placeholder="Cari nama karyawan..." class="px-3 py-2.5 text-xs border rounded-xl focus:outline-none w-40">
                 </div>
             </div>
 
@@ -100,11 +104,11 @@
 
     </main>
 
-    <!-- MODAL FORM INPUT/EDIT GAJI -->
+    <!-- MODAL FORM INPUT/EDIT GAJI LENGKAP DENGAN TOMBOL SLIP GAJI -->
     <div id="modalInputGaji" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
         <div class="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl">
             <h3 class="text-lg font-bold mb-1 text-slate-800">Form Input & Koreksi Data Upah</h3>
-            <p class="text-xs text-slate-500 mb-4">Pilih karyawan untuk melihat atau memperbarui komponen upah.</p>
+            <p class="text-xs text-slate-500 mb-4">Pilih karyawan untuk melihat, mengedit, atau langsung mencetak slip gajinya.</p>
             
             <div class="space-y-4">
                 <div>
@@ -138,10 +142,14 @@
             </div>
 
             <div class="flex justify-between items-center mt-6 pt-3 border-t">
-                <button onclick="resetDataGajiKaryawan()" class="px-3 py-2 bg-rose-50 text-rose-600 rounded-lg text-xs font-semibold hover:bg-rose-100">🗑️ Reset / Kosongkan Gaji</button>
                 <div class="flex gap-2">
-                    <button onclick="tutupModalInputGaji()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-semibold hover:bg-slate-200">Batal</button>
-                    <button onclick="simpanDataGajiInputan()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-xs font-semibold hover:bg-indigo-700">Simpan Data Gaji</button>
+                    <button onclick="resetDataGajiKaryawan()" class="px-3 py-2 bg-rose-50 text-rose-600 rounded-lg text-xs font-semibold hover:bg-rose-100">🗑️ Reset</button>
+                    <!-- Tombol Cetak Slip Gaji di dalam Modal -->
+                    <button onclick="cetakSlipGajiAktif()" class="px-3 py-2 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 shadow-sm">🖨️ Cetak Slip Gaji</button>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="tutupModalInputGaji()" class="px-3 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-semibold hover:bg-slate-200">Batal</button>
+                    <button onclick="simpanDataGajiInputan()" class="px-3 py-2 bg-indigo-600 text-white rounded-lg text-xs font-semibold hover:bg-indigo-700">Simpan</button>
                 </div>
             </div>
         </div>
@@ -212,8 +220,8 @@
                     <td class="p-3 text-center font-bold text-slate-900">Rp ${Math.round(gajiBruto).toLocaleString('id-ID')}</td>
                     <td class="p-3 text-center font-semibold text-rose-600">Rp ${Math.round(totalPotongan).toLocaleString('id-ID')}</td>
                     <td class="p-3 text-center font-extrabold text-blue-900 bg-slate-50/50">Rp ${Math.round(netto).toLocaleString('id-ID')}</td>
-                    <td class="p-3 text-center space-x-1">
-                        <button onclick="bukaModalEditSpesifik(${emp.no})" class="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold shadow-sm text-xs">⚙️ Edit Gaji</button>
+                    <td class="p-3 text-center">
+                        <button onclick="bukaModalEditSpesifik(${emp.no})" class="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold shadow-sm text-xs">⚙️ Edit / Slip</button>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -278,8 +286,8 @@
                 emp.customUangMakan = p_uang_makan;
 
                 localStorage.setItem('donggi_timesheet_data', JSON.stringify(data));
-                tutupModalInputGaji(); // Modal sekarang dipastikan tertutup otomatis
-                renderPayrollTable();   // Tabel otomatis memperbarui data
+                tutupModalInputGaji();
+                renderPayrollTable();
                 alert(`Data upah untuk ${emp.name} berhasil disimpan!`);
             }
         }
@@ -299,6 +307,136 @@
                 renderPayrollTable();
                 alert('Data gaji berhasil dikosongkan.');
             }
+        }
+
+        function cetakSlipGajiAktif() {
+            let noKaryawan = parseInt(document.getElementById('pilihKaryawanGaji').value);
+            let data = muatDataPayroll();
+            let emp = data.find(k => k.no === noKaryawan);
+            if (!emp) return;
+
+            let upahPokok = parseFloat(document.getElementById('inputUpahPokok').value) || 0;
+            let taup = parseFloat(document.getElementById('inputTaup').value) || 0;
+            let upahTetap = upahPokok + taup;
+            let tunjanganHadir = parseFloat(document.getElementById('inputTunjanganHadir').value) || 0;
+            let uangMakanLain = parseFloat(document.getElementById('inputUangMakanLain').value) || 0;
+            let upahLembur = (emp.otKonversi || 0) * (upahTetap > 0 ? (upahTetap / 173) : 0);
+            let upahTidakTetap = tunjanganHadir + uangMakanLain + upahLembur;
+            let gajiBruto = upahTetap + upahTidakTetap;
+
+            let jht = upahTetap * 0.02;
+            let jp = upahTetap > 0 ? 31976 : 0;
+            let bpjsKes = upahTetap > 0 ? 31976 : 0;
+            let pph21 = gajiBruto > 0 ? (emp.sistem === 'Shift' ? 89745 : 95000) : 0;
+            let totalPotongan = jht + jp + bpjsKes + pph21;
+            let netto = gajiBruto - totalPotongan;
+
+            let jendelaCetak = window.open('', '', 'height=650,width=800');
+            jendelaCetak.document.write('<html><head><title>Slip Upah - ' + emp.name + '</title>');
+            jendelaCetak.document.write('<style>body{font-family:sans-serif;padding:30px;color:#1e293b;} h2,h3{text-align:center;margin:2px 0;} table{width:100%;border-collapse:collapse;margin-top:20px;font-size:12px;} th,td{border:1px solid #cbd5e1;padding:8px;text-align:left;} th{background-color:#f1f5f9;}</style>');
+            jendelaCetak.document.write('</head><body>');
+            jendelaCetak.document.write('<h2>PT SENTRAL SARI JAYA</h2>');
+            jendelaCetak.document.write('<h3>SLIP UPAH TENAGA KERJA (' + emp.sistem.toUpperCase() + ')</h3>');
+            jendelaCetak.document.write('<p style="text-align:center;font-size:11px;color:#64748b;margin-bottom:20px;">Periode: 16 Juni 2026 s/d 15 Juli 2026 | Matindok (Zona 13)</p>');
+            
+            jendelaCetak.document.write('<p><b>Nama Pekerja:</b> ' + emp.name + '<br><b>Jabatan:</b> ' + emp.jabatan + '<br><b>Divisi/Fungsi:</b> ' + (emp.posisi || 'Field') + '</p>');
+            
+            jendelaCetak.document.write('<table>');
+            jendelaCetak.document.write('<tr><th>Komponen Upah</th><th style="text-align:right;">Jumlah (IDR)</th></tr>');
+            jendelaCetak.document.write('<tr><td><b>I. UPAH TETAP (UT)</b><br>- Upah Pokok<br>- TAUP (Tunjangan Tetap)</td><td style="text-align:right;"><b>Rp ' + Math.round(upahTetap).toLocaleString('id-ID') + '</b><br>Rp ' + Math.round(upahPokok).toLocaleString('id-ID') + '<br>Rp ' + Math.round(taup).toLocaleString('id-ID') + '</td></tr>');
+            jendelaCetak.document.write('<tr><td><b>II. UPAH TIDAK TETAP & LEMBUR</b><br>- Tunjangan Kehadiran<br>- Uang Makan / Ekstra / Lainnya<br>- Upah Lembur (' + (emp.otKonversi || 0).toFixed(1) + ' Jam)</td><td style="text-align:right;"><b>Rp ' + Math.round(upahTidakTetap).toLocaleString('id-ID') + '</b><br>Rp ' + Math.round(tunjanganHadir).toLocaleString('id-ID') + '<br>Rp ' + Math.round(uangMakanLain).toLocaleString('id-ID') + '<br>Rp ' + Math.round(upahLembur).toLocaleString('id-ID') + '</td></tr>');
+            jendelaCetak.document.write('<tr style="background-color:#f8fafc;"><td><b>GAJI BRUTO (I + II)</b></td><td style="text-align:right;"><b>Rp ' + Math.round(gajiBruto).toLocaleString('id-ID') + '</b></td></tr>');
+            jendelaCetak.document.write('<tr><td><b>III. POTONGAN RESMI</b><br>- BPJS Ketenagakerjaan (JHT 2%)<br>- BPJS Ketenagakerjaan (JP)<br>- BPJS Kesehatan (1%)<br>- PPh Pasal 21</td><td style="text-align:right;"><b>Rp ' + Math.round(totalPotongan).toLocaleString('id-ID') + '</b><br>Rp ' + Math.round(jht).toLocaleString('id-ID') + '<br>Rp ' + Math.round(jp).toLocaleString('id-ID') + '<br>Rp ' + Math.round(bpjsKes).toLocaleString('id-ID') + '<br>Rp ' + Math.round(pph21).toLocaleString('id-ID') + '</td></tr>');
+            jendelaCetak.document.write('<tr style="background-color:#e0f2fe;"><td><b>UPAH DITERIMA BERSIH (NETTO / THP)</b></td><td style="text-align:right;"><b>Rp ' + Math.round(netto).toLocaleString('id-ID') + '</b></td></tr>');
+            jendelaCetak.document.write('</table>');
+            
+            jendelaCetak.document.write('<br><br><div style="display:flex;justify-content:space-between;font-size:12px;"><div>Luwuk, 23 Juli 2026<br><b>PT SENTRAL SARI JAYA</b><br><br><br><b>Lisa Yulandari</b><br>Finance Manager</div><div><br>Penerima,<br><br><br><br><b>' + emp.name + '</b></div></div>');
+            jendelaCetak.document.write('</body></html>');
+            jendelaCetak.document.close();
+            jendelaCetak.focus();
+            setTimeout(() => { jendelaCetak.print(); }, 500);
+        }
+
+        // --- FUNGSI CETAK REKAPITULASI PAYROLL UTUH ---
+        function cetakRekapitulasiPayrollPDF() {
+            let data = muatDataPayroll();
+            if (data.length === 0) {
+                alert('Belum ada data untuk direkap.');
+                return;
+            }
+
+            let jendelaCetak = window.open('', '', 'height=700,width=1100');
+            jendelaCetak.document.write('<html><head><title>Rekapitulasi Gaji Keseluruhan - PT Sentral Sari Jaya</title>');
+            jendelaCetak.document.write('<style>body{font-family:sans-serif;padding:20px;color:#1e293b;} h2,h3{text-align:center;margin:2px 0;} table{width:100%;border-collapse:collapse;margin-top:15px;font-size:10px;} th,td{border:1px solid #334155;padding:5px 6px;text-align:center;} th{background-color:#0b132b;color:white;text-transform:uppercase;} td.nama{text-align:left;font-weight:bold;}</style>');
+            jendelaCetak.document.write('</head><body>');
+            jendelaCetak.document.write('<h2>PT SENTRAL SARI JAYA - ZONA 13 MATINDOK</h2>');
+            jendelaCetak.document.write('<h3>REKAPITULASI UPAH KARYAWAN KESELURUHAN (PERIODE BULANAN)</h3>');
+            jendelaCetak.document.write('<p style="text-align:center;font-size:11px;color:#64748b;margin-bottom:15px;">Laporan Berdasarkan Input Riil Upah Tetap, Lembur & Potongan Resmi</p>');
+            
+            jendelaCetak.document.write('<table>');
+            jendelaCetak.document.write('<thead><tr><th>No</th><th>Nama Karyawan</th><th>Jabatan</th><th>Sistem</th><th>Upah Tetap (I)</th><th>Upah Tidak Tetap (II)</th><th>Gaji Bruto</th><th>JHT</th><th>JP</th><th>BPJS Kes</th><th>PPh 21</th><th>Total Potongan</th><th>Netto (THP)</th></tr></thead><tbody>');
+
+            let totPokok=0, totTidakTetap=0, totBruto=0, totPot=0, totNetto=0;
+
+            data.forEach((emp) => {
+                let upahPokok = emp.customUpahPokok || 0;
+                let taup = emp.customTaup || 0;
+                let upahTetap = upahPokok + taup;
+                let tunjanganHadir = emp.customTunjanganHadir || 0;
+                let uangMakanLain = emp.customUangMakan || 0;
+                let upahLembur = (emp.otKonversi || 0) * (upahTetap > 0 ? (upahTetap / 173) : 0);
+                let upahTidakTetap = tunjanganHadir + uangMakanLain + upahLembur;
+                let gajiBruto = upahTetap + upahTidakTetap;
+
+                let jht = upahTetap * 0.02;
+                let jp = upahTetap > 0 ? 31976 : 0;
+                let bpjsKes = upahTetap > 0 ? 31976 : 0;
+                let pph21 = gajiBruto > 0 ? (emp.sistem === 'Shift' ? 89745 : 95000) : 0;
+                let totalPotongan = jht + jp + bpjsKes + pph21;
+                let netto = gajiBruto - totalPotongan;
+
+                totPokok += upahTetap;
+                totTidakTetap += upahTidakTetap;
+                totBruto += gajiBruto;
+                totPot += totalPotongan;
+                totNetto += netto;
+
+                jendelaCetak.document.write(`
+                    <tr>
+                        <td>${emp.no}</td>
+                        <td class="nama">${emp.name}</td>
+                        <td>${emp.jabatan}</td>
+                        <td>${emp.sistem}</td>
+                        <td>${Math.round(upahTetap).toLocaleString('id-ID')}</td>
+                        <td>${Math.round(upahTidakTetap).toLocaleString('id-ID')}</td>
+                        <td><b>${Math.round(gajiBruto).toLocaleString('id-ID')}</b></td>
+                        <td>${Math.round(jht).toLocaleString('id-ID')}</td>
+                        <td>${Math.round(jp).toLocaleString('id-ID')}</td>
+                        <td>${Math.round(bpjsKes).toLocaleString('id-ID')}</td>
+                        <td>${Math.round(pph21).toLocaleString('id-ID')}</td>
+                        <td><b>${Math.round(totalPotongan).toLocaleString('id-ID')}</b></td>
+                        <td><b>${Math.round(netto).toLocaleString('id-ID')}</b></td>
+                    </tr>
+                `);
+            });
+
+            jendelaCetak.document.write(`
+                <tr style="background-color:#f1f5f9;font-weight:bold;">
+                    <td colspan="4" style="text-align:right;">TOTAL KESELURUHAN:</td>
+                    <td>${Math.round(totPokok).toLocaleString('id-ID')}</td>
+                    <td>${Math.round(totTidakTetap).toLocaleString('id-ID')}</td>
+                    <td>${Math.round(totBruto).toLocaleString('id-ID')}</td>
+                    <td colspan="4">-</td>
+                    <td>${Math.round(totPot).toLocaleString('id-ID')}</td>
+                    <td>${Math.round(totNetto).toLocaleString('id-ID')}</td>
+                </tr>
+            `);
+
+            jendelaCetak.document.write('</tbody></table>');
+            jendelaCetak.document.write('</body></html>');
+            jendelaCetak.document.close();
+            jendelaCetak.focus();
+            setTimeout(() => { jendelaCetak.print(); }, 500);
         }
 
         document.getElementById('searchPayroll').addEventListener('input', renderPayrollTable);
