@@ -469,7 +469,7 @@ function simpanAbsenHarian() {
                     let durasiKerjaBersih = totalJamKerja - 1;
                     jamLemburAktual = (durasiKerjaBersih > 8) ? (durasiKerjaBersih - 8) : 0;
                 }
-                karyawan.makanSiang += 1; // Makan siang rutin hanya untuk Non-Shift
+                // HAPUS penambahan makan siang rutin dobel di sini agar murni dihitung dari aturan lembur/ketentuan spesifik
             } else {
                 if(totalJamKerja > 12) {
                     jamLemburAktual = totalJamKerja - 12;
