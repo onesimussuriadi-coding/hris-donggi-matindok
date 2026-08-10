@@ -30,7 +30,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Pemisahan Akurat OFF Murni vs OFF Masuk Kerja & Rumus Depnaker</p>
+                <p class="text-xs text-slate-500 mt-0.5">Pengurutan Kronologis Tanggal Otomatis & Proteksi Status OFF</p>
             </div>
             <div class="flex gap-3">
                 <button onclick="bukaModalAbsen('Shift')" class="bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow hover:bg-emerald-800 transition flex items-center gap-2">
@@ -107,7 +107,7 @@
     <div id="modalAbsen" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
         <div class="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl">
             <h3 id="modalTitle" class="text-lg font-bold mb-1 text-slate-800">Input Absen Harian</h3>
-            <p class="text-xs text-slate-500 mb-4">Pilih status kehadiran (OFF Murni vs OFF Masuk Kerja) untuk proteksi perhitungan.</p>
+            <p class="text-xs text-slate-500 mb-4">Pilih status kehadiran dan jenis hari dengan akurat.</p>
             
             <div class="space-y-4">
                 <div>
@@ -165,11 +165,10 @@
                             <option value="libur">🎉 Hari Libur / Tanggal Merah / Off</option>
                         </select>
                     </div>
-              </div>
+                </div>
 
-                <!-- KELOMPOK PILIHAN SHIFT -->
                 <div id="wrapperPilihanShift" class="bg-amber-50 border border-amber-200 p-3 rounded-xl hidden">
-                    <label class="block text-xs font-bold text-amber-800 mb-1">Pilih Shift Kerja (Otomatis Atur Jam Masuk & Keluar)</label>
+                    <label class="block text-xs font-bold text-amber-800 mb-1">Pilih Shift Kerja (Otomatis Atur Jam)</label>
                     <select id="pilihanShiftKerja" onchange="aturJamOtomatisShift()" class="w-full border border-amber-300 rounded-lg p-2 text-sm font-semibold text-amber-900 bg-white outline-none">
                         <option value="pagi">☀️ Shift Pagi (07:00 - 19:00)</option>
                         <option value="malam">🌙 Shift Malam (19:00 - 07:00)</option>
@@ -195,22 +194,27 @@
         </div>
     </div>
 
-    <!-- MODAL HISTORI & KOREKSI TANGGAL SPESIFIK -->
+    <!-- MODAL HISTORI & FITUR CETAK / UNDUH -->
     <div id="modalHistori" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
-        <div class="bg-white w-full max-w-3xl rounded-2xl p-6 shadow-2xl">
+        <div class="bg-white w-full max-w-4xl rounded-2xl p-6 shadow-2xl">
             <div class="flex justify-between items-center mb-4">
                 <div>
                     <h3 id="historiTitle" class="text-lg font-bold text-slate-800">Histori Absen & Rincian Lembur</h3>
-                    <p class="text-xs text-slate-500">Anda dapat menghapus tanggal keliru tertentu atau menggunakan tombol Hapus Semua.</p>
+                    <p class="text-xs text-slate-500">Data otomatis terurut kronologis tanggal. Tersedia tombol cetak dan unduh laporan.</p>
                 </div>
-                <button onclick="tutupModalHistori()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">✕</button>
+                <div class="flex gap-2">
+                    <button onclick="printHistori()" class="bg-slate-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-slate-800 transition shadow-sm">🖨️ Cetak (Print)</button>
+                    <button onclick="downloadCSVHistori()" class="bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-800 transition shadow-sm">📥 Unduh CSV/Excel</button>
+                    <button onclick="tutupModalHistori()" class="text-slate-400 hover:text-slate-600 font-bold text-lg ml-2">✕</button>
+                </div>
             </div>
 
-            <div class="mb-4">
+            <div class="mb-3 flex justify-between items-center">
                 <button onclick="hapusSemuaHistori()" class="bg-rose-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-rose-700 transition shadow-sm">🗑️ Hapus Semua Histori Karyawan Ini</button>
+                <span class="text-xs text-blue-700 font-semibold" id="infoAdminBadge">🔒 Mode Admin / Manajemen Aktif</span>
             </div>
             
-            <div class="max-h-80 overflow-y-auto border rounded-xl mb-4">
+            <div class="max-h-80 overflow-y-auto border rounded-xl mb-4" id="areaTabelHistoriCetak">
                 <table class="w-full text-left border-collapse text-xs">
                     <thead class="bg-slate-100 text-slate-600 uppercase sticky top-0">
                         <tr>
@@ -275,323 +279,379 @@
             dataFiltered.forEach((item) => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition">
-                      <td class="p-4 text-center font-semibold text-slate-600">${item.no}</td>
-                      <td class="p-4 font-bold text-slate-900">${item.name}</td>
-                      <td class="p-4 text-slate-700">
-                          ${item.jabatan} <br>
-                          <span class="text-xs text-slate-500">Grade: ${item.grade} | Posisi: ${item.posisi}</span>
-                          <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded border border-slate-200 font-semibold ml-1">${item.sistem}</span>
-                      </td>
-                      <td class="p-4 text-center font-bold text-emerald-700">${item.hk} Hari</td>
-                      <td class="p-4 text-center font-bold text-slate-700">${item.otAktual} Jam</td>
-                      <td class="p-4 text-center font-bold text-blue-700">${item.otKonversi} Jam</td>
-                      <td class="p-4 text-center font-semibold text-slate-600">
-                          <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded border border-slate-200 text-xs">
-                              🍳 Pagi: ${item.makanPagi} | 🍱 Siang: ${item.makanSiang} | 🌙 Malam: ${item.makanMalam}
-                          </span>
-                          <div class="text-[10px] text-blue-600 mt-1 font-semibold">Status: ${item.catatanStatus}</div>
-                      </td>
-                      <td class="p-4 text-center">
-                          <button onclick="bukaModalHistori(${item.no})" class="bg-indigo-600 text-white px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-indigo-700 transition shadow-sm">📄 Histori & Koreksi</button>
-                      </td>
-                    </tr>
-                `;
-          });
-      }
-
-      function bukaModalHistori(noKaryawan) {
-          activeKaryawanNo = noKaryawan;
-          let karyawan = masterKaryawan.find(k => k.no === noKaryawan);
-          if(!karyawan) return;
-
-          document.getElementById('historiTitle').innerText = `Histori Absen & Rincian Lembur: ${karyawan.name}`;
-          const tbodyHistori = document.getElementById('tabelHistoriItem');
-          tbodyHistori.innerHTML = '';
-
-          if(karyawan.historiAbsen.length === 0) {
-            tbodyHistori.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada catatan histori absen yang diinput.</td></tr>`;
-          } else {
-            karyawan.historiAbsen.forEach((h, index) => {
-                tbodyHistori.innerHTML += `
-                    <tr class="hover:bg-slate-50">
-                      <td class="p-3 font-bold text-slate-700">${h.tanggalStr}</td>
-                      <td class="p-3 font-semibold text-emerald-700">${h.status} (${h.jenisHari || 'Biasa'})</td>
-                      <td class="p-3 text-center text-slate-600">${h.jamMasuk} - ${h.jamKeluar}</td>
-                      <td class="p-3 text-center font-bold text-slate-700">${h.otAktual} Jam</td>
-                      <td class="p-3 text-center font-bold text-blue-600">${h.otKonversi} Jam</td>
-                      <td class="p-3 text-center">
-                          <button onclick="hapusHistoriTanggal(${karyawan.no}, ${index})" class="bg-rose-600 text-white px-2.5 py-1 rounded text-[11px] font-semibold hover:bg-rose-700 shadow-sm">🗑️ Hapus</button>
-                      </td>
+                        <td class="p-4 text-center font-semibold text-slate-600">${item.no}</td>
+                        <td class="p-4 font-bold text-slate-900">${item.name}</td>
+                        <td class="p-4 text-slate-700">
+                            ${item.jabatan} <br>
+                            <span class="text-xs text-slate-500">Grade: ${item.grade} | Posisi: ${item.posisi}</span>
+                            <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded border border-slate-200 font-semibold ml-1">${item.sistem}</span>
+                        </td>
+                        <td class="p-4 text-center font-bold text-emerald-700">${item.hk} Hari</td>
+                        <td class="p-4 text-center font-bold text-slate-700">${item.otAktual} Jam</td>
+                        <td class="p-4 text-center font-bold text-blue-700">${item.otKonversi} Jam</td>
+                        <td class="p-4 text-center font-semibold text-slate-600">
+                            <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded border border-slate-200 text-xs">
+                                🍳 Pagi: ${item.makanPagi} | 🍱 Siang: ${item.makanSiang} | 🌙 Malam: ${item.makanMalam}
+                            </span>
+                            <div class="text-[10px] text-blue-600 mt-1 font-semibold">Status: ${item.catatanStatus}</div>
+                        </td>
+                        <td class="p-4 text-center">
+                            <button onclick="bukaModalHistori(${item.no})" class="bg-indigo-600 text-white px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-indigo-700 transition shadow-sm">📄 Histori & Koreksi</button>
+                        </td>
                     </tr>
                 `;
             });
-          }
-
-          document.getElementById('modalHistori').classList.remove('hidden');
-    }
-
-    function tutupModalHistori() {
-        document.getElementById('modalHistori').classList.add('hidden');
-    }
-
-    function hapusSemuaHistori() {
-        let karyawan = masterKaryawan.find(k => k.no === activeKaryawanNo);
-        if(!karyawan) return;
-
-        if(confirm(`⚠️ Yakin ingin menghapus SELURUH histori absen untuk ${karyawan.name}? Akumulasi akan kembali ke 0.`)) {
-            karyawan.hk = 0;
-            karyawan.otAktual = 0;
-            karyawan.otKonversi = 0;
-            karyawan.makanPagi = 0;
-            karyawan.makanSiang = 0;
-            karyawan.makanMalam = 0;
-            karyawan.historiAbsen = [];
-            karyawan.catatanStatus = "Telah di-reset total";
-
-            localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
-            renderTabel();
-            bukaModalHistori(activeKaryawanNo);
-            alert('Semua histori berhasil dibersihkan!');
-        }
-    }
-
-    function hapusHistoriTanggal(noKaryawan, indexHistori) {
-        let karyawan = masterKaryawan.find(k => k.no === noKaryawan);
-        if(!karyawan) return;
-
-        let itemDihapus = karyawan.historiAbsen[indexHistori];
-
-        if(confirm(`Hapus catatan tanggal ${itemDihapus.tanggalStr} untuk ${karyawan.name}? Akumulasi HK dan lembur akan disesuaikan.`)) {
-            if(itemDihapus.status === 'MASUK' || itemDihapus.status === 'DINAS' || itemDihapus.otAktual > 0) {
-                if(itemDihapus.status === 'MASUK' || itemDihapus.status === 'DINAS') {
-                    karyawan.hk = Math.max(0, karyawan.hk - 1);
-                }
-                karyawan.otAktual = Math.max(0, karyawan.otAktual - itemDihapus.otAktual);
-                karyawan.otKonversi = Math.max(0, karyawan.otKonversi - itemDihapus.otKonversi);
-                if(karyawan.sistem === 'Non Shift') {
-                    karyawan.makanSiang = Math.max(0, karyawan.makanSiang - 1);
-                } else {
-                    karyawan.makanMalam = Math.max(0, karyawan.makanMalam - 1);
-                }
-            }
-
-            karyawan.historiAbsen.splice(indexHistori, 1);
-            karyawan.catatanStatus = karyawan.historiAbsen.length > 0 ? karyawan.historiAbsen[karyawan.historiAbsen.length - 1].catatanRingkas : "Belum ada input";
-
-            localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
-            renderTabel();
-            bukaModalHistori(noKaryawan);
-            alert('Data tanggal berhasil dihapus!');
-        }
-    }
-
-    function bukaModalAbsen(sistemKerja) {
-        document.getElementById('modalTitle').innerText = `Input Absen Harian (${sistemKerja})`;
-        
-        const today = new Date();
-        document.getElementById('inputTanggal').value = today.getDate();
-        
-        const daftarBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-        document.getElementById('inputBulan').value = daftarBulan[today.getMonth()];
-        document.getElementById('inputTahun').value = today.getFullYear();
-
-        const select = document.getElementById('pilihKaryawan');
-        select.innerHTML = '';
-        
-        masterKaryawan.filter(k => k.sistem === sistemKerja).forEach((k) => {
-            select.innerHTML += `<option value="${k.no}">${k.name} - ${k.jabatan} (Grade ${k.grade})</option>`;
-        });
-
-        document.getElementById('statusKehadiran').value = 'masuk';
-        gantiStatusAbsen(); // Sesuaikan tampilan form awal
-        document.getElementById('modalAbsen').classList.remove('hidden');
-    }
-
-    // FUNGSI MENGATUR TAMPILAN JIKA PILIH OFF MURNI VS OFF MASUK KERJA
-    function gantiStatusAbsen() {
-        const status = document.getElementById('statusKehadiran').value;
-        const wrapperShift = document.getElementById('wrapperPilihanShift');
-        const wrapperJam = document.getElementById('wrapperJamKerja');
-        
-        // Cek apakah karyawan yang dipilih shift atau non-shift
-        const selectedNo = parseInt(document.getElementById('pilihKaryawan').value);
-        let karyawan = masterKaryawan.find(k => k.no === selectedNo);
-        let isShift = karyawan ? karyawan.sistem === 'Shift' : true;
-
-        if (status === 'off_murni' || status === 'cuti' || status === 'izin' || status === 'sakit' || status === 'alfa') {
-            // Jika OFF Murni atau tidak masuk kerja, sembunyikan jam kerja / buat non-aktif
-            wrapperShift.classList.add('hidden');
-            wrapperJam.classList.add('hidden');
-        } else {
-            // Jika Masuk, Dinas, atau OFF tapi Masuk Kerja
-            wrapperJam.classList.remove('hidden');
-            if (isShift) {
-                wrapperShift.classList.remove('hidden');
-                document.getElementById('pilihanShiftKerja').value = 'pagi';
-                aturJamOtomatisShift();
-            } else {
-                wrapperShift.classList.add('hidden');
-                document.getElementById('jamMasuk').value = "07:00";
-                document.getElementById('jamKeluar').value = "16:00";
-            }
-        }
-    }
-
-    function aturJamOtomatisShift() {
-        const jenisShift = document.getElementById('pilihanShiftKerja').value;
-        if(jenisShift === 'pagi') {
-            document.getElementById('jamMasuk').value = "07:00";
-            document.getElementById('jamKeluar').value = "19:00";
-        } else if(jenisShift === 'malam') {
-            document.getElementById('jamMasuk').value = "19:00";
-            document.getElementById('jamKeluar').value = "07:00";
-        }
-    }
-
-    function tutupModal() {
-        document.getElementById('modalAbsen').classList.add('hidden');
-    }
-
-    function hitungKonversiDepnaker(jamAktual, jenisHari) {
-        if (jamAktual <= 0) return 0;
-        if (jenisHari === 'biasa') {
-            if (jamAktual <= 1) {
-                return jamAktual * 1.5;
-            } else {
-                return 1.5 + ((jamAktual - 1) * 2.0);
-            }
-        } else {
-            if (jamAktual <= 7) {
-                return jamAktual * 2.0;
-            } else if (jamAktual <= 8) {
-                return (7 * 2.0) + ((jamAktual - 7) * 3.0);
-            } else {
-                return (7 * 2.0) + (1 * 3.0) + ((jamAktual - 8) * 4.0);
-            }
-        }
-    }
-
-    function simpanAbsenHarian() {
-        const selectedNo = parseInt(document.getElementById('pilihKaryawan').value);
-        const status = document.getElementById('statusKehadiran').value;
-        const jenisHari = document.getElementById('jenisHari').value;
-        const tgl = parseInt(document.getElementById('inputTanggal').value);
-        const bln = document.getElementById('inputBulan').value;
-        const thn = parseInt(document.getElementById('inputTahun').value);
-        
-        if (isNaN(tgl) || tgl < 1 || tgl > 31) {
-            alert('⚠️ Validasi Gagal: Tanggal harus di antara angka 1 sampai 31.');
-            document.getElementById('inputTanggal').focus();
-            return;
         }
 
-        let karyawan = masterKaryawan.find(k => k.no === selectedNo);
-        
-        if(karyawan) {
-            let tanggalStr = `${tgl} ${bln} ${thn}`;
-            let jamMasuk = "00:00";
-            let jamKeluar = "00:00";
-            let totalJamKerja = 0;
-            let jamLemburAktual = 0;
-            let jamLemburKonversi = 0;
+        // FUNGSI HELPER UNTUK KONVERSI BULAN MENJADI ANGKA URUTAN
+        const petaBulan = {
+            "Januari": 1, "Februari": 2, "Maret": 3, "April": 4, "Mei": 5, "Juni": 6,
+            "Juli": 7, "Agustus": 8, "September": 9, "Oktober": 10, "November": 11, "Desember": 12
+        };
 
-            if (status !== 'off_murni' && status !== 'cuti' && status !== 'izin' && status !== 'sakit' && status !== 'alfa') {
-                jamMasuk = document.getElementById('jamMasuk').value;
-                jamKeluar = document.getElementById('jamKeluar').value;
-                
-                let [jamIn, menitIn] = jamMasuk.split(':').map(Number);
-                let [jamOut, menitOut] = jamKeluar.split(':').map(Number);
-                totalJamKerja = (jamOut + menitOut/60) - (jamIn + menitIn/60);
-                if(totalJamKerja < 0) totalJamKerja += 24;
-            }
+        function parseTanggalKeObjek(tanggalStr) {
+            // Format tersimpan: "12 Juli 2026"
+            let bagian = tanggalStr.split(" ");
+            let tgl = parseInt(bagian[0]) || 1;
+            let bln = petaBulan[bagian[1]] || 1;
+            let thn = parseInt(bagian[2]) || 2026;
+            return new Date(thn, bln - 1, tgl);
+        }
 
-            // LOGIKA AKUMULASI BERDASARKAN STATUS
-            if(status === 'masuk' || status === 'dinas') {
-                karyawan.hk += 1;
-                if(karyawan.sistem === 'Non Shift') {
-                    if (jenisHari === 'libur') {
-                      jamLemburAktual = totalJamKerja;
-                    } else {
-                      let durasiKerjaBersih = totalJamKerja - 1;
-                      jamLemburAktual = (durasiKerjaBersih > 8) ? (durasiKerjaBersih - 8) : 0;
-                    }
-                    karyawan.makanSiang += 1;
-                } else {
-                    if(totalJamKerja > 12) {
-                      jamLemburAktual = totalJamKerja - 12;
-                  }
-                  karyawan.makanMalam += 1;
-                }
-            } else if(status === 'off_masuk') {
-                // OFF tapi masuk kerja (dihitung lembur penuh, tidak menambah HK reguler)
-                if(karyawan.sistem === 'Non Shift') {
-                    if (jenisHari === 'libur') {
-                      jamLemburAktual = totalJamKerja;
-                    } else {
-                      let durasiKerjaBersih = totalJamKerja - 1;
-                      jamLemburAktual = (durasiKerjaBersih > 0) ? durasiKerjaBersih : 0;
-                    }
-                    karyawan.makanSiang += 1;
-                } else {
-                    jamLemburAktual = totalJamKerja;
-                    karyawan.makanMalam += 1;
-                }
-            }
+        function bukaModalHistori(noKaryawan) {
+            activeKaryawanNo = noKaryawan;
+            let karyawan = masterKaryawan.find(k => k.no === noKaryawan);
+            if(!karyawan) return;
 
-            if(jamLemburAktual < 0) jamLemburAktual = 0;
-            jamLemburKonversi = hitungKonversiDepnaker(jamLemburAktual, jenisHari);
-
-            karyawan.otAktual += jamLemburAktual;
-            karyawan.otKonversi += jamLemburKonversi;
-            karyawan.catatanStatus = `${tanggalStr}: ${status.toUpperCase()}`;
-            
-            karyawan.historiAbsen.push({
-                tanggalStr: tanggalStr,
-                status: status.toUpperCase(),
-                jenisHari: jenisHari === 'libur' ? 'Libur/Merah' : 'Biasa',
-                jamMasuk: jamMasuk,
-                jamKeluar: jamKeluar,
-                otAktual: jamLemburAktual,
-                otKonversi: jamLemburKonversi,
-                catatanRingkas: karyawan.catatanStatus
+            // URUTKAN HISTORI SECARA KRONOLOGIS (TANGGAL TERKECIL KE TERBESAR)
+            karyawan.historiAbsen.sort((a, b) => {
+                let dateA = parseTanggalKeObjek(a.tanggalStr);
+                let dateB = parseTanggalKeObjek(b.tanggalStr);
+                return dateA - dateB;
             });
 
-            localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
-            
-            const payload = {
-                nama: karyawan.name,
-                sistem: karyawan.sistem,
-                status: status.toUpperCase(),
-                jenisHari: jenisHari,
-                tanggal: tanggalStr,
-                bulan: bln,
-                jamMasuk: jamMasuk,
-                jamKeluar: jamKeluar,
-                tipeShift: karyawan.sistem,
-                totalHk: karyawan.hk,
-                uangMakan: `Pagi: ${karyawan.makanPagi} | Siang: ${karyawan.makanSiang} | Malam: ${karyawan.makanMalam}`,
-                otAktual: karyawan.otAktual,
-                otKonversi: karyawan.otKonversi,
-                catatan: karyawan.catatanStatus
-            };
+            document.getElementById('historiTitle').innerText = `Histori Absen & Rincian Lembur: ${karyawan.name}`;
+            const tbodyHistori = document.getElementById('tabelHistoriItem');
+            tbodyHistori.innerHTML = '';
 
-            fetch(CLOUD_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams(payload).toString()
-            }).then(() => {
-                alert(`SUKSES! Data tgl ${tanggalStr} untuk ${karyawan.name} telah disimpan.`);
+            if(karyawan.historiAbsen.length === 0) {
+                tbodyHistori.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada catatan histori absen yang diinput.</td></tr>`;
+            } else {
+                karyawan.historiAbsen.forEach((h, index) => {
+                    tbodyHistori.innerHTML += `
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 font-bold text-slate-700">${h.tanggalStr}</td>
+                            <td class="p-3 font-semibold text-emerald-700">${h.status} (${h.jenisHari || 'Biasa'})</td>
+                            <td class="p-3 text-center text-slate-600">${h.jamMasuk} - ${h.jamKeluar}</td>
+                            <td class="p-3 text-center font-bold text-slate-700">${h.otAktual} Jam</td>
+                            <td class="p-3 text-center font-bold text-blue-600">${h.otKonversi} Jam</td>
+                            <td class="p-3 text-center">
+                                <button onclick="hapusHistoriTanggal(${karyawan.no}, ${index})" class="bg-rose-600 text-white px-2.5 py-1 rounded text-[11px] font-semibold hover:bg-rose-700 shadow-sm">🗑️ Hapus</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+
+            document.getElementById('modalHistori').classList.remove('hidden');
+        }
+
+        function tutupModalHistori() {
+            document.getElementById('modalHistori').classList.add('hidden');
+        }
+
+        // FITUR CETAK (PRINT) HISTORI
+        function printHistori() {
+            let konten = document.getElementById('areaTabelHistoriCetak').innerHTML;
+            let judul = document.getElementById('historiTitle').innerText;
+            let jendelaCetak = window.open('', '', 'height=600,width=800');
+            jendelaCetak.document.write('<html><head><title>Cetak Laporan - ' + judul + '</title>');
+            jendelaCetak.document.write('<style>body{font-family:sans-serif;padding:20px;} table{width:100%;border-collapse:collapse;margin-top:15px;} th, td{border:1px solid #cbd5e1;padding:8px;text-align:left;font-size:12px;} th{background-color:#f1f5f9;}</style>');
+            jendelaCetak.document.write('</head><body>');
+            jendelaCetak.document.write('<h2>' + judul + '</h2>');
+            jendelaCetak.document.write('<p>Field Donggi Matindok - Zona 13</p>');
+            jendelaCetak.document.write(konten);
+            jendelaCetak.document.write('</body></html>');
+            jendelaCetak.document.close();
+            jendelaCetak.focus();
+            setTimeout(() => { jendelaCetak.print(); jendelaCetak.close(); }, 500);
+        }
+
+        // FITUR UNDUH CSV / EXCEL
+        function downloadCSVHistori() {
+            let karyawan = masterKaryawan.find(k => k.no === activeKaryawanNo);
+            if(!karyawan || karyawan.historiAbsen.length === 0) {
+                alert('Tidak ada data untuk diunduh.');
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,Tanggal Absen,Status Kehadiran,Jenis Hari,Jam Masuk,Jam Keluar,Lembur Aktual (Jam),Lembur Konversi (Jam)\r\n";
+            karyawan.historiAbsen.forEach(h => {
+                let row = `"${h.tanggalStr}","${h.status}","${h.jenisHari}","${h.jamMasuk}","${h.jamKeluar}","${h.otAktual}","${h.otKonversi}"`;
+                csvContent += row + "\r\n";
+            });
+
+            let encodedUri = encodeURI(csvContent);
+            let link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Timesheet_${karyawan.name.replace(/\s+/g, '_')}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function hapusSemuaHistori() {
+            let karyawan = masterKaryawan.find(k => k.no === activeKaryawanNo);
+            if(!karyawan) return;
+
+            if(confirm(`⚠️ Yakin ingin menghapus SELURUH histori absen untuk ${karyawan.name}? Akumulasi akan kembali ke 0.`)) {
+                karyawan.hk = 0;
+                karyawan.otAktual = 0;
+                karyawan.otKonversi = 0;
+                karyawan.makanPagi = 0;
+                karyawan.makanSiang = 0;
+                karyawan.makanMalam = 0;
+                karyawan.historiAbsen = [];
+                karyawan.catatanStatus = "Telah di-reset total";
+
+                localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
                 renderTabel();
-                tutupModal();
-            }).catch((error) => {
-                console.error('Koneksi:', error);
-                alert('Gagal terhubung ke Cloud.');
-            });
-      }
-    }
+                bukaModalHistori(activeKaryawanNo);
+                alert('Semua histori berhasil dibersihkan!');
+            }
+        }
 
-    window.onload = renderTabel;
-  </script>
+        function hapusHistoriTanggal(noKaryawan, indexHistori) {
+            let karyawan = masterKaryawan.find(k => k.no === noKaryawan);
+            if(!karyawan) return;
+
+            let itemDihapus = karyawan.historiAbsen[indexHistori];
+
+            if(confirm(`Hapus catatan tanggal ${itemDihapus.tanggalStr} untuk ${karyawan.name}? Akumulasi HK dan lembur akan disesuaikan.`)) {
+                if(itemDihapus.status === 'MASUK' || itemDihapus.status === 'DINAS' || itemDihapus.otAktual > 0) {
+                    if(itemDihapus.status === 'MASUK' || itemDihapus.status === 'DINAS') {
+                        karyawan.hk = Math.max(0, karyawan.hk - 1);
+                    }
+                    karyawan.otAktual = Math.max(0, karyawan.otAktual - itemDihapus.otAktual);
+                    karyawan.otKonversi = Math.max(0, karyawan.otKonversi - itemDihapus.otKonversi);
+                    if(karyawan.sistem === 'Non Shift') {
+                        karyawan.makanSiang = Math.max(0, karyawan.makanSiang - 1);
+                    } else {
+                        karyawan.makanMalam = Math.max(0, karyawan.makanMalam - 1);
+                    }
+                }
+
+                karyawan.historiAbsen.splice(indexHistori, 1);
+                karyawan.catatanStatus = karyawan.historiAbsen.length > 0 ? karyawan.historiAbsen[karyawan.historiAbsen.length - 1].catatanRingkas : "Belum ada input";
+
+                localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
+                renderTabel();
+                bukaModalHistori(noKaryawan);
+                alert('Data tanggal berhasil dihapus!');
+            }
+        }
+
+        function bukaModalAbsen(sistemKerja) {
+            document.getElementById('modalTitle').innerText = `Input Absen Harian (${sistemKerja})`;
+            
+            const today = new Date();
+            document.getElementById('inputTanggal').value = today.getDate();
+            
+            const daftarBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            document.getElementById('inputBulan').value = daftarBulan[today.getMonth()];
+            document.getElementById('inputTahun').value = today.getFullYear();
+
+            const select = document.getElementById('pilihKaryawan');
+            select.innerHTML = '';
+            
+            masterKaryawan.filter(k => k.sistem === sistemKerja).forEach((k) => {
+                select.innerHTML += `<option value="${k.no}">${k.name} - ${k.jabatan} (Grade ${k.grade})</option>`;
+            });
+
+            document.getElementById('statusKehadiran').value = 'masuk';
+            gantiStatusAbsen();
+            document.getElementById('modalAbsen').classList.remove('hidden');
+        }
+
+        function gantiStatusAbsen() {
+            const status = document.getElementById('statusKehadiran').value;
+            const wrapperShift = document.getElementById('wrapperPilihanShift');
+            const wrapperJam = document.getElementById('wrapperJamKerja');
+            
+            const selectedNo = parseInt(document.getElementById('pilihKaryawan').value);
+            let karyawan = masterKaryawan.find(k => k.no === selectedNo);
+            let isShift = karyawan ? karyawan.sistem === 'Shift' : true;
+
+            if (status === 'off_murni' || status === 'cuti' || status === 'izin' || status === 'sakit' || status === 'alfa') {
+                wrapperShift.classList.add('hidden');
+                wrapperJam.classList.add('hidden');
+            } else {
+                wrapperJam.classList.remove('hidden');
+                if (isShift) {
+                    wrapperShift.classList.remove('hidden');
+                    document.getElementById('pilihanShiftKerja').value = 'pagi';
+                    aturJamOtomatisShift();
+                } else {
+                    wrapperShift.classList.add('hidden');
+                    document.getElementById('jamMasuk').value = "07:00";
+                    document.getElementById('jamKeluar').value = "16:00";
+                }
+            }
+        }
+
+        function aturJamOtomatisShift() {
+            const jenisShift = document.getElementById('pilihanShiftKerja').value;
+            if(jenisShift === 'pagi') {
+                document.getElementById('jamMasuk').value = "07:00";
+                document.getElementById('jamKeluar').value = "19:00";
+            } else if(jenisShift === 'malam') {
+                document.getElementById('jamMasuk').value = "19:00";
+                document.getElementById('jamKeluar').value = "07:00";
+            }
+        }
+
+        function tutupModal() {
+            document.getElementById('modalAbsen').classList.add('hidden');
+        }
+
+        function hitungKonversiDepnaker(jamAktual, jenisHari) {
+            if (jamAktual <= 0) return 0;
+            if (jenisHari === 'biasa') {
+                if (jamAktual <= 1) {
+                    return jamAktual * 1.5;
+                } else {
+                    return 1.5 + ((jamAktual - 1) * 2.0);
+                }
+            } else {
+                if (jamAktual <= 7) {
+                    return jamAktual * 2.0;
+                } else if (jamAktual <= 8) {
+                    return (7 * 2.0) + ((jamAktual - 7) * 3.0);
+                } else {
+                    return (7 * 2.0) + (1 * 3.0) + ((jamAktual - 8) * 4.0);
+                }
+            }
+        }
+
+        function simpanAbsenHarian() {
+            const selectedNo = parseInt(document.getElementById('pilihKaryawan').value);
+            const status = document.getElementById('statusKehadiran').value;
+            const jenisHari = document.getElementById('jenisHari').value;
+            const tgl = parseInt(document.getElementById('inputTanggal').value);
+            const bln = document.getElementById('inputBulan').value;
+            const thn = parseInt(document.getElementById('inputTahun').value);
+            
+            if (isNaN(tgl) || tgl < 1 || tgl > 31) {
+                alert('⚠️ Validasi Gagal: Tanggal harus di antara angka 1 sampai 31.');
+                document.getElementById('inputTanggal').focus();
+                return;
+            }
+
+            let karyawan = masterKaryawan.find(k => k.no === selectedNo);
+            
+            if(karyawan) {
+                let tanggalStr = `${tgl} ${bln} ${thn}`;
+                let jamMasuk = "00:00";
+                let jamKeluar = "00:00";
+                let totalJamKerja = 0;
+                let jamLemburAktual = 0;
+                let jamLemburKonversi = 0;
+
+                if (status !== 'off_murni' && status !== 'cuti' && status !== 'izin' && status !== 'sakit' && status !== 'alfa') {
+                    jamMasuk = document.getElementById('jamMasuk').value;
+                    jamKeluar = document.getElementById('jamKeluar').value;
+                    
+                    let [jamIn, menitIn] = jamMasuk.split(':').map(Number);
+                    let [jamOut, menitOut] = jamKeluar.split(':').map(Number);
+                    totalJamKerja = (jamOut + menitOut/60) - (jamIn + menitIn/60);
+                    if(totalJamKerja < 0) totalJamKerja += 24;
+                }
+
+                if(status === 'masuk' || status === 'dinas') {
+                    karyawan.hk += 1;
+                    if(karyawan.sistem === 'Non Shift') {
+                        if (jenisHari === 'libur') {
+                            jamLemburAktual = totalJamKerja;
+                        } else {
+                            let durasiKerjaBersih = totalJamKerja - 1;
+                            jamLemburAktual = (durasiKerjaBersih > 8) ? (durasiKerjaBersih - 8) : 0;
+                        }
+                        karyawan.makanSiang += 1;
+                    } else {
+                        if(totalJamKerja > 12) {
+                            jamLemburAktual = totalJamKerja - 12;
+                        }
+                        karyawan.makanMalam += 1;
+                    }
+                } else if(status === 'off_masuk') {
+                    if(karyawan.sistem === 'Non Shift') {
+                        if (jenisHari === 'libur') {
+                            jamLemburAktual = totalJamKerja;
+                        } else {
+                            let durasiKerjaBersih = totalJamKerja - 1;
+                            jamLemburAktual = (durasiKerjaBersih > 0) ? durasiKerjaBersih : 0;
+                        }
+                        karyawan.makanSiang += 1;
+                    } else {
+                        jamLemburAktual = totalJamKerja;
+                        karyawan.makanMalam += 1;
+                    }
+                }
+
+                if(jamLemburAktual < 0) jamLemburAktual = 0;
+                jamLemburKonversi = hitungKonversiDepnaker(jamLemburAktual, jenisHari);
+
+                karyawan.otAktual += jamLemburAktual;
+                karyawan.otKonversi += jamLemburKonversi;
+                karyawan.catatanStatus = `${tanggalStr}: ${status.toUpperCase()}`;
+                
+                karyawan.historiAbsen.push({
+                    tanggalStr: tanggalStr,
+                    status: status.toUpperCase(),
+                    jenisHari: jenisHari === 'libur' ? 'Libur/Merah' : 'Biasa',
+                    jamMasuk: jamMasuk,
+                    jamKeluar: jamKeluar,
+                    otAktual: jamLemburAktual,
+                    otKonversi: jamLemburKonversi,
+                    catatanRingkas: karyawan.catatanStatus
+                });
+
+                localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
+                
+                const payload = {
+                    nama: karyawan.name,
+                    sistem: karyawan.sistem,
+                    status: status.toUpperCase(),
+                    jenisHari: jenisHari,
+                    tanggal: tanggalStr,
+                    bulan: bln,
+                    jamMasuk: jamMasuk,
+                    jamKeluar: jamKeluar,
+                    tipeShift: karyawan.sistem,
+                    totalHk: karyawan.hk,
+                    uangMakan: `Pagi: ${karyawan.makanPagi} | Siang: ${karyawan.makanSiang} | Malam: ${karyawan.makanMalam}`,
+                    otAktual: karyawan.otAktual,
+                    otKonversi: karyawan.otKonversi,
+                    catatan: karyawan.catatanStatus
+                };
+
+                fetch(CLOUD_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(payload).toString()
+                }).then(() => {
+                    alert(`SUKSES! Data tgl ${tanggalStr} untuk ${karyawan.name} telah disimpan.`);
+                    renderTabel();
+                    tutupModal();
+                }).catch((error) => {
+                    console.error('Koneksi:', error);
+                    alert('Gagal terhubung ke Cloud.');
+                });
+            }
+        }
+
+        window.onload = renderTabel;
+    </script>
 </body>
 </html>
