@@ -30,7 +30,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-bold text-slate-800">Dashboard Time Sheet & Absen</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Kontrol Manual Jenis Hari (Hari Biasa / Hari Libur) & Jam Normal Akurat</p>
+                <p class="text-xs text-slate-500 mt-0.5">Kontrol Manual Shift Pagi / Malam & Rumus Depnaker Akurat</p>
             </div>
             <div class="flex gap-3">
                 <button onclick="bukaModalAbsen('Shift')" class="bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow hover:bg-emerald-800 transition flex items-center gap-2">
@@ -107,7 +107,7 @@
     <div id="modalAbsen" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
         <div class="bg-white w-full max-w-xl rounded-2xl p-6 shadow-2xl">
             <h3 id="modalTitle" class="text-lg font-bold mb-1 text-slate-800">Input Absen Harian</h3>
-            <p class="text-xs text-slate-500 mb-4">Pilih status jenis hari (Hari Biasa atau Hari Libur/Tanggal Merah) untuk akurasi lembur.</p>
+            <p class="text-xs text-slate-500 mb-4">Pilih jenis shift atau status hari untuk akurasi jam kerja dan lembur.</p>
             
             <div class="space-y-4">
                 <div>
@@ -164,6 +164,15 @@
                             <option value="libur">🎉 Hari Libur / Tanggal Merah / Off</option>
                         </select>
                     </div>
+                </div>
+
+                <!-- KELOMPOK PILIHAN SHIFT (KHUSUS KARYAWAN SHIFT) -->
+                <div id="wrapperPilihanShift" class="bg-amber-50 border border-amber-200 p-3 rounded-xl hidden">
+                    <label class="block text-xs font-bold text-amber-800 mb-1">Pilih Shift Kerja (Otomatis Atur Jam Masuk & Keluar)</label>
+                    <select id="pilihanShiftKerja" onchange="aturJamOtomatisShift()" class="w-full border border-amber-300 rounded-lg p-2 text-sm font-semibold text-amber-900 bg-white outline-none">
+                        <option value="pagi">☀️ Shift Pagi (07:00 - 19:00)</option>
+                        <option value="malam">🌙 Shift Malam (19:00 - 07:00)</option>
+                    </select>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
@@ -242,7 +251,7 @@
         masterKaryawan.forEach(k => { if(!k.historiAbsen) k.historiAbsen = []; });
 
         let filterAktif = 'Semua';
-        let activeKaryawanNo = null; // Menyimpan ID karyawan yang sedang dibuka modal historinya
+        let activeKaryawanNo = null;
 
         function setFilter(sistem) {
             filterAktif = sistem;
@@ -325,7 +334,6 @@
             document.getElementById('modalHistori').classList.add('hidden');
         }
 
-        // FUNGSI HAPUS SEMUA HISTORI KARYAWAN TERTENTU (UNTUK UJI COBA)
         function hapusSemuaHistori() {
             let karyawan = masterKaryawan.find(k => k.no === activeKaryawanNo);
             if(!karyawan) return;
@@ -392,10 +400,14 @@
                 select.innerHTML += `<option value="${k.no}">${k.name} - ${k.jabatan} (Grade ${k.grade})</option>`;
             });
 
+            // Kontrol Tampilan Tombol Shift Pagi / Malam
+            const wrapperShift = document.getElementById('wrapperPilihanShift');
             if(sistemKerja === 'Shift') {
-                document.getElementById('jamMasuk').value = "07:00";
-                document.getElementById('jamKeluar').value = "19:00";
+                wrapperShift.classList.remove('hidden');
+                document.getElementById('pilihanShiftKerja').value = 'pagi';
+                aturJamOtomatisShift(); // Set default pagi 07:00 - 19:00
             } else {
+                wrapperShift.classList.add('hidden');
                 document.getElementById('jamMasuk').value = "07:00";
                 document.getElementById('jamKeluar').value = "16:00";
             }
@@ -403,23 +415,33 @@
             document.getElementById('modalAbsen').classList.remove('hidden');
         }
 
+        // FUNGSI OTOMATIS UBAH JAM MASUK/KELUAR BERDASARKAN PILIHAN SHIFT
+        function aturJamOtomatisShift() {
+            const jenisShift = document.getElementById('pilihanShiftKerja').value;
+            if(jenisShift === 'pagi') {
+                document.getElementById('jamMasuk').value = "07:00";
+                document.getElementById('jamKeluar').value = "19:00";
+            } else if(jenisShift === 'malam') {
+                document.getElementById('jamMasuk').value = "19:00";
+                document.getElementById('jamKeluar').value = "07:00";
+            }
+        }
+
         function tutupModal() {
             document.getElementById('modalAbsen').classList.add('hidden');
         }
 
-        // RUMUS KONVERSI LEMBUR DEPNAKER (SESUAI TABEL SCREENSHOT BAPAK)
+        // RUMUS KONVERSI LEMBUR DEPNAKER
         function hitungKonversiDepnaker(jamAktual, jenisHari) {
             if (jamAktual <= 0) return 0;
             
             if (jenisHari === 'biasa') {
-                // Hari Biasa: Jam 1 dikali 1.5, jam berikutnya dikali 2.0
                 if (jamAktual <= 1) {
                     return jamAktual * 1.5;
                 } else {
                     return 1.5 + ((jamAktual - 1) * 2.0);
                 }
             } else {
-                // Hari Libur / Tanggal Merah: Jam 1 s/d 7 dikali 2.0, jam ke-8 dikali 3.0, jam ke-9 dst dikali 4.0
                 if (jamAktual <= 7) {
                     return jamAktual * 2.0;
                 } else if (jamAktual <= 8) {
@@ -433,7 +455,7 @@
         function simpanAbsenHarian() {
             const selectedNo = parseInt(document.getElementById('pilihKaryawan').value);
             const status = document.getElementById('statusKehadiran').value;
-            const jenisHari = document.getElementById('jenisHari').value; // 'biasa' atau 'libur'
+            const jenisHari = document.getElementById('jenisHari').value;
             const tgl = parseInt(document.getElementById('inputTanggal').value);
             const bln = document.getElementById('inputBulan').value;
             const thn = parseInt(document.getElementById('inputTahun').value);
@@ -454,7 +476,7 @@
                 let [jamIn, menitIn] = jamMasuk.split(':').map(Number);
                 let [jamOut, menitOut] = jamKeluar.split(':').map(Number);
                 let totalJamKerja = (jamOut + menitOut/60) - (jamIn + menitIn/60);
-                if(totalJamKerja < 0) totalJamKerja += 24;
+                if(totalJamKerja < 0) totalJamKerja += 24; // Menangani shift malam lintas hari (19:00 - 07:00 = 12 jam)
 
                 let jamLemburAktual = 0;
                 let jamLemburKonversi = 0;
@@ -464,20 +486,18 @@
 
                     if(karyawan.sistem === 'Non Shift') {
                         if (jenisHari === 'libur') {
-                            // Jika dipilih hari libur / tanggal merah, seluruh jam kerja dihitung lembur penuh
                             jamLemburAktual = totalJamKerja;
                         } else {
-                            // KOREKSI RUMUS: Kurangi 1 jam istirahat untuk Non Shift (07:00 - 16:00 = 9 jam total, dikurangi 1 jam istirahat = 8 jam kerja bersih)
-                            let durasiKerjaBersih = totalJamKerja - 1;
+                            let durasiKerjaBersih = totalJamKerja - 1; // Kurangi 1 jam istirahat
                             if (durasiKerjaBersih > 8) {
                                 jamLemburAktual = durasiKerjaBersih - 8;
                             } else {
-                                jamLemburAktual = 0; // Tepat 8 jam atau kurang = 0 lembur
+                                jamLemburAktual = 0;
                             }
                         }
                         karyawan.makanSiang += 1;
                     } else {
-                        // Shift normal 12 jam
+                        // Shift normal 12 jam (Pagi / Malam)
                         if(totalJamKerja > 12) {
                             jamLemburAktual = totalJamKerja - 12;
                         }
@@ -486,7 +506,6 @@
 
                     if(jamLemburAktual < 0) jamLemburAktual = 0;
 
-                    // Terapkan rumus konversi Depnaker sesuai jenis hari
                     jamLemburKonversi = hitungKonversiDepnaker(jamLemburAktual, jenisHari);
 
                     karyawan.otAktual += jamLemburAktual;
@@ -531,7 +550,7 @@
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams(payload).toString()
                 }).then(() => {
-                    alert(`SUKSES! Data tgl ${tanggalStr} untuk ${karyawan.name} telah disimpan dengan aturan Depnaker.`);
+                    alert(`SUKSES! Data tgl ${tanggalStr} untuk ${karyawan.name} telah disimpan.`);
                     renderTabel();
                     tutupModal();
                 }).catch((error) => {
