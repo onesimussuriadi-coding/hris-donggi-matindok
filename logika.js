@@ -153,6 +153,14 @@ function bukaModalHistori(noKaryawan) {
     let sumLemburAktual = 0;
     let sumLemburKonversi = 0;
 
+    // Variabel Penghitung Distribusi Rekapitulasi Periode
+    let countHK = 0;
+    let countShiftSiang = 0;
+    let countShiftMalam = 0;
+    let countCuti = 0;
+    let countOffMurni = 0;
+    let countLainnya = 0; // Sakit, Izin, Alfa
+
     if(karyawan.historiAbsen.length === 0) {
         tbodyHistori.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada catatan histori absen yang diinput.</td></tr>`;
     } else {
@@ -166,6 +174,24 @@ function bukaModalHistori(noKaryawan) {
             sumJamKerja += durasi;
             sumLemburAktual += (h.otAktual || 0);
             sumLemburKonversi += (h.otKonversi || 0);
+
+            // Logika Pengelompokan Rekapitulasi Distribusi
+            let statusUpper = (h.status || "").toUpperCase();
+            if (statusUpper === 'MASUK' || statusUpper === 'DINAS' || statusUpper === 'OFF_MASUK') {
+                countHK++;
+                // Deteksi Shift Siang atau Shift Malam berdasarkan jam masuk atau status
+                if (jIn >= 18 || jIn < 6 || statusUpper.includes('MALAM') || (h.jamMasuk && h.jamMasuk.startsWith("19"))) {
+                    countShiftMalam++;
+                } else {
+                    countShiftSiang++;
+                }
+            } else if (statusUpper === 'CUTI') {
+                countCuti++;
+            } else if (statusUpper === 'OFF_MURNI') {
+                countOffMurni++;
+            } else if (statusUpper === 'SAKIT' || statusUpper === 'IZIN' || statusUpper === 'ALFA') {
+                countLainnya++;
+            }
 
             tbodyHistori.innerHTML += `
                 <tr class="hover:bg-slate-50">
@@ -182,9 +208,17 @@ function bukaModalHistori(noKaryawan) {
         });
     }
 
+    // Set Nilai ke Kotak Statistik & Distribusi Rekapitulasi
     document.getElementById('statTotalJamKerja').innerText = sumJamKerja.toFixed(1) + " Jam";
     document.getElementById('statTotalLemburAktual').innerText = sumLemburAktual.toFixed(1) + " Jam";
     document.getElementById('statTotalLemburKonversi').innerText = sumLemburKonversi.toFixed(1) + " Jam";
+
+    document.getElementById('rekapDistTotalHK').innerText = countHK + " Hari";
+    document.getElementById('rekapDistSiang').innerText = countShiftSiang + " Hari";
+    document.getElementById('rekapDistMalam').innerText = countShiftMalam + " Hari";
+    document.getElementById('rekapDistCuti').innerText = countCuti + " Hari";
+    document.getElementById('rekapDistOff').innerText = countOffMurni + " Hari";
+    document.getElementById('rekapDistLainnya').innerText = countLainnya + " Hari";
 
     document.getElementById('modalHistori').classList.remove('hidden');
 }
@@ -522,6 +556,7 @@ function simpanAbsenHarian() {
 }
 
 window.onload = renderTabel;
+
 // --- TAMBAHAN FITUR REKAPITULASI GABUNGAN (PDF & EXCEL RAPI) ---
 
 function cetakRekapitulasiGabunganPDF() {
@@ -590,7 +625,7 @@ function cetakRekapitulasiGabunganPDF() {
     jendelaCetak.document.write(`
         <div class="footer">
             <div><br>Mengetahui,<br><b>Field Manager / Superintendent</b><br><br><br>( ........................................... )</div>
-            <div>Dibuat Oleh,<br><b>Admin HRIS / Timesheet</b><br><br><br>( Onisimus Suriadi )</div>
+            <div>Dibuat Oleh,<br><b>Admin HRIS / Timesheet</b><br><br><br><b>Onesimus Suriadi</b></div>
         </div>
     `);
     jendelaCetak.document.write('</body></html>');
