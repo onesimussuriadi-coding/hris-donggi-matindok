@@ -59,7 +59,13 @@ const defaultMasterKaryawan = [
 
 const CLOUD_URL = "https://script.google.com/macros/s/AKfycby1fKpsDqdGhtMira6PqPGdkVFdYTMvr554Zs5OdagaO5bxzSK5trQWQtSAErXei2lX/exec";
 
-let masterKaryawan = JSON.parse(localStorage.getItem('donggi_timesheet_data')) || defaultMasterKaryawan;
+// Cek dan sinkronisasi otomatis localStorage agar memuat 52 data penuh secara aman
+let savedData = JSON.parse(localStorage.getItem('donggi_timesheet_data')) || [];
+let masterKaryawan = defaultMasterKaryawan.map(defaultItem => {
+    let existing = savedData.find(s => s.no === defaultItem.no);
+    return existing ? existing : defaultItem;
+});
+
 masterKaryawan.forEach(k => { if(!k.historiAbsen) k.historiAbsen = []; });
 
 let filterAktif = 'Semua';
@@ -80,7 +86,7 @@ function renderTabel() {
     const keyword = document.getElementById('inputPencarian').value.toLowerCase();
     tbody.innerHTML = '';
 
-    // FILTER UTAMA: Hanya tampilkan karyawan yang sudah memiliki histori absen (sudah diabsen)
+    // Dashboard depan: HANYA tampilkan karyawan yang sudah memiliki histori absen
     let dataFiltered = masterKaryawan.filter(item => {
         let sudahAbsen = item.historiAbsen && item.historiAbsen.length > 0;
         let matchSistem = filterAktif === 'Semua' || item.sistem === filterAktif;
@@ -234,7 +240,7 @@ function hapusSemuaHistori() {
     let karyawan = masterKaryawan.find(k => k.no === activeKaryawanNo);
     if(!karyawan) return;
 
-    if(confirm(`⚠️ Yakin ingin menghapus SELURUH histori absen untuk ${karyawan.name}? Akumulasi akan kembali ke 0 dan karyawan akan hilang dari tabel utama jika belum ada absen lain.`)) {
+    if(confirm(`⚠️ Yakin ingin menghapus SELURUH histori absen untuk ${karyawan.name}? Akumulasi akan kembali ke 0.`)) {
         karyawan.hk = 0;
         karyawan.otAktual = 0;
         karyawan.otKonversi = 0;
@@ -319,6 +325,7 @@ function bukaModalAbsen(sistemKerja) {
     const select = document.getElementById('pilihKaryawan');
     select.innerHTML = '';
     
+    // INPUT ABSEN: Menampilkan KESELURUHAN 36 atau 16 karyawan sesuai kategori
     masterKaryawan.filter(k => k.sistem === sistemKerja).forEach((k) => {
         select.innerHTML += `<option value="${k.no}">${k.name} - ${k.jabatan} (Grade ${k.grade})</option>`;
     });
