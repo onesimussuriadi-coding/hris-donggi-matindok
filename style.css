@@ -21,3 +21,16 @@
 .fixed {
     transition: opacity 0.2s ease-in-out;
 }
+/* --- PERBAIKAN TAMPILAN TABEL TIMESHEET --- */
+table th, table td {
+    vertical-align: middle !important; /* Membuat posisi teks berada di tengah secara vertikal */
+    padding: 12px 8px !important;     /* Menjaga jarak padding agar tidak terlalu renggang */
+    white-space: nowrap;               /* Mencegah teks turun ke bawah secara tidak beraturan */
+}
+
+/* Khusus kolom Jabatan dan Tunjangan Makan agar fleksibel dan rapi */
+table td:nth-child(3), 
+table td:nth-child(7) {
+    white-space: normal !important;    
+    min-width: 180px;
+}
