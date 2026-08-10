@@ -21,16 +21,28 @@
 .fixed {
     transition: opacity 0.2s ease-in-out;
 }
-/* --- PERBAIKAN TAMPILAN TABEL TIMESHEET --- */
-table th, table td {
-    vertical-align: middle !important; /* Membuat posisi teks berada di tengah secara vertikal */
-    padding: 12px 8px !important;     /* Menjaga jarak padding agar tidak terlalu renggang */
-    white-space: nowrap;               /* Mencegah teks turun ke bawah secara tidak beraturan */
+
+/* --- PERBAIKAN TAMPILAN TABEL TIMESHEET YANG RAPI --- */
+table {
+    width: 100%;
+    table-layout: auto;
 }
 
-/* Khusus kolom Jabatan dan Tunjangan Makan agar fleksibel dan rapi */
-table td:nth-child(3), 
+table th, table td {
+    vertical-align: middle !important; 
+    padding: 10px 12px !important;     
+    font-size: 13px;
+    white-space: normal !important; /* Memastikan teks terbungkus rapi secara natural dan tidak meluber */
+}
+
+/* Khusus kolom Jabatan & Sistem agar fleksibel dan nyaman dibaca */
+table td:nth-child(3) {
+    min-width: 220px;
+    line-height: 1.4;
+}
+
+/* Khusus kolom Tunjangan Makan agar proporsional */
 table td:nth-child(7) {
-    white-space: normal !important;    
-    min-width: 180px;
+    min-width: 200px;
+    line-height: 1.4;
 }
