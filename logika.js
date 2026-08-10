@@ -169,22 +169,23 @@ function bukaModalHistori(noKaryawan) {
             let [jOut, mOut] = (h.jamKeluar || "00:00").split(':').map(Number);
             let durasi = (jOut + mOut/60) - (jIn + mIn/60);
             if(durasi < 0) durasi += 24;
-            if(h.status === 'OFF_MURNI' || h.status === 'CUTI' || h.status === 'IZIN' || h.status === 'SAKIT' || h.status === 'ALFA') durasi = 0;
+            if(h.status === 'OFF_MURNI' || h.status === 'OFF_MASUK' || h.status === 'CUTI' || h.status === 'IZIN' || h.status === 'SAKIT' || h.status === 'ALFA') durasi = 0;
 
             sumJamKerja += durasi;
             sumLemburAktual += (h.otAktual || 0);
             sumLemburKonversi += (h.otKonversi || 0);
 
-            // Logika Pengelompokan Rekapitulasi Distribusi
+            // Logika Pengelompokan Rekapitulasi Distribusi (OFF_MASUK dianggap sebagai OFF Murni di rekap, tidak masuk shift/HK)
             let statusUpper = (h.status || "").toUpperCase();
-            if (statusUpper === 'MASUK' || statusUpper === 'DINAS' || statusUpper === 'OFF_MASUK') {
+            if (statusUpper === 'MASUK' || statusUpper === 'DINAS') {
                 countHK++;
-                // Deteksi Shift Siang atau Shift Malam berdasarkan jam masuk atau status
                 if (jIn >= 18 || jIn < 6 || statusUpper.includes('MALAM') || (h.jamMasuk && h.jamMasuk.startsWith("19"))) {
                     countShiftMalam++;
                 } else {
                     countShiftSiang++;
                 }
+            } else if (statusUpper === 'OFF_MASUK') {
+                countOffMurni++;
             } else if (statusUpper === 'CUTI') {
                 countCuti++;
             } else if (statusUpper === 'OFF_MURNI') {
@@ -411,6 +412,7 @@ function tutupModal() {
     document.getElementById('modalAbsen').classList.add('hidden');
 }
 
+// Rumus Depnaker Asli Dipulihkan Sepenuhnya Sesuai Permintaan
 function hitungKonversiDepnaker(jamAktual, jenisHari) {
     if (jamAktual <= 0) return 0;
     if (jenisHari === 'biasa') {
