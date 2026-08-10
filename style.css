@@ -22,7 +22,7 @@
     transition: opacity 0.2s ease-in-out;
 }
 
-/* --- PERBAIKAN TAMPILAN TABEL TIMESHEET YANG RAPI --- */
+/* --- PERBAIKAN FINAL KODE CSS TIMESHEET AGAR RAPAT & PADAT --- */
 table {
     width: 100%;
     table-layout: auto;
@@ -30,19 +30,41 @@ table {
 
 table th, table td {
     vertical-align: middle !important; 
-    padding: 10px 12px !important;     
+    padding: 6px 10px !important;     
     font-size: 13px;
-    white-space: normal !important; /* Memastikan teks terbungkus rapi secara natural dan tidak meluber */
+    white-space: normal !important; 
 }
 
-/* Khusus kolom Jabatan & Sistem agar fleksibel dan nyaman dibaca */
+/* Merapatkan tinggi baris khusus tabel timesheet */
+#tabelAbsen tr {
+    height: auto !important;
+}
+
+#tabelAbsen td {
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+}
+
+/* Khusus kolom Jabatan & Sistem agar fleksibel dan kompak */
 table td:nth-child(3) {
-    min-width: 220px;
-    line-height: 1.4;
+    min-width: 200px;
+    line-height: 1.25;
 }
 
-/* Khusus kolom Tunjangan Makan agar proporsional */
+/* Khusus kolom Tunjangan Makan agar proporsional dan tidak renggang */
 table td:nth-child(7) {
-    min-width: 200px;
-    line-height: 1.4;
+    min-width: 180px;
+    line-height: 1.25;
+}
+
+table td:nth-child(7) .bg-slate-100 {
+    display: inline-block;
+    padding: 2px 6px !important;
+    font-size: 11px !important;
+    margin-bottom: 2px;
+}
+
+table td:nth-child(7) div[class*="text-[10px]"] {
+    margin-top: 1px !important;
+    line-height: 1.1 !important;
 }
