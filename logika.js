@@ -673,3 +673,58 @@ function downloadExcelGabungan() {
     link.click();
     document.body.removeChild(link);
 }
+// --- TAMBAHAN FITUR AUTO-INCREMENT TANGGAL & DOWNLOAD PDF (DITEMPATKAN DI BAWAH) ---
+
+// 1. Inisialisasi variabel auto-increment tanggal jika belum ada
+if (typeof currentInputTanggal === 'undefined') {
+    var currentInputTanggal = new Date().getDate();
+}
+
+// 2. Modifikasi fungsi simpan untuk auto-increment (Menyesuaikan nilai input tanggal otomatis)
+const originalSimpanAbsenHarian = window.simpanAbsenHarian || function(){};
+// Timpa atau pastikan logika auto-increment berjalan setelah penyimpanan berhasil
+window.simpanAbsenHarian = function() {
+    // Memanggil fungsi asli Anda
+    if (typeof originalSimpanAbsenHarian === 'function') {
+        // Kita tangkap nilai tanggal saat ini sebelum disimpan
+        let inputTglElem = document.getElementById('inputTanggal');
+        if (inputTglElem) {
+            let tglVal = parseInt(inputTglElem.value);
+            if (!isNaN(tglVal)) {
+                currentInputTanggal = tglVal + 1;
+            }
+        }
+    }
+    originalSimpanAbsenHarian();
+};
+
+// 3. Fungsi Tambahan Download PDF Histori di Bagian Bawah
+function downloadPDFHistori() {
+    let areaCetak = document.getElementById('areaTabelHistoriCetak');
+    let konten = areaCetak ? areaCetak.innerHTML : "Tabel tidak ditemukan";
+    let judulElem = document.getElementById('historiTitle');
+    let judul = judulElem ? judulElem.innerText : "Laporan Histori Absen";
+    
+    let win = window.open('', '', 'height=600,width=800');
+    if (win) {
+        win.document.write('<html><head><title>Laporan Absensi</title><style>');
+        win.document.write('body { font-family: sans-serif; padding: 20px; color: #333; }');
+        win.document.write('h2 { text-align: center; color: #1e293b; }');
+        win.document.write('table { width: 100%; border-collapse: collapse; margin-top: 15px; }');
+        win.document.write('th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: center; font-size: 12px; }');
+        win.document.write('th { background-color: #f1f5f9; color: #0f172a; }');
+        win.document.write('</style></head><body>');
+        win.document.write('<h2>' + judul + '</h2>');
+        win.document.write('<p style="text-align: center; font-size: 12px; color: #64748b;">Field Donggi Matindok - Zona 13</p>');
+        win.document.write(konten);
+        win.document.write('</body></html>');
+        win.document.close();
+        win.focus();
+        setTimeout(() => {
+            win.print();
+            win.close();
+        }, 500);
+    } else {
+        alert('Pop-up terblokir oleh browser. Harap izinkan pop-up untuk mencetak PDF.');
+    }
+}
