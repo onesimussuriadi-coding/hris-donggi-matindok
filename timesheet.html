@@ -34,7 +34,15 @@
                 <p class="text-xs text-slate-500 mt-0.5">Sticky Month, Proteksi Berjenjang & Rekapitulasi Otomatis</p>
             </div>
             <div class="flex gap-3">
-                <!-- Tombol baru yang memanggil fungsi kategori berjenjang -->
+                <!-- Tombol Cetak Rekap Gabungan PDF -->
+                <button onclick="cetakRekapitulasiGabunganPDF()" class="bg-slate-700 text-white px-4 py-3 rounded-2xl text-sm font-bold shadow hover:bg-slate-800 transition">
+                    🖨️ Cetak Rekap Gabungan (PDF)
+                </button>
+                <!-- Tombol Unduh Rekap Excel Rapi -->
+                <button onclick="downloadExcelGabungan()" class="bg-emerald-700 text-white px-4 py-3 rounded-2xl text-sm font-bold shadow hover:bg-emerald-800 transition">
+                    📥 Unduh Rekap Excel
+                </button>
+                <!-- Tombol Input Absen Berjenjang -->
                 <button onclick="bukaModalKategori()" class="bg-indigo-700 text-white px-6 py-3 rounded-2xl text-sm font-bold shadow-lg hover:bg-indigo-800 transition flex items-center gap-2">
                     <span>⚡ Input Absen Karyawan (Berjenjang)</span>
                 </button>

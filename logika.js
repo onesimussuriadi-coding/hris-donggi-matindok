@@ -522,3 +522,97 @@ function simpanAbsenHarian() {
 }
 
 window.onload = renderTabel;
+// --- TAMBAHAN FITUR REKAPITULASI GABUNGAN (PDF & EXCEL RAPI) ---
+
+function cetakRekapitulasiGabunganPDF() {
+    let jendelaCetak = window.open('', '', 'height=700,width=1000');
+    jendelaCetak.document.write('<html><head><title>Rekapitulasi Absensi & Lembur Gabungan - Field Donggi Matindok</title>');
+    jendelaCetak.document.write(`
+        <style>
+            body { font-family: sans-serif; padding: 20px; color: #1e293b; }
+            h2, p { text-align: center; margin: 2px 0; }
+            .subtitle { font-size: 12px; color: #64748b; margin-bottom: 20px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 11px; }
+            th, td { border: 1px solid #334155; padding: 6px 8px; text-align: center; }
+            th { background-color: #0b132b; color: white; text-transform: uppercase; font-size: 10px; }
+            td.nama { text-align: left; font-weight: bold; }
+            .footer { margin-top: 30px; display: flex; justify-content: space-between; font-size: 12px; }
+        </style>
+    `);
+    jendelaCetak.document.write('</head><body>');
+    jendelaCetak.document.write('<h2>PT. DONGGI MATINDOK - FIELD ZONA 13</h2>');
+    jendelaCetak.document.write('<h3>REKAPITULASI KEHADIRAN & LEMBUR PEKERJA (SHIFT & NON-SHIFT)</h3>');
+    jendelaCetak.document.write('<div class="subtitle">Laporan Bulanan Terpadu Berdasarkan Perhitungan Standar Depnaker</div>');
+    
+    jendelaCetak.document.write('<table>');
+    jendelaCetak.document.write(`
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama Karyawan</th>
+                <th>Jabatan</th>
+                <th>Sistem</th>
+                <th>Grade</th>
+                <th>Hari Hadir (HK)</th>
+                <th>Shift Pagi / Siang</th>
+                <th>Shift Malam</th>
+                <th>Lembur Aktual (Jam)</th>
+                <th>Lembur Konversi (Jam)</th>
+                <th>Makan Pagi</th>
+                <th>Makan Siang</th>
+                <th>Makan Malam</th>
+            </tr>
+        </thead>
+        <tbody>
+    `);
+
+    masterKaryawan.forEach((k) => {
+        jendelaCetak.document.write(`
+            <tr>
+                <td>${k.no}</td>
+                <td class="nama">${k.name}</td>
+                <td>${k.jabatan}</td>
+                <td>${k.sistem}</td>
+                <td>${k.grade}</td>
+                <td><b>${k.hk}</b></td>
+                <td>${k.sistem === 'Non Shift' ? k.makanSiang : '-'}</td>
+                <td>${k.sistem === 'Shift' ? k.makanMalam : '-'}</td>
+                <td>${k.otAktual.toFixed(1)}</td>
+                <td><b>${k.otKonversi.toFixed(1)}</b></td>
+                <td>${k.makanPagi}</td>
+                <td>${k.makanSiang}</td>
+                <td>${k.makanMalam}</td>
+            </tr>
+        `);
+    });
+
+    jendelaCetak.document.write('</tbody></table>');
+    jendelaCetak.document.write(`
+        <div class="footer">
+            <div><br>Mengetahui,<br><b>Field Manager / Superintendent</b><br><br><br>( ........................................... )</div>
+            <div>Dibuat Oleh,<br><b>Admin HRIS / Timesheet</b><br><br><br>( Onisimus Suriadi )</div>
+        </div>
+    `);
+    jendelaCetak.document.write('</body></html>');
+    jendelaCetak.document.close();
+    jendelaCetak.focus();
+    setTimeout(() => { jendelaCetak.print(); jendelaCetak.close(); }, 500);
+}
+
+function downloadExcelGabungan() {
+    let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+    csvContent += "No,Nama Karyawan,Jabatan,Sistem Kerja,Grade,Hari Hadir (HK),Shift Pagi/Siang,Shift Malam,Lembur Aktual (Jam),Lembur Konversi (Jam),Makan Pagi,Makan Siang,Makan Malam\r\n";
+
+    masterKaryawan.forEach(k => {
+        let row = `"${k.no}","${k.name}","${k.jabatan}","${k.sistem}","${k.grade}","${k.hk}","${k.sistem === 'Non Shift' ? k.makanSiang : '-'}","${k.sistem === 'Shift' ? k.makanMalam : '-'}","${k.otAktual.toFixed(1)}","${k.otKonversi.toFixed(1)}","${k.makanPagi}","${k.makanSiang}","${k.makanMalam}"`;
+        csvContent += row + "\r\n";
+    });
+
+    let encodedUri = encodeURI(csvContent);
+    let link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `Rekapitulasi_Absensi_Lembur_Donggi_Matindok.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
