@@ -1,23 +1,60 @@
-// --- DATABASE 52 KARYAWAN LENGKAP (SHIFT & NON-SHIFT) ---
+// --- DATABASE LENGKAP 52 KARYAWAN (36 SHIFT & 16 NON-SHIFT) ---
 const defaultMasterKaryawan = [
+    // === 36 KARYAWAN SHIFT ===
     {no: 1, name: "Sujianto Batias", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
     {no: 2, name: "Ansar Mansur", jabatan: "Pemuka Fire & Safety", grade: "F", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
     {no: 3, name: "Harir A. Lako", jabatan: "Petugas Fire & Safety", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
     {no: 4, name: "Ali Friansyah", jabatan: "Petugas Fire & Safety", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 5, name: "Ahmad Yani", jabatan: "Operator", grade: "D", posisi: "SCM", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 6, name: "Budi Santoso", jabatan: "Operator", grade: "D", posisi: "SCM", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 7, name: "Candra Wijaya", jabatan: "Operator", grade: "D", posisi: "SCM", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 8, name: "Dedi Kurniawan", jabatan: "Operator", grade: "D", posisi: "SCM", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 9, name: "Eko Prasetyo", jabatan: "Operator", grade: "D", posisi: "SCM", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 10, name: "Fajar Hidayat", jabatan: "Operator", grade: "D", posisi: "SCM", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 11, name: "Gatot Kaca", jabatan: "Operator", grade: "D", posisi: "SCM", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 12, name: "Hendra Setiawan", jabatan: "Operator", grade: "D", posisi: "SCM", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 13, name: "Iwan Fals", jabatan: "Operator", grade: "D", posisi: "SCM", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 14, name: "Joko Anwar", jabatan: "Operator", grade: "D", posisi: "SCM", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 15, name: "Kevin Sanjaya", jabatan: "Operator", grade: "D", posisi: "SCM", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 16, name: "Lalu Muhammad", jabatan: "Operator", grade: "D", posisi: "SCM", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 17, name: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", grade: "F", posisi: "SCM", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 18, name: "Marjan Karim", jabatan: "Admin Warehouse", grade: "E", posisi: "SCM", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []}
+    {no: 5, name: "Ahmad Yani", jabatan: "Operator Production", grade: "D", posisi: "Operations", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 6, name: "Budi Santoso", jabatan: "Operator Production", grade: "D", posisi: "Operations", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 7, name: "Candra Wijaya", jabatan: "Operator Production", grade: "D", posisi: "Operations", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 8, name: "Dedi Kurniawan", jabatan: "Operator Production", grade: "D", posisi: "Operations", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 9, name: "Eko Prasetyo", jabatan: "Operator Production", grade: "D", posisi: "Operations", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 10, name: "Fajar Hidayat", jabatan: "Operator Production", grade: "D", posisi: "Operations", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 11, name: "Gatot Kaca", jabatan: "Operator Maintenance", grade: "D", posisi: "Maintenance", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 12, name: "Hendra Setiawan", jabatan: "Operator Maintenance", grade: "D", posisi: "Maintenance", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 13, name: "Iwan Fals", jabatan: "Operator Maintenance", grade: "D", posisi: "Maintenance", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 14, name: "Joko Anwar", jabatan: "Operator Maintenance", grade: "D", posisi: "Maintenance", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 15, name: "Kevin Sanjaya", jabatan: "Operator Utility", grade: "D", posisi: "Utility", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 16, name: "Lalu Muhammad", jabatan: "Operator Utility", grade: "D", posisi: "Utility", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 17, name: "Mohammad Ahsan", jabatan: "Operator Utility", grade: "D", posisi: "Utility", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 18, name: "Nurdin Halid", jabatan: "Operator Utility", grade: "D", posisi: "Utility", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 19, name: "Oki Setiana", jabatan: "Safety Officer Shift", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 20, name: "Prabowo S.", jabatan: "Safety Officer Shift", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 21, name: "Qomarudin", jabatan: "Fireman Shift", grade: "D", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 22, name: "Rian Agung", jabatan: "Fireman Shift", grade: "D", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 23, name: "Tontowi Ahmad", jabatan: "Driver Light Vehicle", grade: "C", posisi: "Transport", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 24, name: "Liliyana Natsir", jabatan: "Driver Light Vehicle", grade: "C", posisi: "Transport", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 25, name: "Riky Subagja", jabatan: "Instrument Tech Shift", grade: "E", posisi: "Maintenance", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 26, name: "Rexy Mainaky", jabatan: "Electrical Tech Shift", grade: "E", posisi: "Maintenance", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 27, name: "Susi Susanti", jabatan: "Laboratory Analyst Shift", grade: "E", posisi: "Lab", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 28, name: "Alan Budikusuma", jabatan: "Laboratory Analyst Shift", grade: "E", posisi: "Lab", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 29, name: "Taufik Hidayat", jabatan: "Control Room Operator", grade: "F", posisi: "Operations", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 30, name: "Sony Dwi K.", jabatan: "Control Room Operator", grade: "F", posisi: "Operations", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 31, name: "Simon Santoso", jabatan: "Field Operator", grade: "D", posisi: "Operations", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 32, name: "Dionisius Hayom", jabatan: "Field Operator", grade: "D", posisi: "Operations", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 33, name: "Greysia Polii", jabatan: "Nurse Shift", grade: "E", posisi: "Medical", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 34, name: "Apriyani Rahayu", jabatan: "Nurse Shift", grade: "E", posisi: "Medical", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 35, name: "Haryanto Arbi", jabatan: "Medic Shift", grade: "F", posisi: "Medical", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 36, name: "Christian Hadinata", jabatan: "Radio Operator Shift", grade: "D", posisi: "IT/Telecom", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+
+    // === 16 KARYAWAN NON-SHIFT ===
+    {no: 37, name: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", grade: "F", posisi: "SCM", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 38, name: "Marjan Karim", jabatan: "Admin Warehouse", grade: "E", posisi: "SCM", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 39, name: "Bambang Widjojanto", jabatan: "HR & Relations Superintendent", grade: "G", posisi: "HR", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 40, name: "Sri Mulyani", jabatan: "Finance Controller", grade: "G", posisi: "Finance", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 41, name: "Chairul Tanjung", jabatan: "Procurement Specialist", grade: "F", posisi: "SCM", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 42, name: "Susi Pudjiastuti", jabatan: "Logistics Coordinator", grade: "F", posisi: "SCM", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 43, name: "Ignasius Jonan", jabatan: "Maintenance Engineer", grade: "F", posisi: "Maintenance", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 44, name: "Basuki Hadimuljono", jabatan: "Civil Engineer", grade: "F", posisi: "Engineering", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 45, name: "Retno Marsudi", jabatan: "External Relations Officer", grade: "E", posisi: "Relations", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 46, name: "Erick Thohir", jabatan: "Business Development", grade: "G", posisi: "Management", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 47, name: "Budi Gunadi", jabatan: "Medical Doctor", grade: "G", posisi: "Medical", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 48, name: "Najwa Shihab", jabatan: "Corporate Communications", grade: "E", posisi: "PR", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 49, name: "Raditya Dika", jabatan: "IT Administrator", grade: "E", posisi: "IT", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 50, name: "Deddy Corbuzier",agati = "HSSE Superintendent", jabatan: "HSSE Superintendent", grade: "G", posisi: "HSSE", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 51, name: "Atiqah Hasiholan", jabatan: "Admin HR", grade: "D", posisi: "HR", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 52, name: "Rio Dewanto", jabatan: "Production Supervisor", grade: "F", posisi: "Operations", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []}
 ];
 
 const CLOUD_URL = "https://script.google.com/macros/s/AKfycby1fKpsDqdGhtMira6PqPGdkVFdYTMvr554Zs5OdagaO5bxzSK5trQWQtSAErXei2lX/exec";
@@ -237,9 +274,7 @@ function hapusHistoriTanggal(noKaryawan, indexHistori) {
     }
 }
 
-// --- PROTEKSI BERJENJANG (PILIH KATEGORI DULU UNTUK MENCEGAH SALAH KLIK) ---
 function bukaModalKategori() {
-    // Membuat modal pilihan kategori secara dinamis jika belum ada di HTML
     let modalKat = document.getElementById('modalKategori');
     if (!modalKat) {
         modalKat = document.createElement('div');
@@ -250,8 +285,8 @@ function bukaModalKategori() {
                 <h3 class="text-lg font-bold mb-2 text-slate-800">Pilih Sistem Kerja</h3>
                 <p class="text-xs text-slate-500 mb-4">Proteksi berjenjang untuk mencegah salah input data.</p>
                 <div class="space-y-3">
-                    <button onclick="bukaModalAbsen('Shift')" class="w-full bg-emerald-600 text-white p-3.5 rounded-xl font-bold hover:bg-emerald-700 transition shadow">Pekerja SHIFT</button>
-                    <button onclick="bukaModalAbsen('Non Shift')" class="w-full bg-blue-600 text-white p-3.5 rounded-xl font-bold hover:bg-blue-700 transition shadow">Pekerja NON-SHIFT</button>
+                    <button onclick="bukaModalAbsen('Shift')" class="w-full bg-emerald-600 text-white p-3.5 rounded-xl font-bold hover:bg-emerald-700 transition shadow">Pekerja SHIFT (36)</button>
+                    <button onclick="bukaModalAbsen('Non Shift')" class="w-full bg-blue-600 text-white p-3.5 rounded-xl font-bold hover:bg-blue-700 transition shadow">Pekerja NON-SHIFT (16)</button>
                     <button onclick="document.getElementById('modalKategori').classList.add('hidden')" class="w-full bg-slate-100 text-slate-600 p-2.5 rounded-xl font-bold hover:bg-slate-200 transition">Batal</button>
                 </div>
             </div>
