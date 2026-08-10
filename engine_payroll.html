@@ -41,15 +41,14 @@
             
             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
                 <div>
-                    <h3 class="text-lg font-bold text-slate-900">Slip Upah Tenaga Kerja Terpadu</h3>
-                    <p class="text-xs text-slate-500 mt-0.5">Periode Berjalan Berdasarkan Input Riil Admin</p>
+                    <h3 class="text-lg font-bold text-slate-900">Slip Upah Tenaga Kerja Terpadu (Sesuai Sistem Shift & Non-Shift)</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Perhitungan Berdasarkan Data Riil Input Admin</p>
                 </div>
                 
                 <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
                     <button onclick="bukaModalInputGaji()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-sm">
                         <span>⚡ Input / Edit Data Gaji Karyawan</span>
                     </button>
-                    <!-- Tombol Rekapitulasi Utuh -->
                     <button onclick="cetakRekapitulasiPayrollPDF()" class="bg-slate-700 hover:bg-slate-800 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-sm">
                         <span>🖨️ Cetak Rekap Gaji Utuh (PDF)</span>
                     </button>
@@ -104,11 +103,11 @@
 
     </main>
 
-    <!-- MODAL FORM INPUT/EDIT GAJI LENGKAP DENGAN TOMBOL SLIP GAJI -->
+    <!-- MODAL FORM INPUT/EDIT GAJI -->
     <div id="modalInputGaji" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
         <div class="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl">
             <h3 class="text-lg font-bold mb-1 text-slate-800">Form Input & Koreksi Data Upah</h3>
-            <p class="text-xs text-slate-500 mb-4">Pilih karyawan untuk melihat, mengedit, atau langsung mencetak slip gajinya.</p>
+            <p class="text-xs text-slate-500 mb-4">Masukkan Upah Pokok, TAUP, dan komponen penunjang secara aktual.</p>
             
             <div class="space-y-4">
                 <div>
@@ -131,11 +130,11 @@
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Tunjangan Kehadiran (Total IDR)</label>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Tarif Tunjangan Kehadiran / Hari</label>
                         <input type="number" id="inputTunjanganHadir" placeholder="0" class="w-full border rounded-lg p-2.5 text-sm outline-none font-bold text-slate-700">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Uang Makan / Lembur / Lainnya</label>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Uang Makan / Lainnya (Opsional)</label>
                         <input type="number" id="inputUangMakanLain" placeholder="0" class="w-full border rounded-lg p-2.5 text-sm outline-none font-bold text-slate-700">
                     </div>
                 </div>
@@ -144,7 +143,6 @@
             <div class="flex justify-between items-center mt-6 pt-3 border-t">
                 <div class="flex gap-2">
                     <button onclick="resetDataGajiKaryawan()" class="px-3 py-2 bg-rose-50 text-rose-600 rounded-lg text-xs font-semibold hover:bg-rose-100">🗑️ Reset</button>
-                    <!-- Tombol Cetak Slip Gaji di dalam Modal -->
                     <button onclick="cetakSlipGajiAktif()" class="px-3 py-2 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 shadow-sm">🖨️ Cetak Slip Gaji</button>
                 </div>
                 <div class="flex gap-2">
@@ -159,6 +157,55 @@
         function muatDataPayroll() {
             let savedData = JSON.parse(localStorage.getItem('donggi_timesheet_data')) || [];
             return savedData;
+        }
+
+        // Fungsi Kalkulasi Berdasarkan Rumus Riil
+        function hitungKomponenGaji(emp) {
+            let upahPokok = emp.customUpahPokok || 0;
+            let taup = emp.customTaup || 0;
+            let upahTetap = upahPokok + taup; 
+
+            let hkVal = emp.hk || 0;
+            let tarifHadir = emp.customTunjanganHadir || 0;
+            let tunjanganHadir = hkVal * tarifHadir;
+            let uangMakanLain = emp.customUangMakan || 0;
+
+            let upahTidakTetap = 0;
+            let premiShift = 0;
+            let kjk = 0;
+            let upahLembur = 0;
+
+            if (emp.sistem === 'Shift') {
+                // Premi Shift = 15% x Upah Pokok x HK x (12 / 173)
+                premiShift = 0.15 * upahPokok * hkVal * (12 / 173);
+                
+                // Kelebihan Jam Kerja (KJK) = 7.5 x (1 / 173) x Upah Tetap x HK
+                kjk = 7.5 * (1 / 173) * upahTetap * hkVal;
+                
+                // Upah Lembur Shift (Berdasarkan Jam Konversi dari Timesheet)
+                upahLembur = (emp.otKonversi || 0) * (upahTetap > 0 ? (upahTetap / 173) : 0);
+
+                upahTidakTetap = tunjanganHadir + premiShift + kjk + uangMakanLain + upahLembur;
+            } else {
+                // Non Shift: Hanya Kehadiran, Uang Makan, dan Lembur (Tanpa Premi & Tanpa KJK)
+                upahLembur = (emp.otKonversi || 0) * (upahTetap > 0 ? (upahTetap / 173) : 0);
+                upahTidakTetap = tunjanganHadir + uangMakanLain + upahLembur;
+            }
+
+            let gajiBruto = upahTetap + upahTidakTetap;
+
+            // Potongan Resmi Berbasis Riil
+            let jht = upahTetap * 0.02; // JHT 2% dari Upah Tetap
+            let jp = upahTetap > 0 ? 31976 : 0;
+            let bpjsKes = upahTetap > 0 ? 31976 : 0;
+            let pph21 = 0; // Murni 0 jika belum ada input tarif pajak aktual
+            let totalPotongan = jht + jp + bpjsKes + pph21;
+
+            let netto = gajiBruto - totalPotongan;
+
+            return {
+                upahPokok, taup, upahTetap, tunjanganHadir, premiShift, kjk, uangMakanLain, upahLembur, upahTidakTetap, gajiBruto, jht, jp, bpjsKes, pph21, totalPotongan, netto
+            };
         }
 
         function renderPayrollTable() {
@@ -184,27 +231,10 @@
             let sumNetto = 0;
 
             filtered.forEach((emp) => {
-                let upahPokok = emp.customUpahPokok !== undefined ? emp.customUpahPokok : 0;
-                let taup = emp.customTaup !== undefined ? emp.customTaup : 0;
-                let upahTetap = upahPokok + taup; 
+                let calc = hitungKomponenGaji(emp);
 
-                let tunjanganHadir = emp.customTunjanganHadir !== undefined ? emp.customTunjanganHadir : 0;
-                let uangMakanLain = emp.customUangMakan !== undefined ? emp.customUangMakan : 0;
-                
-                let upahLembur = (emp.otKonversi || 0) * (upahTetap > 0 ? (upahTetap / 173) : 0);
-                let upahTidakTetap = tunjanganHadir + uangMakanLain + upahLembur;
-                let gajiBruto = upahTetap + upahTidakTetap;
-
-                let jht = upahTetap * 0.02;
-                let jp = upahTetap > 0 ? 31976 : 0;
-                let bpjsKes = upahTetap > 0 ? 31976 : 0;
-                let pph21 = gajiBruto > 0 ? (emp.sistem === 'Shift' ? 89745 : 95000) : 0;
-                let totalPotongan = jht + jp + bpjsKes + pph21;
-
-                let netto = gajiBruto - totalPotongan;
-
-                sumBruto += gajiBruto;
-                sumNetto += netto;
+                sumBruto += calc.gajiBruto;
+                sumNetto += calc.netto;
 
                 const row = document.createElement('tr');
                 row.className = "hover:bg-slate-50 border-b border-slate-100 transition";
@@ -215,11 +245,11 @@
                         ${emp.jabatan} <br>
                         <span class="px-1.5 py-0.5 bg-blue-50 text-blue-700 rounded text-[10px] font-semibold">${emp.sistem}</span>
                     </td>
-                    <td class="p-3 text-center font-semibold text-slate-700">Rp ${Math.round(upahTetap).toLocaleString('id-ID')}</td>
-                    <td class="p-3 text-center font-semibold text-emerald-700">Rp ${Math.round(upahTidakTetap).toLocaleString('id-ID')}</td>
-                    <td class="p-3 text-center font-bold text-slate-900">Rp ${Math.round(gajiBruto).toLocaleString('id-ID')}</td>
-                    <td class="p-3 text-center font-semibold text-rose-600">Rp ${Math.round(totalPotongan).toLocaleString('id-ID')}</td>
-                    <td class="p-3 text-center font-extrabold text-blue-900 bg-slate-50/50">Rp ${Math.round(netto).toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-center font-semibold text-slate-700">Rp ${Math.round(calc.upahTetap).toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-center font-semibold text-emerald-700">Rp ${Math.round(calc.upahTidakTetap).toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-center font-bold text-slate-900">Rp ${Math.round(calc.gajiBruto).toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-center font-semibold text-rose-600">Rp ${Math.round(calc.totalPotongan).toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-center font-extrabold text-blue-900 bg-slate-50/50">Rp ${Math.round(calc.netto).toLocaleString('id-ID')}</td>
                     <td class="p-3 text-center">
                         <button onclick="bukaModalEditSpesifik(${emp.no})" class="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold shadow-sm text-xs">⚙️ Edit / Slip</button>
                     </td>
@@ -315,21 +345,13 @@
             let emp = data.find(k => k.no === noKaryawan);
             if (!emp) return;
 
-            let upahPokok = parseFloat(document.getElementById('inputUpahPokok').value) || 0;
-            let taup = parseFloat(document.getElementById('inputTaup').value) || 0;
-            let upahTetap = upahPokok + taup;
-            let tunjanganHadir = parseFloat(document.getElementById('inputTunjanganHadir').value) || 0;
-            let uangMakanLain = parseFloat(document.getElementById('inputUangMakanLain').value) || 0;
-            let upahLembur = (emp.otKonversi || 0) * (upahTetap > 0 ? (upahTetap / 173) : 0);
-            let upahTidakTetap = tunjanganHadir + uangMakanLain + upahLembur;
-            let gajiBruto = upahTetap + upahTidakTetap;
+            // Update nilai sementara dari input modal sebelum cetak
+            emp.customUpahPokok = parseFloat(document.getElementById('inputUpahPokok').value) || 0;
+            emp.customTaup = parseFloat(document.getElementById('inputTaup').value) || 0;
+            emp.customTunjanganHadir = parseFloat(document.getElementById('inputTunjanganHadir').value) || 0;
+            emp.customUangMakan = parseFloat(document.getElementById('inputUangMakanLain').value) || 0;
 
-            let jht = upahTetap * 0.02;
-            let jp = upahTetap > 0 ? 31976 : 0;
-            let bpjsKes = upahTetap > 0 ? 31976 : 0;
-            let pph21 = gajiBruto > 0 ? (emp.sistem === 'Shift' ? 89745 : 95000) : 0;
-            let totalPotongan = jht + jp + bpjsKes + pph21;
-            let netto = gajiBruto - totalPotongan;
+            let c = hitungKomponenGaji(emp);
 
             let jendelaCetak = window.open('', '', 'height=650,width=800');
             jendelaCetak.document.write('<html><head><title>Slip Upah - ' + emp.name + '</title>');
@@ -337,27 +359,34 @@
             jendelaCetak.document.write('</head><body>');
             jendelaCetak.document.write('<h2>PT SENTRAL SARI JAYA</h2>');
             jendelaCetak.document.write('<h3>SLIP UPAH TENAGA KERJA (' + emp.sistem.toUpperCase() + ')</h3>');
-            jendelaCetak.document.write('<p style="text-align:center;font-size:11px;color:#64748b;margin-bottom:20px;">Periode: 16 Juni 2026 s/d 15 Juli 2026 | Matindok (Zona 13)</p>');
+            jendelaCetak.document.write('<p style="text-align:center;font-size:11px;color:#64748b;margin-bottom:20px;">Periode Berjalan | Matindok (Zona 13)</p>');
             
-            jendelaCetak.document.write('<p><b>Nama Pekerja:</b> ' + emp.name + '<br><b>Jabatan:</b> ' + emp.jabatan + '<br><b>Divisi/Fungsi:</b> ' + (emp.posisi || 'Field') + '</p>');
+            jendelaCetak.document.write('<p><b>Nama Pekerja:</b> ' + emp.name + '<br><b>Jabatan:</b> ' + emp.jabatan + '<br><b>Sistem Kerja:</b> ' + emp.sistem + '<br><b>Hari Kerja (HK):</b> ' + (emp.hk || 0) + ' Hari</p>');
             
             jendelaCetak.document.write('<table>');
             jendelaCetak.document.write('<tr><th>Komponen Upah</th><th style="text-align:right;">Jumlah (IDR)</th></tr>');
-            jendelaCetak.document.write('<tr><td><b>I. UPAH TETAP (UT)</b><br>- Upah Pokok<br>- TAUP (Tunjangan Tetap)</td><td style="text-align:right;"><b>Rp ' + Math.round(upahTetap).toLocaleString('id-ID') + '</b><br>Rp ' + Math.round(upahPokok).toLocaleString('id-ID') + '<br>Rp ' + Math.round(taup).toLocaleString('id-ID') + '</td></tr>');
-            jendelaCetak.document.write('<tr><td><b>II. UPAH TIDAK TETAP & LEMBUR</b><br>- Tunjangan Kehadiran<br>- Uang Makan / Ekstra / Lainnya<br>- Upah Lembur (' + (emp.otKonversi || 0).toFixed(1) + ' Jam)</td><td style="text-align:right;"><b>Rp ' + Math.round(upahTidakTetap).toLocaleString('id-ID') + '</b><br>Rp ' + Math.round(tunjanganHadir).toLocaleString('id-ID') + '<br>Rp ' + Math.round(uangMakanLain).toLocaleString('id-ID') + '<br>Rp ' + Math.round(upahLembur).toLocaleString('id-ID') + '</td></tr>');
-            jendelaCetak.document.write('<tr style="background-color:#f8fafc;"><td><b>GAJI BRUTO (I + II)</b></td><td style="text-align:right;"><b>Rp ' + Math.round(gajiBruto).toLocaleString('id-ID') + '</b></td></tr>');
-            jendelaCetak.document.write('<tr><td><b>III. POTONGAN RESMI</b><br>- BPJS Ketenagakerjaan (JHT 2%)<br>- BPJS Ketenagakerjaan (JP)<br>- BPJS Kesehatan (1%)<br>- PPh Pasal 21</td><td style="text-align:right;"><b>Rp ' + Math.round(totalPotongan).toLocaleString('id-ID') + '</b><br>Rp ' + Math.round(jht).toLocaleString('id-ID') + '<br>Rp ' + Math.round(jp).toLocaleString('id-ID') + '<br>Rp ' + Math.round(bpjsKes).toLocaleString('id-ID') + '<br>Rp ' + Math.round(pph21).toLocaleString('id-ID') + '</td></tr>');
-            jendelaCetak.document.write('<tr style="background-color:#e0f2fe;"><td><b>UPAH DITERIMA BERSIH (NETTO / THP)</b></td><td style="text-align:right;"><b>Rp ' + Math.round(netto).toLocaleString('id-ID') + '</b></td></tr>');
+            jendelaCetak.document.write('<tr><td><b>I. UPAH TETAP (UT)</b><br>- Upah Pokok<br>- TAUP (Tunjangan Tetap)</td><td style="text-align:right;"><b>Rp ' + Math.round(c.upahTetap).toLocaleString('id-ID') + '</b><br>Rp ' + Math.round(c.upahPokok).toLocaleString('id-ID') + '<br>Rp ' + Math.round(c.taup).toLocaleString('id-ID') + '</td></tr>');
+            
+            let rincianTidakTetap = `- Tunjangan Kehadiran (${emp.hk || 0} Hari)<br>- Uang Makan / Lainnya`;
+            if(emp.sistem === 'Shift') {
+                rincianTidakTetap += `<br>- Premi Shift (15% x Pokok x HK x 12/173)<br>- Kelebihan Jam Kerja / KJK<br>- Upah Lembur (${(emp.otKonversi || 0).toFixed(1)} Jam)`;
+            } else {
+                rincianTidakTetap += `<br>- Upah Lembur (${(emp.otKonversi || 0).toFixed(1)} Jam)`;
+            }
+
+            jendelaCetak.document.write('<tr><td><b>II. UPAH TIDAK TETAP & LEMBUR</b><br>' + rincianTidakTetap + '</td><td style="text-align:right;"><b>Rp ' + Math.round(c.upahTidakTetap).toLocaleString('id-ID') + '</b><br>Rp ' + Math.round(c.tunjanganHadir).toLocaleString('id-ID') + '<br>Rp ' + Math.round(c.uangMakanLain).toLocaleString('id-ID') + (emp.sistem === 'Shift' ? '<br>Rp ' + Math.round(c.premiShift).toLocaleString('id-ID') + '<br>Rp ' + Math.round(c.kjk).toLocaleString('id-ID') : '') + '<br>Rp ' + Math.round(c.upahLembur).toLocaleString('id-ID') + '</td></tr>');
+            jendelaCetak.document.write('<tr style="background-color:#f8fafc;"><td><b>GAJI BRUTO (I + II)</b></td><td style="text-align:right;"><b>Rp ' + Math.round(c.gajiBruto).toLocaleString('id-ID') + '</b></td></tr>');
+            jendelaCetak.document.write('<tr><td><b>III. POTONGAN RESMI</b><br>- BPJS Ketenagakerjaan (JHT 2%)<br>- BPJS Ketenagakerjaan (JP)<br>- BPJS Kesehatan (1%)<br>- PPh Pasal 21</td><td style="text-align:right;"><b>Rp ' + Math.round(c.totalPotongan).toLocaleString('id-ID') + '</b><br>Rp ' + Math.round(c.jht).toLocaleString('id-ID') + '<br>Rp ' + Math.round(c.jp).toLocaleString('id-ID') + '<br>Rp ' + Math.round(c.bpjsKes).toLocaleString('id-ID') + '<br>Rp ' + Math.round(c.pph21).toLocaleString('id-ID') + '</td></tr>');
+            jendelaCetak.document.write('<tr style="background-color:#e0f2fe;"><td><b>UPAH DITERIMA BERSIH (NETTO / THP)</b></td><td style="text-align:right;"><b>Rp ' + Math.round(c.netto).toLocaleString('id-ID') + '</b></td></tr>');
             jendelaCetak.document.write('</table>');
             
-            jendelaCetak.document.write('<br><br><div style="display:flex;justify-content:space-between;font-size:12px;"><div>Luwuk, 23 Juli 2026<br><b>PT SENTRAL SARI JAYA</b><br><br><br><b>Lisa Yulandari</b><br>Finance Manager</div><div><br>Penerima,<br><br><br><br><b>' + emp.name + '</b></div></div>');
+            jendelaCetak.document.write('<br><br><div style="display:flex;justify-content:space-between;font-size:12px;"><div>Luwuk<br><b>PT SENTRAL SARI JAYA</b><br><br><br><b>Lisa Yulandari</b><br>Finance Manager</div><div><br>Penerima,<br><br><br><br><b>' + emp.name + '</b></div></div>');
             jendelaCetak.document.write('</body></html>');
             jendelaCetak.document.close();
             jendelaCetak.focus();
             setTimeout(() => { jendelaCetak.print(); }, 500);
         }
 
-        // --- FUNGSI CETAK REKAPITULASI PAYROLL UTUH ---
         function cetakRekapitulasiPayrollPDF() {
             let data = muatDataPayroll();
             if (data.length === 0) {
@@ -370,8 +399,8 @@
             jendelaCetak.document.write('<style>body{font-family:sans-serif;padding:20px;color:#1e293b;} h2,h3{text-align:center;margin:2px 0;} table{width:100%;border-collapse:collapse;margin-top:15px;font-size:10px;} th,td{border:1px solid #334155;padding:5px 6px;text-align:center;} th{background-color:#0b132b;color:white;text-transform:uppercase;} td.nama{text-align:left;font-weight:bold;}</style>');
             jendelaCetak.document.write('</head><body>');
             jendelaCetak.document.write('<h2>PT SENTRAL SARI JAYA - ZONA 13 MATINDOK</h2>');
-            jendelaCetak.document.write('<h3>REKAPITULASI UPAH KARYAWAN KESELURUHAN (PERIODE BULANAN)</h3>');
-            jendelaCetak.document.write('<p style="text-align:center;font-size:11px;color:#64748b;margin-bottom:15px;">Laporan Berdasarkan Input Riil Upah Tetap, Lembur & Potongan Resmi</p>');
+            jendelaCetak.document.write('<h3>REKAPITULASI UPAH KARYAWAN KESELURUHAN (SHIFT & NON-SHIFT)</h3>');
+            jendelaCetak.document.write('<p style="text-align:center;font-size:11px;color:#64748b;margin-bottom:15px;">Perhitungan Berdasarkan Formula Aktual & Input Riil</p>');
             
             jendelaCetak.document.write('<table>');
             jendelaCetak.document.write('<thead><tr><th>No</th><th>Nama Karyawan</th><th>Jabatan</th><th>Sistem</th><th>Upah Tetap (I)</th><th>Upah Tidak Tetap (II)</th><th>Gaji Bruto</th><th>JHT</th><th>JP</th><th>BPJS Kes</th><th>PPh 21</th><th>Total Potongan</th><th>Netto (THP)</th></tr></thead><tbody>');
@@ -379,27 +408,13 @@
             let totPokok=0, totTidakTetap=0, totBruto=0, totPot=0, totNetto=0;
 
             data.forEach((emp) => {
-                let upahPokok = emp.customUpahPokok || 0;
-                let taup = emp.customTaup || 0;
-                let upahTetap = upahPokok + taup;
-                let tunjanganHadir = emp.customTunjanganHadir || 0;
-                let uangMakanLain = emp.customUangMakan || 0;
-                let upahLembur = (emp.otKonversi || 0) * (upahTetap > 0 ? (upahTetap / 173) : 0);
-                let upahTidakTetap = tunjanganHadir + uangMakanLain + upahLembur;
-                let gajiBruto = upahTetap + upahTidakTetap;
+                let c = hitungKomponenGaji(emp);
 
-                let jht = upahTetap * 0.02;
-                let jp = upahTetap > 0 ? 31976 : 0;
-                let bpjsKes = upahTetap > 0 ? 31976 : 0;
-                let pph21 = gajiBruto > 0 ? (emp.sistem === 'Shift' ? 89745 : 95000) : 0;
-                let totalPotongan = jht + jp + bpjsKes + pph21;
-                let netto = gajiBruto - totalPotongan;
-
-                totPokok += upahTetap;
-                totTidakTetap += upahTidakTetap;
-                totBruto += gajiBruto;
-                totPot += totalPotongan;
-                totNetto += netto;
+                totPokok += c.upahTetap;
+                totTidakTetap += c.upahTidakTetap;
+                totBruto += c.gajiBruto;
+                totPot += c.totalPotongan;
+                totNetto += c.netto;
 
                 jendelaCetak.document.write(`
                     <tr>
@@ -407,15 +422,15 @@
                         <td class="nama">${emp.name}</td>
                         <td>${emp.jabatan}</td>
                         <td>${emp.sistem}</td>
-                        <td>${Math.round(upahTetap).toLocaleString('id-ID')}</td>
-                        <td>${Math.round(upahTidakTetap).toLocaleString('id-ID')}</td>
-                        <td><b>${Math.round(gajiBruto).toLocaleString('id-ID')}</b></td>
-                        <td>${Math.round(jht).toLocaleString('id-ID')}</td>
-                        <td>${Math.round(jp).toLocaleString('id-ID')}</td>
-                        <td>${Math.round(bpjsKes).toLocaleString('id-ID')}</td>
-                        <td>${Math.round(pph21).toLocaleString('id-ID')}</td>
-                        <td><b>${Math.round(totalPotongan).toLocaleString('id-ID')}</b></td>
-                        <td><b>${Math.round(netto).toLocaleString('id-ID')}</b></td>
+                        <td>${Math.round(c.upahTetap).toLocaleString('id-ID')}</td>
+                        <td>${Math.round(c.upahTidakTetap).toLocaleString('id-ID')}</td>
+                        <td><b>${Math.round(c.gajiBruto).toLocaleString('id-ID')}</b></td>
+                        <td>${Math.round(c.jht).toLocaleString('id-ID')}</td>
+                        <td>${Math.round(c.jp).toLocaleString('id-ID')}</td>
+                        <td>${Math.round(c.bpjsKes).toLocaleString('id-ID')}</td>
+                        <td>${Math.round(c.pph21).toLocaleString('id-ID')}</td>
+                        <td><b>${Math.round(c.totalPotongan).toLocaleString('id-ID')}</b></td>
+                        <td><b>${Math.round(c.netto).toLocaleString('id-ID')}</b></td>
                     </tr>
                 `);
             });
