@@ -297,9 +297,6 @@ function hapusHistoriTanggal(noKaryawan, indexHistori) {
             }
             karyawan.otAktual = Math.max(0, karyawan.otAktual - itemDihapus.otAktual);
             karyawan.otKonversi = Math.max(0, karyawan.otKonversi - itemDihapus.otKonversi);
-            
-            // Pengurangan Uang Makan Sesuai Ketentuan Baru
-            // (Disesuaikan dengan pencatatan saat input)
         }
 
         karyawan.historiAbsen.splice(indexHistori, 1);
@@ -408,13 +405,10 @@ function tutupModal() {
 }
 
 function hitungKonversiDepnaker(jamAktual, jenisHari) {
-    if (jamAktual <= 0) return 0;
-    if (jenisHari === 'biasa') {
-        if (jamAktual <= 1) {
-            return jamAktual * 1.5;
-        } else {
-            return 1.5 + ((jamAktual - 1) * 2.0);
-        }
+    if (jamAktual <= 1) {
+        return jamAktual * 1.5;
+    } else if (jenisHari === 'biasa') {
+        return 1.5 + ((jamAktual - 1) * 2.0);
     } else {
         if (jamAktual <= 7) {
             return jamAktual * 2.0;
@@ -497,22 +491,22 @@ function simpanAbsenHarian() {
 
         if(jamLemburAktual < 0) jamLemburAktual = 0;
 
-        // --- ATURAN BARU: TUNJANGAN MAKAN LEMBUR (PAGI, SIANG, MALAM) ---
+        // --- VALIDASI KETAT TUNJANGAN MAKAN LEMBUR (SESUAI KLAUSUL RIIL) ---
         let tambahMakanPagi = 0;
         let tambahMakanSiang = 0;
         let tambahMakanMalam = 0;
 
-        // 1. MAKAN PAGI: Minimal 2 jam sebelum jam 07:00 (artinya masuk sebelum jam 05:00 / jamIn < 5)
+        // 1. Makan Pagi: Masuk sebelum jam 05:00 pagi (jamIn < 5)
         if (jamIn < 5 && status !== 'off_murni') {
             tambahMakanPagi = 1;
         }
 
-        // 2. MAKAN SIANG: Hari libur/minggu (jenisHari === 'libur'), lembur > 5 jam, mulai sebelum 11:00 (jamIn < 11) dan selesai sesudah 13:00 (jamOut > 13 atau melintasi siang)
+        // 2. Makan Siang: Hari libur/minggu, lembur > 5 jam, mulai sebelum 11:00 (jamIn < 11) & selesai sesudah 13:00 (jamOut > 13 atau lintas malam)
         if (jenisHari === 'libur' && totalJamKerja > 5 && jamIn < 11 && (jamOut > 13 || jamOut < jamIn)) {
             tambahMakanSiang = 1;
         }
 
-        // 3. MAKAN MALAM: Tidak ada kesempatan makan antara 19:00 - 21:00 dan durasi/lembur melebihi 5 jam
+        // 3. Makan Malam: Lembur > 5 jam dan tidak ada kesempatan makan antara 19:00 - 21:00 (melewati/mencakup rentang tersebut)
         if (totalJamKerja > 5 && (jamOut > 21 || (jamIn <= 19 && jamOut >= 21) || jamOut < jamIn)) {
             tambahMakanMalam = 1;
         }
@@ -520,7 +514,7 @@ function simpanAbsenHarian() {
         karyawan.makanPagi += tambahMakanPagi;
         karyawan.makanSiang += tambahMakanSiang;
         karyawan.makanMalam += tambahMakanMalam;
-        // ------------------------------------------------------------------
+        // -----------------------------------------------------------------
 
         let jenisHariSimpan = (status === 'off_murni') ? 'NON' : (jenisHari === 'libur' ? 'Libur/Merah' : 'Biasa');
         if (status !== 'off_murni') {
