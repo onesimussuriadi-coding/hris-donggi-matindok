@@ -46,7 +46,6 @@
                 </div>
                 
                 <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-                    <!-- Tombol Utama Input Gaji (Seperti Form Absen) -->
                     <button onclick="bukaModalInputGaji()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-sm">
                         <span>⚡ Input / Edit Data Gaji Karyawan</span>
                     </button>
@@ -92,7 +91,7 @@
                         </tr>
                     </thead>
                     <tbody id="payrollTableBody" class="divide-y divide-slate-100 text-slate-700 text-xs">
-                        <!-- Dinamis berdasarkan input -->
+                        <!-- Dinamis -->
                     </tbody>
                 </table>
             </div>
@@ -101,11 +100,11 @@
 
     </main>
 
-    <!-- MODAL FORM INPUT/EDIT GAJI (BERBASIS PILIH KARYAWAN) -->
+    <!-- MODAL FORM INPUT/EDIT GAJI -->
     <div id="modalInputGaji" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
         <div class="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl">
-            <h3 class="text-lg font-bold mb-1 text-slate-800">Form Input Data Upah & Tunjangan</h3>
-            <p class="text-xs text-slate-500 mb-4">Pilih karyawan dan masukkan komponen upah secara mandiri dan akurat.</p>
+            <h3 class="text-lg font-bold mb-1 text-slate-800">Form Input & Koreksi Data Upah</h3>
+            <p class="text-xs text-slate-500 mb-4">Pilih karyawan untuk melihat atau memperbarui komponen upah.</p>
             
             <div class="space-y-4">
                 <div>
@@ -138,9 +137,12 @@
                 </div>
             </div>
 
-            <div class="flex justify-end gap-3 mt-6">
-                <button onclick="tutupModalInputGaji()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-semibold hover:bg-slate-200">Batal</button>
-                <button onclick="simpanDataGajiInputan()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-xs font-semibold hover:bg-indigo-700">Simpan Data Gaji</button>
+            <div class="flex justify-between items-center mt-6 pt-3 border-t">
+                <button onclick="resetDataGajiKaryawan()" class="px-3 py-2 bg-rose-50 text-rose-600 rounded-lg text-xs font-semibold hover:bg-rose-100">🗑️ Reset / Kosongkan Gaji</button>
+                <div class="flex gap-2">
+                    <button onclick="tutupModalInputGaji()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-semibold hover:bg-slate-200">Batal</button>
+                    <button onclick="simpanDataGajiInputan()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-xs font-semibold hover:bg-indigo-700">Simpan Data Gaji</button>
+                </div>
             </div>
         </div>
     </div>
@@ -174,7 +176,6 @@
             let sumNetto = 0;
 
             filtered.forEach((emp) => {
-                // Jika belum diinput admin, nilainya 0 (tidak ada template ngawur)
                 let upahPokok = emp.customUpahPokok !== undefined ? emp.customUpahPokok : 0;
                 let taup = emp.customTaup !== undefined ? emp.customTaup : 0;
                 let upahTetap = upahPokok + taup; 
@@ -182,17 +183,14 @@
                 let tunjanganHadir = emp.customTunjanganHadir !== undefined ? emp.customTunjanganHadir : 0;
                 let uangMakanLain = emp.customUangMakan !== undefined ? emp.customUangMakan : 0;
                 
-                // Lembur dihitung dari timesheet jika ada, jika tidak 0
                 let upahLembur = (emp.otKonversi || 0) * (upahTetap > 0 ? (upahTetap / 173) : 0);
-                
                 let upahTidakTetap = tunjanganHadir + uangMakanLain + upahLembur;
                 let gajiBruto = upahTetap + upahTidakTetap;
 
-                // Potongan Resmi (Dihitung proporsional dari upah tetap jika sudah diinput)
                 let jht = upahTetap * 0.02;
                 let jp = upahTetap > 0 ? 31976 : 0;
                 let bpjsKes = upahTetap > 0 ? 31976 : 0;
-                let pph21 = upahBruto > 0 ? (emp.sistem === 'Shift' ? 89745 : 95000) : 0;
+                let pph21 = gajiBruto > 0 ? (emp.sistem === 'Shift' ? 89745 : 95000) : 0;
                 let totalPotongan = jht + jp + bpjsKes + pph21;
 
                 let netto = gajiBruto - totalPotongan;
@@ -214,8 +212,8 @@
                     <td class="p-3 text-center font-bold text-slate-900">Rp ${Math.round(gajiBruto).toLocaleString('id-ID')}</td>
                     <td class="p-3 text-center font-semibold text-rose-600">Rp ${Math.round(totalPotongan).toLocaleString('id-ID')}</td>
                     <td class="p-3 text-center font-extrabold text-blue-900 bg-slate-50/50">Rp ${Math.round(netto).toLocaleString('id-ID')}</td>
-                    <td class="p-3 text-center">
-                        <button onclick="bukaModalEditSpesifik(${emp.no})" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold shadow-sm text-xs">⚙️ Input Gaji</button>
+                    <td class="p-3 text-center space-x-1">
+                        <button onclick="bukaModalEditSpesifik(${emp.no})" class="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold shadow-sm text-xs">⚙️ Edit Gaji</button>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -232,11 +230,11 @@
             data.forEach(k => {
                 select.innerHTML += `<option value="${k.no}">${k.name} - ${k.jabatan} (${k.sistem})</option>`;
             });
-            bukaulDataKaryawanPertama();
+            muatDataGajiKaryawanTerpilih();
             document.getElementById('modalInputGaji').classList.remove('hidden');
         }
 
-        function bukaulDataKaryawanPertama() {
+        function muatDataGajiKaryawanTerpilih() {
             let selectNo = parseInt(document.getElementById('pilihKaryawanGaji').value);
             let data = muatDataPayroll();
             let emp = data.find(k => k.no === selectNo);
@@ -248,10 +246,6 @@
             }
         }
 
-        function muatDataGajiKaryawanTerpilih() {
-            bukaulDataKaryawanPertama();
-        }
-
         function bukaModalEditSpesifik(noKaryawan) {
             let data = muatDataPayroll();
             const select = document.getElementById('pilihKaryawanGaji');
@@ -260,7 +254,7 @@
                 let selected = k.no === noKaryawan ? 'selected' : '';
                 select.innerHTML += `<option value="${k.no}" ${selected}>${k.name} - ${k.jabatan} (${k.sistem})</option>`;
             });
-            bukaulDataKaryawanPertama();
+            muatDataGajiKaryawanTerpilih();
             document.getElementById('modalInputGaji').classList.remove('hidden');
         }
 
@@ -284,9 +278,26 @@
                 emp.customUangMakan = p_uang_makan;
 
                 localStorage.setItem('donggi_timesheet_data', JSON.stringify(data));
-                tutupModalInputGaji();
-                renderPayrollTable();
+                tutupModalInputGaji(); // Modal sekarang dipastikan tertutup otomatis
+                renderPayrollTable();   // Tabel otomatis memperbarui data
                 alert(`Data upah untuk ${emp.name} berhasil disimpan!`);
+            }
+        }
+
+        function resetDataGajiKaryawan() {
+            let noKaryawan = parseInt(document.getElementById('pilihKaryawanGaji').value);
+            let data = muatDataPayroll();
+            let emp = data.find(k => k.no === noKaryawan);
+            if (emp && confirm(`Reset data gaji untuk ${emp.name} menjadi 0?`)) {
+                delete emp.customUpahPokok;
+                delete emp.customTaup;
+                delete emp.customTunjanganHadir;
+                delete emp.customUangMakan;
+
+                localStorage.setItem('donggi_timesheet_data', JSON.stringify(data));
+                muatDataGajiKaryawanTerpilih();
+                renderPayrollTable();
+                alert('Data gaji berhasil dikosongkan.');
             }
         }
 
