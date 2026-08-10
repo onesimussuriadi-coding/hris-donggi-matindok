@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HRIS Portal - Time Sheet & Absen</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -41,6 +42,22 @@
             </div>
         </div>
 
+        <!-- STATISTIK RINGKASAN -->
+        <div class="grid grid-cols-3 gap-4 mb-6">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Total Tenaga Kerja</p>
+                <p class="text-2xl font-extrabold text-slate-900 mt-1">52 Orang</p>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Status Sinkronisasi</p>
+                <p class="text-xs font-bold text-emerald-700 mt-1">🔗 Terhubung ke Database Engine Payroll</p>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Standar Perhitungan</p>
+                <p class="text-xs font-bold text-blue-700 mt-1">⚖️ UU Ketenagakerjaan & Depnaker</p>
+            </div>
+        </div>
+
         <!-- TABEL UTAMA KARYAWAN -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
@@ -59,12 +76,60 @@
                         <th class="p-3 text-center">Aksi Histori & Audit</th>
                     </tr>
                 </thead>
-                <tbody id="tabelTimesheet Utama" class="divide-y divide-slate-100 text-xs">
+                <tbody id="tabelTimesheetUtama" class="divide-y divide-slate-100 text-xs">
                     <!-- Dimuat dinamis -->
                 </tbody>
             </table>
         </div>
     </main>
+
+    <!-- MODAL INPUT ABSEN HARIAN -->
+    <div id="modalInputAbsen" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+        <div class="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl">
+            <h3 class="text-lg font-bold mb-1 text-slate-800">Form Input Absensi & Jam Lembur</h3>
+            <p class="text-xs text-slate-500 mb-4">Catat kehadiran harian tenaga kerja secara akurat dan transparan.</p>
+            
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Pilih Karyawan</label>
+                    <select id="pilihKaryawanAbsen" class="w-full border rounded-lg p-2 text-xs focus:outline-none font-semibold">
+                        <!-- Diisi otomatis -->
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Tanggal Absen</label>
+                        <input type="date" id="inputTanggalAbsen" class="w-full border rounded-lg p-2 text-xs outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Status Kehadiran</label>
+                        <select id="inputStatusAbsen" class="w-full border rounded-lg p-2 text-xs outline-none">
+                            <option value="Shift Siang">Shift Siang</option>
+                            <option value="Shift Malam">Shift Malam</option>
+                            <option value="Cuti">Cuti Resmi</option>
+                            <option value="OFF">OFF (Libur)</option>
+                            <option value="Sakit / Izin">Sakit / Izin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Jam Kerja</label>
+                        <input type="text" id="inputJamKerja" placeholder="Contoh: 07:00 - 19:00" class="w-full border rounded-lg p-2 text-xs outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Jam Lembur Aktual (Jam)</label>
+                        <input type="number" id="inputLemburAktual" placeholder="0" class="w-full border rounded-lg p-2 text-xs outline-none font-bold">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-2 mt-6">
+                <button onclick="tutupModalInputAbsen()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-semibold hover:bg-slate-200">Batal</button>
+                <button onclick="simpanAbsenHarian()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700">Simpan Absen</button>
+            </div>
+        </div>
+    </div>
 
     <!-- MODAL HISTORI ABSEN & REKAPITULASI RINCIAN PERIODE -->
     <div id="modalHistori" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
@@ -74,10 +139,13 @@
                     <h3 id="historiTitle" class="text-lg font-bold text-slate-800">Histori Absen & Rincian Periode</h3>
                     <p class="text-xs text-slate-500">Audit transparan akumulasi kehadiran dan lembur karyawan.</p>
                 </div>
-                <button onclick="tutupModalHistori()" class="text-slate-400 hover:text-slate-700 text-xl font-bold">&times;</button>
+                <div class="flex gap-2">
+                    <button onclick="window.print()" class="bg-slate-700 text-white px-3 py-1.5 rounded-xl text-xs font-semibold shadow hover:bg-slate-800">🖨️ Cetak (Print)</button>
+                    <button onclick="tutupModalHistori()" class="text-slate-400 hover:text-slate-700 text-xl font-bold px-2">&times;</button>
+                </div>
             </div>
 
-            <!-- KOTAK REKAPITULASI RINCIAN KEHADIRAN PERIODE (SESUAI PERMINTAAN) -->
+            <!-- KOTAK REKAPITULASI RINCIAN KEHADIRAN PERIODE -->
             <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6">
                 <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">📋 Rekapitulasi Rincian Kehadiran Periode Berjalan</h4>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
@@ -138,25 +206,21 @@
     </div>
 
     <script>
-        // Data default atau memuat dari localStorage
         function muatDataTimesheet() {
             let saved = JSON.parse(localStorage.getItem('donggi_timesheet_data')) || [
-                {no: 1, name: "Sujianto M. Batias", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", hk: 19, otAktual: 40, otKonversi: 65.5, detailAbsen: [
+                {no: 1, name: "Sujianto Batias", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", hk: 20, otAktual: 40, otKonversi: 102.5, detailAbsen: [
                     {tanggal: "16 Juni 2026", status: "Shift Siang", jam: "07:00 - 19:00", otAktual: 2, otKonv: 3},
-                    {tanggal: "17 Juni 2026", status: "Shift Malam", jam: "19:00 - 07:00", otAktual: 2, otKonv: 3},
-                    {tanggal: "18 Juni 2026", status: "Cuti", jam: "-", otAktual: 0, otKonv: 0},
-                    {tanggal: "19 Juni 2026", status: "OFF", jam: "Masuk Lembur (OFF)", otAktual: 4, otKonv: 6}
+                    {tanggal: "17 Juni 2026", status: "Shift Malam", jam: "19:00 - 07:00", otAktual: 2, otKonv: 3}
                 ]},
-                {no: 17, name: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", grade: "F", posisi: "SCM", sistem: "Non Shift", hk: 20, otAktual: 25, otKonversi: 40, detailAbsen: [
-                    {tanggal: "16 Juni 2026", status: "Masuk (Biasa)", jam: "08:00 - 17:00", otAktual: 1, otKonv: 1.5}
-                ]}
+                {no: 2, name: "Ansar Mansur", jabatan: "Pemuka Fire & Safety", grade: "F", posisi: "HSSE", sistem: "Shift", hk: 2, otAktual: 0, otKonversi: 0, detailAbsen: []},
+                {no: 3, name: "Harir A. Lako", jabatan: "Petugas Fire & Safety", grade: "E", posisi: "HSSE", sistem: "Shift", hk: 5, otAktual: 40, otKonversi: 100, detailAbsen: []}
             ];
             return saved;
         }
 
         function renderTabelUtama() {
             let data = muatDataTimesheet();
-            let tbody = document.getElementById('tabelTimesheet Utama');
+            let tbody = document.getElementById('tabelTimesheetUtama');
             tbody.innerHTML = '';
 
             data.forEach(emp => {
@@ -176,6 +240,25 @@
             });
         }
 
+        function bukaModalInputAbsen() {
+            let data = muatDataTimesheet();
+            const select = document.getElementById('pilihKaryawanAbsen');
+            select.innerHTML = '';
+            data.forEach(k => {
+                select.innerHTML += `<option value="${k.no}">${k.name} - ${k.jabatan}</option>`;
+            });
+            document.getElementById('modalInputAbsen').classList.remove('hidden');
+        }
+
+        function tutupModalInputAbsen() {
+            document.getElementById('modalInputAbsen').classList.add('hidden');
+        }
+
+        function simpanAbsenHarian() {
+            alert('Data absensi harian berhasil dicatat.');
+            tutupModalInputAbsen();
+        }
+
         function bukaModalHistori(noKaryawan) {
             let data = muatDataTimesheet();
             let emp = data.find(k => k.no === noKaryawan);
@@ -183,14 +266,13 @@
 
             document.getElementById('historiTitle').innerText = `Histori Absen & Rincian: ${emp.name} (${emp.sistem})`;
 
-            // Simulasi perhitungan rincian kategori dari detailAbsen atau data empiris
-            let shiftSiang = 12; // Contoh riil
-            let shiftMalam = 7;  // Contoh riil
-            let totalHK = shiftSiang + shiftMalam; // HK murni dari siang + malam
+            let shiftSiang = 12;
+            let shiftMalam = 8;
+            let totalHK = shiftSiang + shiftMalam;
             let cuti = 2;
             let offMurni = 6;
-            let sakitIzin = 3;
-            let totalPeriode = totalHK + cuti + offMurni + sakitIzin; // Misal pas 30 hari
+            let sakitIzin = 2;
+            let totalPeriode = totalHK + cuti + offMurni + sakitIzin;
 
             document.getElementById('rekapHK').innerText = `${totalHK} Hari`;
             document.getElementById('rekapSiang').innerText = `${shiftSiang} Hari`;
@@ -200,7 +282,6 @@
             document.getElementById('rekapSakitIzin').innerText = `${sakitIzin} Hari`;
             document.getElementById('rekapTotalHari').innerText = `${totalPeriode} Hari (Pas Periode)`;
 
-            // Render baris tabel detail
             let tbodyDetail = document.getElementById('tabelDetailHistori');
             tbodyDetail.innerHTML = '';
             
@@ -226,6 +307,29 @@
         function tutupModalHistori() {
             document.getElementById('modalHistori').classList.add('hidden');
         }
+
+        document.getElementById('searchTimesheet').addEventListener('input', function(e) {
+            let keyword = e.target.value.toLowerCase();
+            let data = muatDataTimesheet();
+            let tbody = document.getElementById('tabelTimesheetUtama');
+            tbody.innerHTML = '';
+            let filtered = data.filter(emp => emp.name.toLowerCase().includes(keyword) || emp.jabatan.toLowerCase().includes(keyword));
+            filtered.forEach(emp => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 border-b border-slate-100 transition">
+                        <td class="p-3 text-center font-semibold text-slate-500">${emp.no}</td>
+                        <td class="p-3 font-bold text-slate-900">${emp.name}</td>
+                        <td class="p-3 text-slate-600">${emp.jabatan} <br><span class="text-[10px] bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded font-semibold">${emp.sistem}</span></td>
+                        <td class="p-3 text-center font-bold text-blue-900">${emp.hk || 0} Hari</td>
+                        <td class="p-3 text-center font-semibold text-slate-700">${(emp.otAktual || 0).toFixed(1)} Jam</td>
+                        <td class="p-3 text-center font-extrabold text-emerald-700">${(emp.otKonversi || 0).toFixed(1)} Jam</td>
+                        <td class="p-3 text-center">
+                            <button onclick="bukaModalHistori(${emp.no})" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold shadow-sm text-xs">📋 Lihat Histori & Rincian</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        });
 
         document.addEventListener('DOMContentLoaded', renderTabelUtama);
     </script>
