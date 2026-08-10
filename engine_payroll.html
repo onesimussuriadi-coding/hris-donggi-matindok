@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Engine Payroll - Field Donggi Matindok</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -15,21 +14,13 @@
         <div>
             <div class="mb-8">
                 <h1 class="text-xl font-bold tracking-wide">HRIS Portal</h1>
-                <p class="text-xs text-slate-400 mt-1">Field Donggi Matindok</p>
+                <p class="text-xs text-slate-400 mt-1">PT Sentral Sari Jaya - Zona 13</p>
             </div>
             <nav class="space-y-2">
-                <a href="index.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition">
-                    <span>📊</span> Dashboard Utama
-                </a>
-                <a href="master_karyawan.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition">
-                    <span>👥</span> Master Karyawan
-                </a>
-                <a href="timesheet.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition">
-                    <span>📅</span> Time Sheet & Absen
-                </a>
-                <a href="engine_payroll.html" class="flex items-center gap-3 px-4 py-3 bg-blue-600 rounded-lg text-white font-medium transition">
-                    <span>💰</span> Engine Payroll
-                </a>
+                <a href="index.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition"><span>📊</span> Dashboard Utama</a>
+                <a href="master_karyawan.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition"><span>👥</span> Master Karyawan</a>
+                <a href="timesheet.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition"><span>📅</span> Time Sheet & Absen</a>
+                <a href="engine_payroll.html" class="flex items-center gap-3 px-4 py-3 bg-blue-600 rounded-lg text-white font-medium transition"><span>💰</span> Engine Payroll</a>
             </nav>
         </div>
         <div class="border-t border-slate-800 pt-4">
@@ -41,56 +32,46 @@
     <!-- Konten Utama Halaman Engine Payroll -->
     <main class="flex-1 overflow-y-auto p-8">
         
-        <!-- Header Atas -->
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold text-slate-800">Engine Payroll & Kalkulasi Upah</h2>
-            <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full">Zona 13 - Field Donggi Matindok</span>
+            <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full">Standar PT Sentral Sari Jaya</span>
         </div>
 
-        <!-- Kartu Kontainer Utama Payroll -->
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-8">
             
-            <!-- Judul Bagian & Tombol Tindakan Atas -->
             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
                 <div>
-                    <h3 class="text-lg font-bold text-slate-900">Dashboard Upah Bulanan Terpadu</h3>
-                    <p class="text-xs text-slate-500 mt-0.5">Kalkulasi Otomatis Berdasarkan Kehadiran, Lembur Depnaker & Grade Karyawan</p>
+                    <h3 class="text-lg font-bold text-slate-900">Slip Upah Tenaga Kerja Terpadu</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Periode: 16 Juni 2026 s/d 15 Juli 2026</p>
                 </div>
                 
                 <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-                    <button onclick="hitungKalkulasiPayroll()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-sm">
-                        <span>⚡ Sinkronisasi Data Timesheet</span>
-                    </button>
                     <select id="filterShift" onchange="renderPayrollTable()" class="px-3 py-2.5 text-xs border rounded-xl bg-slate-50 text-slate-600 focus:outline-none">
-                        <option value="">Tampilkan Semua (52 Orang)</option>
-                        <option value="Shift">Shift Saja (36)</option>
-                        <option value="Non Shift">Non Shift Saja (16)</option>
+                        <option value="">Semua Sistem (52 Karyawan)</option>
+                        <option value="Shift">Shift (Sujianto dkk)</option>
+                        <option value="Non Shift">Non Shift (Arianto dkk)</option>
                     </select>
                     <input type="text" id="searchPayroll" placeholder="Cari nama karyawan..." class="px-3 py-2.5 text-xs border rounded-xl focus:outline-none w-56">
                 </div>
             </div>
 
-            <!-- 4 Kartu Statistik Keuangan -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <!-- Statistik Keuangan -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                 <div class="bg-white p-5 rounded-xl border-l-4 border-blue-600 border border-slate-100 shadow-sm">
                     <p class="text-xs text-slate-500 font-medium">Total Tenaga Kerja</p>
                     <p class="text-xl font-extrabold text-blue-900 mt-1">52 Orang</p>
                 </div>
                 <div class="bg-white p-5 rounded-xl border-l-4 border-emerald-600 border border-slate-100 shadow-sm">
-                    <p class="text-xs text-slate-500 font-medium">Total Gaji Pokok</p>
-                    <p class="text-xl font-extrabold text-slate-900 mt-1" id="statTotalPokok">Rp 0</p>
-                </div>
-                <div class="bg-white p-5 rounded-xl border-l-4 border-amber-600 border border-slate-100 shadow-sm">
-                    <p class="text-xs text-slate-500 font-medium">Total Upah Lembur</p>
-                    <p class="text-xl font-extrabold text-slate-900 mt-1" id="statTotalLembur">Rp 0</p>
+                    <p class="text-xs text-slate-500 font-medium">Total Gaji Bruto</p>
+                    <p class="text-xl font-extrabold text-slate-900 mt-1" id="statTotalBruto">Rp 0</p>
                 </div>
                 <div class="bg-white p-5 rounded-xl border-l-4 border-indigo-600 border border-slate-100 shadow-sm">
-                    <p class="text-xs text-slate-500 font-medium">Total Take Home Pay (THP)</p>
-                    <p class="text-xl font-extrabold text-indigo-900 mt-1" id="statTotalTHP">Rp 0</p>
+                    <p class="text-xs text-slate-500 font-medium">Total Upah Netto (THP)</p>
+                    <p class="text-xl font-extrabold text-indigo-900 mt-1" id="statTotalNetto">Rp 0</p>
                 </div>
             </div>
 
-            <!-- Tabel Rincian Karyawan & Slip Gaji -->
+            <!-- Tabel Rincian -->
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-sm">
                     <thead>
@@ -98,15 +79,16 @@
                             <th class="p-3 text-center w-12">No</th>
                             <th class="p-3">Nama Karyawan</th>
                             <th class="p-3">Jabatan & Sistem</th>
-                            <th class="p-3 text-center">Gaji Pokok</th>
-                            <th class="p-3 text-center">Lembur Konversi</th>
-                            <th class="p-3 text-center">Upah Lembur</th>
-                            <th class="p-3 text-center">Take Home Pay (THP)</th>
+                            <th class="p-3 text-center">Upah Tetap (I)</th>
+                            <th class="p-3 text-center">Upah Tidak Tetap & Lembur (II)</th>
+                            <th class="p-3 text-center">Gaji Bruto (I+II)</th>
+                            <th class="p-3 text-center">Potongan Resmi (III)</th>
+                            <th class="p-3 text-center">Netto (THP)</th>
                             <th class="p-3 text-center">Aksi Slip</th>
                         </tr>
                     </thead>
                     <tbody id="payrollTableBody" class="divide-y divide-slate-100 text-slate-700 text-xs">
-                        <!-- Dimuat secara dinamis -->
+                        <!-- Dinamis -->
                     </tbody>
                 </table>
             </div>
@@ -115,21 +97,9 @@
 
     </main>
 
-    <!-- Skrip Engine Payroll Terintegrasi -->
     <script>
-        // Mengambil data master dan timesheet dari localStorage penampung utama
         function muatDataPayroll() {
             let savedData = JSON.parse(localStorage.getItem('donggi_timesheet_data')) || [];
-            
-            // Jika data localStorage kosong, gunakan default master yang sama dengan timesheet
-            if (savedData.length === 0) {
-                // Fallback aman jika data timesheet belum diinisialisasi
-                savedData = [
-                    {no: 1, name: "Sujianto M. Batias", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0},
-                    {no: 2, name: "Ansar Mansur", jabatan: "Pemuka FS", grade: "F", posisi: "HSSE", sistem: "Shift", hk: 0, otAktual: 0, otKonversi: 0},
-                    {no: 17, name: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", grade: "F", posisi: "SCM", sistem: "Non Shift", hk: 0, otAktual: 0, otKonversi: 0}
-                ];
-            }
             return savedData;
         }
 
@@ -148,30 +118,47 @@
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400 text-xs">Tidak ada data karyawan yang cocok dengan filter.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-slate-400 text-xs">Belum ada data absensi/karyawan. Silakan input di modul Timesheet.</td></tr>`;
                 return;
             }
 
-            let sumPokok = 0;
-            let sumLembur = 0;
-            let sumTHP = 0;
+            let sumBruto = 0;
+            let sumNetto = 0;
 
             filtered.forEach((emp) => {
-                // Penentuan Gaji Pokok berdasarkan Grade
-                let gajiPokok = 4500000; // Default Grade D
-                if (emp.grade === 'C') gajiPokok = 3800000;
-                if (emp.grade === 'E') gajiPokok = 5500000;
-                if (emp.grade === 'F') gajiPokok = 6800000;
-                if (emp.grade === 'G') gajiPokok = 8500000;
+                // Simulasi nilai berdasarkan standar slip gaji PT Sentral Sari Jaya
+                let upahPokok = 2458160;
+                let taup = 819387;
+                let upahTetap = upahPokok + taup; // Rp 3.277.547
 
-                // Hitung Upah Lembur Berdasarkan Standar Depnaker (Gaji Pokok / 173 * Jam Konversi)
-                let upahPerJam = gajiPokok / 173;
-                let totalUpahLembur = (emp.otKonversi || 0) * upahPerJam;
-                let takeHomePay = gajiPokok + totalUpahLembur;
+                let upahTidakTetap = 0;
+                if (emp.sistem === 'Shift') {
+                    let tunjanganHadir = (emp.hk || 19) * 30000;
+                    let premiShift = 485948;
+                    let kjk = 2699714;
+                    let makanLembur = 75000;
+                    let upahLembur = (emp.otKonversi || 65.5) * 18945;
+                    let extraFood = 250000;
+                    upahTidakTetap = tunjanganHadir + premiShift + kjk + makanLembur + upahLembur + extraFood; // ± Rp 5.321.583
+                } else {
+                    let tunjanganHadir = (emp.hk || 20) * 30000;
+                    let lemburWeekend = 2500000;
+                    upahTidakTetap = tunjanganHadir + lemburWeekend; // Rp 3.100.000
+                }
 
-                sumPokok += gajiPokok;
-                sumLembur += totalUpahLembur;
-                sumTHP += takeHomePay;
+                let gajiBruto = upahTetap + upahTidakTetap;
+
+                // Potongan Resmi
+                let jht = upahTetap * 0.02; // Rp 63.952
+                let jp = 31976;
+                let bpjsKes = 31976;
+                let pph21 = emp.sistem === 'Shift' ? 89745 : 95000;
+                let totalPotongan = jht + jp + bpjsKes + pph21;
+
+                let netto = gajiBruto - totalPotongan;
+
+                sumBruto += gajiBruto;
+                sumNetto += netto;
 
                 const row = document.createElement('tr');
                 row.className = "hover:bg-slate-50 border-b border-slate-100 transition";
@@ -180,15 +167,15 @@
                     <td class="p-3 font-bold text-slate-800">${emp.name}</td>
                     <td class="p-3 text-slate-600">
                         ${emp.jabatan} <br>
-                        <span class="text-[10px] text-slate-400">Grade: ${emp.grade} | </span>
                         <span class="px-1.5 py-0.5 bg-blue-50 text-blue-700 rounded text-[10px] font-semibold">${emp.sistem}</span>
                     </td>
-                    <td class="p-3 text-center font-semibold text-slate-700">Rp ${gajiPokok.toLocaleString('id-ID')}</td>
-                    <td class="p-3 text-center font-bold text-blue-700">${(emp.otKonversi || 0).toFixed(1)} Jam</td>
-                    <td class="p-3 text-center font-semibold text-emerald-700">Rp ${Math.round(totalUpahLembur).toLocaleString('id-ID')}</td>
-                    <td class="p-3 text-center font-extrabold text-slate-900 bg-slate-50/50">Rp ${Math.round(takeHomePay).toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-center font-semibold text-slate-700">Rp ${Math.round(upahTetap).toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-center font-semibold text-emerald-700">Rp ${Math.round(upahTidakTetap).toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-center font-bold text-slate-900">Rp ${Math.round(gajiBruto).toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-center font-semibold text-rose-600">Rp ${Math.round(totalPotongan).toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-center font-extrabold text-blue-900 bg-slate-50/50">Rp ${Math.round(netto).toLocaleString('id-ID')}</td>
                     <td class="p-3 text-center">
-                        <button onclick="bukaSlipGaji('${emp.name}', ${gajiPokok}, ${totalUpahLembur}, ${takeHomePay}, ${(emp.otKonversi || 0).toFixed(1)})" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold transition flex items-center justify-center gap-1 mx-auto shadow-sm">
+                        <button onclick="bukaSlipGaji('${emp.name}', '${emp.sistem}', ${gajiBruto}, ${totalPotongan}, ${netto})" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold transition flex items-center justify-center gap-1 mx-auto shadow-sm">
                             <span>📄</span> Slip Gaji
                         </button>
                     </td>
@@ -196,25 +183,15 @@
                 tbody.appendChild(row);
             });
 
-            // Update Kartu Statistik Atas
-            document.getElementById('statTotalPokok').innerText = `Rp ${Math.round(sumPokok).toLocaleString('id-ID')}`;
-            document.getElementById('statTotalLembur').innerText = `Rp ${Math.round(sumLembur).toLocaleString('id-ID')}`;
-            document.getElementById('statTotalTHP').innerText = `Rp ${Math.round(sumTHP).toLocaleString('id-ID')}`;
+            document.getElementById('statTotalBruto').innerText = `Rp ${Math.round(sumBruto).toLocaleString('id-ID')}`;
+            document.getElementById('statTotalNetto').innerText = `Rp ${Math.round(sumNetto).toLocaleString('id-ID')}`;
         }
 
-        function hitungKalkulasiPayroll() {
-            renderPayrollTable();
-            alert('Sukses! Data Engine Payroll telah disinkronkan secara real-time dengan modul Timesheet & Absen.');
+        function bukaSlipGaji(nama, sistem, bruto, potongan, netto) {
+            alert(`--- SLIP UPAH TENAGA KERJA (${sistem.toUpperCase()}) ---\nNama Pekerja: ${nama}\n\nGAJI BRUTO (I + II): Rp ${Math.round(bruto).toLocaleString('id-ID')}\nPOTONGAN RESMI (III): Rp ${Math.round(potongan).toLocaleString('id-ID')}\n----------------------------------------------------\nUPAH DITERIMA BERSIH (NETTO): Rp ${Math.round(netto).toLocaleString('id-ID')}`);
         }
 
-        function bukaSlipGaji(nama, pokok, lembur, thp, jamKonversi) {
-            alert(`--- SLIP GAJI RESMI ---\nNama: ${nama}\nGaji Pokok: Rp ${Math.round(pokok).toLocaleString('id-ID')}\nJam Lembur Konversi: ${jamKonversi} Jam\nUpah Lembur: Rp ${Math.round(lembur).toLocaleString('id-ID')}\n-----------------------------------\nTOTAL TAKE HOME PAY (THP): Rp ${Math.round(thp).toLocaleString('id-ID')}`);
-        }
-
-        // Event listener untuk pencarian real-time
         document.getElementById('searchPayroll').addEventListener('input', renderPayrollTable);
-
-        // Jalankan saat halaman dimuat
         document.addEventListener('DOMContentLoaded', renderPayrollTable);
     </script>
 </body>
