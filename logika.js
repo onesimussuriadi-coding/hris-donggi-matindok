@@ -852,3 +852,54 @@ function downloadExcelGabungan() {
     link.click();
     document.body.removeChild(link);
 }
+function downloadPDFHistoriAbsen() {
+    let karyawan = masterKaryawan.find(k => k.no === activeKaryawanNo);
+    if (!karyawan || !karyawan.historiAbsen || karyawan.historiAbsen.length === 0) {
+        alert('Tidak ada data histori untuk diunduh.');
+        return;
+    }
+
+    let jendelaCetak = window.open('', '', 'height=700,width=900');
+    jendelaCetak.document.write('<html><head><title>Histori Absen - ' + karyawan.name + '</title>');
+    jendelaCetak.document.write(`
+        <style>
+            body { font-family: sans-serif; padding: 20px; color: #1e293b; }
+            h2, h3, p { text-align: center; margin: 4px 0; }
+            .subtitle { font-size: 12px; color: #64748b; margin-bottom: 15px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 11px; }
+            th, td { border: 1px solid #cbd5e1; padding: 6px 8px; text-align: left; }
+            th { background-color: #f1f5f9; text-transform: uppercase; font-size: 10px; }
+            .text-center { text-align: center; }
+            .summary-box { margin-bottom: 15px; font-size: 12px; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0; }
+        </style>
+    `);
+    jendelaCetak.document.write('</head><body>');
+    jendelaCetak.document.write('<h2>PT. SENTRAL SARI JAYA / PT. DONGGI MATINDOK</h2>');
+    jendelaCetak.document.write('<h3>LAPORAN HISTORI ABSENSI & LEMBUR KARYAWAN</h3>');
+    jendelaCetak.document.write(`<div class="subtitle">Nama: <b>${karyawan.name}</b> | Jabatan: ${karyawan.jabatan} | Sistem: ${karyawan.sistem}</div>`);
+    
+    // Ambil konten tabel histori yang sudah ada di modal
+    let kontenTabel = document.getElementById('areaTabelHistoriCetak').innerHTML;
+    // Bersihkan tombol Hapus di dalam tabel cetak agar tidak ikut tercetak
+    let tempDiv = document.createElement('div');
+    tempDiv.innerHTML = kontenTabel;
+    let buttons = tempDiv.querySelectorAll('button');
+    buttons.forEach(b => b.remove());
+
+    jendelaCetak.document.write(tempDiv.innerHTML);
+    jendelaCetak.document.write('<p style="font-size: 10px; color: #64748b; margin-top: 20px; text-align: right;">Dokumen ini dicetak otomatis melalui Sistem HRIS Field Zona 13.</p>');
+    jendelaCetak.document.write('</body></html>');
+    jendelaCetak.document.close();
+    jendelaCetak.focus();
+    
+    // Berikan instruksi otomatis atau jeda agar dialog print (Save as PDF) muncul optimal
+    setTimeout(() => { 
+        jendelaCetak.print(); 
+        jendelaCetak.close(); 
+    }, 500);
+}
+function downloadPDFSlipGaji(noKaryawan) {
+    // Memanggil fungsi print Slip Gaji yang otomatis memicu dialog cetak browser 
+    // di mana pengguna bisa memilih Destination: "Save as PDF"
+    printSlipGaji(noKaryawan);
+}
