@@ -366,14 +366,11 @@ function gantiStatusAbsen() {
     let karyawan = masterKaryawan.find(k => k.no === selectedNo);
     let isShift = karyawan ? karyawan.sistem === 'Shift' : true;
 
-    if (status === 'off_murni') {
+    // REVISI: Sembunyikan Jenis Hari jika status Cuti, Izin, Sakit, Alpa, atau Off Murni
+    if (status === 'off_murni' || status === 'cuti' || status === 'izin' || status === 'sakit' || status === 'alfa') {
         if(wrapperShift) wrapperShift.classList.add('hidden');
         if(wrapperJam) wrapperJam.classList.add('hidden');
         if(wrapperJenisHari) wrapperJenisHari.classList.add('hidden');
-    } else if (status === 'cuti' || status === 'izin' || status === 'sakit' || status === 'alfa') {
-        if(wrapperShift) wrapperShift.classList.add('hidden');
-        if(wrapperJam) wrapperJam.classList.add('hidden');
-        if(wrapperJenisHari) wrapperJenisHari.classList.remove('hidden');
     } else {
         if(wrapperJam) wrapperJam.classList.remove('hidden');
         if(wrapperJenisHari) wrapperJenisHari.classList.remove('hidden');
@@ -423,7 +420,6 @@ function hitungKonversiDepnaker(jamAktual, jenisHari) {
 function simpanAbsenHarian() {
     const selectedNo = parseInt(document.getElementById('pilihKaryawan').value);
     const status = document.getElementById('statusKehadiran').value;
-    const jenisHari = document.getElementById('jenisHari').value;
     const tgl = parseInt(document.getElementById('inputTanggal').value);
     const bln = document.getElementById('inputBulan').value;
     const thn = parseInt(document.getElementById('inputTahun').value);
@@ -446,71 +442,78 @@ function simpanAbsenHarian() {
         let totalJamKerja = 0;
         let jamLemburAktual = 0;
         let jamLemburKonversi = 0;
-
-        let [jamIn, menitIn] = [0, 0];
-        let [jamOut, menitOut] = [0, 0];
-
-        if (status !== 'off_murni' && status !== 'cuti' && status !== 'izin' && status !== 'sakit' && status !== 'alfa') {
-            jamMasuk = document.getElementById('jamMasuk').value;
-            jamKeluar = document.getElementById('jamKeluar').value;
-            
-            [jamIn, menitIn] = jamMasuk.split(':').map(Number);
-            [jamOut, menitOut] = jamKeluar.split(':').map(Number);
-            totalJamKerja = (jamOut + menitOut/60) - (jamIn + menitIn/60);
-            if(totalJamKerja < 0) totalJamKerja += 24;
-        }
-
-        if(status === 'masuk' || status === 'dinas') {
-            karyawan.hk += 1;
-            if(karyawan.sistem === 'Non Shift') {
-                if (jenisHari === 'libur') {
-                    jamLemburAktual = totalJamKerja;
-                } else {
-                    let durasiKerjaBersih = totalJamKerja - 1;
-                    jamLemburAktual = (durasiKerjaBersih > 8) ? (durasiKerjaBersih - 8) : 0;
-                }
-            } else {
-                if(totalJamKerja > 12) {
-                    jamLemburAktual = totalJamKerja - 12;
-                }
-            }
-        } else if(status === 'off_masuk') {
-            if(karyawan.sistem === 'Non Shift') {
-                if (jenisHari === 'libur') {
-                    jamLemburAktual = totalJamKerja;
-                } else {
-                    let durasiKerjaBersih = totalJamKerja - 1;
-                    jamLemburAktual = (durasiKerjaBersih > 0) ? durasiKerjaBersih : 0;
-                }
-            } else {
-                jamLemburAktual = totalJamKerja;
-            }
-        }
-
-        if(jamLemburAktual < 0) jamLemburAktual = 0;
+        let jenisHari = "biasa";
 
         let tambahMakanPagi = 0;
         let tambahMakanSiang = 0;
         let tambahMakanMalam = 0;
+        let jenisHariSimpan = "NON";
 
-        if (jamIn < 5 && status !== 'off_murni') {
-            tambahMakanPagi = 1;
-        }
-        if (jenisHari === 'libur' && jamLemburAktual > 5 && jamIn < 11 && (jamOut > 13 || jamOut < jamIn)) {
-            tambahMakanSiang = 1;
-        }
-        if (jamLemburAktual > 5 && (jamOut > 21 || (jamIn <= 19 && jamOut >= 21) || jamOut < jamIn)) {
-            tambahMakanMalam = 1;
+        // REVISI PENGUNCI: Hanya hitung jam kerja, lembur, dan tunjangan makan jika status MASUK, DINAS, atau OFF_MASUK
+        if (status !== 'off_murni' && status !== 'cuti' && status !== 'izin' && status !== 'sakit' && status !== 'alfa') {
+            jenisHari = document.getElementById('jenisHari').value;
+            jamMasuk = document.getElementById('jamMasuk').value;
+            jamKeluar = document.getElementById('jamKeluar').value;
+            
+            let [jamIn, menitIn] = jamMasuk.split(':').map(Number);
+            let [jamOut, menitOut] = jamKeluar.split(':').map(Number);
+            totalJamKerja = (jamOut + menitOut/60) - (jamIn + menitIn/60);
+            if(totalJamKerja < 0) totalJamKerja += 24;
+
+            if(status === 'masuk' || status === 'dinas') {
+                karyawan.hk += 1;
+                if(karyawan.sistem === 'Non Shift') {
+                    if (jenisHari === 'libur') {
+                        jamLemburAktual = totalJamKerja;
+                    } else {
+                        let durasiKerjaBersih = totalJamKerja - 1;
+                        jamLemburAktual = (durasiKerjaBersih > 8) ? (durasiKerjaBersih - 8) : 0;
+                    }
+                } else {
+                    if(totalJamKerja > 12) {
+                        jamLemburAktual = totalJamKerja - 12;
+                    }
+                }
+            } else if(status === 'off_masuk') {
+                if(karyawan.sistem === 'Non Shift') {
+                    if (jenisHari === 'libur') {
+                        jamLemburAktual = totalJamKerja;
+                    } else {
+                        let durasiKerjaBersih = totalJamKerja - 1;
+                        jamLemburAktual = (durasiKerjaBersih > 0) ? durasiKerjaBersih : 0;
+                    }
+                } else {
+                    jamLemburAktual = totalJamKerja;
+                }
+            }
+
+            if(jamLemburAktual < 0) jamLemburAktual = 0;
+
+            if (jamIn < 5) {
+                tambahMakanPagi = 1;
+            }
+            if (jenisHari === 'libur' && jamLemburAktual > 5 && jamIn < 11 && (jamOut > 13 || jamOut < jamIn)) {
+                tambahMakanSiang = 1;
+            }
+            if (jamLemburAktual > 5 && (jamOut > 21 || (jamIn <= 19 && jamOut >= 21) || jamOut < jamIn)) {
+                tambahMakanMalam = 1;
+            }
+
+            jenisHariSimpan = (jenisHari === 'libur' ? 'Libur/Merah' : 'Biasa');
+            jamLemburKonversi = hitungKonversiDepnaker(jamLemburAktual, jenisHari);
+        } else {
+            // JIKA CUTI, IZIN, SAKIT, ALFA, ATAU OFF MURNI: 0 murni tanpa hak lembur/makan
+            jamLemburAktual = 0;
+            jamLemburKonversi = 0;
+            tambahMakanPagi = 0;
+            tambahMakanSiang = 0;
+            tambahMakanMalam = 0;
+            jenisHariSimpan = status.toUpperCase();
         }
 
         karyawan.makanPagi += tambahMakanPagi;
         karyawan.makanSiang += tambahMakanSiang;
         karyawan.makanMalam += tambahMakanMalam;
-
-        let jenisHariSimpan = (status === 'off_murni') ? 'NON' : (jenisHari === 'libur' ? 'Libur/Merah' : 'Biasa');
-        if (status !== 'off_murni') {
-            jamLemburKonversi = hitungKonversiDepnaker(jamLemburAktual, jenisHari);
-        }
 
         karyawan.otAktual += jamLemburAktual;
         karyawan.otKonversi += jamLemburKonversi;
@@ -590,6 +593,7 @@ function hitungDataPayroll(karyawan) {
             }).length;
         }
         
+        // REVISI EXTRA FOODING DINAMIS MENGACU PADA SHIFT MALAM & TARIF MAKAN AKTUAL
         totalExtraFood = jumlahShiftMalamAktual * tarifMakanAktual;
     }
 
@@ -852,6 +856,7 @@ function downloadExcelGabungan() {
     link.click();
     document.body.removeChild(link);
 }
+
 function downloadPDFHistoriAbsen() {
     let karyawan = masterKaryawan.find(k => k.no === activeKaryawanNo);
     if (!karyawan || !karyawan.historiAbsen || karyawan.historiAbsen.length === 0) {
@@ -878,9 +883,7 @@ function downloadPDFHistoriAbsen() {
     jendelaCetak.document.write('<h3>LAPORAN HISTORI ABSENSI & LEMBUR KARYAWAN</h3>');
     jendelaCetak.document.write(`<div class="subtitle">Nama: <b>${karyawan.name}</b> | Jabatan: ${karyawan.jabatan} | Sistem: ${karyawan.sistem}</div>`);
     
-    // Ambil konten tabel histori yang sudah ada di modal
     let kontenTabel = document.getElementById('areaTabelHistoriCetak').innerHTML;
-    // Bersihkan tombol Hapus di dalam tabel cetak agar tidak ikut tercetak
     let tempDiv = document.createElement('div');
     tempDiv.innerHTML = kontenTabel;
     let buttons = tempDiv.querySelectorAll('button');
@@ -892,14 +895,8 @@ function downloadPDFHistoriAbsen() {
     jendelaCetak.document.close();
     jendelaCetak.focus();
     
-    // Berikan instruksi otomatis atau jeda agar dialog print (Save as PDF) muncul optimal
     setTimeout(() => { 
         jendelaCetak.print(); 
         jendelaCetak.close(); 
     }, 500);
-}
-function downloadPDFSlipGaji(noKaryawan) {
-    // Memanggil fungsi print Slip Gaji yang otomatis memicu dialog cetak browser 
-    // di mana pengguna bisa memilih Destination: "Save as PDF"
-    printSlipGaji(noKaryawan);
 }
