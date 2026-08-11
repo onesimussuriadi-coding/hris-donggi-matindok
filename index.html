@@ -62,23 +62,39 @@
             </div>
         </div>
 
-        <!-- Bagian Menu Pintas / Informasi Modul -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center font-bold mb-4">🏢</div>
-                <h4 class="font-bold text-slate-800 mb-1">Kontraktor Utama</h4>
-                <p class="text-xs text-slate-500 leading-relaxed">PT Sentral Sari Jaya (SSJ) - Pengelolaan Tenaga Kerja Lapangan & Onshore.</p>
-            </div>
-            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center font-bold mb-4">📊</div>
-                <h4 class="font-bold text-slate-800 mb-1">Database Terintegrasi</h4>
-                <p class="text-xs text-slate-500 leading-relaxed mb-3">Akses unduh laporan lengkap dengan parameter utama tersedia.</p>
-                <a href="#" class="text-xs font-bold text-blue-600 hover:underline">Download Excel →</a>
-            </div>
-            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                <div class="w-10 h-10 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center font-bold mb-4">🛡️</div>
-                <h4 class="font-bold text-slate-800 mb-1">Kepatuhan & HSSE</h4>
-                <p class="text-xs text-slate-500 leading-relaxed">Pemantauan masa kontrak, MCU, serta program keselamatan kerja secara berkala.</p>
+        <!-- Kotak Rekapitulasi Distribusi Kehadiran & Tunjangan Makan Lembur -->
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-8">
+            <h4 class="font-bold text-slate-800 mb-4 text-sm">📊 REKAPITULASI DISTRIBUSI KEHADIRAN & TUNJANGAN</h4>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center">
+                    <div class="text-xs text-slate-500 font-semibold mb-1">Total HK</div>
+                    <div id="rekapDistTotalHK" class="text-lg font-bold text-slate-800">0 Hari</div>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center">
+                    <div class="text-xs text-slate-500 font-semibold mb-1">Shift Siang</div>
+                    <div id="rekapDistSiang" class="text-lg font-bold text-slate-800">0 Hari</div>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center">
+                    <div class="text-xs text-slate-500 font-semibold mb-1">Shift Malam</div>
+                    <div id="rekapDistMalam" class="text-lg font-bold text-slate-800">0 Hari</div>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center">
+                    <div class="text-xs text-slate-500 font-semibold mb-1">Cuti Resmi</div>
+                    <div id="rekapDistCuti" class="text-lg font-bold text-slate-800">0 Hari</div>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center">
+                    <div class="text-xs text-slate-500 font-semibold mb-1">OFF Murni</div>
+                    <div id="rekapDistOff" class="text-lg font-bold text-slate-800">0 Hari</div>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center">
+                    <div class="text-xs text-slate-500 font-semibold mb-1">Sakit/Izin/Alfa</div>
+                    <div id="rekapDistLainnya" class="text-lg font-bold text-slate-800">0 Hari</div>
+                </div>
+                <!-- Kotak Rekap Tambahan Sesuai Saran Brilian Bapak -->
+                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 text-center">
+                    <div class="text-xs text-blue-600 font-semibold mb-1">Tunjangan Makan Lembur</div>
+                    <div id="rekapDistMakanLembur" class="text-lg font-bold text-blue-700">0 Kali</div>
+                </div>
             </div>
         </div>
 
@@ -111,7 +127,7 @@
 
     </main>
 
-    <!-- Panggil file skrip -->
+    <!-- Panggil file skrip utama -->
     <script src="scripts/script.js"></script>
 </body>
 </html>
