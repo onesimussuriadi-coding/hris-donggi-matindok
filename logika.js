@@ -62,12 +62,61 @@ let masterKaryawan = defaultMasterKaryawan.map(defaultItem => {
     return existing ? existing : defaultItem;
 });
 
-masterKaryawan.forEach(k => { if(!k.historiAbsen) k.historiAbsen = []; });
+masterKaryawan.forEach(k => { 
+    if(!k.historiAbsen) k.historiAbsen = []; 
+    // Jalankan rekalkulasi otomatis saat sistem memuat data agar dashboard selalu sinkron dengan histori
+    hitungUlangRekapKaryawan(k);
+});
 
 let filterAktif = 'Semua';
 let activeKaryawanNo = null;
 let lastSelectedBulan = null;
 let lastSelectedTahun = null;
+
+// --- FUNGSI REKALKULASI OTOMATIS BERBASIS HISTORI AKTIF ---
+function hitungUlangRekapKaryawan(karyawan) {
+    karyawan.hk = 0;
+    karyawan.otAktual = 0;
+    karyawan.otKonversi = 0;
+    karyawan.makanPagi = 0;
+    karyawan.makanSiang = 0;
+    karyawan.makanMalam = 0;
+
+    if (!karyawan.historiAbsen || karyawan.historiAbsen.length === 0) {
+        karyawan.catatanStatus = "Belum ada input";
+        return;
+    }
+
+    karyawan.historiAbsen.forEach(h => {
+        let statusUpper = (h.status || "").toUpperCase();
+        let [jIn, mIn] = (h.jamMasuk || "00:00").split(':').map(Number);
+        let [jOut, mOut] = (h.jamKeluar || "00:00").split(':').map(Number);
+
+        if (statusUpper === 'MASUK' || statusUpper === 'DINAS') {
+            karyawan.hk += 1;
+        }
+
+        let tambahMakanPagi = 0;
+        let tambahMakanSiang = 0;
+        let tambahMakanMalam = 0;
+
+        // Validasi ketat tunjangan makan berdasarkan data historis aktual
+        if (h.otAktual > 0 || statusUpper === 'OFF_MASUK') {
+            if (jIn < 5 && statusUpper !== 'OFF_MURNI') { tambahMakanPagi = 1; }
+            if (h.jenisHari === 'Libur/Merah' && h.otAktual >= 5 && jIn < 11 && (jOut > 13 || jOut < jIn)) { tambahMakanSiang = 1; }
+            if (h.otAktual >= 5 && (jOut > 21 || (jIn <= 19 && jOut >= 21) || jOut < jIn)) { tambahMakanMalam = 1; }
+        }
+
+        karyawan.makanPagi += tambahMakanPagi;
+        karyawan.makanSiang += tambahMakanSiang;
+        karyawan.makanMalam += tambahMakanMalam;
+
+        karyawan.otAktual += (h.otAktual || 0);
+        karyawan.otKonversi += (h.otKonversi || 0);
+    });
+
+    karyawan.catatanStatus = karyawan.historiAbsen[karyawan.historiAbsen.length - 1].catatanRingkas;
+}
 
 function setFilter(sistem) {
     filterAktif = sistem;
@@ -268,14 +317,8 @@ function hapusSemuaHistori() {
     if(!karyawan) return;
 
     if(confirm(`⚠️ Yakin ingin menghapus SELURUH histori absen untuk ${karyawan.name}? Akumulasi akan kembali ke 0.`)) {
-        karyawan.hk = 0;
-        karyawan.otAktual = 0;
-        karyawan.otKonversi = 0;
-        karyawan.makanPagi = 0;
-        karyawan.makanSiang = 0;
-        karyawan.makanMalam = 0;
         karyawan.historiAbsen = [];
-        karyawan.catatanStatus = "Telah di-reset total";
+        hitungUlangRekapKaryawan(karyawan);
 
         localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
         renderTabel();
@@ -290,22 +333,16 @@ function hapusHistoriTanggal(noKaryawan, indexHistori) {
 
     let itemDihapus = karyawan.historiAbsen[indexHistori];
 
-    if(confirm(`Hapus catatan tanggal ${itemDihapus.tanggalStr} untuk ${karyawan.name}? Akumulasi HK dan lembur akan disesuaikan.`)) {
-        if(itemDihapus.status === 'MASUK' || itemDihapus.status === 'DINAS' || itemDihapus.status === 'OFF_MASUK' || itemDihapus.otAktual > 0) {
-            if(itemDihapus.status === 'MASUK' || itemDihapus.status === 'DINAS') {
-                karyawan.hk = Math.max(0, karyawan.hk - 1);
-            }
-            karyawan.otAktual = Math.max(0, karyawan.otAktual - itemDihapus.otAktual);
-            karyawan.otKonversi = Math.max(0, karyawan.otKonversi - itemDihapus.otKonversi);
-        }
-
+    if(confirm(`Hapus catatan tanggal ${itemDihapus.tanggalStr} untuk ${karyawan.name}? Akumulasi dan rincian akan disesuaikan secara otomatis.`)) {
         karyawan.historiAbsen.splice(indexHistori, 1);
-        karyawan.catatanStatus = karyawan.historiAbsen.length > 0 ? karyawan.historiAbsen[karyawan.historiAbsen.length - 1].catatanRingkas : "Belum ada input";
+        
+        // Rekalkulasi ulang seluruh rekapitulasi dari data histori yang tersisa
+        hitungUlangRekapKaryawan(karyawan);
 
         localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
         renderTabel();
         bukaModalHistori(noKaryawan);
-        alert('Data tanggal berhasil dihapus!');
+        alert('Data tanggal berhasil dihapus dan direkalkulasi!');
     }
 }
 
@@ -461,7 +498,6 @@ function simpanAbsenHarian() {
         }
 
         if(status === 'masuk' || status === 'dinas') {
-            karyawan.hk += 1;
             if(karyawan.sistem === 'Non Shift') {
                 if (jenisHari === 'libur') {
                     jamLemburAktual = totalJamKerja;
@@ -469,7 +505,6 @@ function simpanAbsenHarian() {
                     let durasiKerjaBersih = totalJamKerja - 1;
                     jamLemburAktual = (durasiKerjaBersih > 8) ? (durasiKerjaBersih - 8) : 0;
                 }
-                // DIHAPUS: Baris `karyawan.makanSiang += 1;` otomatis untuk Non-Shift telah dibersihkan sepenuhnya.
             } else {
                 if(totalJamKerja > 12) {
                     jamLemburAktual = totalJamKerja - 12;
@@ -490,40 +525,14 @@ function simpanAbsenHarian() {
 
         if(jamLemburAktual < 0) jamLemburAktual = 0;
 
-        // --- RUMUS UNIVERSAL TUNJANGAN MAKAN LEMBUR (MURNI BERDASARKAN ATURAN LEMBUR KETAT) ---
-        let tambahMakanPagi = 0;
-        let tambahMakanSiang = 0;
-        let tambahMakanMalam = 0;
-
-        // 1. MAKAN PAGI: Masuk 2 jam sebelum jam kerja / sebelum pukul 05:00
-        if (jamIn < 5 && status !== 'off_murni') {
-            tambahMakanPagi = 1;
-        }
-
-        // 2. MAKAN SIANG: Hari libur/minggu, lembur > 5 jam, masuk sebelum 11:00 & pulang sesudah 13:00
-        if (jenisHari === 'libur' && jamLemburAktual > 5 && jamIn < 11 && (jamOut > 13 || jamOut < jamIn)) {
-            tambahMakanSiang = 1;
-        }
-
-        // 3. MAKAN MALAM: Lembur > 5 jam dan melewati/mencakup rentang pukul 19:00 s.d 21:00
-        if (jamLemburAktual > 5 && (jamOut > 21 || (jamIn <= 19 && jamOut >= 21) || jamOut < jamIn)) {
-            tambahMakanMalam = 1;
-        }
-
-        karyawan.makanPagi += tambahMakanPagi;
-        karyawan.makanSiang += tambahMakanSiang;
-        karyawan.makanMalam += tambahMakanMalam;
-        // -----------------------------------------------------------------
-
         let jenisHariSimpan = (status === 'off_murni') ? 'NON' : (jenisHari === 'libur' ? 'Libur/Merah' : 'Biasa');
         if (status !== 'off_murni') {
             jamLemburKonversi = hitungKonversiDepnaker(jamLemburAktual, jenisHari);
         }
 
-        karyawan.otAktual += jamLemburAktual;
-        karyawan.otKonversi += jamLemburKonversi;
         karyawan.catatanStatus = `${tanggalStr}: ${status.toUpperCase()}`;
         
+        // Simpan ke histori mentah
         karyawan.historiAbsen.push({
             tanggalStr: tanggalStr,
             status: status.toUpperCase(),
@@ -534,6 +543,9 @@ function simpanAbsenHarian() {
             otKonversi: jamLemburKonversi,
             catatanRingkas: karyawan.catatanStatus
         });
+
+        // Lakukan rekalkulasi menyeluruh dari data histori terbaru agar semua akumulasi (HK, Lembur, Makan) akurat
+        hitungUlangRekapKaryawan(karyawan);
 
         localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
         
@@ -560,7 +572,7 @@ function simpanAbsenHarian() {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams(payload).toString()
         }).then(() => {
-            alert(`SUKSES! Data tgl ${tanggalStr} untuk ${karyawan.name} telah disimpan.`);
+            alert(`SUKSES! Data tgl ${tanggalStr} untuk ${karyawan.name} telah disimpan dan direkalkulasi.`);
             renderTabel();
             tutupModal();
         }).catch((error) => {
