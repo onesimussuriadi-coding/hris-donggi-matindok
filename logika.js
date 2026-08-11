@@ -290,13 +290,29 @@ function hapusHistoriTanggal(noKaryawan, indexHistori) {
 
     let itemDihapus = karyawan.historiAbsen[indexHistori];
 
-    if(confirm(`Hapus catatan tanggal ${itemDihapus.tanggalStr} untuk ${karyawan.name}? Akumulasi HK dan lembur akan disesuaikan.`)) {
-        if(itemDihapus.status === 'MASUK' || itemDihapus.status === 'DINAS' || itemDihapus.status === 'OFF_MASUK' || itemDihapus.otAktual > 0) {
-            if(itemDihapus.status === 'MASUK' || itemDihapus.status === 'DINAS') {
-                karyawan.hk = Math.max(0, karyawan.hk - 1);
-            }
-            karyawan.otAktual = Math.max(0, karyawan.otAktual - itemDihapus.otAktual);
-            karyawan.otKonversi = Math.max(0, karyawan.otKonversi - itemDihapus.otKonversi);
+    if(confirm(`Hapus catatan tanggal ${itemDihapus.tanggalStr} untuk ${karyawan.name}? Akumulasi HK, lembur, dan tunjangan makan akan disesuaikan.`)) {
+        
+        // 1. Kurangi HK jika statusnya Masuk atau Dinas
+        if(itemDihapus.status === 'MASUK' || itemDihapus.status === 'DINAS') {
+            karyawan.hk = Math.max(0, karyawan.hk - 1);
+        }
+
+        // 2. Kurangi Lembur Aktual & Konversi
+        karyawan.otAktual = Math.max(0, karyawan.otAktual - (itemDihapus.otAktual || 0));
+        karyawan.otKonversi = Math.max(0, karyawan.otKonversi - (itemDihapus.otKonversi || 0));
+
+        // 3. HITUNG ULANG & KURANGI MAKAN SECARA DINAMIS BERDASARKAN DATA HISTORI YANG DIHAPUS
+        let [jIn] = (itemDihapus.jamMasuk || "00:00").split(':').map(Number);
+        let [jOut] = (itemDihapus.jamKeluar || "00:00").split(':').map(Number);
+        
+        if (jIn < 5 && itemDihapus.status !== 'OFF_MURNI') {
+            karyawan.makanPagi = Math.max(0, karyawan.makanPagi - 1);
+        }
+        if (itemDihapus.jenisHari === 'Libur/Merah' && (itemDihapus.otAktual || 0) > 5 && jIn < 11 && (jOut > 13 || jOut < jIn)) {
+            karyawan.makanSiang = Math.max(0, karyawan.makanSiang - 1);
+        }
+        if ((itemDihapus.otAktual || 0) > 5 && (jOut > 21 || (jIn <= 19 && jOut >= 21) || jOut < jIn)) {
+            karyawan.makanMalam = Math.max(0, karyawan.makanMalam - 1);
         }
 
         karyawan.historiAbsen.splice(indexHistori, 1);
@@ -305,8 +321,30 @@ function hapusHistoriTanggal(noKaryawan, indexHistori) {
         localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
         renderTabel();
         bukaModalHistori(noKaryawan);
-        alert('Data tanggal berhasil dihapus!');
+        alert('Data tanggal berhasil dihapus dan rekapitulasi makan telah disesuaikan!');
     }
+}
+
+function bukaModalKategori() {
+    let modalKat = document.getElementById('modalKategori');
+    if (!modalKat) {
+        modalKat = document.createElement('div');
+        modalKat.id = 'modalKategori';
+        modalKat.className = 'fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50';
+        modalKat.innerHTML = `
+            <div class="bg-white w-full max-w-sm rounded-2xl p-6 shadow-2xl">
+                <h3 class="text-lg font-bold mb-2 text-slate-800">Pilih Sistem Kerja</h3>
+                <p class="text-xs text-slate-500 mb-4">Proteksi berjenjang untuk mencegah salah input data.</p>
+                <div class="space-y-3">
+                    <button onclick="bukaModalAbsen('Shift')" class="w-full bg-emerald-600 text-white p-3.5 rounded-xl font-bold hover:bg-emerald-700 transition shadow">Pekerja SHIFT</button>
+                    <button onclick="bukaModalAbsen('Non Shift')" class="w-full bg-blue-600 text-white p-3.5 rounded-xl font-bold hover:bg-blue-700 transition shadow">Pekerja NON-SHIFT</button>
+                    <button onclick="document.getElementById('modalKategori').classList.add('hidden')" class="w-full bg-slate-100 text-slate-600 p-2.5 rounded-xl font-bold hover:bg-slate-200 transition">Batal</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modalKat);
+    }
+    modalKat.classList.remove('hidden');
 }
 
 function bukaModalKategori() {
