@@ -611,7 +611,7 @@ function hitungDataPayroll(karyawan) {
     let totalUpahLembur = karyawan.otKonversi * tarifPerJamLembur;
     let totalTunjanganKehadiran = karyawan.hk * 30000;
     
-    // Uang makan diambil dari total rekapitulasi (Pagi + Siang + Malam) dikali 25.000
+    // Uang makan lembur dinamis: Total frekuensi makan valid (Pagi + Siang + Malam) dikali 25.000
     let totalFrekuensiMakan = (karyawan.makanPagi + karyawan.makanSiang + karyawan.makanMalam);
     let totalMakanLembur = totalFrekuensiMakan * 25000;
 
@@ -621,6 +621,7 @@ function hitungDataPayroll(karyawan) {
 
     if (karyawan.sistem === 'Shift') {
         totalPremiShift = totalUpahTetap * karyawan.hk * (12 / 173) * 0.15;
+        // Hitung jumlah shift malam aktual dari histori absen secara presisi
         jumlahShiftMalamAktual = karyawan.historiAbsen.filter(h => {
             let [jIn] = (h.jamMasuk || "00:00").split(':').map(Number);
             let statusUpper = (h.status || "").toUpperCase();
@@ -672,8 +673,8 @@ function previewSlipGaji(noKaryawan) {
                         <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Tunjangan Kehadiran (${karyawan.hk} Hari x Rp 30,000)</span><span>Rp ${p.totalTunjanganKehadiran.toLocaleString('id-ID')}</span></div>
                         ${karyawan.sistem === 'Shift' ? `<div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Premi Shift</span><span>Rp ${p.totalPremiShift.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>` : ''}
                         <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Uang Makan Lembur (${p.totalFrekuensiMakan} Kali x Rp 25,000)</span><span>Rp ${p.totalMakanLembur.toLocaleString('id-ID')}</span></div>
-                        <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Upah Lembur (${karyawan.otKonversi.toFixed(1)} Jam x Rp ${p.tarifPerJamLembur.toLocaleString('id-ID', {maximumFractionDigits: 0})})</span><span>Rp ${p.totalUpahLembur.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>
-                        ${karyawan.sistem === 'Shift' ? `<div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Extra Food (${p.jumlahShiftMalamAktual} Hari x Rp 25,000)</span><span>Rp ${p.totalExtraFood.toLocaleString('id-ID')}</span></div>` : ''}
+                        <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Upah Lembur (${karyawan.otKonversi.toFixed(1)} Jam)</span><span>Rp ${p.totalUpahLembur.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>
+                        ${karyawan.sistem === 'Shift' ? `<div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Extra Fooding (${p.jumlahShiftMalamAktual} Hari x Rp 25,000)</span><span>Rp ${p.totalExtraFood.toLocaleString('id-ID')}</span></div>` : ''}
                     </div>
                     <div class="bg-blue-50 p-3 rounded-xl font-bold flex justify-between text-blue-900">
                         <span>GAJI BRUTO (I + II):</span><span>Rp ${p.totalBruto.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span>
@@ -724,7 +725,7 @@ function printSlipGaji(noKaryawan) {
             ${karyawan.sistem === 'Shift' ? `<tr><td>- Premi Shift</td><td style="text-align:right">Rp ${p.totalPremiShift.toLocaleString('id-ID', {maximumFractionDigits: 0})}</td></tr>` : ''}
             <tr><td>- Uang Makan Lembur (${p.totalFrekuensiMakan} Kali x Rp 25,000)</td><td style="text-align:right">Rp ${p.totalMakanLembur.toLocaleString('id-ID')}</td></tr>
             <tr><td>- Upah Lembur (${karyawan.otKonversi.toFixed(1)} Jam)</td><td style="text-align:right">Rp ${p.totalUpahLembur.toLocaleString('id-ID', {maximumFractionDigits: 0})}</td></tr>
-            ${karyawan.sistem === 'Shift' ? `<tr><td>- Extra Food (${p.jumlahShiftMalamAktual} Hari x Rp 25,000)</td><td style="text-align:right">Rp ${p.totalExtraFood.toLocaleString('id-ID')}</td></tr>` : ''}
+            ${karyawan.sistem === 'Shift' ? `<tr><td>- Extra Fooding (${p.jumlahShiftMalamAktual} Hari x Rp 25,000)</td><td style="text-align:right">Rp ${p.totalExtraFood.toLocaleString('id-ID')}</td></tr>` : ''}
             <tr style="background:#f8fafc"><th>GAJI BRUTO (I + II)</th><th style="text-align:right">Rp ${p.totalBruto.toLocaleString('id-ID', {maximumFractionDigits: 0})}</th></tr>
             <tr><th>III. POTONGAN RESMI</th><th style="text-align:right">Rp ${p.totalPotongan.toLocaleString('id-ID', {maximumFractionDigits: 0})}</th></tr>
             <tr><td>- BPJS Ketenagakerjaan (JHT 2%)</td><td style="text-align:right">Rp ${p.jht.toLocaleString('id-ID', {maximumFractionDigits: 0})}</td></tr>
