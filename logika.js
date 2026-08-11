@@ -562,7 +562,7 @@ function simpanAbsenHarian() {
     }
 }
 
-// --- MODUL PUSAT ENGINE PAYROLL (DENGAN PREVIEW, PRINT, DAN DOWNLOAD PDF SLIP GAJI) ---
+// --- MODUL PUSAT ENGINE PAYROLL & RUMUS DINAMIS AKTUAL ---
 function renderEnginePayroll() {
     const container = document.getElementById('enginePayrollContainer');
     if (!container) return;
@@ -611,8 +611,8 @@ function hitungDataPayroll(karyawan) {
     let totalUpahLembur = karyawan.otKonversi * tarifPerJamLembur;
     let totalTunjanganKehadiran = karyawan.hk * 30000;
     
-    // Uang makan lembur dinamis: Total frekuensi makan valid (Pagi + Siang + Malam) dikali 25.000
-    let totalFrekuensiMakan = (karyawan.makanPagi + karyawan.makanSiang + karyawan.makanMalam);
+    // Perhitungan Uang Makan Lembur Dinamis dari Total Frekuensi Rekapitulasi (Pagi + Siang + Malam) x 25.000
+    let totalFrekuensiMakan = (karyawan.makanPagi || 0) + (karyawan.makanSiang || 0) + (karyawan.makanMalam || 0);
     let totalMakanLembur = totalFrekuensiMakan * 25000;
 
     let totalPremiShift = 0;
@@ -621,12 +621,14 @@ function hitungDataPayroll(karyawan) {
 
     if (karyawan.sistem === 'Shift') {
         totalPremiShift = totalUpahTetap * karyawan.hk * (12 / 173) * 0.15;
-        // Hitung jumlah shift malam aktual dari histori absen secara presisi
+        
+        // Perhitungan Extra Fooding Shift Malam Aktual dari histori absen
         jumlahShiftMalamAktual = karyawan.historiAbsen.filter(h => {
             let [jIn] = (h.jamMasuk || "00:00").split(':').map(Number);
             let statusUpper = (h.status || "").toUpperCase();
-            return (statusUpper === 'MASUK' || statusUpper === 'DINAS') && (jIn >= 18 || jIn < 6 || statusUpper.includes('MALAM'));
+            return (statusUpper === 'MASUK' || statusUpper === 'DINAS') && (jIn >= 18 || jIn < 6 || statusUpper.includes('MALAM') || (h.jamMasuk && h.jamMasuk.startsWith("19")));
         }).length;
+        
         totalExtraFood = jumlahShiftMalamAktual * 25000;
     }
 
