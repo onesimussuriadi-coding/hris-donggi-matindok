@@ -455,6 +455,53 @@ function hitungKonversiDepnaker(jamAktual, jenisHari) {
     }
 }
 
+// --- FUNGSI REKALKULASI OTOMATIS (MENCEGAH REKAP MENUMPUK/SELISIH) ---
+function hitungUlangRekapKaryawan(karyawan) {
+    // Reset total ke 0 murni sebelum dihitung ulang dari histori yang aktif
+    karyawan.hk = 0;
+    karyawan.otAktual = 0;
+    karyawan.otKonversi = 0;
+    karyawan.makanPagi = 0;
+    karyawan.makanSiang = 0;
+    karyawan.makanMalam = 0;
+
+    if (!karyawan.historiAbsen || karyawan.historiAbsen.length === 0) {
+        karyawan.catatanStatus = "Belum ada input";
+        return;
+    }
+
+    // Iterasi ulang seluruh histori yang tersisa secara akurat
+    karyawan.historiAbsen.forEach(h => {
+        let statusUpper = (h.status || "").toUpperCase();
+        
+        // 1. Hitung HK
+        if (statusUpper === 'MASUK' || statusUpper === 'DINAS') {
+            karyawan.hk += 1;
+        }
+
+        // 2. Hitung Lembur
+        karyawan.otAktual += (h.otAktual || 0);
+        karyawan.otKonversi += (h.otKonversi || 0);
+
+        // 3. Hitung Ulang Tunjangan Makan Berdasarkan Jam & Jenis Hari
+        let [jIn] = (h.jamMasuk || "00:00").split(':').map(Number);
+        let [jOut] = (h.jamKeluar || "00:00").split(':').map(Number);
+        let otAktualItem = h.otAktual || 0;
+
+        if (jIn < 5 && statusUpper !== 'OFF_MURNI' && statusUpper !== 'CUTI' && statusUpper !== 'IZIN' && statusUpper !== 'SAKIT' && statusUpper !== 'ALFA') {
+            karyawan.makanPagi += 1;
+        }
+        if (h.jenisHari === 'Libur/Merah' && otAktualItem > 5 && jIn < 11 && (jOut > 13 || jOut < jIn)) {
+            karyawan.makanSiang += 1;
+        }
+        if (otAktualItem > 5 && (jOut > 21 || (jIn <= 19 && jOut >= 21) || jOut < jIn)) {
+            karyawan.makanMalam += 1;
+        }
+    });
+
+    karyawan.catatanStatus = karyawan.historiAbsen[karyawan.historiAbsen.length - 1].catatanRingkas;
+}
+
 function simpanAbsenHarian() {
     const selectedNo = parseInt(document.getElementById('pilihKaryawan').value);
     const status = document.getElementById('statusKehadiran').value;
@@ -481,13 +528,8 @@ function simpanAbsenHarian() {
         let jamLemburAktual = 0;
         let jamLemburKonversi = 0;
         let jenisHari = "biasa";
-
-        let tambahMakanPagi = 0;
-        let tambahMakanSiang = 0;
-        let tambahMakanMalam = 0;
         let jenisHariSimpan = "NON";
 
-        // REVISI PENGUNCI: Hanya hitung jam kerja, lembur, dan tunjangan makan jika status MASUK, DINAS, atau OFF_MASUK
         if (status !== 'off_murni' && status !== 'cuti' && status !== 'izin' && status !== 'sakit' && status !== 'alfa') {
             jenisHari = document.getElementById('jenisHari').value;
             jamMasuk = document.getElementById('jamMasuk').value;
@@ -499,7 +541,6 @@ function simpanAbsenHarian() {
             if(totalJamKerja < 0) totalJamKerja += 24;
 
             if(status === 'masuk' || status === 'dinas') {
-                karyawan.hk += 1;
                 if(karyawan.sistem === 'Non Shift') {
                     if (jenisHari === 'libur') {
                         jamLemburAktual = totalJamKerja;
@@ -526,37 +567,15 @@ function simpanAbsenHarian() {
             }
 
             if(jamLemburAktual < 0) jamLemburAktual = 0;
-
-            if (jamIn < 5) {
-                tambahMakanPagi = 1;
-            }
-            if (jenisHari === 'libur' && jamLemburAktual > 5 && jamIn < 11 && (jamOut > 13 || jamOut < jamIn)) {
-                tambahMakanSiang = 1;
-            }
-            if (jamLemburAktual > 5 && (jamOut > 21 || (jamIn <= 19 && jamOut >= 21) || jamOut < jamIn)) {
-                tambahMakanMalam = 1;
-            }
-
             jenisHariSimpan = (jenisHari === 'libur' ? 'Libur/Merah' : 'Biasa');
             jamLemburKonversi = hitungKonversiDepnaker(jamLemburAktual, jenisHari);
         } else {
-            // JIKA CUTI, IZIN, SAKIT, ALFA, ATAU OFF MURNI: 0 murni tanpa hak lembur/makan
-            jamLemburAktual = 0;
-            jamLemburKonversi = 0;
-            tambahMakanPagi = 0;
-            tambahMakanSiang = 0;
-            tambahMakanMalam = 0;
             jenisHariSimpan = status.toUpperCase();
         }
 
-        karyawan.makanPagi += tambahMakanPagi;
-        karyawan.makanSiang += tambahMakanSiang;
-        karyawan.makanMalam += tambahMakanMalam;
-
-        karyawan.otAktual += jamLemburAktual;
-        karyawan.otKonversi += jamLemburKonversi;
-        karyawan.catatanStatus = `${tanggalStr}: ${status.toUpperCase()}`;
+        let catatanRingkas = `${tanggalStr}: ${status.toUpperCase()}`;
         
+        // Masukkan ke histori
         karyawan.historiAbsen.push({
             tanggalStr: tanggalStr,
             status: status.toUpperCase(),
@@ -565,8 +584,11 @@ function simpanAbsenHarian() {
             jamKeluar: jamKeluar,
             otAktual: jamLemburAktual,
             otKonversi: jamLemburKonversi,
-            catatanRingkas: karyawan.catatanStatus
+            catatanRingkas: catatanRingkas
         });
+
+        // REKALKULASI TOTAL SECARA OTOMATIS DARI HISTORI TERBARU
+        hitungUlangRekapKaryawan(karyawan);
 
         localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
         
@@ -600,6 +622,27 @@ function simpanAbsenHarian() {
             console.error('Koneksi:', error);
             alert('Gagal terhubung ke Cloud.');
         });
+    }
+}
+
+function hapusHistoriTanggal(noKaryawan, indexHistori) {
+    let karyawan = masterKaryawan.find(k => k.no === noKaryawan);
+    if(!karyawan) return;
+
+    let itemDihapus = karyawan.historiAbsen[indexHistori];
+
+    if(confirm(`Hapus catatan tanggal ${itemDihapus.tanggalStr} untuk ${karyawan.name}? Akumulasi HK, lembur, dan tunjangan makan akan dikalkulasi ulang.`)) {
+        
+        // Hapus item dari array histori
+        karyawan.historiAbsen.splice(indexHistori, 1);
+
+        // REKALKULASI ULANG SEMUA TOTAL DARI AWAL BERDASARKAN HISTORI YANG TERSISA
+        hitungUlangRekapKaryawan(karyawan);
+
+        localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
+        renderTabel();
+        bukaModalHistori(noKaryawan);
+        alert('Data berhasil dihapus dan rekapitulasi telah disesuaikan secara real-time!');
     }
 }
 
