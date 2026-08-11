@@ -284,6 +284,69 @@ function hapusSemuaHistori() {
     }
 }
 
+function hapusHistoriTanggal(noKaryawan, indexHistori) {
+    let karyawan = masterKaryawan.find(k => k.no === noKaryawan);
+    if(!karyawan) return;
+
+    let itemDihapus = karyawan.historiAbsen[indexHistori];
+
+    if(confirm(`Hapus catatan tanggal ${itemDihapus.tanggalStr} untuk ${karyawan.name}? Akumulasi HK, lembur, dan tunjangan makan akan disesuaikan.`)) {
+        
+        // 1. Kurangi HK jika statusnya Masuk atau Dinas
+        if(itemDihapus.status === 'MASUK' || itemDihapus.status === 'DINAS') {
+            karyawan.hk = Math.max(0, karyawan.hk - 1);
+        }
+
+        // 2. Kurangi Lembur Aktual & Konversi
+        karyawan.otAktual = Math.max(0, karyawan.otAktual - (itemDihapus.otAktual || 0));
+        karyawan.otKonversi = Math.max(0, karyawan.otKonversi - (itemDihapus.otKonversi || 0));
+
+        // 3. HITUNG ULANG & KURANGI MAKAN SECARA DINAMIS BERDASARKAN DATA HISTORI YANG DIHAPUS
+        let [jIn] = (itemDihapus.jamMasuk || "00:00").split(':').map(Number);
+        let [jOut] = (itemDihapus.jamKeluar || "00:00").split(':').map(Number);
+        
+        if (jIn < 5 && itemDihapus.status !== 'OFF_MURNI') {
+            karyawan.makanPagi = Math.max(0, karyawan.makanPagi - 1);
+        }
+        if (itemDihapus.jenisHari === 'Libur/Merah' && (itemDihapus.otAktual || 0) > 5 && jIn < 11 && (jOut > 13 || jOut < jIn)) {
+            karyawan.makanSiang = Math.max(0, karyawan.makanSiang - 1);
+        }
+        if ((itemDihapus.otAktual || 0) > 5 && (jOut > 21 || (jIn <= 19 && jOut >= 21) || jOut < jIn)) {
+            karyawan.makanMalam = Math.max(0, karyawan.makanMalam - 1);
+        }
+
+        karyawan.historiAbsen.splice(indexHistori, 1);
+        karyawan.catatanStatus = karyawan.historiAbsen.length > 0 ? karyawan.historiAbsen[karyawan.historiAbsen.length - 1].catatanRingkas : "Belum ada input";
+
+        localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
+        renderTabel();
+        bukaModalHistori(noKaryawan);
+        alert('Data tanggal berhasil dihapus dan rekapitulasi makan telah disesuaikan!');
+    }
+}
+
+function bukaModalKategori() {
+    let modalKat = document.getElementById('modalKategori');
+    if (!modalKat) {
+        modalKat = document.createElement('div');
+        modalKat.id = 'modalKategori';
+        modalKat.className = 'fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50';
+        modalKat.innerHTML = `
+            <div class="bg-white w-full max-w-sm rounded-2xl p-6 shadow-2xl">
+                <h3 class="text-lg font-bold mb-2 text-slate-800">Pilih Sistem Kerja</h3>
+                <p class="text-xs text-slate-500 mb-4">Proteksi berjenjang untuk mencegah salah input data.</p>
+                <div class="space-y-3">
+                    <button onclick="bukaModalAbsen('Shift')" class="w-full bg-emerald-600 text-white p-3.5 rounded-xl font-bold hover:bg-emerald-700 transition shadow">Pekerja SHIFT</button>
+                    <button onclick="bukaModalAbsen('Non Shift')" class="w-full bg-blue-600 text-white p-3.5 rounded-xl font-bold hover:bg-blue-700 transition shadow">Pekerja NON-SHIFT</button>
+                    <button onclick="document.getElementById('modalKategori').classList.add('hidden')" class="w-full bg-slate-100 text-slate-600 p-2.5 rounded-xl font-bold hover:bg-slate-200 transition">Batal</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modalKat);
+    }
+    modalKat.classList.remove('hidden');
+}
+
 function bukaModalKategori() {
     let modalKat = document.getElementById('modalKategori');
     if (!modalKat) {
@@ -341,6 +404,7 @@ function gantiStatusAbsen() {
     let karyawan = masterKaryawan.find(k => k.no === selectedNo);
     let isShift = karyawan ? karyawan.sistem === 'Shift' : true;
 
+    // REVISI: Sembunyikan Jenis Hari jika status Cuti, Izin, Sakit, Alpa, atau Off Murni
     if (status === 'off_murni' || status === 'cuti' || status === 'izin' || status === 'sakit' || status === 'alfa') {
         if(wrapperShift) wrapperShift.classList.add('hidden');
         if(wrapperJam) wrapperJam.classList.add('hidden');
@@ -391,7 +455,7 @@ function hitungKonversiDepnaker(jamAktual, jenisHari) {
     }
 }
 
-// --- ENGINE REKALKULASI OTOMATIS REAL-TIME ---
+// --- FUNGSI REKALKULASI OTOMATIS (MENCEGAH REKAP MENUMPUK/SELISIH) ---
 function hitungUlangRekapKaryawan(karyawan) {
     karyawan.hk = 0;
     karyawan.otAktual = 0;
@@ -561,7 +625,9 @@ function hapusHistoriTanggal(noKaryawan, indexHistori) {
     let itemDihapus = karyawan.historiAbsen[indexHistori];
 
     if(confirm(`Hapus catatan tanggal ${itemDihapus.tanggalStr} untuk ${karyawan.name}? Akumulasi HK, lembur, dan tunjangan makan akan dikalkulasi ulang.`)) {
+        
         karyawan.historiAbsen.splice(indexHistori, 1);
+
         hitungUlangRekapKaryawan(karyawan);
 
         localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
@@ -570,7 +636,6 @@ function hapusHistoriTanggal(noKaryawan, indexHistori) {
         alert('Data berhasil dihapus dan rekapitulasi telah disesuaikan secara real-time!');
     }
 }
-
 // --- 4. MODUL PUSAT ENGINE PAYROLL & RUMUS 100% MURNI DINAMIS ---
 function hitungDataPayroll(karyawan) {
     let totalUpahTetap = (karyawan.upahPokok || 0) + (karyawan.taup || 0);
@@ -599,6 +664,7 @@ function hitungDataPayroll(karyawan) {
             }).length;
         }
         
+        // REVISI EXTRA FOODING DINAMIS MENGACU PADA SHIFT MALAM & TARIF MAKAN AKTUAL
         totalExtraFood = jumlahShiftMalamAktual * tarifMakanAktual;
     }
 
@@ -684,9 +750,9 @@ function previewSlipGaji(noKaryawan) {
                     </div>
                     <div>
                         <div class="font-bold text-blue-900 border-b pb-1 flex justify-between"><span>II. UPAH TIDAK TETAP & LEMBUR</span><span>Rp ${(p.totalTunjanganKehadiran + p.totalPremiShift + p.totalUpahLembur + p.totalMakanLembur + p.totalExtraFood).toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>
-                        <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Tunjangan Kehadiran (${karyawan.hk} Hari x Rp ${p.tarifKehadiranAktual.toLocaleString('id-ID')})</span><span>Rp ${p.totalTunjanganKehadiran.toLocaleString('id-ID')}</span></div>
-                        ${karyawan.sistem === 'Shift' ? `<div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Premi Shift</span><span>Rp ${p.totalPremiShift.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>` : ''}
-                        <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Uang Makan Lembur (${p.totalFrekuensiMakan} Kali x Rp ${p.tarifMakanAktual.toLocaleString('id-ID')})</span><span>Rp ${p.totalMakanLembur.toLocaleString('id-ID')}</span></div>
+                        <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Tunjangan Kehadiran (${karyawan.hk} Hari)</span><span>Rp ${p.totalTunjanganKehadiran.toLocaleString('id-ID')}</span></div>
+                        <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Uang Makan / Lainnya (${p.totalFrekuensiMakan} Kali x Rp ${p.tarifMakanAktual.toLocaleString('id-ID')})</span><span>Rp ${p.totalMakanLembur.toLocaleString('id-ID')}</span></div>
+                        ${karyawan.sistem === 'Shift' ? `<div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Premi Shift (15% x Pokok x HK x 12/173)</span><span>Rp ${p.totalPremiShift.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>` : ''}
                         <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Upah Lembur (${karyawan.otKonversi.toFixed(1)} Jam)</span><span>Rp ${p.totalUpahLembur.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>
                         ${karyawan.sistem === 'Shift' ? `<div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Extra Fooding Shift Malam (${p.jumlahShiftMalamAktual} Hari x Rp ${p.tarifMakanAktual.toLocaleString('id-ID')})</span><span>Rp ${p.totalExtraFood.toLocaleString('id-ID')}</span></div>` : ''}
                     </div>
@@ -726,18 +792,19 @@ function printSlipGaji(noKaryawan) {
     jendelaCetak.document.write('<html><head><title>Slip Gaji - ' + karyawan.name + '</title>');
     jendelaCetak.document.write('<style>body{font-family:sans-serif;padding:20px;color:#1e293b;} h2{text-align:center;} table{width:100%;border-collapse:collapse;margin-top:15px;font-size:12px;} th, td{border:1px solid #cbd5e1;padding:8px;text-align:left;} th{background-color:#f1f5f9;}</style>');
     jendelaCetak.document.write('</head><body>');
-    jendelaCetak.document.write(`<h2>PT. SENTRAL SARI JAYA / PT. DONGGI MATINDOK</h2>`);
+    jendelaCetak.document.write(`<h2>PT SENTRAL SARI JAYA</h2>`);
     jendelaCetak.document.write(`<h3>SLIP UPAH TENAGA KERJA (${karyawan.sistem.toUpperCase()})</h3>`);
-    jendelaCetak.document.write(`<p><b>Nama:</b> ${karyawan.name} | <b>Jabatan:</b> ${karyawan.jabatan} | <b>HK:</b> ${karyawan.hk} Hari</p><hr>`);
+    jendelaCetak.document.write(`<p style="text-align:center; font-size:12px; color:#64748b;">Periode Berjalan | Matindok (Zona 13)</p><br>`);
+    jendelaCetak.document.write(`<p><b>Nama Pekerja:</b> ${karyawan.name} | <b>Jabatan:</b> ${karyawan.jabatan} | <b>HK:</b> ${karyawan.hk} Hari</p><hr><br>`);
     jendelaCetak.document.write(`
         <table>
             <tr><th>I. UPAH TETAP (UT)</th><th style="text-align:right">Rp ${p.totalUpahTetap.toLocaleString('id-ID')}</th></tr>
             <tr><td>- Upah Pokok</td><td style="text-align:right">Rp ${karyawan.upahPokok.toLocaleString('id-ID')}</td></tr>
             <tr><td>- TAUP (Tunjangan Tetap)</td><td style="text-align:right">Rp ${karyawan.taup.toLocaleString('id-ID')}</td></tr>
             <tr><th>II. UPAH TIDAK TETAP & LEMBUR</th><th style="text-align:right">Rp ${(p.totalTunjanganKehadiran + p.totalPremiShift + p.totalUpahLembur + p.totalMakanLembur + p.totalExtraFood).toLocaleString('id-ID', {maximumFractionDigits: 0})}</th></tr>
-            <tr><td>- Tunjangan Kehadiran (${karyawan.hk} Hari x Rp ${p.tarifKehadiranAktual.toLocaleString('id-ID')})</td><td style="text-align:right">Rp ${p.totalTunjanganKehadiran.toLocaleString('id-ID')}</td></tr>
-            ${karyawan.sistem === 'Shift' ? `<tr><td>- Premi Shift</td><td style="text-align:right">Rp ${p.totalPremiShift.toLocaleString('id-ID', {maximumFractionDigits: 0})}</td></tr>` : ''}
-            <tr><td>- Uang Makan Lembur (${p.totalFrekuensiMakan} Kali x Rp ${p.tarifMakanAktual.toLocaleString('id-ID')})</td><td style="text-align:right">Rp ${p.totalMakanLembur.toLocaleString('id-ID')}</td></tr>
+            <tr><td>- Tunjangan Kehadiran (${karyawan.hk} Hari)</td><td style="text-align:right">Rp ${p.totalTunjanganKehadiran.toLocaleString('id-ID')}</td></tr>
+            <tr><td>- Uang Makan / Lainnya (${p.totalFrekuensiMakan} Kali x Rp ${p.tarifMakanAktual.toLocaleString('id-ID')})</td><td style="text-align:right">Rp ${p.totalMakanLembur.toLocaleString('id-ID')}</td></tr>
+            ${karyawan.sistem === 'Shift' ? `<tr><td>- Premi Shift (15% x Pokok x HK x 12/173)</td><td style="text-align:right">Rp ${p.totalPremiShift.toLocaleString('id-ID', {maximumFractionDigits: 0})}</td></tr>` : ''}
             <tr><td>- Upah Lembur (${karyawan.otKonversi.toFixed(1)} Jam)</td><td style="text-align:right">Rp ${p.totalUpahLembur.toLocaleString('id-ID', {maximumFractionDigits: 0})}</td></tr>
             ${karyawan.sistem === 'Shift' ? `<tr><td>- Extra Fooding Shift Malam (${p.jumlahShiftMalamAktual} Hari x Rp ${p.tarifMakanAktual.toLocaleString('id-ID')})</td><td style="text-align:right">Rp ${p.totalExtraFood.toLocaleString('id-ID')}</td></tr>` : ''}
             <tr style="background:#f8fafc"><th>GAJI BRUTO (I + II)</th><th style="text-align:right">Rp ${p.totalBruto.toLocaleString('id-ID', {maximumFractionDigits: 0})}</th></tr>
@@ -750,6 +817,7 @@ function printSlipGaji(noKaryawan) {
     `);
     jendelaCetak.document.write('</body></html>');
     jendelaCetak.document.close();
+    jendelaCetal = null;
     jendelaCetak.focus();
     setTimeout(() => { jendelaCetak.print(); jendelaCetak.close(); }, 500);
 }
@@ -762,11 +830,6 @@ function tutupSlipGaji() {
     let modal = document.getElementById('modalSlipContainer');
     if (modal) modal.remove();
 }
-
-window.onload = () => {
-    renderTabel();
-    renderEnginePayroll();
-};
 
 // --- 5. REKAPITULASI GABUNGAN ---
 function cetakRekapitulasiGabunganPDF() {
