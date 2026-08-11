@@ -645,10 +645,13 @@ function hitungDataPayroll(karyawan) {
     let tarifKehadiranAktual = karyawan.tarifKehadiran || 0;
     let totalTunjanganKehadiran = (karyawan.hk || 0) * tarifKehadiranAktual;
     
+    // Hitung total frekuensi makan dari histori absen
     let totalFrekuensiMakan = (karyawan.makanPagi || 0) + (karyawan.makanSiang || 0) + (karyawan.makanMalam || 0);
     
-    // MENYAMAKAN VARIABEL: Mendukung tarifMakan atau uangMakan dari input form
+    // SOLUSI PASTI: Ambil dari input form, jika kosong/0 otomatis kunci ke Rp 25.000
     let tarifMakanAktual = karyawan.tarifMakan || karyawan.uangMakan || 25000;
+    if (tarifMakanAktual <= 0) tarifMakanAktual = 25000;
+
     let totalMakanLembur = totalFrekuensiMakan * tarifMakanAktual;
 
     let totalPremiShift = 0;
@@ -666,7 +669,7 @@ function hitungDataPayroll(karyawan) {
             }).length;
         }
         
-        // EXTRA FOODING DINAMIS MENGACU PADA SHIFT MALAM & TARIF MAKAN AKTUAL
+        // Extra fooding shift malam otomatis dikali tarif makan
         totalExtraFood = jumlahShiftMalamAktual * tarifMakanAktual;
     }
 
