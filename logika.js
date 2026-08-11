@@ -113,9 +113,8 @@ function renderTabel() {
                     </span>
                     <div class="text-[10px] text-blue-600 mt-1 font-semibold">Status: ${item.catatanStatus}</div>
                 </td>
-                <td class="p-4 text-center space-y-1">
-                    <button onclick="bukaModalHistori(${item.no})" class="bg-indigo-600 text-white px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-indigo-700 transition shadow-sm block w-full">📄 Histori & Koreksi</button>
-                    <button onclick="bukaSlipGaji(${item.no})" class="bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-emerald-700 transition shadow-sm block w-full">💰 Slip Gaji</button>
+                <td class="p-4 text-center">
+                    <button onclick="bukaModalHistori(${item.no})" class="bg-indigo-600 text-white px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-indigo-700 transition shadow-sm">📄 Histori & Koreksi</button>
                 </td>
             </tr>
         `;
@@ -563,136 +562,182 @@ function simpanAbsenHarian() {
     }
 }
 
-// --- MODUL GENERATOR SLIP GAJI (MURNI FOKUS PENGGAJIAN BERDASARKAN ACUAN BAKU) ---
-function bukaSlipGaji(noKaryawan) {
-    let karyawan = masterKaryawan.find(k => k.no === noKaryawan);
-    if (!karyawan) return;
+// --- MODUL PUSAT ENGINE PAYROLL (DENGAN PREVIEW, PRINT, DAN DOWNLOAD PDF SLIP GAJI) ---
+function renderEnginePayroll() {
+    // Fungsi ini dipanggil saat menu Engine Payroll dibuka oleh Admin
+    const container = document.getElementById('enginePayrollContainer');
+    if (!container) return;
 
+    container.innerHTML = `
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+            <h3 class="text-lg font-bold text-slate-800 mb-4">Engine Payroll & Slip Gaji Terpusat</h3>
+            <p class="text-xs text-slate-500 mb-6">Pilih karyawan di bawah ini untuk melihat pratinjau slip gaji, mencetak, atau mengunduhnya dalam format PDF sesuai standar perhitungan baku.</p>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100 text-slate-700 text-xs uppercase">
+                            <th class="p-3">No</th>
+                            <th class="p-3">Nama Karyawan</th>
+                            <th class="p-3">Jabatan & Sistem</th>
+                            <th class="p-3 text-center">HK</th>
+                            <th class="p-3 text-center">Lembur Konversi</th>
+                            <th class="p-3 text-center">Aksi Payroll</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm divide-y divide-slate-100">
+                        ${masterKaryawan.map(k => `
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-slate-600">${k.no}</td>
+                                <td class="p-3 font-bold text-slate-900">${k.name}</td>
+                                <td class="p-3 text-slate-700">${k.jabatan} <span class="text-xs bg-slate-100 px-2 py-0.5 rounded font-semibold ml-1">${k.sistem}</span></td>
+                                <td class="p-3 text-center font-bold text-emerald-700">${k.hk} Hari</td>
+                                <td class="p-3 text-center font-bold text-blue-700">${k.otKonversi.toFixed(1)} Jam</td>
+                                <td class="p-3 text-center space-x-1">
+                                    <button onclick="previewSlipGaji(${k.no})" class="bg-blue-600 text-white px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-blue-700 transition">👁️ Preview</button>
+                                    <button onclick="printSlipGaji(${k.no})" class="bg-indigo-600 text-white px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-indigo-700 transition">🖨️ Print</button>
+                                    <button onclick="downloadPDFSlipGaji(${k.no})" class="bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-emerald-700 transition">📥 Download PDF</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+}
+
+function hitungDataPayroll(karyawan) {
     let totalUpahTetap = karyawan.upahPokok + karyawan.taup;
     let tarifPerJamLembur = totalUpahTetap * (1 / 173);
     let totalUpahLembur = karyawan.otKonversi * tarifPerJamLembur;
     let totalTunjanganKehadiran = karyawan.hk * 30000;
     let totalMakanLembur = (karyawan.makanPagi + karyawan.makanSiang + karyawan.makanMalam) * 25000;
 
-    let htmlSlip = '';
+    let totalPremiShift = 0;
+    let totalExtraFood = 0;
 
     if (karyawan.sistem === 'Shift') {
-        let totalPremiShift = totalUpahTetap * karyawan.hk * (12 / 173) * 0.15;
-        let totalExtraFood = karyawan.historiAbsen.filter(h => {
+        totalPremiShift = totalUpahTetap * karyawan.hk * (12 / 173) * 0.15;
+        let jumlahShiftMalam = karyawan.historiAbsen.filter(h => {
             let [jIn] = (h.jamMasuk || "00:00").split(':').map(Number);
-            return h.status === 'MASUK' && (jIn >= 18 || jIn < 6 || h.status.includes('MALAM'));
-        }).length * 25000;
-
-        let totalBruto = totalUpahTetap + totalTunjanganKehadiran + totalPremiShift + totalUpahLembur + totalMakanLembur + totalExtraFood;
-        let jht = totalUpahTetap * 0.02;
-        let jp = totalUpahTetap * 0.01;
-        let bpjsKes = totalUpahTetap * 0.01;
-        let totalPotongan = jht + jp + bpjsKes;
-        let netto = totalBruto - totalPotongan;
-
-        htmlSlip = `
-            <div id="modalSlipContainer" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-                <div class="bg-white w-full max-w-2xl rounded-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-                    <div class="flex justify-between items-center border-b pb-3 mb-4">
-                        <h2 class="text-lg font-bold text-slate-900">Slip Gaji (Shift): ${karyawan.name}</h2>
-                        <button onclick="tutupSlipGaji()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">✕</button>
-                    </div>
-                    <div class="bg-slate-50 p-4 rounded-xl mb-4 text-xs space-y-1 border">
-                        <div><b>Nama Pekerja:</b> ${karyawan.name}</div>
-                        <div><b>Jabatan / Sistem:</b> ${karyawan.jabatan} / Shift</div>
-                        <div><b>Divisi / Posisi:</b> ${karyawan.posisi}</div>
-                        <div><b>Lokasi Penempatan:</b> Matindok (Zona 13)</div>
-                    </div>
-                    <div class="space-y-4 text-sm">
-                        <div>
-                            <div class="font-bold text-blue-900 border-b pb-1 flex justify-between"><span>I. UPAH TETAP (UT)</span><span>Rp ${totalUpahTetap.toLocaleString('id-ID')}</span></div>
-                            <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Upah Pokok</span><span>Rp ${karyawan.upahPokok.toLocaleString('id-ID')}</span></div>
-                            <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- TAUP (Tunjangan Tetap)</span><span>Rp ${karyawan.taup.toLocaleString('id-ID')}</span></div>
-                        </div>
-                        <div>
-                            <div class="font-bold text-blue-900 border-b pb-1 flex justify-between"><span>II. UPAH TIDAK TETAP & LEMBUR</span><span>Rp ${(totalTunjanganKehadiran + totalPremiShift + totalUpahLembur + totalMakanLembur + totalExtraFood).toLocaleString('id-ID')}</span></div>
-                            <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Tunjangan Kehadiran (${karyawan.hk} Hari x Rp 30,000)</span><span>Rp ${totalTunjanganKehadiran.toLocaleString('id-ID')}</span></div>
-                            <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Premi Shift</span><span>Rp ${totalPremiShift.toLocaleString('id-ID')}</span></div>
-                            <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Uang Makan Lembur</span><span>Rp ${totalMakanLembur.toLocaleString('id-ID')}</span></div>
-                            <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Upah Lembur (${karyawan.otKonversi.toFixed(1)} Jam)</span><span>Rp ${totalUpahLembur.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>
-                            <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Extra Food</span><span>Rp ${totalExtraFood.toLocaleString('id-ID')}</span></div>
-                        </div>
-                        <div class="bg-blue-50 p-3 rounded-xl font-bold flex justify-between text-blue-900">
-                            <span>GAJI BRUTO (I + II):</span><span>Rp ${totalBruto.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span>
-                        </div>
-                        <div>
-                            <div class="font-bold text-rose-900 border-b pb-1 flex justify-between"><span>III. POTONGAN RESMI</span><span>Rp ${totalPotongan.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>
-                            <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- BPJS Ketenagakerjaan (JHT 2%)</span><span>Rp ${jht.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>
-                            <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- BPJS Ketenagakerjaan (JP 1%)</span><span>Rp ${jp.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>
-                            <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- BPJS Kesehatan (1%)</span><span>Rp ${bpjsKes.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>
-                        </div>
-                        <div class="bg-emerald-50 p-3 rounded-xl font-bold flex justify-between text-emerald-900 text-base border border-emerald-200">
-                            <span>UPAH DITERIMA BERSIH (NETTO / THP):</span><span>Rp ${netto.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span>
-                        </div>
-                    </div>
-                    <div class="mt-6 flex justify-end">
-                        <button onclick="tutupSlipGaji()" class="bg-slate-200 text-slate-700 px-4 py-2 rounded-xl text-xs font-semibold hover:bg-slate-300">Tutup</button>
-                    </div>
-                </div>
-            </div>
-        `;
-    } else {
-        let totalBruto = totalUpahTetap + totalTunjanganKehadiran + totalUpahLembur + totalMakanLembur;
-        let jht = totalUpahTetap * 0.02;
-        let jp = totalUpahTetap * 0.01;
-        let bpjsKes = totalUpahTetap * 0.01;
-        let totalPotongan = jht + jp + bpjsKes;
-        let netto = totalBruto - totalPotongan;
-
-        htmlSlip = `
-            <div id="modalSlipContainer" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-                <div class="bg-white w-full max-w-2xl rounded-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-                    <div class="flex justify-between items-center border-b pb-3 mb-4">
-                        <h2 class="text-lg font-bold text-slate-900">Slip Gaji (Non Shift): ${karyawan.name}</h2>
-                        <button onclick="tutupSlipGaji()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">✕</button>
-                    </div>
-                    <div class="bg-slate-50 p-4 rounded-xl mb-4 text-xs space-y-1 border">
-                        <div><b>Nama Pekerja:</b> ${karyawan.name}</div>
-                        <div><b>Jabatan / Sistem:</b> ${karyawan.jabatan} / Non Shift</div>
-                        <div><b>Divisi / Posisi:</b> ${karyawan.posisi}</div>
-                        <div><b>Lokasi Penempatan:</b> Matindok (Zona 13)</div>
-                    </div>
-                    <div class="space-y-4 text-sm">
-                        <div>
-                            <div class="font-bold text-blue-900 border-b pb-1 flex justify-between"><span>I. UPAH TETAP (UT)</span><span>Rp ${totalUpahTetap.toLocaleString('id-ID')}</span></div>
-                            <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Upah Pokok</span><span>Rp ${karyawan.upahPokok.toLocaleString('id-ID')}</span></div>
-                            <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- TAUP (Tunjangan Tetap)</span><span>Rp ${karyawan.taup.toLocaleString('id-ID')}</span></div>
-                        </div>
-                        <div>
-                            <div class="font-bold text-blue-900 border-b pb-1 flex justify-between"><span>II. UPAH TIDAK TETAP & LEMBUR</span><span>Rp ${(totalTunjanganKehadiran + totalUpahLembur + totalMakanLembur).toLocaleString('id-ID')}</span></div>
-                            <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Tunjangan Kehadiran (${karyawan.hk} Hari x Rp 30,000)</span><span>Rp ${totalTunjanganKehadiran.toLocaleString('id-ID')}</span></div>
-                            <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Uang Makan Lembur</span><span>Rp ${totalMakanLembur.toLocaleString('id-ID')}</span></div>
-                            <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Upah Lembur (${karyawan.otKonversi.toFixed(1)} Jam)</span><span>Rp ${totalUpahLembur.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>
-                        </div>
-                        <div class="bg-blue-50 p-3 rounded-xl font-bold flex justify-between text-blue-900">
-                            <span>GAJI BRUTO (I + II):</span><span>Rp ${totalBruto.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span>
-                        </div>
-                        <div>
-                            <div class="font-bold text-rose-900 border-b pb-1 flex justify-between"><span>III. POTONGAN RESMI</span><span>Rp ${totalPotongan.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>
-                            <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- BPJS Ketenagakerjaan (JHT 2%)</span><span>Rp ${jht.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>
-                            <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- BPJS Ketenagakerjaan (JP 1%)</span><span>Rp ${jp.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>
-                            <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- BPJS Kesehatan (1%)</span><span>Rp ${bpjsKes.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>
-                        </div>
-                        <div class="bg-emerald-50 p-3 rounded-xl font-bold flex justify-between text-emerald-900 text-base border border-emerald-200">
-                            <span>UPAH DITERIMA BERSIH (NETTO / THP):</span><span>Rp ${netto.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span>
-                        </div>
-                    </div>
-                    <div class="mt-6 flex justify-end">
-                        <button onclick="tutupSlipGaji()" class="bg-slate-200 text-slate-700 px-4 py-2 rounded-xl text-xs font-semibold hover:bg-slate-300">Tutup</button>
-                    </div>
-                </div>
-            </div>
-        `;
+            let statusUpper = (h.status || "").toUpperCase();
+            return (statusUpper === 'MASUK' || statusUpper === 'DINAS') && (jIn >= 18 || jIn < 6 || statusUpper.includes('MALAM'));
+        }).length;
+        totalExtraFood = jumlahShiftMalam * 25000;
     }
+
+    let totalBruto = totalUpahTetap + totalTunjanganKehadiran + totalUpahLembur + totalMakanLembur + totalPremiShift + totalExtraFood;
+    let jht = totalUpahTetap * 0.02;
+    let jp = totalUpahTetap * 0.01;
+    let bpjsKes = totalUpahTetap * 0.01;
+    let totalPotongan = jht + jp + bpjsKes;
+    let netto = totalBruto - totalPotongan;
+
+    return {
+        totalUpahTetap, tarifPerJamLembur, totalUpahLembur, totalTunjanganKehadiran,
+        totalMakanLembur, totalPremiShift, totalExtraFood, totalBruto, jht, jp, bpjsKes, totalPotongan, netto
+    };
+}
+
+function previewSlipGaji(noKaryawan) {
+    let karyawan = masterKaryawan.find(k => k.no === noKaryawan);
+    if (!karyawan) return;
+    let p = hitungDataPayroll(karyawan);
+
+    let html = `
+        <div id="modalSlipContainer" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+            <div class="bg-white w-full max-w-2xl rounded-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center border-b pb-3 mb-4">
+                    <h2 class="text-lg font-bold text-slate-900">Pratinjau Slip Gaji (${karyawan.sistem}): ${karyawan.name}</h2>
+                    <button onclick="tutupSlipGaji()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">✕</button>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl mb-4 text-xs space-y-1 border">
+                    <div><b>Nama Pekerja:</b> ${karyawan.name}</div>
+                    <div><b>Jabatan / Sistem:</b> ${karyawan.jabatan} / ${karyawan.sistem}</div>
+                    <div><b>Divisi / Posisi:</b> ${karyawan.posisi}</div>
+                    <div><b>Lokasi Penempatan:</b> Matindok (Zona 13)</div>
+                </div>
+                <div class="space-y-4 text-sm">
+                    <div>
+                        <div class="font-bold text-blue-900 border-b pb-1 flex justify-between"><span>I. UPAH TETAP (UT)</span><span>Rp ${p.totalUpahTetap.toLocaleString('id-ID')}</span></div>
+                        <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Upah Pokok</span><span>Rp ${karyawan.upahPokok.toLocaleString('id-ID')}</span></div>
+                        <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- TAUP (Tunjangan Tetap)</span><span>Rp ${karyawan.taup.toLocaleString('id-ID')}</span></div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-blue-900 border-b pb-1 flex justify-between"><span>II. UPAH TIDAK TETAP & LEMBUR</span><span>Rp ${(p.totalTunjanganKehadiran + p.totalPremiShift + p.totalUpahLembur + p.totalMakanLembur + p.totalExtraFood).toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>
+                        <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Tunjangan Kehadiran (${karyawan.hk} Hari x Rp 30,000)</span><span>Rp ${p.totalTunjanganKehadiran.toLocaleString('id-ID')}</span></div>
+                        ${karyawan.sistem === 'Shift' ? `<div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Premi Shift</span><span>Rp ${p.totalPremiShift.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>` : ''}
+                        <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Uang Makan Lembur</span><span>Rp ${p.totalMakanLembur.toLocaleString('id-ID')}</span></div>
+                        <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Upah Lembur (${karyawan.otKonversi.toFixed(1)} Jam)</span><span>Rp ${p.totalUpahLembur.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>
+                        ${karyawan.sistem === 'Shift' ? `<div class="text-xs text-slate-600 py-1 flex justify-between"><span>- Extra Food</span><span>Rp ${p.totalExtraFood.toLocaleString('id-ID')}</span></div>` : ''}
+                    </div>
+                    <div class="bg-blue-50 p-3 rounded-xl font-bold flex justify-between text-blue-900">
+                        <span>GAJI BRUTO (I + II):</span><span>Rp ${p.totalBruto.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span>
+                    </div>
+                    <div>
+                        <div class="font-bold text-rose-900 border-b pb-1 flex justify-between"><span>III. POTONGAN RESMI</span><span>Rp ${p.totalPotongan.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>
+                        <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- BPJS Ketenagakerjaan (JHT 2%)</span><span>Rp ${p.jht.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>
+                        <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- BPJS Ketenagakerjaan (JP 1%)</span><span>Rp ${p.jp.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>
+                        <div class="text-xs text-slate-600 py-1 flex justify-between"><span>- BPJS Kesehatan (1%)</span><span>Rp ${p.bpjsKes.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span></div>
+                    </div>
+                    <div class="bg-emerald-50 p-3 rounded-xl font-bold flex justify-between text-emerald-900 text-base border border-emerald-200">
+                        <span>UPAH DITERIMA BERSIH (NETTO / THP):</span><span>Rp ${p.netto.toLocaleString('id-ID', {maximumFractionDigits: 0})}</span>
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-end space-x-2">
+                    <button onclick="printSlipGaji(${karyawan.no})" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-semibold hover:bg-indigo-700">🖨️ Print</button>
+                    <button onclick="downloadPDFSlipGaji(${karyawan.no})" class="bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-semibold hover:bg-emerald-700">📥 Download PDF</button>
+                    <button onclick="tutupSlipGaji()" class="bg-slate-200 text-slate-700 px-4 py-2 rounded-xl text-xs font-semibold hover:bg-slate-300">Tutup</button>
+                </div>
+            </div>
+        </div>
+    `;
 
     let existingModal = document.getElementById('modalSlipContainer');
     if (existingModal) existingModal.remove();
-    document.body.insertAdjacentHTML('beforeend', htmlSlip);
+    document.body.insertAdjacentHTML('beforeend', html);
+}
+
+function printSlipGaji(noKaryawan) {
+    let karyawan = masterKaryawan.find(k => k.no === noKaryawan);
+    if (!karyawan) return;
+    let p = hitungDataPayroll(karyawan);
+
+    let jendelaCetak = window.open('', '', 'height=700,width=800');
+    jendelaCetak.document.write('<html><head><title>Slip Gaji - ' + karyawan.name + '</title>');
+    jendelaCetak.document.write('<style>body{font-family:sans-serif;padding:20px;color:#1e293b;} h2{text-align:center;} table{width:100%;border-collapse:collapse;margin-top:15px;font-size:12px;} th, td{border:1px solid #cbd5e1;padding:8px;text-align:left;} th{background-color:#f1f5f9;}</style>');
+    jendelaCetak.document.write('</head><body>');
+    jendelaCetak.document.write(`<h2>PT. SENTRAL SARI JAYA / PT. DONGGI MATINDOK</h2>`);
+    jendelaCetak.document.write(`<h3>SLIP UPAH TENAGA KERJA (${karyawan.sistem.toUpperCase()})</h3>`);
+    jendelaCetak.document.write(`<p><b>Nama:</b> ${karyawan.name} | <b>Jabatan:</b> ${karyawan.jabatan} | <b>HK:</b> ${karyawan.hk} Hari</p><hr>`);
+    jendelaCetak.document.write(`
+        <table>
+            <tr><th>I. UPAH TETAP (UT)</th><th style="text-align:right">Rp ${p.totalUpahTetap.toLocaleString('id-ID')}</th></tr>
+            <tr><td>- Upah Pokok</td><td style="text-align:right">Rp ${karyawan.upahPokok.toLocaleString('id-ID')}</td></tr>
+            <tr><td>- TAUP (Tunjangan Tetap)</td><td style="text-align:right">Rp ${karyawan.taup.toLocaleString('id-ID')}</td></tr>
+            <tr><th>II. UPAH TIDAK TETAP & LEMBUR</th><th style="text-align:right">Rp ${(p.totalTunjanganKehadiran + p.totalPremiShift + p.totalUpahLembur + p.totalMakanLembur + p.totalExtraFood).toLocaleString('id-ID', {maximumFractionDigits: 0})}</th></tr>
+            <tr><td>- Tunjangan Kehadiran (${karyawan.hk} Hari)</td><td style="text-align:right">Rp ${p.totalTunjanganKehadiran.toLocaleString('id-ID')}</td></tr>
+            ${karyawan.sistem === 'Shift' ? `<tr><td>- Premi Shift</td><td style="text-align:right">Rp ${p.totalPremiShift.toLocaleString('id-ID', {maximumFractionDigits: 0})}</td></tr>` : ''}
+            <tr><td>- Uang Makan Lembur</td><td style="text-align:right">Rp ${p.totalMakanLembur.toLocaleString('id-ID')}</td></tr>
+            <tr><td>- Upah Lembur (${karyawan.otKonversi.toFixed(1)} Jam)</td><td style="text-align:right">Rp ${p.totalUpahLembur.toLocaleString('id-ID', {maximumFractionDigits: 0})}</td></tr>
+            ${karyawan.sistem === 'Shift' ? `<tr><td>- Extra Food</td><td style="text-align:right">Rp ${p.totalExtraFood.toLocaleString('id-ID')}</td></tr>` : ''}
+            <tr style="background:#f8fafc"><th>GAJI BRUTO (I + II)</th><th style="text-align:right">Rp ${p.totalBruto.toLocaleString('id-ID', {maximumFractionDigits: 0})}</th></tr>
+            <tr><th>III. POTONGAN RESMI</th><th style="text-align:right">Rp ${p.totalPotongan.toLocaleString('id-ID', {maximumFractionDigits: 0})}</th></tr>
+            <tr><td>- BPJS Ketenagakerjaan (JHT 2%)</td><td style="text-align:right">Rp ${p.jht.toLocaleString('id-ID', {maximumFractionDigits: 0})}</td></tr>
+            <tr><td>- BPJS Ketenagakerjaan (JP 1%)</td><td style="text-align:right">Rp ${p.jp.toLocaleString('id-ID', {maximumFractionDigits: 0})}</td></tr>
+            <tr><td>- BPJS Kesehatan (1%)</td><td style="text-align:right">Rp ${p.bpjsKes.toLocaleString('id-ID', {maximumFractionDigits: 0})}</td></tr>
+            <tr style="background:#ecfdf5"><th>UPAH DITERIMA BERSIH (NETTO / THP)</th><th style="text-align:right">Rp ${p.netto.toLocaleString('id-ID', {maximumFractionDigits: 0})}</th></tr>
+        </table>
+    `);
+    jendelaCetak.document.write('</body></html>');
+    jendelaCetak.document.close();
+    jendelaCetak.focus();
+    setTimeout(() => { jendelaCetak.print(); jendelaCetak.close(); }, 500);
+}
+
+function downloadPDFSlipGaji(noKaryawan) {
+    // Memanfaatkan fungsi cetak print yang bisa disimpan sebagai PDF oleh browser
+    printSlipGaji(noKaryawan);
 }
 
 function tutupSlipGaji() {
@@ -700,7 +745,10 @@ function tutupSlipGaji() {
     if (modal) modal.remove();
 }
 
-window.onload = renderTabel;
+window.onload = () => {
+    renderTabel();
+    renderEnginePayroll();
+};
 
 // --- TAMBAHAN FITUR REKAPITULASI GABUNGAN (PDF & EXCEL RAPI) ---
 
