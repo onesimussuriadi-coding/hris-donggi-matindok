@@ -646,7 +646,9 @@ function hitungDataPayroll(karyawan) {
     let totalTunjanganKehadiran = (karyawan.hk || 0) * tarifKehadiranAktual;
     
     let totalFrekuensiMakan = (karyawan.makanPagi || 0) + (karyawan.makanSiang || 0) + (karyawan.makanMalam || 0);
-    let tarifMakanAktual = karyawan.tarifMakan || 0;
+    
+    // MENYAMAKAN VARIABEL: Mendukung tarifMakan atau uangMakan dari input form
+    let tarifMakanAktual = karyawan.tarifMakan || karyawan.uangMakan || 25000;
     let totalMakanLembur = totalFrekuensiMakan * tarifMakanAktual;
 
     let totalPremiShift = 0;
@@ -664,7 +666,7 @@ function hitungDataPayroll(karyawan) {
             }).length;
         }
         
-        // REVISI EXTRA FOODING DINAMIS MENGACU PADA SHIFT MALAM & TARIF MAKAN AKTUAL
+        // EXTRA FOODING DINAMIS MENGACU PADA SHIFT MALAM & TARIF MAKAN AKTUAL
         totalExtraFood = jumlahShiftMalamAktual * tarifMakanAktual;
     }
 
