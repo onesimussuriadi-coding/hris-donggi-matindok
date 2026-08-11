@@ -1,57 +1,57 @@
-// --- DATABASE MASTER KARYAWAN FIELD DONGGI MATINDOK (52 ORANG - DATA RIIL) ---
+// --- 1. DATABASE MASTER KARYAWAN (MURNI DINAMIS TANPA ANGKA STATIS) ---
 const defaultMasterKaryawan = [
-    {no: 1, name: "Sujianto M. Batias", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 2, name: "Ansar Mansur", jabatan: "Pemuka FS", grade: "F", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 3, name: "Harir A. Lako", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 4, name: "Ali Friansyah", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 5, name: "Fredrik D. Tinadji", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 6, name: "Wayan Edi Jaya", jabatan: "Pemuka FS", grade: "F", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 7, name: "Akmal (A)", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 8, name: "Alfikwan I. Marida", jabatan: "Pemuka FS", grade: "F", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 9, name: "Deni Andrianto", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 10, name: "Awal Dwi Sekti", jabatan: "Pemuka FS", grade: "F", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 11, name: "Muh Arsyal Ramdani", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 12, name: "Muh Palmi", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 13, name: "Halim", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 14, name: "Mustamar Dg Magangka", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 15, name: "Akmal (B)", jabatan: "Pemuka FS", grade: "F", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 16, name: "Rizal Tamoreka", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 17, name: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", grade: "F", posisi: "SCM", sistem: "Non Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 18, name: "Marjan Karim", jabatan: "Petugas Admin II Warehouse", grade: "E", posisi: "SCM", sistem: "Non Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 19, name: "Kasman", jabatan: "Petugas Admin II Warehouse", grade: "E", posisi: "SCM", sistem: "Non Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 20, name: "Lukman Tasakka", jabatan: "Pemuka Ops. Alat Berat", grade: "F", posisi: "SCM", sistem: "Non Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 21, name: "Nengah Darsana", jabatan: "Pemuka Ops. Alat Berat", grade: "F", posisi: "SCM", sistem: "Non Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 22, name: "I Gusti Ngurah Baliarta", jabatan: "Petugas Admin II Warehouse", grade: "E", posisi: "SCM", sistem: "Non Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 23, name: "Irpan Parenden", jabatan: "Petugas Admin II Warehouse", grade: "E", posisi: "SCM", sistem: "Non Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 24, name: "Sunita Ayu P.", jabatan: "Petugas Admin II", grade: "E", posisi: "Legal & Relation", sistem: "Non Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 25, name: "Dewi Setiawati M Dg M", jabatan: "Petugas Admin III", grade: "F", posisi: "RAM", sistem: "Non Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 26, name: "Marini Astari", jabatan: "Petugas Admin III", grade: "F", posisi: "HR-GS", sistem: "Non Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 27, name: "Ali Muhtar M. Amin", jabatan: "Supir Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 28, name: "Agus Rudiyanto", jabatan: "Petugas FS", grade: "D", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 29, name: "I Gede Ariana", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 30, name: "I Putu Adnyana Wijaya", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 31, name: "Mursalun Lasuru", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 32, name: "Subandi", jabatan: "Pemuka FS", grade: "F", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 33, name: "Budi Santoso", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 34, name: "I Komang Santika", jabatan: "Pemuka FS", grade: "F", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 35, name: "Indra Natalianto Patasik", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 36, name: "Kd Wiyad Nyana", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 37, name: "I Nengah Rudi Artika", jabatan: "Pemuka FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 38, name: "Sukardi Jalisingi", jabatan: "Supir Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 39, name: "Yotam", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 40, name: "Thamar Thalib Mbau", jabatan: "Pemuka FS", grade: "F", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 41, name: "Arie Kurniawan", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 42, name: "Eko Wiyono", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 43, name: "Fajriadi", jabatan: "Pemuka FS", grade: "F", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 44, name: "Jumalik H. Latungka", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 45, name: "Randianto", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 46, name: "Saiful M. Zakar", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 47, name: "I Nyoman Suwitra", jabatan: "Petugas Gudang (BBM)", grade: "D", posisi: "SCM", sistem: "Non Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 48, name: "I Putu Muryanto", jabatan: "Petugas Admin III", grade: "F", posisi: "Operation", sistem: "Non Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 49, name: "Siti Aisyah Dg Masese", jabatan: "Sekretaris FM", grade: "F", posisi: "Field Manager", sistem: "Non Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 50, name: "Dewi Khoirunnisa", jabatan: "Petugas Admin III", grade: "F", posisi: "Finance", sistem: "Non Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 51, name: "Eka Nurjannah", jabatan: "Petugas Admin III CSR", grade: "F", posisi: "Legal & Relation", sistem: "Non Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
-    {no: 52, name: "Findy Handayani", jabatan: "Petugas Admin II", grade: "E", posisi: "SCM", sistem: "Non Shift", upahPokok: 2458160, taup: 819387, tarifKehadiran: 30000, tarifMakan: 25000, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []}
+    {no: 1, name: "Sujianto M. Batias", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 2, name: "Ansar Mansur", jabatan: "Pemuka FS", grade: "F", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 3, name: "Harir A. Lako", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 4, name: "Ali Friansyah", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 5, name: "Fredrik D. Tinadji", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 6, name: "Wayan Edi Jaya", jabatan: "Pemuka FS", grade: "F", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 7, name: "Akmal (A)", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 8, name: "Alfikwan I. Marida", jabatan: "Pemuka FS", grade: "F", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 9, name: "Deni Andrianto", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 10, name: "Awal Dwi Sekti", jabatan: "Pemuka FS", grade: "F", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 11, name: "Muh Arsyal Ramdani", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 12, name: "Muh Palmi", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 13, name: "Halim", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 14, name: "Mustamar Dg Magangka", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 15, name: "Akmal (B)", jabatan: "Pemuka FS", grade: "F", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 16, name: "Rizal Tamoreka", jabatan: "Driver Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 17, name: "Arianto Yahya", jabatan: "Pemuka Operator Alat Berat", grade: "F", posisi: "SCM", sistem: "Non Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 18, name: "Marjan Karim", jabatan: "Petugas Admin II Warehouse", grade: "E", posisi: "SCM", sistem: "Non Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 19, name: "Kasman", jabatan: "Petugas Admin II Warehouse", grade: "E", posisi: "SCM", sistem: "Non Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 20, name: "Lukman Tasakka", jabatan: "Pemuka Ops. Alat Berat", grade: "F", posisi: "SCM", sistem: "Non Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 21, name: "Nengah Darsana", jabatan: "Pemuka Ops. Alat Berat", grade: "F", posisi: "SCM", sistem: "Non Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 22, name: "I Gusti Ngurah Baliarta", jabatan: "Petugas Admin II Warehouse", grade: "E", posisi: "SCM", sistem: "Non Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 23, name: "Irpan Parenden", jabatan: "Petugas Admin II Warehouse", grade: "E", posisi: "SCM", sistem: "Non Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 24, name: "Sunita Ayu P.", jabatan: "Petugas Admin II", grade: "E", posisi: "Legal & Relation", sistem: "Non Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 25, name: "Dewi Setiawati M Dg M", jabatan: "Petugas Admin III", grade: "F", posisi: "RAM", sistem: "Non Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 26, name: "Marini Astari", jabatan: "Petugas Admin III", grade: "F", posisi: "HR-GS", sistem: "Non Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 27, name: "Ali Muhtar M. Amin", jabatan: "Supir Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 28, name: "Agus Rudiyanto", jabatan: "Petugas FS", grade: "D", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 29, name: "I Gede Ariana", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 30, name: "I Putu Adnyana Wijaya", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 31, name: "Mursalun Lasuru", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 32, name: "Subandi", jabatan: "Pemuka FS", grade: "F", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 33, name: "Budi Santoso", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 34, name: "I Komang Santika", jabatan: "Pemuka FS", grade: "F", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 35, name: "Indra Natalianto Patasik", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 36, name: "Kd Wiyad Nyana", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 37, name: "I Nengah Rudi Artika", jabatan: "Pemuka FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 38, name: "Sukardi Jalisingi", jabatan: "Supir Ambulance", grade: "D", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 39, name: "Yotam", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 40, name: "Thamar Thalib Mbau", jabatan: "Pemuka FS", grade: "F", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 41, name: "Arie Kurniawan", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 42, name: "Eko Wiyono", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 43, name: "Fajriadi", jabatan: "Pemuka FS", grade: "F", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 44, name: "Jumalik H. Latungka", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 45, name: "Randianto", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 46, name: "Saiful M. Zakar", jabatan: "Petugas FS", grade: "E", posisi: "HSSE", sistem: "Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 47, name: "I Nyoman Suwitra", jabatan: "Petugas Gudang (BBM)", grade: "D", posisi: "SCM", sistem: "Non Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 48, name: "I Putu Muryanto", jabatan: "Petugas Admin III", grade: "F", posisi: "Operation", sistem: "Non Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 49, name: "Siti Aisyah Dg Masese", jabatan: "Sekretaris FM", grade: "F", posisi: "Field Manager", sistem: "Non Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 50, name: "Dewi Khoirunnisa", jabatan: "Petugas Admin III", grade: "F", posisi: "Finance", sistem: "Non Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 51, name: "Eka Nurjannah", jabatan: "Petugas Admin III CSR", grade: "F", posisi: "Legal & Relation", sistem: "Non Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []},
+    {no: 52, name: "Findy Handayani", jabatan: "Petugas Admin II", grade: "E", posisi: "SCM", sistem: "Non Shift", upahPokok: 0, taup: 0, tarifKehadiran: 0, tarifMakan: 0, hk: 0, otAktual: 0, otKonversi: 0, makanPagi: 0, makanSiang: 0, makanMalam: 0, catatanStatus: "Belum ada input", historiAbsen: []}
 ];
 
 const CLOUD_URL = "https://script.google.com/macros/s/AKfycby1fKpsDqdGhtMira6PqPGdkVFdYTMvr554Zs5OdagaO5bxzSK5trQWQtSAErXei2lX/exec";
@@ -562,7 +562,51 @@ function simpanAbsenHarian() {
     }
 }
 
-// --- MODUL PUSAT ENGINE PAYROLL & RUMUS 100% MURNI DINAMIS ---
+// --- 4. MODUL PUSAT ENGINE PAYROLL & RUMUS 100% MURNI DINAMIS ---
+function hitungDataPayroll(karyawan) {
+    let totalUpahTetap = (karyawan.upahPokok || 0) + (karyawan.taup || 0);
+    let tarifPerJamLembur = totalUpahTetap * (1 / 173);
+    let totalUpahLembur = (karyawan.otKonversi || 0) * tarifPerJamLembur;
+    
+    let tarifKehadiranAktual = karyawan.tarifKehadiran || 0;
+    let totalTunjanganKehadiran = (karyawan.hk || 0) * tarifKehadiranAktual;
+    
+    let totalFrekuensiMakan = (karyawan.makanPagi || 0) + (karyawan.makanSiang || 0) + (karyawan.makanMalam || 0);
+    let tarifMakanAktual = karyawan.tarifMakan || 0;
+    let totalMakanLembur = totalFrekuensiMakan * tarifMakanAktual;
+
+    let totalPremiShift = 0;
+    let totalExtraFood = 0;
+    let jumlahShiftMalamAktual = 0;
+
+    if (karyawan.sistem === 'Shift') {
+        totalPremiShift = totalUpahTetap * (karyawan.hk || 0) * (12 / 173) * 0.15;
+        
+        if (karyawan.historiAbsen && karyawan.historiAbsen.length > 0) {
+            jumlahShiftMalamAktual = karyawan.historiAbsen.filter(h => {
+                let [jIn] = (h.jamMasuk || "00:00").split(':').map(Number);
+                let statusUpper = (h.status || "").toUpperCase();
+                return (statusUpper === 'MASUK' || statusUpper === 'DINAS') && (jIn >= 18 || jIn < 6 || statusUpper.includes('MALAM') || (h.jamMasuk && h.jamMasuk.startsWith("19")));
+            }).length;
+        }
+        
+        totalExtraFood = jumlahShiftMalamAktual * tarifMakanAktual;
+    }
+
+    let totalBruto = totalUpahTetap + totalTunjanganKehadiran + totalUpahLembur + totalMakanLembur + totalPremiShift + totalExtraFood;
+    let jht = totalUpahTetap * 0.02;
+    let jp = totalUpahTetap * 0.01;
+    let bpjsKes = totalUpahTetap * 0.01;
+    let totalPotongan = jht + jp + bpjsKes;
+    let netto = totalBruto - totalPotongan;
+
+    return {
+        totalUpahTetap, tarifPerJamLembur, totalUpahLembur, totalTunjanganKehadiran, tarifKehadiranAktual,
+        totalFrekuensiMakan, tarifMakanAktual, totalMakanLembur, totalPremiShift, jumlahShiftMalamAktual, totalExtraFood, 
+        totalBruto, jht, jp, bpjsKes, totalPotongan, netto
+    };
+}
+
 function renderEnginePayroll() {
     const container = document.getElementById('enginePayrollContainer');
     if (!container) return;
@@ -603,51 +647,6 @@ function renderEnginePayroll() {
             </div>
         </div>
     `;
-}
-
-function hitungDataPayroll(karyawan) {
-    let totalUpahTetap = karyawan.upahPokok + karyawan.taup;
-    let tarifPerJamLembur = totalUpahTetap * (1 / 173);
-    let totalUpahLembur = karyawan.otKonversi * tarifPerJamLembur;
-    
-    // 100% DINAMIS MURNI: Membaca murni dari dashboard input upah (Tanpa angka statis mati)
-    let tarifKehadiranAktual = karyawan.tarifKehadiran || 0;
-    let totalTunjanganKehadiran = karyawan.hk * tarifKehadiranAktual;
-    
-    let totalFrekuensiMakan = (karyawan.makanPagi || 0) + (karyawan.makanSiang || 0) + (karyawan.makanMalam || 0);
-    let tarifMakanAktual = karyawan.tarifMakan || 0;
-    let totalMakanLembur = totalFrekuensiMakan * tarifMakanAktual;
-
-    let totalPremiShift = 0;
-    let totalExtraFood = 0;
-    let jumlahShiftMalamAktual = 0;
-
-    if (karyawan.sistem === 'Shift') {
-        totalPremiShift = totalUpahTetap * karyawan.hk * (12 / 173) * 0.15;
-        
-        if (karyawan.historiAbsen && karyawan.historiAbsen.length > 0) {
-            jumlahShiftMalamAktual = karyawan.historiAbsen.filter(h => {
-                let [jIn] = (h.jamMasuk || "00:00").split(':').map(Number);
-                let statusUpper = (h.status || "").toUpperCase();
-                return (statusUpper === 'MASUK' || statusUpper === 'DINAS') && (jIn >= 18 || jIn < 6 || statusUpper.includes('MALAM') || (h.jamMasuk && h.jamMasuk.startsWith("19")));
-            }).length;
-        }
-        
-        totalExtraFood = jumlahShiftMalamAktual * tarifMakanAktual;
-    }
-
-    let totalBruto = totalUpahTetap + totalTunjanganKehadiran + totalUpahLembur + totalMakanLembur + totalPremiShift + totalExtraFood;
-    let jht = totalUpahTetap * 0.02;
-    let jp = totalUpahTetap * 0.01;
-    let bpjsKes = totalUpahTetap * 0.01;
-    let totalPotongan = jht + jp + bpjsKes;
-    let netto = totalBruto - totalPotongan;
-
-    return {
-        totalUpahTetap, tarifPerJamLembur, totalUpahLembur, totalTunjanganKehadiran, tarifKehadiranAktual,
-        totalFrekuensiMakan, tarifMakanAktual, totalMakanLembur, totalPremiShift, jumlahShiftMalamAktual, totalExtraFood, 
-        totalBruto, jht, jp, bpjsKes, totalPotongan, netto
-    };
 }
 
 function previewSlipGaji(noKaryawan) {
@@ -760,8 +759,7 @@ window.onload = () => {
     renderEnginePayroll();
 };
 
-// --- TAMBAHAN FITUR REKAPITULASI GABUNGAN (PDF & EXCEL RAPI) ---
-
+// --- 5. REKAPITULASI GABUNGAN ---
 function cetakRekapitulasiGabunganPDF() {
     let jendelaCetak = window.open('', '', 'height=700,width=1000');
     jendelaCetak.document.write('<html><head><title>Rekapitulasi Absensi & Lembur Gabungan - Field Donggi Matindok</title>');
