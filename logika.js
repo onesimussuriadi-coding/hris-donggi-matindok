@@ -457,7 +457,6 @@ function hitungKonversiDepnaker(jamAktual, jenisHari) {
 
 // --- FUNGSI REKALKULASI OTOMATIS (MENCEGAH REKAP MENUMPUK/SELISIH) ---
 function hitungUlangRekapKaryawan(karyawan) {
-    // Reset total ke 0 murni sebelum dihitung ulang dari histori yang aktif
     karyawan.hk = 0;
     karyawan.otAktual = 0;
     karyawan.otKonversi = 0;
@@ -470,20 +469,16 @@ function hitungUlangRekapKaryawan(karyawan) {
         return;
     }
 
-    // Iterasi ulang seluruh histori yang tersisa secara akurat
     karyawan.historiAbsen.forEach(h => {
         let statusUpper = (h.status || "").toUpperCase();
         
-        // 1. Hitung HK
         if (statusUpper === 'MASUK' || statusUpper === 'DINAS') {
             karyawan.hk += 1;
         }
 
-        // 2. Hitung Lembur
         karyawan.otAktual += (h.otAktual || 0);
         karyawan.otKonversi += (h.otKonversi || 0);
 
-        // 3. Hitung Ulang Tunjangan Makan Berdasarkan Jam & Jenis Hari
         let [jIn] = (h.jamMasuk || "00:00").split(':').map(Number);
         let [jOut] = (h.jamKeluar || "00:00").split(':').map(Number);
         let otAktualItem = h.otAktual || 0;
@@ -575,7 +570,6 @@ function simpanAbsenHarian() {
 
         let catatanRingkas = `${tanggalStr}: ${status.toUpperCase()}`;
         
-        // Masukkan ke histori
         karyawan.historiAbsen.push({
             tanggalStr: tanggalStr,
             status: status.toUpperCase(),
@@ -587,7 +581,6 @@ function simpanAbsenHarian() {
             catatanRingkas: catatanRingkas
         });
 
-        // REKALKULASI TOTAL SECARA OTOMATIS DARI HISTORI TERBARU
         hitungUlangRekapKaryawan(karyawan);
 
         localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
@@ -633,10 +626,8 @@ function hapusHistoriTanggal(noKaryawan, indexHistori) {
 
     if(confirm(`Hapus catatan tanggal ${itemDihapus.tanggalStr} untuk ${karyawan.name}? Akumulasi HK, lembur, dan tunjangan makan akan dikalkulasi ulang.`)) {
         
-        // Hapus item dari array histori
         karyawan.historiAbsen.splice(indexHistori, 1);
 
-        // REKALKULASI ULANG SEMUA TOTAL DARI AWAL BERDASARKAN HISTORI YANG TERSISA
         hitungUlangRekapKaryawan(karyawan);
 
         localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
@@ -645,7 +636,6 @@ function hapusHistoriTanggal(noKaryawan, indexHistori) {
         alert('Data berhasil dihapus dan rekapitulasi telah disesuaikan secara real-time!');
     }
 }
-
 // --- 4. MODUL PUSAT ENGINE PAYROLL & RUMUS 100% MURNI DINAMIS ---
 function hitungDataPayroll(karyawan) {
     let totalUpahTetap = (karyawan.upahPokok || 0) + (karyawan.taup || 0);
