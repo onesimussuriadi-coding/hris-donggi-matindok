@@ -218,6 +218,11 @@ function bukaModalHistori(noKaryawan) {
     document.getElementById('rekapDistOff').innerText = countOffMurni + " Hari";
     document.getElementById('rekapDistLainnya').innerText = countLainnya + " Hari";
 
+    let elRekapMakan = document.getElementById('rekapDistMakanLembur');
+    if (elRekapMakan) {
+        elRekapMakan.innerText = (karyawan.totalMakanLemburRekap || 0) + " Kali";
+    }
+
     document.getElementById('modalHistori').classList.remove('hidden');
 }
 
@@ -291,17 +296,13 @@ function hapusHistoriTanggal(noKaryawan, indexHistori) {
     let itemDihapus = karyawan.historiAbsen[indexHistori];
 
     if(confirm(`Hapus catatan tanggal ${itemDihapus.tanggalStr} untuk ${karyawan.name}? Akumulasi HK, lembur, dan tunjangan makan akan disesuaikan.`)) {
-        
-        // 1. Kurangi HK jika statusnya Masuk atau Dinas
         if(itemDihapus.status === 'MASUK' || itemDihapus.status === 'DINAS') {
             karyawan.hk = Math.max(0, karyawan.hk - 1);
         }
 
-        // 2. Kurangi Lembur Aktual & Konversi
         karyawan.otAktual = Math.max(0, karyawan.otAktual - (itemDihapus.otAktual || 0));
         karyawan.otKonversi = Math.max(0, karyawan.otKonversi - (itemDihapus.otKonversi || 0));
 
-        // 3. HITUNG ULANG & KURANGI MAKAN SECARA DINAMIS BERDASARKAN DATA HISTORI YANG DIHAPUS
         let [jIn] = (itemDihapus.jamMasuk || "00:00").split(':').map(Number);
         let [jOut] = (itemDihapus.jamKeluar || "00:00").split(':').map(Number);
         
@@ -325,28 +326,7 @@ function hapusHistoriTanggal(noKaryawan, indexHistori) {
     }
 }
 
-function bukaModalKategori() {
-    let modalKat = document.getElementById('modalKategori');
-    if (!modalKat) {
-        modalKat = document.createElement('div');
-        modalKat.id = 'modalKategori';
-        modalKat.className = 'fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50';
-        modalKat.innerHTML = `
-            <div class="bg-white w-full max-w-sm rounded-2xl p-6 shadow-2xl">
-                <h3 class="text-lg font-bold mb-2 text-slate-800">Pilih Sistem Kerja</h3>
-                <p class="text-xs text-slate-500 mb-4">Proteksi berjenjang untuk mencegah salah input data.</p>
-                <div class="space-y-3">
-                    <button onclick="bukaModalAbsen('Shift')" class="w-full bg-emerald-600 text-white p-3.5 rounded-xl font-bold hover:bg-emerald-700 transition shadow">Pekerja SHIFT</button>
-                    <button onclick="bukaModalAbsen('Non Shift')" class="w-full bg-blue-600 text-white p-3.5 rounded-xl font-bold hover:bg-blue-700 transition shadow">Pekerja NON-SHIFT</button>
-                    <button onclick="document.getElementById('modalKategori').classList.add('hidden')" class="w-full bg-slate-100 text-slate-600 p-2.5 rounded-xl font-bold hover:bg-slate-200 transition">Batal</button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(modalKat);
-    }
-    modalKat.classList.remove('hidden');
-}
-
+// (FUNGSI DUPLIKAT DIHAPUS, HANYA TERSISA 1 FUNGSI TUNGGAL)
 function bukaModalKategori() {
     let modalKat = document.getElementById('modalKategori');
     if (!modalKat) {
@@ -404,7 +384,6 @@ function gantiStatusAbsen() {
     let karyawan = masterKaryawan.find(k => k.no === selectedNo);
     let isShift = karyawan ? karyawan.sistem === 'Shift' : true;
 
-    // REVISI: Sembunyikan Jenis Hari jika status Cuti, Izin, Sakit, Alpa, atau Off Murni
     if (status === 'off_murni' || status === 'cuti' || status === 'izin' || status === 'sakit' || status === 'alfa') {
         if(wrapperShift) wrapperShift.classList.add('hidden');
         if(wrapperJam) wrapperJam.classList.add('hidden');
@@ -437,6 +416,39 @@ function aturJamOtomatisShift() {
 
 function tutupModal() {
     document.getElementById('modalAbsen').classList.add('hidden');
+}
+
+// --- FUNGSI SIMPAN ANTI-HANG ---
+function simpanAbsenHarian() {
+    try {
+        let no = parseInt(document.getElementById('pilihKaryawan').value);
+        let karyawan = masterKaryawan.find(k => k.no === no);
+        if(!karyawan) {
+            alert("Pilih karyawan terlebih dahulu!");
+            return;
+        }
+
+        let absenBaru = {
+            tanggalStr: `${document.getElementById('inputTanggal').value} ${document.getElementById('inputBulan').value} ${document.getElementById('inputTahun').value}`,
+            status: document.getElementById('statusKehadiran').value.toUpperCase(),
+            jenisHari: document.getElementById('jenisHari') ? document.getElementById('jenisHari').value : 'Biasa',
+            jamMasuk: document.getElementById('jamMasuk').value,
+            jamKeluar: document.getElementById('jamKeluar').value,
+            otAktual: parseFloat(document.getElementById('otAktual').value) || 0,
+            otKonversi: parseFloat(document.getElementById('otKonversi').value) || 0,
+            catatanRingkas: "Update Absen"
+        };
+
+        karyawan.historiAbsen.push(absenBaru);
+        hitungUlangRekapKaryawan(karyawan);
+        localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
+
+        renderTabel();
+        tutupModal();
+        alert("Data absen berhasil disimpan!");
+    } catch(e) {
+        alert("Terjadi kesalahan saat menyimpan: " + e.message);
+    }
 }
 
 function hitungKonversiDepnaker(jamAktual, jenisHari) {
@@ -509,7 +521,6 @@ function hitungDataPayroll(karyawan) {
     let tarifKehadiranAktual = karyawan.tarifKehadiran || 0;
     let totalTunjanganKehadiran = (karyawan.hk || 0) * tarifKehadiranAktual;
     
-    // Membaca langsung dari rekap terpusat (0 jika tidak ada aktivitas)
     let totalFrekuensiMakan = karyawan.totalMakanLemburRekap !== undefined ? karyawan.totalMakanLemburRekap : 0;
     let tarifMakanAktual = karyawan.tarifMakan || karyawan.uangMakan || 25000;
     let totalMakanLembur = totalFrekuensiMakan * tarifMakanAktual;
@@ -543,92 +554,6 @@ function hitungDataPayroll(karyawan) {
         totalFrekuensiMakan, tarifMakanAktual, totalMakanLembur, totalPremiShift, jumlahShiftMalamAktual, totalExtraFood, 
         totalBruto, jht, jp, bpjsKes, totalPotongan, netto
     };
-}
-
-// --- 3. MODAL HISTORI (DILENGKAPI KOTAK REKAP TUNJANGAN MAKAN LEMBUR) ---
-function bukaModalHistori(noKaryawan) {
-    activeKaryawanNo = noKaryawan;
-    let karyawan = masterKaryawan.find(k => k.no === noKaryawan);
-    if(!karyawan) return;
-
-    karyawan.historiAbsen.sort((a, b) => {
-        let dateA = parseTanggalKeObjek(a.tanggalStr);
-        let dateB = parseTanggalKeObjek(b.tanggalStr);
-        return dateA - dateB;
-    });
-
-    document.getElementById('historiTitle').innerText = `Histori Absen & Rincian Lembur: ${karyawan.name}`;
-    const tbodyHistori = document.getElementById('tabelHistoriItem');
-    tbodyHistori.innerHTML = '';
-
-    let sumJamKerja = 0, sumLemburAktual = 0, sumLemburKonversi = 0;
-    let countHK = 0, countShiftSiang = 0, countShiftMalam = 0, countCuti = 0, countOffMurni = 0, countLainnya = 0;
-
-    if(karyawan.historiAbsen.length === 0) {
-        tbodyHistori.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada catatan histori absen yang diinput.</td></tr>`;
-    } else {
-        karyawan.historiAbsen.forEach((h, index) => {
-            let [jIn, mIn] = (h.jamMasuk || "00:00").split(':').map(Number);
-            let [jOut, mOut] = (h.jamKeluar || "00:00").split(':').map(Number);
-            let durasi = (jOut + mOut/60) - (jIn + mIn/60);
-            if(durasi < 0) durasi += 24;
-            if(['OFF_MURNI', 'OFF_MASUK', 'CUTI', 'IZIN', 'SAKIT', 'ALFA'].includes(h.status)) durasi = 0;
-
-            sumJamKerja += durasi;
-            sumLemburAktual += (h.otAktual || 0);
-            sumLemburKonversi += (h.otKonversi || 0);
-
-            let statusUpper = (h.status || "").toUpperCase();
-            if (statusUpper === 'MASUK' || statusUpper === 'DINAS') {
-                countHK++;
-                if (jIn >= 18 || jIn < 6 || statusUpper.includes('MALAM') || (h.jamMasuk && h.jamMasuk.startsWith("19"))) {
-                    countShiftMalam++;
-                } else {
-                    countShiftSiang++;
-                }
-            } else if (statusUpper === 'OFF_MASUK' || statusUpper === 'OFF_MURNI') {
-                countOffMurni++;
-            } else if (statusUpper === 'CUTI') {
-                countCuti++;
-            } else {
-                countLainnya++;
-            }
-
-            tbodyHistori.innerHTML += `
-                <tr class="hover:bg-slate-50">
-                    <td class="p-3 font-bold text-slate-700">${h.tanggalStr}</td>
-                    <td class="p-3 font-semibold text-emerald-700">${h.status} (${h.jenisHari || 'Biasa'})</td>
-                    <td class="p-3 text-center text-slate-600">${h.jamMasuk} - ${h.jamKeluar}</td>
-                    <td class="p-3 text-center font-bold text-slate-700">${h.otAktual} Jam</td>
-                    <td class="p-3 text-center font-bold text-blue-600">${h.otKonversi} Jam</td>
-                    <td class="p-3 text-center">
-                        <button onclick="hapusHistoriTanggal(${karyawan.no}, ${index})" class="bg-rose-600 text-white px-2.5 py-1 rounded text-[11px] font-semibold hover:bg-rose-700 shadow-sm">🗑️ Hapus</button>
-                    </td>
-                </tr>
-            `;
-        });
-    }
-
-    // Update Statistik Singkat di Modal
-    document.getElementById('statTotalJamKerja').innerText = sumJamKerja.toFixed(1) + " Jam";
-    document.getElementById('statTotalLemburAktual').innerText = sumLemburAktual.toFixed(1) + " Jam";
-    document.getElementById('statTotalLemburKonversi').innerText = sumLemburKonversi.toFixed(1) + " Jam";
-
-    // Update Kotak Rekap di Atas Modal Histori (Termasuk Tunjangan Makan Lembur)
-    document.getElementById('rekapDistTotalHK').innerText = countHK + " Hari";
-    document.getElementById('rekapDistSiang').innerText = countShiftSiang + " Hari";
-    document.getElementById('rekapDistMalam').innerText = countShiftMalam + " Hari";
-    document.getElementById('rekapDistCuti').innerText = countCuti + " Hari";
-    document.getElementById('rekapDistOff').innerText = countOffMurni + " Hari";
-    document.getElementById('rekapDistLainnya').innerText = countLainnya + " Hari";
-
-    // Menampilkan Rekap Tunjangan Makan Lembur secara dinamis
-    let elRekapMakan = document.getElementById('rekapDistMakanLembur');
-    if (elRekapMakan) {
-        elRekapMakan.innerText = (karyawan.totalMakanLemburRekap || 0) + " Kali";
-    }
-
-    document.getElementById('modalHistori').classList.remove('hidden');
 }
 
 // --- 4. PRATINJAU & CETAK SLIP GAJI ---
@@ -853,7 +778,7 @@ function downloadPDFHistoriAbsen() {
             .summary-box { margin-bottom: 15px; font-size: 12px; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0; }
         </style>
     `);
-    jendelaCetak.document.write('</head><body>');
+    jendelaCetak.document.write('(');
     jendelaCetak.document.write('<h2>PT. SENTRAL SARI JAYA / PT. DONGGI MATINDOK</h2>');
     jendelaCetak.document.write('<h3>LAPORAN HISTORI ABSENSI & LEMBUR KARYAWAN</h3>');
     jendelaCetak.document.write(`<div class="subtitle">Nama: <b>${karyawan.name}</b> | Jabatan: ${karyawan.jabatan} | Sistem: ${karyawan.sistem}</div>`);
