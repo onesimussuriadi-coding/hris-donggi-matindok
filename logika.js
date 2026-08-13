@@ -190,11 +190,16 @@ function bukaModalHistori(noKaryawan) {
                 countLainnya++;
             }
 
+            let infoLemburSpan = "";
+            if (h.jamMulaiLembur && h.jamSelesaiLembur) {
+                infoLemburSpan = `<br><span class="text-[10px] text-blue-600 font-semibold">Lembur: ${h.jamMulaiLembur} - ${h.jamSelesaiLembur}</span>`;
+            }
+
             tbodyHistori.innerHTML += `
                 <tr class="hover:bg-slate-50">
                     <td class="p-3 font-bold text-slate-700">${h.tanggalStr}</td>
                     <td class="p-3 font-semibold text-emerald-700">${h.status} (${h.jenisHari || 'Biasa'})</td>
-                    <td class="p-3 text-center text-slate-600">${h.jamMasuk} - ${h.jamKeluar} ${h.jamMulaiLembur ? '<br><span class="text-[10px] text-blue-600">Mulai Lembur: ' + h.jamMulaiLembur + '</span>' : ''}</td>
+                    <td class="p-3 text-center text-slate-600">${h.jamMasuk} - ${h.jamKeluar} ${infoLemburSpan}</td>
                     <td class="p-3 text-center font-bold text-slate-700">${h.otAktual} Jam</td>
                     <td class="p-3 text-center font-bold text-blue-600">${h.otKonversi} Jam</td>
                     <td class="p-3 text-center">
@@ -252,9 +257,9 @@ function downloadCSVHistori() {
         return;
     }
 
-    let csvContent = "data:text/csv;charset=utf-8,Tanggal Absen,Status Kehadiran,Jenis Hari,Jam Masuk,Jam Keluar,Jam Mulai Lembur,Lembur Aktual (Jam),Lembur Konversi (Jam)\r\n";
+    let csvContent = "data:text/csv;charset=utf-8,Tanggal Absen,Status Kehadiran,Jenis Hari,Jam Masuk,Jam Keluar,Mulai Lembur,Selesai Lembur,Lembur Aktual (Jam),Lembur Konversi (Jam)\r\n";
     karyawan.historiAbsen.forEach(h => {
-        let row = `"${h.tanggalStr}","${h.status}","${h.jenisHari}","${h.jamMasuk}","${h.jamKeluar}","${h.jamMulaiLembur || '-'}","${h.otAktual}","${h.otKonversi}"`;
+        let row = `"${h.tanggalStr}","${h.status}","${h.jenisHari}","${h.jamMasuk}","${h.jamKeluar}","${h.jamMulaiLembur || '-'}","${h.jamSelesaiLembur || '-'}","${h.otAktual}","${h.otKonversi}"`;
         csvContent += row + "\r\n";
     });
 
@@ -369,16 +374,25 @@ function bukaModalAbsen(sistemKerja) {
 
     document.getElementById('statusKehadiran').value = 'masuk';
     
-    // Tambahkan input Jam Mulai Lembur secara dinamis ke dalam modal jika belum ada
+    // Update container input lembur menjadi 2 kolom (Mulai Lembur & Selesai Lembur) agar simetris
     let wrapperJam = document.getElementById('wrapperJamKerja');
     if (wrapperJam && !document.getElementById('wrapperJamMulaiLembur')) {
         let divLembur = document.createElement('div');
         divLembur.id = 'wrapperJamMulaiLembur';
-        divLembur.className = 'col-span-2 mt-2 bg-blue-50/70 p-3 rounded-xl border border-blue-200';
+        divLembur.className = 'col-span-2 mt-2 bg-blue-50/70 p-3.5 rounded-2xl border border-blue-200';
         divLembur.innerHTML = `
-            <label class="block text-xs font-bold text-blue-900 mb-1">Mulai Lembur / Overtime Start (Jika ada jeda istirahat)</label>
-            <input type="time" id="jamMulaiLembur" class="w-full border border-blue-300 rounded-lg p-2 text-sm outline-none bg-white font-semibold">
-            <span class="text-[10px] text-slate-500 mt-1 block">Kosongkan jika lembur langsung / tidak ada jeda istirahat.</span>
+            <label class="block text-xs font-bold text-blue-900 mb-2">Pencatatan Lembur Terpisah (Opsional jika ada jeda istirahat)</label>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">Mulai Lembur (Overtime Start)</label>
+                    <input type="time" id="jamMulaiLembur" class="w-full border border-blue-300 rounded-xl p-2 text-sm outline-none bg-white font-semibold">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">Selesai Lembur (Overtime End)</label>
+                    <input type="time" id="jamSelesaiLembur" class="w-full border border-blue-300 rounded-xl p-2 text-sm outline-none bg-white font-semibold">
+                </div>
+            </div>
+            <span class="text-[10px] text-slate-500 mt-2 block">Kosongkan kedua kolom di atas jika lembur berjalan langsung tanpa jeda istirahat.</span>
         `;
         wrapperJam.parentNode.insertBefore(divLembur, wrapperJam.nextSibling);
     }
@@ -435,7 +449,7 @@ function tutupModal() {
     document.getElementById('modalAbsen').classList.add('hidden');
 }
 
-// --- FUNGSI SIMPAN DENGAN FITUR JAM MULAI LEMBUR (PENGABAIAN JEDA ISTIRAHAT) ---
+// --- FUNGSI SIMPAN DENGAN LOGIKA DUA KOLOM LEMBUR (MULAI & SELESAI) ---
 function simpanAbsenHarian() {
     try {
         let elPilih = document.getElementById('pilihKaryawan');
@@ -451,8 +465,9 @@ function simpanAbsenHarian() {
         }
 
         let jInVal = document.getElementById('jamMasuk') ? document.getElementById('jamMasuk').value : "07:00";
-        let jOutVal = document.getElementById('jamKeluar') ? document.getElementById('jamKeluar').value : "19:00";
+        let jOutVal = document.getElementById('jamKeluar') ? document.getElementById('jamKeluar').value : "17:00";
         let jMulaiLemburVal = document.getElementById('jamMulaiLembur') ? document.getElementById('jamMulaiLembur').value : "";
+        let jSelesaiLemburVal = document.getElementById('jamSelesaiLembur') ? document.getElementById('jamSelesaiLembur').value : "";
         let statusVal = document.getElementById('statusKehadiran') ? document.getElementById('statusKehadiran').value : "masuk";
         let jenisHariVal = document.getElementById('jenisHari') ? document.getElementById('jenisHari').value : "Biasa";
 
@@ -466,14 +481,15 @@ function simpanAbsenHarian() {
 
         let otAktual = 0;
         if (statusVal === 'masuk' || statusVal === 'off_masuk' || statusVal === 'dinas') {
-            if (jMulaiLemburVal && jMulaiLemburVal !== "") {
-                // Jika admin mengisi Jam Mulai Lembur khusus (mengatasi jeda istirahat)
+            if (jMulaiLemburVal && jMulaiLemburVal !== "" && jSelesaiLemburVal && jSelesaiLemburVal !== "") {
+                // Jika admin mengisi Jam Mulai Lembur dan Jam Selesai Lembur secara eksplisit
                 let [jML, mML] = jMulaiLemburVal.split(':').map(Number);
+                let [jSL, mSL] = jSelesaiLemburVal.split(':').map(Number);
                 let jamMulaiLemburDecimal = jML + (mML / 60);
-                let jamKeluarLemburDecimal = jamKeluarDecimal;
-                if (jamKeluarLemburDecimal < jamMulaiLemburDecimal) jamKeluarLemburDecimal += 24;
+                let jamSelesaiLemburDecimal = jSL + (mSL / 60);
                 
-                otAktual = jamKeluarLemburDecimal - jamMulaiLemburDecimal;
+                if (jamSelesaiLemburDecimal < jamMulaiLemburDecimal) jamSelesaiLemburDecimal += 24;
+                otAktual = jamSelesaiLemburDecimal - jamMulaiLemburDecimal;
             } else {
                 // Perhitungan otomatis standar berdasarkan jam kerja normal shift/non-shift
                 let jamKerjaNormal = 8; // Default Non-Shift
@@ -498,6 +514,7 @@ function simpanAbsenHarian() {
             jamMasuk: jInVal,
             jamKeluar: jOutVal,
             jamMulaiLembur: jMulaiLemburVal || "",
+            jamSelesaiLembur: jSelesaiLemburVal || "",
             otAktual: parseFloat(otAktual.toFixed(1)),
             otKonversi: parseFloat(otKonversi.toFixed(1)),
             catatanRingkas: "Update Absen"
