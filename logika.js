@@ -548,7 +548,7 @@ function hitungKonversiDepnaker(jamAktual, jenisHari) {
     }
 }
 
-// --- REKAPITULASI KARYAWAN: HK HANYA DARI SHIFT PAGI/MALAM (OFF_MASUK TIDAK DIHITUNG HK) ---
+// --- REKAPITULASI KARYAWAN (BERSIH & PRESISI) ---
 function hitungUlangRekapKaryawan(karyawan) {
     karyawan.hk = 0;
     karyawan.otAktual = 0;
@@ -569,7 +569,7 @@ function hitungUlangRekapKaryawan(karyawan) {
         let [jOut] = (h.jamKeluar || "00:00").split(':').map(Number);
         let otAktualItem = h.otAktual || 0;
 
-        // KOREKSI UTAMA: HK (Hari Kerja) hanya dihitung jika status MASUK atau DINAS (OFF_MASUK murni lembur, HK = 0)
+        // HK hanya dihitung dari status MASUK atau DINAS (OFF_MASUK tidak menaikkan HK)
         if (statusUpper === 'MASUK' || statusUpper === 'DINAS') {
             karyawan.hk += 1;
         }
@@ -597,7 +597,7 @@ function hitungUlangRekapKaryawan(karyawan) {
     karyawan.catatanStatus = karyawan.historiAbsen[karyawan.historiAbsen.length - 1].catatanRingkas;
 }
 
-// --- ENGINE PAYROLL: PERKALIAN UANG MAKAN & EXTRA FOODING PRESISI ---
+// --- ENGINE PAYROLL: PENGAMBILAN LANGSUNG DARI KOTAK REKAP ---
 function hitungDataPayroll(karyawan) {
     let totalUpahTetap = (karyawan.upahPokok || 0) + (karyawan.taup || 0);
     let tarifPerJamLembur = totalUpahTetap * (1 / 173);
@@ -606,9 +606,10 @@ function hitungDataPayroll(karyawan) {
     let tarifKehadiranAktual = karyawan.tarifKehadiran || 0;
     let totalTunjanganKehadiran = (karyawan.hk || 0) * tarifKehadiranAktual;
     
-    // Uang Makan Lembur = Total Frekuensi Makan x Rp 25.000
-    let totalFrekuensiMakan = karyawan.totalMakanLemburRekap !== undefined ? karyawan.totalMakanLemburRekap : 0;
     let tarifMakanAktual = karyawan.tarifMakan || karyawan.uangMakan || 25000;
+    
+    // UANG MAKAN LEMBUR: Diambil langsung dari total kotak rekap Tunjangan Makan Lembur
+    let totalFrekuensiMakan = karyawan.totalMakanLemburRekap !== undefined ? karyawan.totalMakanLemburRekap : 0;
     let totalMakanLembur = totalFrekuensiMakan * tarifMakanAktual;
 
     let totalPremiShift = 0;
@@ -619,15 +620,16 @@ function hitungDataPayroll(karyawan) {
     if (karyawan.sistem === 'Shift') {
         totalPremiShift = totalUpahTetap * (karyawan.hk || 0) * (12 / 173) * 0.15;
         
+        // Hitung jumlah shift malam aktual dari histori (atau kotak rekap shift malam)
         if (karyawan.historiAbsen && karyawan.historiAbsen.length > 0) {
             jumlahShiftMalamAktual = karyawan.historiAbsen.filter(h => {
                 let [jIn] = (h.jamMasuk || "00:00").split(':').map(Number);
                 let statusUpper = (h.status || "").toUpperCase();
-                // Shift malam dihitung dari status Masuk/Dinas dan jam masuk malam
                 return (statusUpper === 'MASUK' || statusUpper === 'DINAS') && (jIn >= 17 || jIn < 6 || statusUpper.includes('MALAM') || (h.jamMasuk && h.jamMasuk.startsWith("17")));
             }).length;
         }
-        // Extra Fooding Shift Malam = Jumlah Shift Malam x Rp 25.000
+        
+        // EXTRA FOODING: Diambil langsung dari total kotak rekap Shift Malam dikali tarif makan
         totalExtraFood = jumlahShiftMalamAktual * tarifMakanAktual;
     } else {
         totalKJK = (karyawan.otKonversi || 0) * tarifPerJamLembur; 
