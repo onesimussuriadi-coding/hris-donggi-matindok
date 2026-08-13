@@ -405,9 +405,9 @@ function aturJamOtomatisShift() {
     const jenisShift = document.getElementById('pilihanShiftKerja').value;
     if(jenisShift === 'pagi') {
         document.getElementById('jamMasuk').value = "07:00";
-        document.getElementById('jamKeluar').value = "19:00";
+        document.getElementById('jamKeluar').value = "17:00";
     } else if(jenisShift === 'malam') {
-        document.getElementById('jamMasuk').value = "19:00";
+        document.getElementById('jamMasuk').value = "17:00";
         document.getElementById('jamKeluar').value = "07:00";
     }
 }
@@ -416,7 +416,7 @@ function tutupModal() {
     document.getElementById('modalAbsen').classList.add('hidden');
 }
 
-// --- FUNGSI SIMPAN AMAN DARI ERROR NULL ---
+// --- FUNGSI SIMPAN DENGAN LOGIKA JAM NORMAL BARU (SHIFT PAGI 10 JAM, SHIFT MALAM 14 JAM) ---
 function simpanAbsenHarian() {
     try {
         let elPilih = document.getElementById('pilihKaryawan');
@@ -436,7 +436,6 @@ function simpanAbsenHarian() {
         let statusVal = document.getElementById('statusKehadiran') ? document.getElementById('statusKehadiran').value : "masuk";
         let jenisHariVal = document.getElementById('jenisHari') ? document.getElementById('jenisHari').value : "Biasa";
 
-        // Hitung Otomatis Jam Lembur Aktual Berdasarkan Jam Keluar & Masuk
         let [jIn, mIn] = jInVal.split(':').map(Number);
         let [jOut, mOut] = jOutVal.split(':').map(Number);
         let jamMasukDecimal = jIn + (mIn / 60);
@@ -447,7 +446,14 @@ function simpanAbsenHarian() {
 
         let otAktual = 0;
         if (statusVal === 'masuk' || statusVal === 'off_masuk' || statusVal === 'dinas') {
-            let jamKerjaNormal = 8;
+            // Tentukan jam kerja normal berdasarkan sistem kerja
+            let jamKerjaNormal = 8; // Default Non-Shift
+            if (karyawan.sistem === 'Shift') {
+                // Shift Malam jika masuk di atas/sama dengan jam 17:00 atau dini hari (sebelum jam 6)
+                let isShiftMalam = (jIn >= 17 || jIn < 6);
+                jamKerjaNormal = isShiftMalam ? 14 : 10; // Shift Malam 14 jam, Shift Pagi 10 jam
+            }
+
             if (durasiKerja > jamKerjaNormal) {
                 otAktual = durasiKerja - jamKerjaNormal;
             }
