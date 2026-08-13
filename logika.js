@@ -418,28 +418,54 @@ function tutupModal() {
     document.getElementById('modalAbsen').classList.add('hidden');
 }
 
-// --- FUNGSI SIMPAN ANTI-HANG ---
+// --- FUNGSI SIMPAN AMAN DARI ERROR NULL ---
 function simpanAbsenHarian() {
     try {
-        let no = parseInt(document.getElementById('pilihKaryawan').value);
+        let elPilihKaryawan = document.getElementById('pilihKaryawan');
+        if (!elPilihKaryawan) {
+            alert("Elemen pilih karyawan tidak ditemukan!");
+            return;
+        }
+
+        let no = parseInt(elPilihKaryawan.value);
         let karyawan = masterKaryawan.find(k => k.no === no);
         if(!karyawan) {
             alert("Pilih karyawan terlebih dahulu!");
             return;
         }
 
+        let elTanggal = document.getElementById('inputTanggal');
+        let elBulan = document.getElementById('inputBulan');
+        let elTahun = document.getElementById('inputTahun');
+        let elStatus = document.getElementById('statusKehadiran');
+        let elJenisHari = document.getElementById('jenisHari');
+        let elJamMasuk = document.getElementById('jamMasuk');
+        let elJamKeluar = document.getElementById('jamKeluar');
+        let elOtAktual = document.getElementById('otAktual');
+        let elOtKonversi = document.getElementById('otKonversi');
+
+        let tanggalStr = (elTanggal && elBulan && elTahun) ? `${elTanggal.value} ${elBulan.value} ${elTahun.value}` : "1 Agustus 2026";
+        let status = elStatus ? elStatus.value.toUpperCase() : "MASUK";
+        let jenisHari = elJenisHari ? elJenisHari.value : "Biasa";
+        let jamMasuk = elJamMasuk ? elJamMasuk.value : "07:00";
+        let jamKeluar = elJamKeluar ? elJamKeluar.value : "19:00";
+        let otAktual = elOtAktual ? (parseFloat(elOtAktual.value) || 0) : 0;
+        let otKonversi = elOtKonversi ? (parseFloat(elOtKonversi.value) || 0) : 0;
+
         let absenBaru = {
-            tanggalStr: `${document.getElementById('inputTanggal').value} ${document.getElementById('inputBulan').value} ${document.getElementById('inputTahun').value}`,
-            status: document.getElementById('statusKehadiran').value.toUpperCase(),
-            jenisHari: document.getElementById('jenisHari') ? document.getElementById('jenisHari').value : 'Biasa',
-            jamMasuk: document.getElementById('jamMasuk').value,
-            jamKeluar: document.getElementById('jamKeluar').value,
-            otAktual: parseFloat(document.getElementById('otAktual').value) || 0,
-            otKonversi: parseFloat(document.getElementById('otKonversi').value) || 0,
+            tanggalStr: tanggalStr,
+            status: status,
+            jenisHari: jenisHari,
+            jamMasuk: jamMasuk,
+            jamKeluar: jamKeluar,
+            otAktual: otAktual,
+            otKonversi: otKonversi,
             catatanRingkas: "Update Absen"
         };
 
+        if (!karyawan.historiAbsen) karyawan.historiAbsen = [];
         karyawan.historiAbsen.push(absenBaru);
+        
         hitungUlangRekapKaryawan(karyawan);
         localStorage.setItem('donggi_timesheet_data', JSON.stringify(masterKaryawan));
 
