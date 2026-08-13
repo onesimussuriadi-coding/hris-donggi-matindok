@@ -223,7 +223,11 @@ function bukaModalHistori(noKaryawan) {
         elRekapMakan.innerText = (karyawan.totalMakanLemburRekap || 0) + " Kali";
     }
 
-    
+    let elRekapMakan = document.getElementById('rekapDistMakanLembur');
+if (elRekapMakan) {
+    let totalMakanModal = (karyawan.makanPagi || 0) + (karyawan.makanSiang || 0) + (karyawan.makanMalam || 0);
+    elRekapMakan.innerText = totalMakanModal + " Kali";
+}
     document.getElementById('modalHistori').classList.remove('hidden');
 }
 
