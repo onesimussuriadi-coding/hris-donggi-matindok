@@ -175,7 +175,7 @@ function bukaModalHistori(noKaryawan) {
             let statusUpper = (h.status || "").toUpperCase();
             if (statusUpper === 'MASUK' || statusUpper === 'DINAS') {
                 countHK++;
-                if (jIn >= 18 || jIn < 6 || statusUpper.includes('MALAM') || (h.jamMasuk && h.jamMasuk.startsWith("19"))) {
+                if (jIn >= 17 || jIn < 6 || statusUpper.includes('MALAM') || (h.jamMasuk && h.jamMasuk.startsWith("17"))) {
                     countShiftMalam++;
                 } else {
                     countShiftSiang++;
@@ -194,7 +194,7 @@ function bukaModalHistori(noKaryawan) {
                 <tr class="hover:bg-slate-50">
                     <td class="p-3 font-bold text-slate-700">${h.tanggalStr}</td>
                     <td class="p-3 font-semibold text-emerald-700">${h.status} (${h.jenisHari || 'Biasa'})</td>
-                    <td class="p-3 text-center text-slate-600">${h.jamMasuk} - ${h.jamKeluar}</td>
+                    <td class="p-3 text-center text-slate-600">${h.jamMasuk} - ${h.jamKeluar} ${h.jamMulaiLembur ? '<br><span class="text-[10px] text-blue-600">Mulai Lembur: ' + h.jamMulaiLembur + '</span>' : ''}</td>
                     <td class="p-3 text-center font-bold text-slate-700">${h.otAktual} Jam</td>
                     <td class="p-3 text-center font-bold text-blue-600">${h.otKonversi} Jam</td>
                     <td class="p-3 text-center">
@@ -252,9 +252,9 @@ function downloadCSVHistori() {
         return;
     }
 
-    let csvContent = "data:text/csv;charset=utf-8,Tanggal Absen,Status Kehadiran,Jenis Hari,Jam Masuk,Jam Keluar,Lembur Aktual (Jam),Lembur Konversi (Jam)\r\n";
+    let csvContent = "data:text/csv;charset=utf-8,Tanggal Absen,Status Kehadiran,Jenis Hari,Jam Masuk,Jam Keluar,Jam Mulai Lembur,Lembur Aktual (Jam),Lembur Konversi (Jam)\r\n";
     karyawan.historiAbsen.forEach(h => {
-        let row = `"${h.tanggalStr}","${h.status}","${h.jenisHari}","${h.jamMasuk}","${h.jamKeluar}","${h.otAktual}","${h.otKonversi}"`;
+        let row = `"${h.tanggalStr}","${h.status}","${h.jenisHari}","${h.jamMasuk}","${h.jamKeluar}","${h.jamMulaiLembur || '-'}","${h.otAktual}","${h.otKonversi}"`;
         csvContent += row + "\r\n";
     });
 
@@ -311,7 +311,7 @@ function hapusHistoriTanggal(noKaryawan, indexHistori) {
         if (itemDihapus.jenisHari === 'Libur/Merah' && (itemDihapus.otAktual || 0) > 5 && jIn < 11 && (jOut > 13 || jOut < jIn)) {
             karyawan.makanSiang = Math.max(0, karyawan.makanSiang - 1);
         }
-        if ((itemDihapus.otAktual || 0) > 5 && (jOut > 21 || (jIn <= 19 && jOut >= 21) || jOut < jIn)) {
+        if ((itemDihapus.otAktual || 0) > 5 && (jOut > 21 || (jIn <= 17 && jOut >= 21) || jOut < jIn)) {
             karyawan.makanMalam = Math.max(0, karyawan.makanMalam - 1);
         }
 
@@ -368,6 +368,21 @@ function bukaModalAbsen(sistemKerja) {
     });
 
     document.getElementById('statusKehadiran').value = 'masuk';
+    
+    // Tambahkan input Jam Mulai Lembur secara dinamis ke dalam modal jika belum ada
+    let wrapperJam = document.getElementById('wrapperJamKerja');
+    if (wrapperJam && !document.getElementById('wrapperJamMulaiLembur')) {
+        let divLembur = document.createElement('div');
+        divLembur.id = 'wrapperJamMulaiLembur';
+        divLembur.className = 'col-span-2 mt-2 bg-blue-50/70 p-3 rounded-xl border border-blue-200';
+        divLembur.innerHTML = `
+            <label class="block text-xs font-bold text-blue-900 mb-1">Mulai Lembur / Overtime Start (Jika ada jeda istirahat)</label>
+            <input type="time" id="jamMulaiLembur" class="w-full border border-blue-300 rounded-lg p-2 text-sm outline-none bg-white font-semibold">
+            <span class="text-[10px] text-slate-500 mt-1 block">Kosongkan jika lembur langsung / tidak ada jeda istirahat.</span>
+        `;
+        wrapperJam.parentNode.insertBefore(divLembur, wrapperJam.nextSibling);
+    }
+
     gantiStatusAbsen();
     document.getElementById('modalAbsen').classList.remove('hidden');
 }
@@ -377,6 +392,7 @@ function gantiStatusAbsen() {
     const wrapperShift = document.getElementById('wrapperPilihanShift');
     const wrapperJam = document.getElementById('wrapperJamKerja');
     const wrapperJenisHari = document.getElementById('wrapperJenisHari');
+    const wrapperMulaiLembur = document.getElementById('wrapperJamMulaiLembur');
     
     const selectedNo = parseInt(document.getElementById('pilihKaryawan').value);
     let karyawan = masterKaryawan.find(k => k.no === selectedNo);
@@ -386,9 +402,12 @@ function gantiStatusAbsen() {
         if(wrapperShift) wrapperShift.classList.add('hidden');
         if(wrapperJam) wrapperJam.classList.add('hidden');
         if(wrapperJenisHari) wrapperJenisHari.classList.add('hidden');
+        if(wrapperMulaiLembur) wrapperMulaiLembur.classList.add('hidden');
     } else {
         if(wrapperJam) wrapperJam.classList.remove('hidden');
         if(wrapperJenisHari) wrapperJenisHari.classList.remove('hidden');
+        if(wrapperMulaiLembur) wrapperMulaiLembur.classList.remove('hidden');
+        
         if (isShift) {
             if(wrapperShift) wrapperShift.classList.remove('hidden');
             document.getElementById('pilihanShiftKerja').value = 'pagi';
@@ -416,7 +435,7 @@ function tutupModal() {
     document.getElementById('modalAbsen').classList.add('hidden');
 }
 
-// --- FUNGSI SIMPAN DENGAN LOGIKA JAM NORMAL BARU (SHIFT PAGI 10 JAM, SHIFT MALAM 14 JAM) ---
+// --- FUNGSI SIMPAN DENGAN FITUR JAM MULAI LEMBUR (PENGABAIAN JEDA ISTIRAHAT) ---
 function simpanAbsenHarian() {
     try {
         let elPilih = document.getElementById('pilihKaryawan');
@@ -433,6 +452,7 @@ function simpanAbsenHarian() {
 
         let jInVal = document.getElementById('jamMasuk') ? document.getElementById('jamMasuk').value : "07:00";
         let jOutVal = document.getElementById('jamKeluar') ? document.getElementById('jamKeluar').value : "19:00";
+        let jMulaiLemburVal = document.getElementById('jamMulaiLembur') ? document.getElementById('jamMulaiLembur').value : "";
         let statusVal = document.getElementById('statusKehadiran') ? document.getElementById('statusKehadiran').value : "masuk";
         let jenisHariVal = document.getElementById('jenisHari') ? document.getElementById('jenisHari').value : "Biasa";
 
@@ -446,18 +466,29 @@ function simpanAbsenHarian() {
 
         let otAktual = 0;
         if (statusVal === 'masuk' || statusVal === 'off_masuk' || statusVal === 'dinas') {
-            // Tentukan jam kerja normal berdasarkan sistem kerja
-            let jamKerjaNormal = 8; // Default Non-Shift
-            if (karyawan.sistem === 'Shift') {
-                // Shift Malam jika masuk di atas/sama dengan jam 17:00 atau dini hari (sebelum jam 6)
-                let isShiftMalam = (jIn >= 17 || jIn < 6);
-                jamKerjaNormal = isShiftMalam ? 14 : 10; // Shift Malam 14 jam, Shift Pagi 10 jam
-            }
+            if (jMulaiLemburVal && jMulaiLemburVal !== "") {
+                // Jika admin mengisi Jam Mulai Lembur khusus (mengatasi jeda istirahat)
+                let [jML, mML] = jMulaiLemburVal.split(':').map(Number);
+                let jamMulaiLemburDecimal = jML + (mML / 60);
+                let jamKeluarLemburDecimal = jamKeluarDecimal;
+                if (jamKeluarLemburDecimal < jamMulaiLemburDecimal) jamKeluarLemburDecimal += 24;
+                
+                otAktual = jamKeluarLemburDecimal - jamMulaiLemburDecimal;
+            } else {
+                // Perhitungan otomatis standar berdasarkan jam kerja normal shift/non-shift
+                let jamKerjaNormal = 8; // Default Non-Shift
+                if (karyawan.sistem === 'Shift') {
+                    let isShiftMalam = (jIn >= 17 || jIn < 6);
+                    jamKerjaNormal = isShiftMalam ? 14 : 10; // Shift Malam 14 jam, Shift Pagi 10 jam
+                }
 
-            if (durasiKerja > jamKerjaNormal) {
-                otAktual = durasiKerja - jamKerjaNormal;
+                if (durasiKerja > jamKerjaNormal) {
+                    otAktual = durasiKerja - jamKerjaNormal;
+                }
             }
         }
+        
+        otAktual = Math.max(0, otAktual);
         let otKonversi = hitungKonversiDepnaker(otAktual, jenisHariVal);
 
         let absenBaru = {
@@ -466,6 +497,7 @@ function simpanAbsenHarian() {
             jenisHari: jenisHariVal,
             jamMasuk: jInVal,
             jamKeluar: jOutVal,
+            jamMulaiLembur: jMulaiLemburVal || "",
             otAktual: parseFloat(otAktual.toFixed(1)),
             otKonversi: parseFloat(otKonversi.toFixed(1)),
             catatanRingkas: "Update Absen"
@@ -477,7 +509,7 @@ function simpanAbsenHarian() {
 
         renderTabel();
         tutupModal();
-        alert("Data absen berhasil disimpan & lembur dikalkulasi!");
+        alert("Data absen berhasil disimpan & lembur dikalkulasi akurat!");
     } catch(e) {
         alert("Terjadi kesalahan saat menyimpan: " + e.message);
     }
@@ -536,7 +568,7 @@ function hitungUlangRekapKaryawan(karyawan) {
         if (h.jenisHari === 'Libur/Merah' && otAktualItem > 5 && jIn < 11 && (jOut > 13 || jOut < jIn)) {
             sItem = 1; karyawan.makanSiang += 1;
         }
-        if (otAktualItem > 5 || jOut > 21 || jOut < jIn || jIn >= 18) {
+        if (otAktualItem > 5 || jOut > 21 || jOut < jIn || jIn >= 17) {
             mItem = 1; karyawan.makanMalam += 1;
         }
         karyawan.totalMakanLemburRekap += (pItem + sItem + mItem);
@@ -569,7 +601,7 @@ function hitungDataPayroll(karyawan) {
             jumlahShiftMalamAktual = karyawan.historiAbsen.filter(h => {
                 let [jIn] = (h.jamMasuk || "00:00").split(':').map(Number);
                 let statusUpper = (h.status || "").toUpperCase();
-                return (statusUpper === 'MASUK' || statusUpper === 'DINAS') && (jIn >= 18 || jIn < 6 || statusUpper.includes('MALAM') || (h.jamMasuk && h.jamMasuk.startsWith("19")));
+                return (statusUpper === 'MASUK' || statusUpper === 'DINAS') && (jIn >= 17 || jIn < 6 || statusUpper.includes('MALAM') || (h.jamMasuk && h.jamMasuk.startsWith("17")));
             }).length;
         }
         totalExtraFood = jumlahShiftMalamAktual * tarifMakanAktual;
