@@ -62,40 +62,15 @@
             </div>
         </div>
 
-        <!-- Kotak Rekapitulasi Distribusi Kehadiran & Tunjangan Makan Lembur -->
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-8">
-            <h4 class="font-bold text-slate-800 mb-4 text-sm">📊 REKAPITULASI DISTRIBUSI KEHADIRAN & TUNJANGAN</h4>
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center">
-                    <div class="text-xs text-slate-500 font-semibold mb-1">Total HK</div>
-                    <div id="rekapDistTotalHK" class="text-lg font-bold text-slate-800">0 Hari</div>
-                </div>
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center">
-                    <div class="text-xs text-slate-500 font-semibold mb-1">Shift Siang</div>
-                    <div id="rekapDistSiang" class="text-lg font-bold text-slate-800">0 Hari</div>
-                </div>
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center">
-                    <div class="text-xs text-slate-500 font-semibold mb-1">Shift Malam</div>
-                    <div id="rekapDistMalam" class="text-lg font-bold text-slate-800">0 Hari</div>
-                </div>
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center">
-                    <div class="text-xs text-slate-500 font-semibold mb-1">Cuti Resmi</div>
-                    <div id="rekapDistCuti" class="text-lg font-bold text-slate-800">0 Hari</div>
-                </div>
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center">
-                    <div class="text-xs text-slate-500 font-semibold mb-1">OFF Murni</div>
-                    <div id="rekapDistOff" class="text-lg font-bold text-slate-800">0 Hari</div>
-                </div>
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center">
-                    <div class="text-xs text-slate-500 font-semibold mb-1">Sakit/Izin/Alfa</div>
-                    <div id="rekapDistLainnya" class="text-lg font-bold text-slate-800">0 Hari</div>
-                </div>
-                <!-- Kotak Rekap Tambahan Sesuai Saran Brilian Bapak -->
-                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 text-center">
-                    <div class="text-xs text-blue-600 font-semibold mb-1">Tunjangan Makan Lembur</div>
-                    <div id="rekapDistMakanLembur" class="text-lg font-bold text-blue-700">0 Kali</div>
-                </div>
-            </div>
+        <!-- STRUKTUR REKAPITULASI MODAL / AREA DETAIL (Ditempatkan di sini agar ID tetap terbaca oleh logika script.js tanpa merusak tampilan bersih Dashboard Utama) -->
+        <div class="hidden">
+            <div id="rekapDistTotalHK">0 Hari</div>
+            <div id="rekapDistSiang">0 Hari</div>
+            <div id="rekapDistMalam">0 Hari</div>
+            <div id="rekapDistMakanLembur">0 Kali</div>
+            <div id="rekapDistCuti">0 Hari</div>
+            <div id="rekapDistOff">0 Hari</div>
+            <div id="rekapDistLainnya">0 Hari</div>
         </div>
 
         <!-- Tabel Data Cadangan / Wadah Dinamis untuk Data -->
