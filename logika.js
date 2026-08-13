@@ -358,7 +358,6 @@ function bukaModalAbsen(sistemKerja) {
 
     document.getElementById('modalTitle').innerText = `Input Absen Harian (${sistemKerja})`;
     
-    // RESET OTOMATIS: Kolom Mulai & Selesai Lembur dikosongkan setiap ganti hari / buka modal baru
     if(document.getElementById('jamMulaiLembur')) document.getElementById('jamMulaiLembur').value = "";
     if(document.getElementById('jamSelesaiLembur')) document.getElementById('jamSelesaiLembur').value = "";
 
@@ -549,7 +548,7 @@ function hitungKonversiDepnaker(jamAktual, jenisHari) {
     }
 }
 
-// --- REKAPITULASI KARYAWAN: SYARAT KETAT MAKAN LEMBUR HANYA JIKA OT > 0 ---
+// --- REKAPITULASI KARYAWAN: HK HANYA DARI SHIFT PAGI/MALAM (OFF_MASUK TIDAK DIHITUNG HK) ---
 function hitungUlangRekapKaryawan(karyawan) {
     karyawan.hk = 0;
     karyawan.otAktual = 0;
@@ -566,17 +565,17 @@ function hitungUlangRekapKaryawan(karyawan) {
 
     karyawan.historiAbsen.forEach(h => {
         let statusUpper = (h.status || "").toUpperCase();
-        
-        if (statusUpper === 'MASUK' || statusUpper === 'DINAS' || statusUpper === 'OFF_MASUK') {
-            karyawan.hk += 1;
-        }
-
-        karyawan.otAktual += (h.otAktual || 0);
-        karyawan.otKonversi += (h.otKonversi || 0);
-
         let [jIn] = (h.jamMasuk || "00:00").split(':').map(Number);
         let [jOut] = (h.jamKeluar || "00:00").split(':').map(Number);
         let otAktualItem = h.otAktual || 0;
+
+        // KOREKSI UTAMA: HK (Hari Kerja) hanya dihitung jika status MASUK atau DINAS (OFF_MASUK murni lembur, HK = 0)
+        if (statusUpper === 'MASUK' || statusUpper === 'DINAS') {
+            karyawan.hk += 1;
+        }
+
+        karyawan.otAktual += otAktualItem;
+        karyawan.otKonversi += (h.otKonversi || 0);
 
         let pItem = 0, sItem = 0, mItem = 0;
         
@@ -588,7 +587,6 @@ function hitungUlangRekapKaryawan(karyawan) {
             sItem = 1; karyawan.makanSiang += 1;
         }
         
-        // MAKAN LEMBUR / MALAM: Hanya dihitung jika benar-benar ada jam lembur (otAktualItem > 0)
         if (otAktualItem > 0) {
             mItem = 1; karyawan.makanMalam += 1;
         }
@@ -625,6 +623,7 @@ function hitungDataPayroll(karyawan) {
             jumlahShiftMalamAktual = karyawan.historiAbsen.filter(h => {
                 let [jIn] = (h.jamMasuk || "00:00").split(':').map(Number);
                 let statusUpper = (h.status || "").toUpperCase();
+                // Shift malam dihitung dari status Masuk/Dinas dan jam masuk malam
                 return (statusUpper === 'MASUK' || statusUpper === 'DINAS') && (jIn >= 17 || jIn < 6 || statusUpper.includes('MALAM') || (h.jamMasuk && h.jamMasuk.startsWith("17")));
             }).length;
         }
