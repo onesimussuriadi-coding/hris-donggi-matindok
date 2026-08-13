@@ -1,108 +1,35 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HRIS Dashboard - Field Donggi Matindok</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 font-sans flex h-screen overflow-hidden">
-
-    <!-- Sidebar Navigasi Kiri -->
-    <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between p-6">
-        <div>
-            <div class="mb-8">
-                <h1 class="text-xl font-bold tracking-wide">HRIS Portal</h1>
-                <p class="text-xs text-slate-400 mt-1">Field Donggi Matindok</p>
-            </div>
-            <nav class="space-y-2">
-                <a href="index.html" class="flex items-center gap-3 px-4 py-3 bg-blue-600 rounded-lg text-white font-medium transition">
-                    <span>📊</span> Dashboard Utama
-                </a>
-                <a href="master_karyawan.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition">
-                    <span>👥</span> Master Karyawan
-                </a>
-                <a href="timesheet.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition">
-                    <span>📅</span> Time Sheet & Absen
-                </a>
-                <a href="engine_payroll.html" class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition">
-                    <span>💰</span> Engine Payroll
-                </a>
-            </nav>
+<!-- REKAPITULASI DISTRIBUSI KEHADIRAN PERIODE (DENGAN TUNJANGAN MAKAN LEMBUR) -->
+<div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 mb-4">
+    <h4 class="font-bold text-slate-800 mb-3 text-xs">📊 REKAPITULASI DISTRIBUSI KEHADIRAN PERIODE</h4>
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+            <div class="text-xs text-slate-500 font-semibold mb-1">Total HK</div>
+            <div id="rekapDistTotalHK" class="text-base font-bold text-slate-800">0 Hari</div>
         </div>
-        <div class="border-t border-slate-800 pt-4">
-            <p class="text-sm font-semibold">Onesimus Suriadi</p>
-            <p class="text-xs text-slate-400">President Director</p>
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+            <div class="text-xs text-slate-500 font-semibold mb-1">Shift Siang</div>
+            <div id="rekapDistSiang" class="text-base font-bold text-slate-800">0 Hari</div>
         </div>
-    </aside>
-
-    <!-- Konten Utama Sebelah Kanan -->
-    <main class="flex-1 overflow-y-auto p-8">
-        
-        <!-- Header Atas -->
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold text-slate-800">Dashboard Utama</h2>
-            <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full">Zona 13 - Field</span>
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+            <div class="text-xs text-slate-500 font-semibold mb-1">Shift Malam</div>
+            <div id="rekapDistMalam" class="text-base font-bold text-slate-800">0 Hari</div>
         </div>
-
-        <!-- Banner Selamat Datang & Kartu Statistik -->
-        <div class="bg-white rounded-2xl shadow-sm p-6 mb-8 flex flex-col lg:flex-row justify-between items-center gap-6 border border-slate-100">
-            <div class="space-y-2">
-                <span class="inline-block bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">Selamat Datang, Bapak Onesimus Suriadi</span>
-                <h3 class="text-2xl font-bold text-slate-900">HRIS Portal - Field Donggi Matindok</h3>
-                <p class="text-sm text-slate-500 max-w-2xl">
-                    Sistem Informasi Manajemen Sumber Daya Manusia dan Pengelolaan Tenaga Alih Daya (TAD) Kontraktor Utama PT Sentral Sari Jaya.
-                </p>
-            </div>
-            <div class="bg-slate-50 border border-slate-100 p-5 rounded-xl text-center min-w-[200px]">
-                <p class="text-xs text-slate-500 font-medium">Total Karyawan Aktif</p>
-                <p class="text-3xl font-extrabold text-blue-900 my-1">52</p>
-                <p class="text-[11px] text-emerald-600 font-semibold">✓ 36 Shift | 16 Non Shift</p>
-            </div>
+        <!-- KOTAK RUJUKAN TUNJANGAN MAKAN LEMBUR (DITAMBAHKAN SEJAJAR DI SEBELAH SHIFT MALAM) -->
+        <div class="bg-blue-50 p-3 rounded-xl border border-blue-100 text-center">
+            <div class="text-xs text-blue-600 font-semibold mb-1">Tunjangan Makan Lembur</div>
+            <div id="rekapDistMakanLembur" class="text-base font-bold text-blue-700">0 Kali</div>
         </div>
-
-        <!-- STRUKTUR REKAPITULASI MODAL / AREA DETAIL (Ditempatkan di sini agar ID tetap terbaca oleh logika script.js tanpa merusak tampilan bersih Dashboard Utama) -->
-        <div class="hidden">
-            <div id="rekapDistTotalHK">0 Hari</div>
-            <div id="rekapDistSiang">0 Hari</div>
-            <div id="rekapDistMalam">0 Hari</div>
-            <div id="rekapDistMakanLembur">0 Kali</div>
-            <div id="rekapDistCuti">0 Hari</div>
-            <div id="rekapDistOff">0 Hari</div>
-            <div id="rekapDistLainnya">0 Hari</div>
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+            <div class="text-xs text-slate-500 font-semibold mb-1">Cuti Resmi</div>
+            <div id="rekapDistCuti" class="text-base font-bold text-slate-800">0 Hari</div>
         </div>
-
-        <!-- Tabel Data Cadangan / Wadah Dinamis untuk Data -->
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-            <div class="flex justify-between items-center mb-4">
-                <h4 class="font-bold text-slate-800">Daftar Ringkas Personel</h4>
-                <input type="text" id="searchInput" placeholder="Cari nama atau jabatan..." class="px-3 py-1.5 text-xs border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-sm">
-                    <thead>
-                        <tr class="bg-slate-50 text-slate-600 border-b text-xs uppercase">
-                            <th class="p-3">No</th>
-                            <th class="p-3">Nama Karyawan</th>
-                            <th class="p-3">Jabatan</th>
-                            <th class="p-3">Penempatan</th>
-                            <th class="p-3">Sistem Kerja</th>
-                            <th class="p-3">Grade</th>
-                        </tr>
-                    </thead>
-                    <tbody id="employeeTableBody" class="divide-y divide-slate-100 text-slate-700">
-                        <tr>
-                            <td colspan="6" class="p-4 text-center text-slate-400 text-xs">Menunggu sinkronisasi data...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+            <div class="text-xs text-slate-500 font-semibold mb-1">OFF Murni</div>
+            <div id="rekapDistOff" class="text-base font-bold text-slate-800">0 Hari</div>
         </div>
-
-    </main>
-
-    <!-- Panggil file skrip utama -->
-    <script src="scripts/script.js"></script>
-</body>
-</html>
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+            <div class="text-xs text-slate-500 font-semibold mb-1">Sakit/Izin/Alfa</div>
+            <div id="rekapDistLainnya" class="text-base font-bold text-slate-800">0 Hari</div>
+        </div>
+    </div>
+</div>
